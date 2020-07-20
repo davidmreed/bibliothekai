@@ -32,7 +32,9 @@ SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.getenv("DJANGO_DEBUG", default=False))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'bibliothekai.herokuapp.com'
+]
 
 
 # Application definition
