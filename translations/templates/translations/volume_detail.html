@@ -1,0 +1,33 @@
+<html>
+    <head>
+        <title>{{ volume.title }}</title>
+    </head>
+    <body>
+        <h1>{{ volume.title }}</h1>
+        <dl>
+            <dd>Publisher</dd>
+            <dt>{{ volume.publisher }}</dt>
+            <dd>Publication Date</dd>
+            <dt>{{ volume.published_date }}</dt>
+        </dl>
+        <h2>Translations</h2>
+        {% if volume.translation_set.all %}
+        <p>This volume contains translations of the following texts.</p>
+        <ul>
+            {% for t in volume.translation_set.all %}
+            <li>
+                <a href="{% url 'source_text_detail' t.source_text.id %}">
+                    {% if t.title %}
+                    {{ t.title }}
+                    {% else %}
+                    {{ t.source_text.title }}
+                    {% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>This volume contains no translations.</p>
+        {% endif %}
+    </body>
+</html>

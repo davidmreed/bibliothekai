@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>{{ translation }}</title>
+    </head>
+    <body>
+        <h1>{{ translation }}</h2>
+        <p>This work is a translation of <a href="{% url 'source_text_detail' translation.source_text.id %}"><cite>{{ translation.source_text.title }}</cite></a> by <a href="{% url 'author_detail' translation.source_text.author.id %}">{{ translation.source_text.author }}</a>.</p>
+        <p>This translation is in {{ translation.language }}.</p>
+        <h2>Authors</h2>
+        Select an author to view other translations to which they have contributed.
+        <ul>
+            {% for a in translation.authors.all %}
+            <li><a href="{% url 'author_detail' a.id %}">{{ a }}</a></li>
+            {% endfor %}
+        </ul>
+        <h2>Publications</h2>
+        <p>Select a publication to view details.</p>
+        <ul>
+            {% for p in translation.publications.all %}
+            <li><a href="{% url 'volume_detail' p.id %}">{{ p }}</a></li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>
