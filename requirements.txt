@@ -1,5 +1,8 @@
-django
-gunicorn
-django-heroku
-whitenoise
-psycopg2-binary
+asgiref==3.2.10
+dj-database-url==0.5.0
+Django==3.0.8
+gunicorn==20.0.4
+psycopg2-binary==2.8.5
+python-dotenv==0.14.0
+pytz==2020.1
+sqlparse==0.3.1
