@@ -4,22 +4,47 @@
 
 {% block content %}
 <h1>{{ translation }}</h1>
-<p>This work is a translation of 
-<a href="{% url 'source_text_detail' translation.source_text.id %}">
-    <cite>{{ translation.source_text.title }}</cite>
-</a> 
-by <a href="{% url 'author_detail' translation.source_text.author.id %}">
-    {{ translation.source_text.author }}
-</a>.
-</p>
-<p>This translation is in {{ translation.language }}.</p>
+
+<div class="row mb-3">
+    <div class="col-md-6 themed-grid-col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Source Text</h5>
+                <p class="card-text">This work is a translation of
+                <cite>{{ translation.source_text.title }}</cite> by {{ translation.source_text.author }}.
+                </p>
+                <a href="{% url 'source_text_detail' translation.source_text.id %}" class="btn btn-primary">See more translations</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 themed-grid-col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Language</h5>
+                <p class="card-text">This is a translation from <strong>{{ translation.source_text.language }}</strong> into <strong>{{ translation.language }}</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h2>Authors</h2>
-Select an author to view other translations to which they have contributed.
-<ul>
-{% for a in translation.authors.all %}
-    <li><a href="{% url 'author_detail' a.id %}">{{ a }}</a></li>
-{% endfor %}
-</ul>
+
+<div class="row mb-3">
+    {% for a in translation.authors.all %}
+    <div class="col-md-4 themed-grid-col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{ a }}</h5>
+                <p class="card-text">
+                </p>
+                <a href="{% url 'author_detail' a.id %}" class="btn btn-primary">More translations by this author</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 <h2>Publications</h2>
 <p>Select a publication to view details.</p>
 <ul>
