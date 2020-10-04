@@ -1,4 +1,8 @@
 venv
 db.sqlite3
 *.pyc
+**/__pycache__
 .env
+*.db
+*.db-journal
+.vscode

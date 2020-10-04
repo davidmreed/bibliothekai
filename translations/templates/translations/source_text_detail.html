@@ -1,29 +1,25 @@
-<html>
-    <head>
-        <title>{{ sourcetext.title }}</title>
-    </head>
-    <body>
-        <h1>
-            {{ sourcetext.title }}
-            {% if sourcetext.original_language_title %}
-            ({{ sourcetext.language}}: {{ sourcetext.original_language_title }})
-            {% endif %}
-        </h1>
-        <p>
-        Author: <a href="{ url 'author_detail' sourcetext.author.id }">{{ sourcetext.author }}</a>
-       </p>
-        <h2>Translations</h2>
-        {% for t in sourcetext.translation_set.all %}
-        <h3><a href="{% url 'translation_detail' t.id %}">{{ t.display_title }}</a></h3>
-        <p>Translated into {{ t.language }} by {{ t.author_string }}.</p>
-        <p>Published as</p>
-        <ul>
-            {% for p in t.publications.all %}
-            <li>
-                <a href="{% url 'volume_detail' p.id %}">{{ p.title }} ({{p.publisher}}, {{p.published_date.year}})</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endfor %}
-    </body>
-</html>
+{% extends "translations/base.html" %}
+
+{% block title %}
+{{ sourcetext.title }}
+{% endblock %}
+
+{% block content %}
+
+<h1>
+    {{ sourcetext.title }}
+    {% if sourcetext.original_language_title %}
+    ({{ sourcetext.language}}: {{ sourcetext.original_language_title }})
+    {% endif %}
+</h1>
+<p>
+    Author: <a href="{% url 'author_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
+</p>
+<h2>Translations and Features</h2>
+{% for v in volumes.all %}
+<h3><a href="{% url 'volume_detail' v.id %}">{{ v }}</a></h3>
+{% for f in v.feature_set.all %}
+<p>{{ f }}</p>
+{% endfor %}
+{% endfor %}
+{% endblock %}

@@ -1,33 +1,73 @@
-<html>
-    <head>
-        <title>{{ volume.title }}</title>
-    </head>
-    <body>
-        <h1>{{ volume.title }}</h1>
-        <dl>
-            <dd>Publisher</dd>
-            <dt>{{ volume.publisher }}</dt>
-            <dd>Publication Date</dd>
-            <dt>{{ volume.published_date }}</dt>
-        </dl>
-        <h2>Translations</h2>
-        {% if volume.translation_set.all %}
-        <p>This volume contains translations of the following texts.</p>
-        <ul>
-            {% for t in volume.translation_set.all %}
-            <li>
-                <a href="{% url 'source_text_detail' t.source_text.id %}">
-                    {% if t.title %}
-                    {{ t.title }}
-                    {% else %}
-                    {{ t.source_text.title }}
+{% extends "translations/base.html" %}
+
+{% block title %}
+{{ volume.title }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ volume.title }}</h1>
+<p>
+    {{ volume.publisher }} ({{ volume.published_date.year }})
+</p>
+
+{% regroup features by source_text as texts %}
+
+{% for t in texts %}
+{% if t.grouper.id %}
+<h2>
+    <a href="{% url 'source_text_detail' t.grouper.id %}">{{ t.grouper.title }}</a>
+</h2>
+<p>
+    by <a href="{% url 'author_detail' t.grouper.author.id %}">{{ t.grouper.author }}</a>
+</p>
+<ul></ul>
+{% for f in t.list %}
+<div class="row mb-3">
+    <div class="col-md-6 themed-grid-col">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    {% if f.feature == 'IN' %}
+                    Introduction
+                    {% elif f.feature == 'ED' %}
+                    Edited
+                    {% elif f.feature == 'CM' %}
+                    Commentary
+                    {% elif f.feature == 'TR' %}
+                    Translation
+                    {% if f.title and f.title != f.source_text.title %}
+                    (as <cite>{{ f.title }}</cite>)
                     {% endif %}
+                    {% endif %}
+                </h5>
+                <p class="card-text">
+                    by {{ f.author_string }}.
+                </p>
+                {% if f.feature == 'TR' %}
+                <p class="card-text">
+                    Into {{ f.language }} {{f.get_kind_display | lower}}.
+                </p>
+                {% endif %}
+                {% if f.feature == 'TR' and f.partial %}
+                <p class="card-text">
+                    This is a partial translation.
+                </p>
+                {% endif %}
+                {% if f.description %}
+                <p class="card-text">
+                    {{ f.description }}
+                </p>
+                {% endif %}
+                {% if f.feature == 'TR' %}
+                <a href="{% url 'source_text_detail' f.source_text.id %}" class="btn btn-primary">
+                    Other translations of this text
                 </a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>This volume contains no translations.</p>
-        {% endif %}
-    </body>
-</html>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endblock %}

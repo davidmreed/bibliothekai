@@ -1,0 +1,26 @@
+{% extends "translations/base.html" %}
+
+{% block title %}
+Source Texts
+{% endblock %}
+
+{% block content %}
+
+<body>
+    <h1>
+        Source Texts
+    </h1>
+    {% regroup object_list by author as texts %}
+
+    {% for a in texts %}
+    <h2>
+        <a href="{% url 'author_detail' a.grouper.id %}">{{ a.grouper }}</a>
+    </h2>
+    {% for s in a.list %}
+    <p>
+        <a href="{% url 'source_text_detail' s.id %}">{{ s }}</a>
+    </p>
+    {% endfor %}
+    {% endfor %}
+</body>
+{% endblock %}
