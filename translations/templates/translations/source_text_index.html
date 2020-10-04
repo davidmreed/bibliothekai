@@ -14,7 +14,7 @@ Source Texts
 
     {% for a in texts %}
     <h2>
-        <a href="{% url 'author_detail' a.grouper.id %}">{{ a.grouper }}</a>
+        <a href="{% url 'person_detail' a.grouper.id %}">{{ a.grouper }}</a>
     </h2>
     {% for s in a.list %}
     <p>
