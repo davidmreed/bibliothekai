@@ -18,7 +18,7 @@
     <a href="{% url 'source_text_detail' t.grouper.id %}">{{ t.grouper.title }}</a>
 </h2>
 <p>
-    by <a href="{% url 'author_detail' t.grouper.author.id %}">{{ t.grouper.author }}</a>
+    by <a href="{% url 'person_detail' t.grouper.author.id %}">{{ t.grouper.author }}</a>
 </p>
 <ul></ul>
 {% for f in t.list %}
@@ -41,7 +41,12 @@
                     {% endif %}
                 </h5>
                 <p class="card-text">
-                    by {{ f.author_string }}.
+                    {% spaceless %}
+                    by
+                    {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
+                    {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                        href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    {% endspaceless %}
                 </p>
                 {% if f.feature == 'TR' %}
                 <p class="card-text">

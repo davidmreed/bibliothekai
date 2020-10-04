@@ -17,6 +17,7 @@ class Person(models.Model):
     middle_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     sole_name = models.CharField(max_length=255, blank=True)
+    description = models.TextField(blank=True)
 
     def clean(self):
         if (not self.sole_name and (not self.first_name or not self.last_name)) or (
@@ -108,7 +109,7 @@ class Feature(models.Model):
         return self.source_text.title
 
     def author_string(self):
-        authors = self.persons.all()
+        authors = list(self.persons.all())
         if len(authors) < 3:
             return " and ".join(str(a) for a in authors)
         else:

@@ -1,6 +1,6 @@
 from django.views import generic
 
-from .models import SourceText, Volume, Person, Feature
+from .models import SourceText, Volume, Person
 
 
 class SourceTextDetailView(generic.DetailView):
@@ -43,13 +43,7 @@ class VolumeIndexView(generic.ListView):
         return Volume.objects.order_by("published_date")
 
 
-class AuthorDetailView(generic.DetailView):
+class PersonDetailView(generic.DetailView):
     model = Person
-    template_name = "translations/author_detail.html"
+    template_name = "translations/person_detail.html"
 
-
-class AuthorIndexView(generic.ListView):
-    template_name = "translations/author_index.html"
-
-    def get_queryset(self):
-        return Volume.objects.order_by("published_date")

@@ -13,7 +13,7 @@
     {% endif %}
 </h1>
 <p>
-    Author: <a href="{% url 'author_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
+    Author: <a href="{% url 'person_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
 </p>
 <h2>Translations and Features</h2>
 {% for v in volumes.all %}
