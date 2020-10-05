@@ -6,21 +6,39 @@ Source Texts
 
 {% block content %}
 
-<body>
-    <h1>
-        Source Texts
-    </h1>
-    {% regroup object_list by author as texts %}
+<h1 class="mt-4">
+    Source Texts
+</h1>
 
-    {% for a in texts %}
-    <h2>
-        <a href="{% url 'person_detail' a.grouper.id %}">{{ a.grouper }}</a>
-    </h2>
-    {% for s in a.list %}
-    <p>
-        <a href="{% url 'source_text_detail' s.id %}">{{ s }}</a>
-    </p>
+{% regroup object_list by author as authors %}
+<div class="card-deck">
+    {% for a in authors %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                {{ a.grouper }}
+            </h5>
+            <div class="cart-text">
+            </div>
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for s in a.list %}
+            <li class="list-group-item">
+                {{ s.title }}
+                <div class="float-right">
+                    <a class="ml-3 btn btn-outline-secondary btn-sm" href="{% url 'source_text_detail' s.id %}">
+                        View Translations
+                    </a>
+                </div>
+
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="card-body">
+            <a class="btn btn-primary" href="{% url 'person_detail' a.grouper.id %}"> More about {{ a.grouper }}</a>
+        </div>
+    </div>
     {% endfor %}
-    {% endfor %}
-</body>
+</div>
+
 {% endblock %}

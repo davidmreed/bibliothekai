@@ -3,6 +3,10 @@ from django.views import generic
 from .models import SourceText, Feature, Volume, Person
 
 
+class IndexView(generic.TemplateView):
+    template_name = "translations/index.html"
+
+
 class SourceTextDetailView(generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"

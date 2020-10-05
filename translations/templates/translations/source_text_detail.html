@@ -14,7 +14,13 @@
         <div class="card-body">
             <h5 class="card-title">Author</h5>
             <div class="card-text">
-                <a href="{% url 'person_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
+                {{ sourcetext.author }}
+                <div class="float-right">
+                    <a class="ml-3 btn btn-outline-secondary btn-sm"
+                        href="{% url 'person_detail' sourcetext.author.id %}">
+                        More
+                    </a>
+                </div>
             </div>
         </div>
     </div>
