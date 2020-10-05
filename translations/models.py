@@ -131,7 +131,7 @@ class Feature(models.Model):
 
     def __str__(self):
         return (
-            f"{self.display_title()} ({self.get_type_display().lower()} by"
+            f"{self.display_title()} ({self.get_feature_display().lower()} by"
             f"{self.author_string()})"
         )
 
