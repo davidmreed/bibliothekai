@@ -5,74 +5,97 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ volume.title }}</h1>
+<h1 class="mt-4">{{ volume.title }}</h1>
 <p>
     {{ volume.publisher }} ({{ volume.published_date.year }})
 </p>
 
+<h2 class="mt-4">Contents</h2>
 {% regroup features by source_text as texts %}
 
 {% for t in texts %}
+{% if not t.grouper.id %}
+<div class="card-deck">
+    {% for f in t.list %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                {{ f.get_feature_display }}
+                {% if f.title and f.title != f.source_text.title %}
+                (as <cite>{{ f.title }}</cite>)
+                {% endif %}
+            </h5>
+            <p class="card-text">
+                {% spaceless %}
+                by
+                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
+                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                {% endspaceless %}
+            </p>
+            {% if f.description %}
+            <p class="card-text">
+                {{ f.description }}
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+
+{% for t in texts %}
 {% if t.grouper.id %}
-<h2>
+<h3 class="mt-4">
     <a href="{% url 'source_text_detail' t.grouper.id %}">{{ t.grouper.title }}</a>
-</h2>
+</h3>
 <p>
     by <a href="{% url 'person_detail' t.grouper.author.id %}">{{ t.grouper.author }}</a>
 </p>
 <ul></ul>
-{% for f in t.list %}
-<div class="row mb-3">
-    <div class="col-md-6 themed-grid-col">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    {% if f.feature == 'IN' %}
-                    Introduction
-                    {% elif f.feature == 'ED' %}
-                    Edited
-                    {% elif f.feature == 'CM' %}
-                    Commentary
-                    {% elif f.feature == 'TR' %}
-                    Translation
-                    {% if f.title and f.title != f.source_text.title %}
-                    (as <cite>{{ f.title }}</cite>)
-                    {% endif %}
-                    {% endif %}
-                </h5>
-                <p class="card-text">
-                    {% spaceless %}
-                    by
-                    {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
-                    {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                        href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
-                    {% endspaceless %}
-                </p>
-                {% if f.feature == 'TR' %}
-                <p class="card-text">
-                    Into {{ f.language }} {{f.get_kind_display | lower}}.
-                </p>
+<div class="card-deck">
+    {% for f in t.list %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                {{ f.get_feature_display }}
+                {% if f.title and f.title != f.source_text.title %}
+                (as <cite>{{ f.title }}</cite>)
                 {% endif %}
-                {% if f.feature == 'TR' and f.partial %}
-                <p class="card-text">
-                    This is a partial translation.
-                </p>
-                {% endif %}
-                {% if f.description %}
-                <p class="card-text">
-                    {{ f.description }}
-                </p>
-                {% endif %}
-                {% if f.feature == 'TR' %}
-                <a href="{% url 'source_text_detail' f.source_text.id %}" class="btn btn-primary">
-                    Other translations of this text
-                </a>
-                {% endif %}
-            </div>
+            </h5>
+            <p class="card-text">
+                {% spaceless %}
+                by
+                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
+                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                {% endspaceless %}
+            </p>
+            {% if f.feature == 'TR' %}
+            <p class="card-text">
+                Into {{ f.language }} {{f.get_kind_display | lower}}.
+            </p>
+            {% endif %}
+            {% if f.feature == 'TR' and f.partial %}
+            <p class="card-text">
+                This is a partial translation.
+            </p>
+            {% endif %}
+            {% if f.description %}
+            <p class="card-text">
+                {{ f.description }}
+            </p>
+            {% endif %}
+            {% if f.feature == 'TR' %}
+            <a href="{% url 'source_text_detail' f.source_text.id %}" class="btn btn-primary">
+                Other translations of this text
+            </a>
+            {% endif %}
         </div>
     </div>
+    {% endfor %}
 </div>
-{% endfor %}
 {% endif %}
 {% endfor %}
 {% endblock %}

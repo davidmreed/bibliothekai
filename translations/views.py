@@ -1,18 +1,20 @@
 from django.views import generic
 
-from .models import SourceText, Volume, Person
+from .models import SourceText, Feature, Volume, Person
 
 
 class SourceTextDetailView(generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
 
-    def get_volumes(self):
-        return Volume.objects.filter(feature__source_text=self.get_object()).distinct()
+    def get_translations(self):
+        return Feature.objects.filter(source_text=self.get_object()).filter(
+            feature="TR"
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["volumes"] = self.get_volumes()
+        context["translations"] = self.get_translations()
         return context
 
 

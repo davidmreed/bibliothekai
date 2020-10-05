@@ -6,20 +6,88 @@
 
 {% block content %}
 
-<h1>
+<h1 class="mt-4">
     {{ sourcetext.title }}
-    {% if sourcetext.original_language_title %}
-    ({{ sourcetext.language}}: {{ sourcetext.original_language_title }})
-    {% endif %}
 </h1>
+<div class="card-deck">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Author</h5>
+            <div class="card-text">
+                <a href="{% url 'person_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Original Language</h5>
+            <div class="card-text">
+                {{ sourcetext.language }}
+            </div>
+        </div>
+    </div>
+    {% if sourcetext.original_language_title %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Original Title</h5>
+            <div class="card-text">
+                {{ sourcetext.original_language_title }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Format</h5>
+            <div class="card-text">
+                {{ sourcetext.get_kind_display }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sourcetext.description %}
+<h2 class="mt-4">Description</h2>
 <p>
-    Author: <a href="{% url 'person_detail' sourcetext.author.id %}">{{ sourcetext.author }}</a>
+    {{ sourcetext.description }}
 </p>
-<h2>Translations and Features</h2>
-{% for v in volumes.all %}
-<h3><a href="{% url 'volume_detail' v.id %}">{{ v }}</a></h3>
-{% for f in v.feature_set.all %}
-<p>{{ f }}</p>
-{% endfor %}
-{% endfor %}
+{% endif %}
+
+<h2 class="mt-4">Translations</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Translator</th>
+            <th scope="col">Publisher</th>
+            <th scope="col">Date</th>
+            <th scope="col">Language</th>
+            <th scope="col">Type</th>
+            <th scope="col">Complete</th>
+            <th scope="col">Introduction</th>
+            <th scope="col">Notes</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in translations.all %}
+        <tr>
+            <td><a href="{% url 'volume_detail' t.volume.id %}">{{ t.volume.title }}</a></td>
+            <td>{% spaceless %}
+                {% for p in t.persons.all %}{% if not forloop.first and t.persons.count > 2 %},
+                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                {% endspaceless %}
+            </td>
+            <td>{{ t.volume.publisher }}</td>
+            <td>{{ t.volume.published_date.year }}</td>
+            <td>{{ t.language }}</td>
+            <td>{{ t.get_kind_display }}</td>
+            <td>{% if t.partial %}Yes{% else %}No{%endif%}</td>
+            <td>{% if t.has_accompanying_introduction %}Yes{% else %}No{%endif%}</td>
+            <td>{% if t.has_accompanying_notes %}Yes{% else %}No{%endif%}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}

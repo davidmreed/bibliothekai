@@ -84,10 +84,11 @@ class Volume(models.Model):
 
 class Feature(models.Model):
     feature_types = {
-        "ED": "Edited by",
-        "IN": "Introduction by",
-        "CM": "Commentary by",
-        "TR": "Translation by",
+        "ED": "Edited",
+        "IN": "Introduction",
+        "CM": "Commentary",
+        "TR": "Translation",
+        "NT": "Notes",
     }
 
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
@@ -117,12 +118,21 @@ class Feature(models.Model):
             last = str(authors[-1])
             return f"{first}, and {last}"
 
-    def type_string(self):
-        return self.feature_types[self.feature].lower()
+    def has_accompanying_feature(self, feature_type):
+        return (
+            Feature.objects.filter(volume=self.volume, feature=feature_type).count() > 0
+        )
+
+    def has_accompanying_introduction(self):
+        return self.has_accompanying_feature("IN")
+
+    def has_accompanying_notes(self):
+        return self.has_accompanying_feature("NT")
 
     def __str__(self):
         return (
-            f"{self.display_title()} ({self.type_string()} " f"{self.author_string()})"
+            f"{self.display_title()} ({self.get_type_display().lower()} by"
+            f"{self.author_string()})"
         )
 
 

@@ -5,24 +5,71 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ person }}</h1>
+<h1 class="mt-4">{{ person }}</h1>
 <p>
     {{ person.description }}
 </p>
 {% if person.sourcetext_set.count %}
-<h2>Source Texts</h2>
-{% for s in person.sourcetext_set.all %}
-<p>
-    <a href="{% url 'source_text_detail' s.id %}">{{ s }}</a>
-</p>
-{% endfor %}
+
+<h2 class="mt-4">Source Texts</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Original Title</th>
+            <th scope="col">Language</th>
+            <th scope="col">Date</th>
+            <th scope="col">Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in person.sourcetext_set.all %}
+        <tr>
+            <td>
+                <a href="{% url 'source_text_detail' s.id %}">{{ s.title }}</a>
+            </td>
+            <td>
+                {{ s.original_language_title }}
+            </td>
+            <td>
+                {{ s.language }}
+            </td>
+            <td>
+                {{ s.date }}
+            </td>
+            <td>
+                {{ s.get_kind_display }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endif %}
+
 {% if person.feature_set.count %}
-<h2>Translations and Features</h2>
-{% for f in person.feature_set.all %}
-<p>
-    <a href="{% url 'volume_detail' f.volume.id %}">{{ f }}</a>
-</p>
-{% endfor %}
+<h2 class="mt-4">Translations and Features</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Volume Title</th>
+            <th scope="col">Source Text</th>
+            <th scope="col">Function</th>
+            <th scope="col">Language</th>
+            <th scope="col">Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for f in person.feature_set.all %}
+        <tr>
+            <td><a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a></td>
+            <td><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></td>
+            <td>{{ f.get_feature_display }}</td>
+            <td>{{ f.language }}</td>
+            <td>{{ f.get_kind_display }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endif %}
 {% endblock %}
