@@ -14,11 +14,11 @@ Source Texts
 {% for a in authors %}
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">
+        <h4 class="card-title">
             {{ a.grouper }}
-        </h5>
-        <div class="cart-text">
-        </div>
+            </h5>
+            <div class="cart-text">
+            </div>
     </div>
     <ul class="list-group list-group-flush">
         {% for s in a.list %}
@@ -26,7 +26,7 @@ Source Texts
             {{ s.title }}
             <div class="float-right">
                 <a class="ml-3 btn btn-outline-secondary btn-sm" href="{% url 'source_text_detail' s.id %}">
-                    View Translations
+                    View translations
                 </a>
             </div>
 

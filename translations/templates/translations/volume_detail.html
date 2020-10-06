@@ -60,12 +60,20 @@
                 ({{ t.grouper.original_language_title }}){% endif %}
             </p>
             <p class="card-text">
-                <a href="{% url 'person_detail' t.grouper.author.id %}">{{ t.grouper.author }}</a>,
+                {{ t.grouper.author }},
                 {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}
             </p>
-            <a href="{% url 'source_text_detail' t.grouper.id %}" class="btn btn-primary">
-                Other translations
+            {% if t.grouper.date %}
+            <p class="card-text">
+                {{ t.grouper.date }}
+            </p>
+            <a href="{% url 'source_text_detail' t.grouper.id %}" class="btn btn-primary btn-sm">
+                More translations
             </a>
+            <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary">
+                More {{ t.grouper.author }}
+            </a>
+
         </div>
     </div>
     {% for f in t.list %}
