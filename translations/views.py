@@ -34,7 +34,7 @@ class VolumeDetailView(generic.DetailView):
     template_name = "translations/volume_detail.html"
 
     def get_features(self):
-        return self.get_object().feature_set.order_by("source_text").order_by("feature")
+        return self.get_object().feature_set.order_by("source_text", "feature")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
