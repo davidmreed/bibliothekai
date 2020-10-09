@@ -26,7 +26,7 @@ class SourceTextIndexView(generic.ListView):
     template_name = "translations/source_text_index.html"
 
     def get_queryset(self):
-        return SourceText.objects.order_by("author")
+        return SourceText.objects.order_by("author", "title")
 
 
 class VolumeDetailView(generic.DetailView):
@@ -47,6 +47,28 @@ class VolumeIndexView(generic.ListView):
 
     def get_queryset(self):
         return Volume.objects.order_by("published_date")
+
+
+class AuthorIndexView(generic.ListView):
+    template_name = "translations/author_index.html"
+
+    def get_queryset(self):
+        return (
+            Person.objects.filter(sourcetext__title__isnull=False)
+            .distinct()
+            .order_by("last_name", "first_name", "sole_name")
+        )
+
+
+class TranslatorIndexView(generic.ListView):
+    template_name = "translations/translator_index.html"
+
+    def get_queryset(self):
+        return (
+            Person.objects.filter(sourcetext__title__isnull=True)
+            .distinct()
+            .order_by("last_name", "first_name", "sole_name")
+        )
 
 
 class PersonDetailView(generic.DetailView):

@@ -5,6 +5,8 @@ from . import views
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
+    path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
+    path("translators/", views.TranslatorIndexView.as_view(), name="translator_index"),
     path(
         "text/<int:pk>", views.SourceTextDetailView.as_view(), name="source_text_detail"
     ),

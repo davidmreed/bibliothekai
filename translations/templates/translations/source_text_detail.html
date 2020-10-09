@@ -50,6 +50,16 @@
             </div>
         </div>
     </div>
+    {% if sourcetext.date %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Date</h5>
+            <div class="card-text">
+                {{ sourcetext.date }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 
 {% if sourcetext.description %}
@@ -69,7 +79,6 @@
             <th scope="col">Date</th>
             <th scope="col">Language</th>
             <th scope="col">Type</th>
-            <th scope="col">Complete</th>
             <th scope="col">Introduction</th>
             <th scope="col">Notes</th>
         </tr>
@@ -88,7 +97,6 @@
             <td>{{ t.volume.published_date.year }}</td>
             <td>{{ t.language }}</td>
             <td>{{ t.get_kind_display }}</td>
-            <td>{% if t.partial %}No{% else %}Yes{%endif%}</td>
             <td>{% if t.has_accompanying_introduction %}Yes{% else %}No{%endif%}</td>
             <td>{% if t.has_accompanying_notes %}Yes{% else %}No{%endif%}</td>
         </tr>

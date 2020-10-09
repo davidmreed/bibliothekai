@@ -1,0 +1,28 @@
+{% extends "translations/base.html" %}
+
+{% block title %}
+Translators
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">
+    Authors
+</h1>
+{% for a in object_list %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{ a }}</h5>
+        <div class="card-text">
+            Author of {{ a.feature_set.count }} translation{% if a.feature_set.count != 1 %}s{% endif %}.
+            <div class="float-right">
+                <a class="ml-3 btn btn-primary btn-sm" href="{% url 'person_detail' a.id %}">
+                    View works
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
