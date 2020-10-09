@@ -65,7 +65,7 @@ class TranslatorIndexView(generic.ListView):
 
     def get_queryset(self):
         return (
-            Person.objects.filter(sourcetext__title__isnull=True)
+            Person.objects.filter(feature__feature__exact="TR")
             .distinct()
             .order_by("last_name", "first_name", "sole_name")
         )
