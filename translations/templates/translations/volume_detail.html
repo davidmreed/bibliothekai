@@ -98,6 +98,8 @@
             <p class="card-text">
                 Into {{ f.language }} {{f.get_kind_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
+                {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
+                {% endif %}
             </p>
             {% endif %}
             {% if f.description %}
@@ -112,4 +114,36 @@
 {% include "translations/links_component.html" with parent=volume %}
 {% endif %}
 {% endfor %}
+
+<h2 class="mt-4">Published Reviews</h2>
+
+{% for r in volume.publishedreview_set.all %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
+        </h5>
+        <div class="card-text">
+            {% spaceless %}
+            by
+            {% for p in r.persons.all %}{% if not forloop.first and r.persons.count > 2 %},
+            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+            {% endspaceless %}
+        </div>
+        <div class="card-text">
+            Published in {{ r.location }}.
+        </div>
+        <ul class="list-group list-group-flush">
+            {% for l in r.links.all %}
+            <li class="list-group-item">
+                <span class="badge badge-secondary">{{ l.get_resource_type_display }}</span> <a
+                    href="{{ l.link }}">{{ l.source }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endfor %}
+
 {% endblock %}

@@ -130,6 +130,7 @@ class Feature(models.Model):
     kind = models.TextField(choices=KIND_CHOICES, blank=True)
     partial = models.BooleanField()
     description = models.TextField(blank=True)
+    has_facing_text = models.BooleanField()
 
     def display_title(self):
         if self.title:
@@ -171,8 +172,8 @@ class Review(models.Model):
 
 
 class PublishedReview(models.Model):
-    url = models.URLField()
     volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
-    author = models.ForeignKey(Person, on_delete=models.PROTECT)
+    persons = models.ManyToManyField(Person)
+    title = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
     links = GenericRelation(Link)
-

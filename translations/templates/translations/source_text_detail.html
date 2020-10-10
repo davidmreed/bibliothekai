@@ -81,6 +81,7 @@
             <th scope="col">Type</th>
             <th scope="col">Introduction</th>
             <th scope="col">Notes</th>
+            <th scope="col">Facing Text</th>
         </tr>
     </thead>
     <tbody>
@@ -99,6 +100,7 @@
             <td>{{ t.get_kind_display }}</td>
             <td>{% if t.has_accompanying_introduction %}Yes{% else %}No{%endif%}</td>
             <td>{% if t.has_accompanying_notes %}Yes{% else %}No{%endif%}</td>
+            <td>{% if t.has_facing_text %}Yes{% else %}No{%endif%}</td>
         </tr>
         {% endfor %}
     </tbody>

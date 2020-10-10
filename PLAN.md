@@ -48,7 +48,6 @@ This view is barely usable. It needs:
 - [ ] Add a Format Details field to both Source Text and Feature, especially for Homeric translation
   - [ ] Or make Format a text field
 - [ ] Make the Format fields usable only for Translations
-- [ ] Add features for tracking facing translation
 - [ ] Add feature for Greek text and marker for has ap crit
 - [ ] Index by volume
 - [ ] Browse by series
@@ -59,4 +58,4 @@ This view is barely usable. It needs:
 - [ ] Add reviews to models
 - [ ] Build form for adding translations
 - [ ] Consider having the Author page show translations for all of the author's works.
-- [ ] Build out a Links system. Make it easy to show tagged links from particular sources (Perseus, Wikipedia, TLG, Stanford Encyclopedia) on Author and Source Text pages, bios on translator pages.
+- [ ] Make the Texts page sort correctly by author

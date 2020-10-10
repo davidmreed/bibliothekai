@@ -15,11 +15,8 @@ from .models import (
 
 for model in [
     Language,
-    Person,
-    SourceText,
     Publisher,
     Review,
-    PublishedReview,
     Series,
 ]:
     admin.site.register(model)
@@ -27,6 +24,7 @@ for model in [
 
 class LinkInline(GenericTabularInline):
     model = Link
+    extra = 1
 
 
 class AuthorInline(admin.TabularInline):
@@ -42,3 +40,18 @@ class FeatureInline(admin.TabularInline):
 class VolumeAdmin(admin.ModelAdmin):
     date_hierarchy = "published_date"
     inlines = [FeatureInline, LinkInline]
+
+
+@admin.register(PublishedReview)
+class PublishedReviewAdmin(admin.ModelAdmin):
+    inlines = [LinkInline]
+
+
+@admin.register(Person)
+class PersonAdmin(admin.ModelAdmin):
+    inlines = [LinkInline]
+
+
+@admin.register(SourceText)
+class SourceTextAdmin(admin.ModelAdmin):
+    inlines = [LinkInline]
