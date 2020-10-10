@@ -59,3 +59,7 @@ This view is barely usable. It needs:
 - [ ] Build form for adding translations
 - [ ] Consider having the Author page show translations for all of the author's works.
 - [ ] Make the Texts page sort correctly by author
+- [ ] Description field for Features on the Volume detail pages loses line breaks
+- [ ] The Person Detail page should coalesce features for the same text in the same volume
+- [ ] Need Inline for PublishedReview on Volume
+- [ ] Make Person detail page show reviews published

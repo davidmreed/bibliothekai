@@ -15,7 +15,6 @@ from .models import (
 
 for model in [
     Language,
-    Publisher,
     Review,
     Series,
 ]:
@@ -40,6 +39,11 @@ class FeatureInline(admin.TabularInline):
 class VolumeAdmin(admin.ModelAdmin):
     date_hierarchy = "published_date"
     inlines = [FeatureInline, LinkInline]
+
+
+@admin.register(Publisher)
+class PublisherAdmin(admin.ModelAdmin):
+    inlines = [LinkInline]
 
 
 @admin.register(PublishedReview)

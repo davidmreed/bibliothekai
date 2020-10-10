@@ -7,6 +7,17 @@ from django.contrib.contenttypes.models import ContentType
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
 
+class AuthorNameMixin:
+    def author_string(self):
+        authors = list(self.persons.all())
+        if len(authors) < 3:
+            return " and ".join(str(a) for a in authors)
+        else:
+            first = ", ".join(str(a) for a in authors[:-1])
+            last = str(authors[-1])
+            return f"{first}, and {last}"
+
+
 class Link(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -21,6 +32,9 @@ class Link(models.Model):
             ("RS", "Resources"),
         ]
     )
+
+    def __str__(self):
+        return f"Link {self.link}"
 
 
 class Language(models.Model):
@@ -110,7 +124,7 @@ class Volume(models.Model):
         return self.title
 
 
-class Feature(models.Model):
+class Feature(models.Model, AuthorNameMixin):
     feature_types = {
         "ED": "Edited",
         "IN": "Introduction",
@@ -138,15 +152,6 @@ class Feature(models.Model):
 
         return self.source_text.title
 
-    def author_string(self):
-        authors = list(self.persons.all())
-        if len(authors) < 3:
-            return " and ".join(str(a) for a in authors)
-        else:
-            first = ", ".join(str(a) for a in authors[:-1])
-            last = str(authors[-1])
-            return f"{first}, and {last}"
-
     def has_accompanying_feature(self, feature_type):
         return (
             Feature.objects.filter(volume=self.volume, feature=feature_type).count() > 0
@@ -160,7 +165,7 @@ class Feature(models.Model):
 
     def __str__(self):
         return (
-            f"{self.display_title()} ({self.get_feature_display().lower()} by"
+            f"{self.display_title()} ({self.get_feature_display().lower()} by "
             f"{self.author_string()})"
         )
 
@@ -171,9 +176,12 @@ class Review(models.Model):
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
 
 
-class PublishedReview(models.Model):
+class PublishedReview(models.Model, AuthorNameMixin):
     volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
     persons = models.ManyToManyField(Person)
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
     links = GenericRelation(Link)
+
+    def __str__(self):
+        return f"Review of {self.volume} by {self.author_string()}"

@@ -35,7 +35,7 @@
             </p>
             {% if f.description %}
             <p class="card-text">
-                {{ f.description }}
+                {{ f.description | linebreaks}}
             </p>
             {% endif %}
         </div>
@@ -111,9 +111,10 @@
     </div>
     {% endfor %}
 </div>
-{% include "translations/links_component.html" with parent=volume %}
 {% endif %}
 {% endfor %}
+
+{% include "translations/links_component.html" with parent=volume %}
 
 <h2 class="mt-4">Published Reviews</h2>
 
