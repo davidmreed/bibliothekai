@@ -1,8 +1,26 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
+
+
+class Link(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    link = models.URLField()
+    source = models.CharField(max_length=255)
+    resource_type = models.TextField(
+        choices=[
+            ("FT", "Full Text"),
+            ("WS", "Website"),
+            ("BO", "Bio"),
+            ("RS", "Resources"),
+        ]
+    )
 
 
 class Language(models.Model):
@@ -18,6 +36,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=255, blank=True)
     sole_name = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    links = GenericRelation(Link)
 
     def clean(self):
         if (not self.sole_name and (not self.first_name or not self.last_name)) or (
@@ -25,7 +44,8 @@ class Person(models.Model):
         ):
             raise ValidationError(
                 _(
-                    "Populate either the Sole Name or the First Name and Last Name fields"
+                    "Populate either the Sole Name or the First Name"
+                    "and Last Name fields"
                 )
             )
 
@@ -50,6 +70,7 @@ class SourceText(models.Model):
     kind = models.TextField(choices=KIND_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    links = GenericRelation(Link)
 
     def __str__(self):
         return f"{self.title} ({self.author})"
@@ -58,7 +79,7 @@ class SourceText(models.Model):
 class Publisher(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    website = models.URLField(blank=True)
+    links = GenericRelation(Link)
 
     def __str__(self):
         return self.name
@@ -80,6 +101,7 @@ class Volume(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.PROTECT)
     series = models.ForeignKey(Series, on_delete=models.PROTECT, null=True, blank=True)
     isbn = models.CharField(max_length=32, blank=True)
+    links = GenericRelation(Link)
 
     def __str__(self):
         if self.published_date:
@@ -152,3 +174,5 @@ class PublishedReview(models.Model):
     url = models.URLField()
     volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
     author = models.ForeignKey(Person, on_delete=models.PROTECT)
+    links = GenericRelation(Link)
+

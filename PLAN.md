@@ -56,3 +56,7 @@ This view is barely usable. It needs:
 - [ ] Does Series need a lookup to Publisher?
 - [ ] Make card decks break at a maximum of 3 across
 - [ ] Introductions without source texts break in the admin UI
+- [ ] Add reviews to models
+- [ ] Build form for adding translations
+- [ ] Consider having the Author page show translations for all of the author's works.
+- [ ] Build out a Links system. Make it easy to show tagged links from particular sources (Perseus, Wikipedia, TLG, Stanford Encyclopedia) on Author and Source Text pages, bios on translator pages.

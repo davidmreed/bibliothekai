@@ -1,0 +1,15 @@
+<h2 class="mt-4">Links</h2>
+{% if parent.links.count %}
+<div class="card mb-3">
+    <ul class="list-group list-group-flush">
+        {% for l in parent.links.all %}
+        <li class="list-group-item">
+            <span class="badge badge-secondary">{{ l.get_resource_type_display }}</span> <a
+                href="{{ l.link }}">{{ l.source }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<p>There are no links available.</p>
+{% endif %}

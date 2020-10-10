@@ -74,4 +74,3 @@ class TranslatorIndexView(generic.ListView):
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
-

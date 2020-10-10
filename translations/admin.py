@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericTabularInline
 from .models import (
     Language,
     Volume,
@@ -9,15 +10,23 @@ from .models import (
     Review,
     PublishedReview,
     Series,
+    Link,
 )
 
-admin.site.register(Language)
-admin.site.register(Person)
-admin.site.register(SourceText)
-admin.site.register(Publisher)
-admin.site.register(Review)
-admin.site.register(PublishedReview)
-admin.site.register(Series)
+for model in [
+    Language,
+    Person,
+    SourceText,
+    Publisher,
+    Review,
+    PublishedReview,
+    Series,
+]:
+    admin.site.register(model)
+
+
+class LinkInline(GenericTabularInline):
+    model = Link
 
 
 class AuthorInline(admin.TabularInline):
@@ -26,9 +35,10 @@ class AuthorInline(admin.TabularInline):
 
 class FeatureInline(admin.TabularInline):
     model = Feature
+    extra = 1
 
 
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
     date_hierarchy = "published_date"
-    inlines = [FeatureInline]
+    inlines = [FeatureInline, LinkInline]
