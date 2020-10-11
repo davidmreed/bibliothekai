@@ -35,7 +35,7 @@
             </p>
             {% if f.description %}
             <p class="card-text">
-                {{ f.description | linebreaks }}
+                {{ f.description|linebreaks }}
             </p>
             {% endif %}
         </div>
@@ -117,6 +117,10 @@
 {% include "translations/links_component.html" with links=volume.all_links %}
 
 <h2 class="mt-4">Published Reviews</h2>
+
+{% if not volume.publishedreview_set.count %}
+<p>We don't have any published reviews for this volume yet.</p>
+{% endif %}
 
 {% for r in volume.publishedreview_set.all %}
 <div class="card">
