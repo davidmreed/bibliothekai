@@ -35,7 +35,7 @@
             </p>
             {% if f.description %}
             <p class="card-text">
-                {{ f.description | linebreaks}}
+                {{ f.description | linebreaks }}
             </p>
             {% endif %}
         </div>
@@ -114,7 +114,7 @@
 {% endif %}
 {% endfor %}
 
-{% include "translations/links_component.html" with parent=volume %}
+{% include "translations/links_component.html" with links=volume.links.all %}
 
 <h2 class="mt-4">Published Reviews</h2>
 
@@ -135,14 +135,7 @@
         <div class="card-text">
             Published in {{ r.location }}.
         </div>
-        <ul class="list-group list-group-flush">
-            {% for l in r.links.all %}
-            <li class="list-group-item">
-                <span class="badge badge-secondary">{{ l.get_resource_type_display }}</span> <a
-                    href="{{ l.link }}">{{ l.source }}</a>
-            </li>
-            {% endfor %}
-        </ul>
+        {% include "translations/links_list_component.html" with links=r.links.all %}
     </div>
 </div>
 {% endfor %}

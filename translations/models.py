@@ -19,6 +19,9 @@ class AuthorNameMixin:
 
 
 class Link(models.Model):
+    class Meta:
+        ordering = ["resource_type"]
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -77,6 +80,9 @@ class Person(models.Model):
 
 
 class SourceText(models.Model):
+    class Meta:
+        ordering = ["title"]
+
     title = models.CharField(max_length=255)
     original_language_title = models.CharField(max_length=255, blank=True)
     author = models.ForeignKey(Person, on_delete=models.PROTECT)
@@ -115,7 +121,20 @@ class Volume(models.Model):
     publisher = models.ForeignKey(Publisher, on_delete=models.PROTECT)
     series = models.ForeignKey(Series, on_delete=models.PROTECT, null=True, blank=True)
     isbn = models.CharField(max_length=32, blank=True)
+    oclc_number = models.CharField(max_length=32, blank=True)
     links = GenericRelation(Link)
+
+    def bookshop_link(self):
+        return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '')}"
+
+    def oclc_link(self):
+        return f""
+
+    def auto_links(self):
+        if not self.isbn:
+            return []
+
+        return [self.bookshop_link(), self.oclc_link()]
 
     def __str__(self):
         if self.published_date:

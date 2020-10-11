@@ -12,8 +12,10 @@ class SourceTextDetailView(generic.DetailView):
     template_name = "translations/source_text_detail.html"
 
     def get_translations(self):
-        return Feature.objects.filter(source_text=self.get_object()).filter(
-            feature="TR"
+        return (
+            Feature.objects.filter(source_text=self.get_object())
+            .filter(feature="TR")
+            .order_by("-volume__published_date")
         )
 
     def get_context_data(self, **kwargs):

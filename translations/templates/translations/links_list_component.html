@@ -1,0 +1,8 @@
+<ul class="list-group list-group-flush">
+    {% for l in links %}
+    <li class="list-group-item">
+        <span class="badge badge-secondary">{{ l.get_resource_type_display }}</span> <a
+            href="{{ l.link }}">{{ l.source }}</a>
+    </li>
+    {% endfor %}
+</ul>
