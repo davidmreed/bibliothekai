@@ -73,6 +73,6 @@
 </table>
 {% endif %}
 
-{% include "translations/links_component.html" with parent=person %}
+{% include "translations/links_component.html" with links=person.links.all %}
 
 {% endblock %}
