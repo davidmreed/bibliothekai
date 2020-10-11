@@ -104,7 +104,7 @@
             {% endif %}
             {% if f.description %}
             <p class="card-text">
-                {{ f.description }}
+                {{ f.description|linebreaks }}
             </p>
             {% endif %}
         </div>
