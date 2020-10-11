@@ -63,3 +63,20 @@ This view is barely usable. It needs:
 - [ ] The Person Detail page should coalesce features for the same text in the same volume
 - [ ] Need Inline for PublishedReview on Volume
 - [ ] Make Person detail page show reviews published
+- [X] We should order the list of translations on a source text page
+- [X] We should render links in a consistent order
+- [X] Track OCLC numbers and render Worldcat links (can also generate links via ISBN (https://www.worldcat.org/search?q=bn%3A978-0393971675&qt=advanced&dblist=638))
+- [X] Generate Bookshop purchase links (https://bookshop.org/a/15029/9780140440393)
+- [ ] Generate Amazon purchase links
+- [ ] Generate Abebooks purchase links
+- [ ] Server 500 error if you try to save a Volume with no Persons
+- [ ] Move publisher information on the Volume detail page
+- [ ] Show series information on the Volume detail page
+- [ ] Import Great Books of the Western World catalog
+- [ ] Import Loeb Classical Library catalog
+- [ ] Import Les Belles Lettres catalog
+- [ ] Import Aris & Phillips catalog
+- [ ] Import University of Chicago catalog
+- [ ] Import Focus Philosophical Library catalog
+- [ ] Import Landmark catalog
+- [ ] Tracking for spurious source texts

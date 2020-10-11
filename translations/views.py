@@ -28,7 +28,13 @@ class SourceTextIndexView(generic.ListView):
     template_name = "translations/source_text_index.html"
 
     def get_queryset(self):
-        return SourceText.objects.order_by("author", "title")
+        return SourceText.objects.order_by(
+            "author__last_name",
+            "author__sole_name",
+            "author__first_name",
+            "author__middle_name",
+            "title",
+        )
 
 
 class VolumeDetailView(generic.DetailView):

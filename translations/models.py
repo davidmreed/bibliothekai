@@ -29,6 +29,7 @@ class Link(models.Model):
     source = models.CharField(max_length=255)
     resource_type = models.TextField(
         choices=[
+            ("CO", "Get a Copy"),
             ("FT", "Full Text"),
             ("WS", "Website"),
             ("BO", "Bio"),
@@ -41,6 +42,9 @@ class Link(models.Model):
 
 
 class Language(models.Model):
+    class Meta:
+        ordering = ["name"]
+
     name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -48,6 +52,9 @@ class Language(models.Model):
 
 
 class Person(models.Model):
+    class Meta:
+        ordering = ["sole_name", "last_name", "first_name", "middle_name"]
+
     first_name = models.CharField(max_length=255, blank=True)
     middle_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
@@ -97,6 +104,9 @@ class SourceText(models.Model):
 
 
 class Publisher(models.Model):
+    class Meta:
+        ordering = ["name"]
+
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
@@ -108,6 +118,7 @@ class Publisher(models.Model):
 class Series(models.Model):
     class Meta:
         verbose_name_plural = "series"
+        ordering = ["name"]
 
     name = models.CharField(max_length=255)
 
@@ -116,6 +127,9 @@ class Series(models.Model):
 
 
 class Volume(models.Model):
+    class Meta:
+        ordering = ["title"]
+
     title = models.CharField(max_length=255)
     published_date = models.DateField(blank=True)
     publisher = models.ForeignKey(Publisher, on_delete=models.PROTECT)
@@ -128,13 +142,26 @@ class Volume(models.Model):
         return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '')}"
 
     def oclc_link(self):
-        return f""
+        if self.oclc_number:
+            return f"https://www.worldcat.org/oclc/{self.oclc_number}"
+        else:
+            return f"https://www.worldcat.org/search?q=bn%3A{self.isbn}&qt=advanced&dblist=638)"
 
     def auto_links(self):
-        if not self.isbn:
-            return []
+        links = []
+        if self.isbn:
+            links.append(
+                Link(link=self.bookshop_link(), source="Bookshop", resource_type="CO")
+            )
+        if self.isbn or self.oclc_number:
+            links.append(
+                Link(link=self.oclc_link(), source="Worldcat", resource_type="CO")
+            )
 
-        return [self.bookshop_link(), self.oclc_link()]
+        return links
+
+    def all_links(self):
+        return self.auto_links() + list(self.links.all())
 
     def __str__(self):
         if self.published_date:
@@ -144,6 +171,9 @@ class Volume(models.Model):
 
 
 class Feature(models.Model, AuthorNameMixin):
+    class Meta:
+        ordering = ["volume", "source_text", "feature"]
+
     feature_types = {
         "ED": "Edited",
         "IN": "Introduction",
@@ -196,6 +226,9 @@ class Review(models.Model):
 
 
 class PublishedReview(models.Model, AuthorNameMixin):
+    class Meta:
+        ordering = ["title"]
+
     volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
     persons = models.ManyToManyField(Person)
     title = models.CharField(max_length=255, blank=True)
