@@ -137,6 +137,7 @@ class Volume(models.Model):
     isbn = models.CharField(max_length=32, blank=True)
     oclc_number = models.CharField(max_length=32, blank=True)
     links = GenericRelation(Link)
+    description = models.TextField(blank=True)
 
     def bookshop_link(self):
         return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '')}"

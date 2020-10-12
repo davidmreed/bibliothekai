@@ -9,6 +9,9 @@
 <p>
     {{ volume.publisher }} ({{ volume.published_date.year }})
 </p>
+<p>
+    {{ volume.description|linebreaks }}
+</p>
 
 <h2 class="mt-4">Contents</h2>
 {% regroup features by source_text as texts %}
