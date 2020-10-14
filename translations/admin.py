@@ -33,6 +33,17 @@ class AuthorInline(admin.TabularInline):
 class FeatureInline(admin.TabularInline):
     model = Feature
     extra = 1
+    fields = [
+        "persons",
+        "source_text",
+        "feature",
+        "language",
+        "kind",
+        "partial",
+        "has_facing_text",
+        "title",
+        "description",
+    ]
 
 
 @admin.register(Volume)
