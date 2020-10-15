@@ -202,7 +202,7 @@ class Feature(models.Model, AuthorNameMixin):
         if self.source_text:
             return self.source_text.title
 
-        return self.feature
+        return self.get_feature_display()
 
     def has_accompanying_feature(self, feature_type):
         return (
