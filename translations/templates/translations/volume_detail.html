@@ -24,9 +24,6 @@
         <div class="card-body">
             <h5 class="card-title">
                 {{ f.get_feature_display }}
-                {% if f.title and f.title != f.source_text.title %}
-                (as <cite>{{ f.title }}</cite>)
-                {% endif %}
             </h5>
             <p class="card-text">
                 {% spaceless %}
