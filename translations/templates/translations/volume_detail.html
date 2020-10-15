@@ -10,6 +10,9 @@
     {{ volume.publisher }} ({{ volume.published_date.year }})
 </p>
 <p>
+    {% if volume.series %} {{ volume.series }} {% endif %}
+</p>
+<p>
     {{ volume.description|linebreaks }}
 </p>
 
