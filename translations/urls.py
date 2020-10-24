@@ -1,5 +1,5 @@
 from django.urls import path
-
+from django.conf.urls import include, url
 from . import views
 
 urlpatterns = [
@@ -12,4 +12,5 @@ urlpatterns = [
     ),
     path("volume/<int:pk>", views.VolumeDetailView.as_view(), name="volume_detail"),
     path("person/<int:pk>", views.PersonDetailView.as_view(), name="person_detail"),
+    url(r"^accounts/", include("django.contrib.auth.urls")),
 ]
