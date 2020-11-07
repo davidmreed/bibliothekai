@@ -61,6 +61,7 @@
     </thead>
     <tbody>
         {% for f in person.feature_set.all %}
+        {% if f.source_text %}
         <tr>
             <td><a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a></td>
             <td><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></td>
@@ -68,6 +69,7 @@
             <td>{{ f.language }}</td>
             <td>{{ f.get_kind_display }}</td>
         </tr>
+        {% endif %}
         {% endfor %}
     </tbody>
 </table>
