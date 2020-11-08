@@ -1,4 +1,4 @@
-{% extends "translations/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 {{ volume.title }}
@@ -126,7 +126,7 @@
 {% endif %}
 
 {% for r in volume.publishedreview_set.all %}
-<div class="card">
+<div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
             {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
@@ -147,27 +147,39 @@
 </div>
 {% endfor %}
 
-<h2 class="mt-4">User Reviews</h2>
+<h2 class="mt-4">
+    User Reviews {% if user.is_authenticated %}
+    <span class="float-right">
+        <a class="btn btn-primary btn-sm" href="{% url 'review_create' volume.id %}">
+            Add review</a>
+    </span>
+    {% endif %}
+</h2>
 
 {% if not volume.review_set.count %}
 <p>We don't have any user reviews for this volume yet.</p>
 {% endif %}
 
-{% if user.is_authenticated %}
-<p><a href="{% url 'review_create' volume.id %}">Add a review</a></p>
-{% endif %}
-
 {% for r in volume.review_set.all %}
-<div class="card">
+<div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
-            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
+            {% if r.title %} {{ r.title }} {% else %} Review {% endif %} by {{ r.user.username }}
+            {% if r.user == user %}
+            <div class="btn-group float-right ml-3" role="group" aria-label="Review options">
+                <a class="btn btn-secondary btn-sm" href="{% url 'review_update' r.id %}">Edit</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'review_delete' r.id %}">Delete</a>
+            </div>
+            {% endif %}
         </h5>
+        <div class="card-text mb-3">
+            <span class="badge badge-secondary">Readability</span> {{ r.readability_rating_string }}<br />
+            <span class="badge badge-secondary">Closeness</span> {{ r.closeness_rating_string }}
+        </div>
         <div class="card-text">
-            {{ r.content }}
+            {{ r.content|linebreaks }}
         </div>
     </div>
 </div>
 {% endfor %}
-
 {% endblock %}

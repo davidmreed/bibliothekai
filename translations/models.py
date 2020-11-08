@@ -223,11 +223,29 @@ class Feature(models.Model, AuthorNameMixin):
         )
 
 
+class Rating(models.IntegerChoices):
+    LOW = 1
+    AVERAGE = 2
+    EXCELLENT = 3
+
+
 class Review(models.Model):
     title = models.CharField(max_length=255, blank=True)
+    closeness_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
+    readability_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    def readability_rating_string(self):
+        return self.get_readability_rating_display() or _("Not Set")
+
+    def closeness_rating_string(self):
+        return self.get_closeness_rating_display() or _("Not Set")
 
 
 class PublishedReview(models.Model, AuthorNameMixin):
