@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.auth.models import User
 
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
@@ -223,9 +224,10 @@ class Feature(models.Model, AuthorNameMixin):
 
 
 class Review(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
 
 
 class PublishedReview(models.Model, AuthorNameMixin):

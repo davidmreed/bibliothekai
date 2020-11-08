@@ -1,6 +1,7 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import generic
-
-from .models import SourceText, Feature, Volume, Person
+from django.urls import reverse_lazy
+from .models import SourceText, Feature, Volume, Person, Review
 
 
 class IndexView(generic.TemplateView):
@@ -82,3 +83,26 @@ class TranslatorIndexView(generic.ListView):
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
+
+
+class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = Review
+    fields = ["title", "content"]
+
+
+class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+    model = Review
+    fields = ["title", "content"]
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
+
+
+class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    model = Review
+    success_url = reverse_lazy("index")
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)

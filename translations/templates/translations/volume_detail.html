@@ -147,4 +147,27 @@
 </div>
 {% endfor %}
 
+<h2 class="mt-4">User Reviews</h2>
+
+{% if not volume.review_set.count %}
+<p>We don't have any user reviews for this volume yet.</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<p><a href="{% url 'review_create' volume.id %}">Add a review</a></p>
+{% endif %}
+
+{% for r in volume.review_set.all %}
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
+        </h5>
+        <div class="card-text">
+            {{ r.content }}
+        </div>
+    </div>
+</div>
+{% endfor %}
+
 {% endblock %}

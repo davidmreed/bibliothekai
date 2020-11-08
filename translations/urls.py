@@ -12,5 +12,18 @@ urlpatterns = [
     ),
     path("volume/<int:pk>", views.VolumeDetailView.as_view(), name="volume_detail"),
     path("person/<int:pk>", views.PersonDetailView.as_view(), name="person_detail"),
+    path(
+        "volume/<int:pk>/review", views.CreateReviewView.as_view(), name="review_create"
+    ),
+    path(
+        "review/<int:pk>/update/",
+        views.UpdateReviewView.as_view(),
+        name="review_update",
+    ),
+    path(
+        "review/<int:pk>/delete/",
+        views.DeleteReviewView.as_view(),
+        name="review_delete",
+    ),
     url(r"^accounts/", include("django.contrib.auth.urls")),
 ]
