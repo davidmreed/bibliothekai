@@ -1,8 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
+
 from .models import SourceText, Feature, Volume, Person, Review
 
 
@@ -89,13 +91,19 @@ class PersonDetailView(generic.DetailView):
 
 class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
     model = Review
-    fields = ["title", "closeness_rating", "readability_rating", "content"]
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         pk = self.kwargs["pk"]
-        volume = get_object_or_404(Volume, pk=pk)
+        volume = get_object_or_404(Volume, pk=pk)  # FIXME: This doesn't work
         self.object.volume_id = volume.id
         self.object.save()
         return HttpResponseRedirect(reverse("volume_detail", kwargs={"pk": volume.id}))
@@ -103,7 +111,13 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     model = Review
-    fields = ["title", "closeness_rating", "readability_rating", "content"]
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
     success_url = reverse_lazy("index")  # TODO: redirect back to the Volume
 
     def get_queryset(self):

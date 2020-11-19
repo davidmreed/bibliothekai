@@ -237,6 +237,7 @@ class Review(models.Model):
     readability_rating = models.IntegerField(
         blank=True, null=True, choices=Rating.choices
     )
+    recommended = models.BooleanField()
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT)

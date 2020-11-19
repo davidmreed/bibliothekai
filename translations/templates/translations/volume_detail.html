@@ -173,8 +173,12 @@
             {% endif %}
         </h5>
         <div class="card-text mb-3">
-            <span class="badge badge-secondary">Readability</span> {{ r.readability_rating_string }}<br />
-            <span class="badge badge-secondary">Closeness</span> {{ r.closeness_rating_string }}
+            <span class="badge badge-secondary">Recommended</span>
+            <span class="mr-4">{% if r.recommended %} Yes {% else %} No {% endif %}</span>
+            <span class="badge badge-secondary">Readability</span>
+            <span class="mr-4">{{ r.readability_rating_string }}</span>
+            <span class="badge badge-secondary">Closeness</span>
+            <span class="mr-4">{{ r.closeness_rating_string }}</span>
         </div>
         <div class="card-text">
             {{ r.content|linebreaks }}
