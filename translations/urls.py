@@ -25,6 +25,4 @@ urlpatterns = [
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
-    url(r"^accounts/", include("django.contrib.auth.urls")),
-    path("accounts/register", views.UserRegistrationView.as_view(), name="user_create"),
 ]
