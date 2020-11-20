@@ -15,7 +15,7 @@ Source Texts
 <div class="card mb-3">
     <div class="card-body">
         <h4 class="card-title">
-            {{ a.grouper }}
+            {{ a.grouper.full_name }}
         </h4>
     </div>
     <ul class="list-group list-group-flush">
@@ -32,7 +32,8 @@ Source Texts
         {% endfor %}
     </ul>
     <div class="card-body">
-        <a class="btn btn-primary" href="{% url 'person_detail' a.grouper.id %}"> More about {{ a.grouper }}</a>
+        <a class="btn btn-primary" href="{% url 'person_detail' a.grouper.id %}"> More about
+            {{ a.grouper.full_name }}</a>
     </div>
 </div>
 {% endfor %}
