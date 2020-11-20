@@ -51,16 +51,16 @@ This view is barely usable. It needs:
 - [ ] Add feature for Greek text and marker for has ap crit
 - [ ] Index by volume
 - [ ] Browse by series
-- [ ] Does Volume need a description field?
+- [X] Does Volume need a description field?
 - [ ] Does Series need a lookup to Publisher?
 - [ ] Make card decks break at a maximum of 3 across
-- [ ] Introductions without source texts break in the admin UI
-- [ ] Add reviews to models
+- [X] Introductions without source texts break in the admin UI
+- [X] Add reviews to models
 - [ ] Build form for adding translations
 - [ ] Consider having the Author page show translations for all of the author's works.
-- [ ] Make the Texts page sort correctly by author
+- [X] Make the Texts page sort correctly by author
 - [ ] Description field for Features on the Volume detail pages loses line breaks
-- [ ] The Person Detail page should coalesce features for the same text in the same volume
+- [X] The Person Detail page should coalesce features for the same text in the same volume
 - [ ] Need Inline for PublishedReview on Volume
 - [ ] Make Person detail page show reviews published
 - [X] We should order the list of translations on a source text page
@@ -77,6 +77,6 @@ This view is barely usable. It needs:
 - [ ] Import Les Belles Lettres catalog
 - [ ] Import Aris & Phillips catalog
 - [ ] Import University of Chicago catalog
-- [ ] Import Focus Philosophical Library catalog
+- [X] Import Focus Philosophical Library catalog
 - [ ] Import Landmark catalog
 - [ ] Tracking for spurious source texts

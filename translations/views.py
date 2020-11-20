@@ -30,8 +30,10 @@ class SourceTextIndexView(generic.ListView):
 
     def get_queryset(self):
         return SourceText.objects.order_by(
-            "author__last_name",
-            "author__sole_name",
+            Case(
+                When(author__sole_name="", then="author__last_name"),
+                When(author__last_name="", then="author__sole_name"),
+            ),
             "author__first_name",
             "author__middle_name",
             "title",
