@@ -1,4 +1,5 @@
 from django.views import generic
+from django.db.models import When, Case
 
 from .models import SourceText, Feature, Volume, Person
 
@@ -62,9 +63,15 @@ class AuthorIndexView(generic.ListView):
 
     def get_queryset(self):
         return (
-            Person.objects.filter(sourcetext__title__isnull=False)
+            Person.objects.annotate(
+                sort_key=Case(
+                    When(sole_name="", then="last_name"),
+                    When(last_name="", then="sole_name"),
+                )
+            )
+            .filter(sourcetext__title__isnull=False)
             .distinct()
-            .order_by("last_name", "first_name", "sole_name")
+            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
@@ -73,9 +80,15 @@ class TranslatorIndexView(generic.ListView):
 
     def get_queryset(self):
         return (
-            Person.objects.filter(feature__feature__exact="TR")
+            Person.objects.annotate(
+                sort_key=Case(
+                    When(sole_name="", then="last_name"),
+                    When(last_name="", then="sole_name"),
+                )
+            )
+            .filter(feature__feature__exact="TR")
             .distinct()
-            .order_by("last_name", "first_name", "sole_name")
+            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
