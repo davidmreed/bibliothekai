@@ -12,67 +12,52 @@
 {% if person.sourcetext_set.count %}
 
 <h2 class="mt-4">Source Texts</h2>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Original Title</th>
-            <th scope="col">Language</th>
-            <th scope="col">Date</th>
-            <th scope="col">Type</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for s in person.sourcetext_set.all %}
-        <tr>
-            <td>
-                <a href="{% url 'source_text_detail' s.id %}">{{ s.title }}</a>
-            </td>
-            <td>
-                {{ s.original_language_title }}
-            </td>
-            <td>
-                {{ s.language }}
-            </td>
-            <td>
-                {{ s.date }}
-            </td>
-            <td>
-                {{ s.get_kind_display }}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% for s in person.sourcetext_set.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            {{ s.title }}
+            <div class="float-right">
+                <a class="ml-3 btn btn-primary btn-sm" href="{% url 'source_text_detail' s.id %}">
+                    View translations
+                </a>
+            </div>
+        </h5>
+        <div class="card-text">
+            <p>
+                {% if s.original_language_title %}
+                ({{ s.original_language_title }}){% endif %}
+            </p>
+            <p>{{ s.language }} {{ s.get_kind_display|lower }}.</p>
+            <p>{{ s.date }}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endif %}
 
 {% if person.feature_set.count %}
-<h2 class="mt-4">Translations and Features</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Volume Title</th>
-            <th scope="col">Source Text</th>
-            <th scope="col">Function</th>
-            <th scope="col">Language</th>
-            <th scope="col">Type</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for f in person.feature_set.all %}
-        {% if f.source_text %}
-        <tr>
-            <td><a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a></td>
-            <td><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></td>
-            <td>{{ f.get_feature_display }}</td>
-            <td>{{ f.language }}</td>
-            <td>{{ f.get_kind_display }}</td>
-        </tr>
-        {% endif %}
-        {% endfor %}
-    </tbody>
-</table>
+<h2 class="mt-4">Translations</h2>
+{% for f in person.feature_set.all %}
+{% if f.source_text and f.feature == 'TR' %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href="{% url 'person_detail' f.source_text.author.id %}">{{ f.source_text.author}}</a>,
+            <cite><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></cite>
+        </h5>
+        <div class="card-text">
+            <p>
+                Translation into {{ f.language }} {{ f.get_kind_display|lower }}.
+            </p>
+            <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
+                ({{f.volume.publisher }}, {{ f.volume.published_date.year }})
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
 {% endif %}
 
 {% include "translations/links_component.html" with links=person.links.all %}
