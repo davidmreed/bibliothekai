@@ -63,7 +63,7 @@
                 ({{ t.grouper.original_language_title }}){% endif %}
             </p>
             <p class="card-text">
-                {{ t.grouper.author }},
+                {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}
             </p>
             {% if t.grouper.date %}
@@ -75,7 +75,7 @@
                 More translations
             </a>
             <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary btn-sm">
-                More {{ t.grouper.author }}
+                More {{ t.grouper.author.full_name }}
             </a>
 
         </div>
@@ -94,7 +94,7 @@
                 by
                 {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </p>
             {% if f.feature == 'TR' %}
@@ -136,7 +136,7 @@
             by
             {% for p in r.persons.all %}{% if not forloop.first and r.persons.count > 2 %},
             {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
             {% endspaceless %}
         </div>
         <div class="card-text">
