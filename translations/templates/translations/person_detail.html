@@ -43,7 +43,7 @@
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
-            <a href="{% url 'person_detail' f.source_text.author.id %}">{{ f.source_text.author}}</a>,
+            <a href="{% url 'person_detail' f.source_text.author.id %}">{{ f.source_text.author.full_name }}</a>,
             <cite><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></cite>
         </h5>
         <div class="card-text">
@@ -60,6 +60,13 @@
 {% endfor %}
 {% endif %}
 
-{% include "translations/links_component.html" with links=person.links.all %}
+{% if person.publishedreview_set.count %}
+<h2 class="mt-4">Published Reviews</h2>
+{% for r in person.publishedreview_set.all %}
+{% include "components/publishedreview.html" with review=r %}
+{% endfor %}
+{% endif %}
+
+{% include "components/links_component.html" with links=person.links.all %}
 
 {% endblock %}

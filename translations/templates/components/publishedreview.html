@@ -1,0 +1,19 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if review.title %} {{ review.title }} {% else %} Review {% endif %}
+        </h5>
+        <div class="card-text">
+            {% spaceless %}
+            by
+            {% for p in review.persons.all %}{% if not forloop.first and review.persons.count > 2 %},
+            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
+            {% endspaceless %}
+        </div>
+        <div class="card-text">
+            Published in {{ review.location }}.
+        </div>
+        {% include "components/links_list_component.html" with links=review.links.all %}
+    </div>
+</div>

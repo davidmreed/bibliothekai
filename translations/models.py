@@ -162,10 +162,10 @@ class Volume(models.Model):
     def oclc_link(self):
         if self.oclc_number:
             return f"https://www.worldcat.org/oclc/{self.oclc_number}"
-        else:
+        elif self.isbn:
             return (
                 f"https://www.worldcat.org/search?q=bn%3A{self.isbn}"
-                "&qt=advanced&dblist=638)"
+                "&qt=advanced&dblist=638"
             )
 
     def auto_links(self):

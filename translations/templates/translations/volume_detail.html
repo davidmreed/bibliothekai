@@ -117,7 +117,7 @@
 {% endif %}
 {% endfor %}
 
-{% include "translations/links_component.html" with links=volume.all_links %}
+{% include "components/links_component.html" with links=volume.all_links %}
 
 <h2 class="mt-4">Published Reviews</h2>
 
@@ -126,25 +126,7 @@
 {% endif %}
 
 {% for r in volume.publishedreview_set.all %}
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">
-            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
-        </h5>
-        <div class="card-text">
-            {% spaceless %}
-            by
-            {% for p in r.persons.all %}{% if not forloop.first and r.persons.count > 2 %},
-            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-            {% endspaceless %}
-        </div>
-        <div class="card-text">
-            Published in {{ r.location }}.
-        </div>
-        {% include "translations/links_list_component.html" with links=r.links.all %}
-    </div>
-</div>
+{% include "components/publishedreview.html" with review=r %}
 {% endfor %}
 
 {% endblock %}
