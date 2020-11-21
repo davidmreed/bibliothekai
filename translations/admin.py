@@ -26,10 +26,6 @@ class LinkInline(GenericTabularInline):
     extra = 1
 
 
-class AuthorInline(admin.TabularInline):
-    model = Feature.persons.through
-
-
 class FeatureInline(admin.TabularInline):
     model = Feature
     extra = 1
