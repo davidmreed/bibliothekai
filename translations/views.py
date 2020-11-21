@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.db.models import When, Case
 from django.urls import reverse, reverse_lazy
 
-from .models import SourceText, Feature, Volume, Person, Review
+from .models import SourceText, Feature, Volume, Person, Review, PublishedReview
 
 
 class IndexView(generic.TemplateView):
@@ -101,6 +102,21 @@ class TranslatorIndexView(generic.ListView):
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
+
+
+class UserDetailView(generic.DetailView):
+    model = User
+    template_name = "translations/user_detail.html"
+
+
+class UserReviewDetailView(generic.DetailView):
+    model = Review
+    template_name = "translations/user_review_detail.html"
+
+
+class PublishedReviewDetailView(generic.DetailView):
+    model = PublishedReview
+    template_name = "translations/published_review_detail.html"
 
 
 class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):

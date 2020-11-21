@@ -125,12 +125,10 @@
 
 <h2 class="mt-4">Published Reviews</h2>
 
-{% if not volume.publishedreview_set.count %}
-<p>We don't have any published reviews for this volume yet.</p>
-{% endif %}
-
 {% for r in volume.publishedreview_set.all %}
-{% include "components/publishedreview.html" with review=r %}
+{% include "components/published_review.html" with review=r %}
+{% empty %}
+<p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 
 <h2 class="mt-4">
@@ -142,34 +140,9 @@
     {% endif %}
 </h2>
 
-{% if not volume.review_set.count %}
-<p>We don't have any user reviews for this volume yet.</p>
-{% endif %}
-
 {% for r in volume.review_set.all %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title">
-            {% if r.title %} {{ r.title }} {% else %} Review {% endif %} by {{ r.user.username }}
-            {% if r.user == user %}
-            <div class="btn-group float-right ml-3" role="group" aria-label="Review options">
-                <a class="btn btn-secondary btn-sm" href="{% url 'review_update' r.id %}">Edit</a>
-                <a class="btn btn-danger btn-sm" href="{% url 'review_delete' r.id %}">Delete</a>
-            </div>
-            {% endif %}
-        </h5>
-        <div class="card-text mb-3">
-            <span class="badge badge-secondary">Recommended</span>
-            <span class="mr-4">{% if r.recommended %} Yes {% else %} No {% endif %}</span>
-            <span class="badge badge-secondary">Readability</span>
-            <span class="mr-4">{{ r.readability_rating_string }}</span>
-            <span class="badge badge-secondary">Closeness</span>
-            <span class="mr-4">{{ r.closeness_rating_string }}</span>
-        </div>
-        <div class="card-text">
-            {{ r.content|linebreaks }}
-        </div>
-    </div>
-</div>
+{% include "components/user_review.html" with review=r abbreviate=True %}
+{% empty %}
+<p>We don't have any user reviews for this volume yet.</p>
 {% endfor %}
 {% endblock %}

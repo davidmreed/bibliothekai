@@ -1,5 +1,4 @@
 from django.urls import path
-from django.conf.urls import include, url
 from . import views
 
 urlpatterns = [
@@ -12,8 +11,19 @@ urlpatterns = [
     ),
     path("volume/<int:pk>", views.VolumeDetailView.as_view(), name="volume_detail"),
     path("person/<int:pk>", views.PersonDetailView.as_view(), name="person_detail"),
+    path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
+    path(
+        "publishedreview/<int:pk>",
+        views.PublishedReviewDetailView,
+        name="published_review_detail",
+    ),
     path(
         "volume/<int:pk>/review", views.ReviewCreateView.as_view(), name="review_create"
+    ),
+    path(
+        "review/<int:pk>",
+        views.UserReviewDetailView.as_view(),
+        name="user_review_detail",
     ),
     path(
         "review/<int:pk>/update/",

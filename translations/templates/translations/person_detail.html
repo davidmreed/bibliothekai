@@ -63,7 +63,7 @@
 {% if person.publishedreview_set.count %}
 <h2 class="mt-4">Published Reviews</h2>
 {% for r in person.publishedreview_set.all %}
-{% include "components/publishedreview.html" with review=r %}
+{% include "components/published_review.html" with review=r include_volume=True %}
 {% endfor %}
 {% endif %}
 

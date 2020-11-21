@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ review.title }}
+{% endblock %}
+
+{% block content %}
+<h2 class="mt-4">
+    User Review
+</h2>
+
+{% include "components/user_review.html" with review=review abbreviate=False %}
+{% endblock %}
