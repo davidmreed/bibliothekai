@@ -1,7 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.db.models import When, Case
+from django.urls import reverse, reverse_lazy
 
-from .models import SourceText, Feature, Volume, Person
+from .models import SourceText, Feature, Volume, Person, Review
 
 
 class IndexView(generic.TemplateView):
@@ -97,3 +101,48 @@ class TranslatorIndexView(generic.ListView):
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
+
+
+class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = Review
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        pk = self.kwargs["pk"]
+        volume = get_object_or_404(Volume, pk=pk)  # FIXME: This doesn't work
+        self.object.volume_id = volume.id
+        self.object.save()
+        return HttpResponseRedirect(reverse("volume_detail", kwargs={"pk": volume.id}))
+
+
+class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+    model = Review
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
+    success_url = reverse_lazy("index")  # TODO: redirect back to the Volume
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
+
+
+class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    model = Review
+    success_url = reverse_lazy("index")
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)

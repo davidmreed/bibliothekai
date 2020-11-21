@@ -1,4 +1,4 @@
-{% extends "translations/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 {{ volume.title }}
@@ -126,7 +126,68 @@
 {% endif %}
 
 {% for r in volume.publishedreview_set.all %}
+<<<<<<< HEAD
 {% include "components/publishedreview.html" with review=r %}
+=======
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
+        </h5>
+        <div class="card-text">
+            {% spaceless %}
+            by
+            {% for p in r.persons.all %}{% if not forloop.first and r.persons.count > 2 %},
+            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+            {% endspaceless %}
+        </div>
+        <div class="card-text">
+            Published in {{ r.location }}.
+        </div>
+        {% include "translations/links_list_component.html" with links=r.links.all %}
+    </div>
+</div>
+>>>>>>> feature/users
 {% endfor %}
 
+<h2 class="mt-4">
+    User Reviews {% if user.is_authenticated %}
+    <span class="float-right">
+        <a class="btn btn-primary btn-sm" href="{% url 'review_create' volume.id %}">
+            Add review</a>
+    </span>
+    {% endif %}
+</h2>
+
+{% if not volume.review_set.count %}
+<p>We don't have any user reviews for this volume yet.</p>
+{% endif %}
+
+{% for r in volume.review_set.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if r.title %} {{ r.title }} {% else %} Review {% endif %} by {{ r.user.username }}
+            {% if r.user == user %}
+            <div class="btn-group float-right ml-3" role="group" aria-label="Review options">
+                <a class="btn btn-secondary btn-sm" href="{% url 'review_update' r.id %}">Edit</a>
+                <a class="btn btn-danger btn-sm" href="{% url 'review_delete' r.id %}">Delete</a>
+            </div>
+            {% endif %}
+        </h5>
+        <div class="card-text mb-3">
+            <span class="badge badge-secondary">Recommended</span>
+            <span class="mr-4">{% if r.recommended %} Yes {% else %} No {% endif %}</span>
+            <span class="badge badge-secondary">Readability</span>
+            <span class="mr-4">{{ r.readability_rating_string }}</span>
+            <span class="badge badge-secondary">Closeness</span>
+            <span class="mr-4">{{ r.closeness_rating_string }}</span>
+        </div>
+        <div class="card-text">
+            {{ r.content|linebreaks }}
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

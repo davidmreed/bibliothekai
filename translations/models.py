@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import When, Case
+from django.contrib.auth.models import User
 
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
@@ -242,10 +243,30 @@ class Feature(models.Model, AuthorNameMixin):
         )
 
 
+class Rating(models.IntegerChoices):
+    LOW = 1
+    AVERAGE = 2
+    EXCELLENT = 3
+
+
 class Review(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
+    closeness_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
+    readability_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
+    recommended = models.BooleanField()
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    def readability_rating_string(self):
+        return self.get_readability_rating_display() or _("Not Set")
+
+    def closeness_rating_string(self):
+        return self.get_closeness_rating_display() or _("Not Set")
 
 
 class PublishedReview(models.Model, AuthorNameMixin):
