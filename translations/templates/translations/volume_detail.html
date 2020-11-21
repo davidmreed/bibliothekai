@@ -7,10 +7,14 @@
 {% block content %}
 <h1 class="mt-4">{{ volume.title }}</h1>
 <p>
-    {{ volume.publisher }} ({{ volume.published_date.year }})
-</p>
-<p>
-    {% if volume.series %} {{ volume.series }} {% endif %}
+    <span class="badge badge-secondary">Publisher</span>
+    <span class="mr-4">{{ volume.publisher }}</span>
+    <span class="badge badge-secondary">Date</span>
+    <span class="mr-4">{{ volume.published_date.year }}</span>
+    {% if volume.series %}
+    <span class="badge badge-secondary">Series</span>
+    <span class="mr-4">{{ volume.series }}</span>
+    {% endif %}
 </p>
 <p>
     {{ volume.description|linebreaks }}
