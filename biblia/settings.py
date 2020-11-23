@@ -34,6 +34,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", default=False) == "True"
 
 ALLOWED_HOSTS = ["bibliothekai.herokuapp.com", "127.0.0.1", "localhost"]
 
+AUTH_USER_MODEL = "users.User"
 
 # Application definition
 
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "users",
 ]
 
 MIDDLEWARE = [
@@ -132,10 +134,12 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 LOGIN_REDIRECT_URL = "/"
 
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_AUTHENTICATION_METHOD = "email"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_UNIQUE_EMAIL = True
 
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

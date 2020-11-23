@@ -6,6 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import When, Case
 from django.contrib.auth.models import User
 
+from biblia import settings
+
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
 
@@ -260,7 +262,7 @@ class Review(models.Model):
     recommended = models.BooleanField()
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
 
     def readability_rating_string(self):
         return self.get_readability_rating_display() or _("Not Set")
