@@ -1,0 +1,8 @@
+<template>
+    <template for:each={features} for:item="feature">
+        <bib-feature feature={feature} ondelete={deleteFeature} onedit={editFeature}>
+        </bib-feature>
+    </template>
+    <bib-feature-edit feature={active-feature} onsave={saveFeature}>
+    </bib-feature-edit>
+</template>
