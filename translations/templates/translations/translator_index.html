@@ -1,4 +1,4 @@
-{% extends "translations/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 Translators
@@ -12,7 +12,7 @@ Translators
 {% for a in object_list %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">{{ a }}</h5>
+        <h5 class="card-title">{{ a.full_name }}</h5>
         <div class="card-text">
             Author of {{ a.translation_count }} translation{% if a.translation_count != 1 %}s{% endif %}.
             <div class="float-right">

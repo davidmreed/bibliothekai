@@ -1,4 +1,4 @@
-{% extends "translations/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 {{ volume.title }}
@@ -7,7 +7,14 @@
 {% block content %}
 <h1 class="mt-4">{{ volume.title }}</h1>
 <p>
-    {{ volume.publisher }} ({{ volume.published_date.year }})
+    <span class="badge badge-secondary">Publisher</span>
+    <span class="mr-4">{{ volume.publisher }}</span>
+    <span class="badge badge-secondary">Date</span>
+    <span class="mr-4">{{ volume.published_date.year }}</span>
+    {% if volume.series %}
+    <span class="badge badge-secondary">Series</span>
+    <span class="mr-4">{{ volume.series }}</span>
+    {% endif %}
 </p>
 <p>
     {{ volume.description|linebreaks }}
@@ -24,9 +31,6 @@
         <div class="card-body">
             <h5 class="card-title">
                 {{ f.get_feature_display }}
-                {% if f.title and f.title != f.source_text.title %}
-                (as <cite>{{ f.title }}</cite>)
-                {% endif %}
             </h5>
             <p class="card-text">
                 {% spaceless %}
@@ -63,7 +67,7 @@
                 ({{ t.grouper.original_language_title }}){% endif %}
             </p>
             <p class="card-text">
-                {{ t.grouper.author }},
+                {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}
             </p>
             {% if t.grouper.date %}
@@ -75,7 +79,7 @@
                 More translations
             </a>
             <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary btn-sm">
-                More {{ t.grouper.author }}
+                More {{ t.grouper.author.full_name }}
             </a>
 
         </div>
@@ -94,7 +98,7 @@
                 by
                 {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </p>
             {% if f.feature == 'TR' %}
@@ -117,34 +121,28 @@
 {% endif %}
 {% endfor %}
 
-{% include "translations/links_component.html" with links=volume.all_links %}
+{% include "components/links_component.html" with links=volume.all_links %}
 
 <h2 class="mt-4">Published Reviews</h2>
 
-{% if not volume.publishedreview_set.count %}
-<p>We don't have any published reviews for this volume yet.</p>
-{% endif %}
-
 {% for r in volume.publishedreview_set.all %}
-<div class="card">
-    <div class="card-body">
-        <h5 class="card-title">
-            {% if r.title %} {{ r.title }} {% else %} Review {% endif %}
-        </h5>
-        <div class="card-text">
-            {% spaceless %}
-            by
-            {% for p in r.persons.all %}{% if not forloop.first and r.persons.count > 2 %},
-            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
-            {% endspaceless %}
-        </div>
-        <div class="card-text">
-            Published in {{ r.location }}.
-        </div>
-        {% include "translations/links_list_component.html" with links=r.links.all %}
-    </div>
-</div>
+{% include "components/published_review.html" with review=r %}
+{% empty %}
+<p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 
+<h2 class="mt-4">
+    User Reviews {% if user.is_authenticated %}
+    <span class="float-right">
+        <a class="btn btn-primary btn-sm" href="{% url 'review_create' volume.id %}">
+            Add review</a>
+    </span>
+    {% endif %}
+</h2>
+
+{% for r in volume.review_set.all %}
+{% include "components/user_review.html" with review=r abbreviate=True %}
+{% empty %}
+<p>We don't have any user reviews for this volume yet.</p>
+{% endfor %}
 {% endblock %}

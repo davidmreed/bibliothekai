@@ -26,10 +26,6 @@ class LinkInline(GenericTabularInline):
     extra = 1
 
 
-class AuthorInline(admin.TabularInline):
-    model = Feature.persons.through
-
-
 class FeatureInline(admin.TabularInline):
     model = Feature
     extra = 1
@@ -50,6 +46,7 @@ class FeatureInline(admin.TabularInline):
 class VolumeAdmin(admin.ModelAdmin):
     date_hierarchy = "published_date"
     inlines = [FeatureInline, LinkInline]
+    list_filter = ["publisher", "series"]
 
 
 @admin.register(Publisher)
@@ -70,3 +67,4 @@ class PersonAdmin(admin.ModelAdmin):
 @admin.register(SourceText)
 class SourceTextAdmin(admin.ModelAdmin):
     inlines = [LinkInline]
+    list_filter = ["author", "language"]

@@ -5,4 +5,6 @@ db.sqlite3
 .env
 *.db
 *.db-journal
+.vscode.cfg
 .vscode
+*.dump

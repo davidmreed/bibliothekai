@@ -1,0 +1,25 @@
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            {% if review.title %} {{ review.title }} {% else %} Review {% endif %}
+        </h5>
+        {% if include_volume %}
+        <div class="card-text mb-3">
+            Review of <a href="{% url 'volume_detail' review.volume.id %}">{{ review.volume.title }}</a>,
+            {{review.volume.publisher}} ({{review.volume.published_date.year}})
+        </div>
+        {% endif %}
+        <div class="card-text">
+            {% spaceless %}
+            by
+            {% for p in review.persons.all %}{% if not forloop.first and review.persons.count > 2 %},
+            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
+            {% endspaceless %}
+        </div>
+        <div class="card-text">
+            Published in {{ review.location }}.
+        </div>
+        {% include "components/links_list_component.html" with links=review.links.all %}
+    </div>
+</div>

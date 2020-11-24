@@ -1,4 +1,4 @@
-{% extends "translations/base.html" %}
+{% extends "base.html" %}
 
 {% block title %}
 {{ sourcetext.title }}
@@ -14,7 +14,7 @@
         <div class="card-body">
             <h5 class="card-title">Author</h5>
             <div class="card-text">
-                {{ sourcetext.author }}
+                {{ sourcetext.author.full_name }}
                 <div class="float-right">
                     <a class="ml-3 btn btn-outline-secondary btn-sm"
                         href="{% url 'person_detail' sourcetext.author.id %}">
@@ -106,6 +106,6 @@
     </tbody>
 </table>
 
-{% include "translations/links_component.html" with links=sourcetext.links.all %}
+{% include "components/links_component.html" with links=sourcetext.links.all %}
 
 {% endblock %}

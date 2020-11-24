@@ -1,6 +1,12 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.views import generic
+from django.db.models import When, Case
+from django.urls import reverse, reverse_lazy
 
-from .models import SourceText, Feature, Volume, Person
+from .models import SourceText, Feature, Volume, Person, Review, PublishedReview
+from users.models import User
 
 
 class IndexView(generic.TemplateView):
@@ -29,8 +35,10 @@ class SourceTextIndexView(generic.ListView):
 
     def get_queryset(self):
         return SourceText.objects.order_by(
-            "author__last_name",
-            "author__sole_name",
+            Case(
+                When(author__sole_name="", then="author__last_name"),
+                When(author__last_name="", then="author__sole_name"),
+            ),
             "author__first_name",
             "author__middle_name",
             "title",
@@ -62,9 +70,15 @@ class AuthorIndexView(generic.ListView):
 
     def get_queryset(self):
         return (
-            Person.objects.filter(sourcetext__title__isnull=False)
+            Person.objects.annotate(
+                sort_key=Case(
+                    When(sole_name="", then="last_name"),
+                    When(last_name="", then="sole_name"),
+                )
+            )
+            .filter(sourcetext__title__isnull=False)
             .distinct()
-            .order_by("last_name", "first_name", "sole_name")
+            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
@@ -73,12 +87,78 @@ class TranslatorIndexView(generic.ListView):
 
     def get_queryset(self):
         return (
-            Person.objects.filter(feature__feature__exact="TR")
+            Person.objects.annotate(
+                sort_key=Case(
+                    When(sole_name="", then="last_name"),
+                    When(last_name="", then="sole_name"),
+                )
+            )
+            .filter(feature__feature__exact="TR")
             .distinct()
-            .order_by("last_name", "first_name", "sole_name")
+            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
+
+
+class UserDetailView(generic.DetailView):
+    model = User
+    template_name = "translations/user_detail.html"
+
+
+class UserReviewDetailView(generic.DetailView):
+    model = Review
+    template_name = "translations/user_review_detail.html"
+
+
+class PublishedReviewDetailView(generic.DetailView):
+    model = PublishedReview
+    template_name = "translations/published_review_detail.html"
+
+
+class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = Review
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        pk = self.kwargs["pk"]
+        volume = get_object_or_404(Volume, pk=pk)  # FIXME: This doesn't work
+        self.object.volume_id = volume.id
+        self.object.save()
+        return HttpResponseRedirect(reverse("volume_detail", kwargs={"pk": volume.id}))
+
+
+class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
+    model = Review
+    fields = [
+        "title",
+        "closeness_rating",
+        "readability_rating",
+        "recommended",
+        "content",
+    ]
+    success_url = reverse_lazy("index")  # TODO: redirect back to the Volume
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
+
+
+class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+    model = Review
+    success_url = reverse_lazy("index")
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)

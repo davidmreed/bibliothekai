@@ -34,8 +34,23 @@
                         <a class="nav-link" style="color: red;" href="/">Alpha version!</a>
                     </li>
                 </ul>
+                {% if request.user.is_authenticated %}
+                <a class="nav-link" href="{% url 'user_detail' user.id %}">Profile</a>
+                <a class="nav-link" href="{% url 'account_logout'%}?next={{request.path}}">Logout</a>
+                {% else %}
+                <a class="nav-link" href="{% url 'account_login' %}?next={{request.path}}">Login</a>
+                <a class="nav-link" href="{% url 'account_signup' %}?next={{request.path}}">Sign Up</a>
+                {% endif %}
             </div>
         </nav>
+        {% if messages %}
+        <div class="container-md mt-4">
+            {% for message in messages %}
+            <div class="alert alert-secondary" role="alert">{{message}}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="container-md" id="content">
             {% block content %}{% endblock %}
         </div>

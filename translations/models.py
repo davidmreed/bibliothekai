@@ -3,6 +3,10 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import When, Case
+from django.contrib.auth.models import User
+
+from biblia import settings
 
 KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
@@ -53,7 +57,14 @@ class Language(models.Model):
 
 class Person(models.Model):
     class Meta:
-        ordering = ["sole_name", "last_name", "first_name", "middle_name"]
+        ordering = [
+            Case(
+                When(sole_name="", then="last_name"),
+                When(last_name="", then="sole_name"),
+            ),
+            "first_name",
+            "middle_name",
+        ]
 
     first_name = models.CharField(max_length=255, blank=True)
     middle_name = models.CharField(max_length=255, blank=True)
@@ -73,7 +84,7 @@ class Person(models.Model):
                 )
             )
 
-    def __str__(self):
+    def full_name(self):
         if self.sole_name:
             return self.sole_name
 
@@ -81,6 +92,15 @@ class Person(models.Model):
             return f"{self.first_name} {self.middle_name} {self.last_name}"
 
         return f"{self.first_name} {self.last_name}"
+
+    def sort_name(self):
+        if self.sole_name:
+            return self.sole_name
+
+        return f"{self.last_name}, {self.first_name} {self.middle_name}"
+
+    def __str__(self):
+        return self.sort_name()
 
     def translation_count(self):
         return self.feature_set.filter(feature="TR").count()
@@ -145,8 +165,11 @@ class Volume(models.Model):
     def oclc_link(self):
         if self.oclc_number:
             return f"https://www.worldcat.org/oclc/{self.oclc_number}"
-        else:
-            return f"https://www.worldcat.org/search?q=bn%3A{self.isbn}&qt=advanced&dblist=638)"
+        elif self.isbn:
+            return (
+                f"https://www.worldcat.org/search?q=bn%3A{self.isbn}"
+                "&qt=advanced&dblist=638"
+            )
 
     def auto_links(self):
         links = []
@@ -199,8 +222,10 @@ class Feature(models.Model, AuthorNameMixin):
     def display_title(self):
         if self.title:
             return self.title
+        if self.source_text:
+            return self.source_text.title
 
-        return self.source_text.title
+        return self.get_feature_display()
 
     def has_accompanying_feature(self, feature_type):
         return (
@@ -220,10 +245,30 @@ class Feature(models.Model, AuthorNameMixin):
         )
 
 
+class Rating(models.IntegerChoices):
+    LOW = 1
+    AVERAGE = 2
+    EXCELLENT = 3
+
+
 class Review(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, blank=True)
+    closeness_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
+    readability_rating = models.IntegerField(
+        blank=True, null=True, choices=Rating.choices
+    )
+    recommended = models.BooleanField()
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+
+    def readability_rating_string(self):
+        return self.get_readability_rating_display() or _("Not Set")
+
+    def closeness_rating_string(self):
+        return self.get_closeness_rating_display() or _("Not Set")
 
 
 class PublishedReview(models.Model, AuthorNameMixin):
