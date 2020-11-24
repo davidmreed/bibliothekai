@@ -53,7 +53,9 @@
 
 <form method="post" action="{% url 'account_email' %}" class="add_email">
   {% csrf_token %}
-  {{ form.as_p }}
+  <table class="table">
+    {{ form.as_table }}
+  </table>
   <button class="btn btn-primary" name="action_add" type="submit">{% trans "Add E-mail" %}</button>
 </form>
 {% endif %}

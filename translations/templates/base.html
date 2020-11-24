@@ -34,7 +34,7 @@
                         <a class="nav-link" style="color: red;" href="/">Alpha version!</a>
                     </li>
                 </ul>
-                {% if user.is_authenticated %}
+                {% if request.user.is_authenticated %}
                 <a class="nav-link" href="{% url 'user_detail' user.id %}">Profile</a>
                 <a class="nav-link" href="{% url 'account_logout'%}?next={{request.path}}">Logout</a>
                 {% else %}
