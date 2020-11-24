@@ -2,8 +2,8 @@
     <div class="card-body">
         <h5 class="card-title">
             {% if review.title %} {{ review.title }} {% else %} Review {% endif %} by
-            <a href="{% url 'user_detail' review.user.id %}">{{ review.user.username }}</a>
-            {% if review.user == user %}
+            <a href="{% url 'user_detail' review.user.id %}">{{ review.user.display_name }}</a>
+            {% if review.user == request.user %}
             <div class="btn-group float-right ml-3" role="group" aria-label="Review options">
                 <a class="btn btn-secondary btn-sm" href="{% url 'review_update' review.id %}">Edit</a>
                 <a class="btn btn-danger btn-sm" href="{% url 'review_delete' review.id %}">Delete</a>

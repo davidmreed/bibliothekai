@@ -5,8 +5,24 @@
 {% endblock %}
 
 {% block content %}
+<h1 class="mt-4">{% if user.display_name %} {{ user.display_name }} {% else %} Anonymous User {% endif %}</h1>
+{% if user == request.user %}
+<h2 class="mt-4">Manage My Account</h2>
+<ul>
+    <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
+    <li><a href="{% url 'account_email' %}">Manage Email Addresses</a></li>
+    <li><a href="{% url 'user_update' %}">Edit My Profile and Display Name</a></li>
+</ul>
+{% endif %}
+<h2 class="mt-4">Profile</h2>
+{% if user.profile %}
+<p>{{ user.profile|linebreaks }}</p>
+{% else %}
+<p>This user doesn't have a profile.</p>
+{% endif %}
+
 <h2 class="mt-4">
-    Reviews by {{ user.username }}
+    Reviews
 </h2>
 
 {% for r in user.review_set.all %}

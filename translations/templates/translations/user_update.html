@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
+{% block title %}
+Profile for {{ user.display_name }}
+{% endblock %}
+
 {% block content %}
+<h1 class="mt-4">
+    Profile for {{ user.display_name }}
+</h1>
+
 <form action="" method="post">
     {% csrf_token %}
     <table class="table">

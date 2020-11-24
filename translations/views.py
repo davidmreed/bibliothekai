@@ -1,5 +1,4 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
@@ -7,6 +6,7 @@ from django.db.models import When, Case
 from django.urls import reverse, reverse_lazy
 
 from .models import SourceText, Feature, Volume, Person, Review, PublishedReview
+from users.models import User
 
 
 class IndexView(generic.TemplateView):
