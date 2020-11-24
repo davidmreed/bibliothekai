@@ -32,7 +32,13 @@ SECRET_KEY = os.getenv(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", default=False) == "True"
 
-ALLOWED_HOSTS = ["bibliothekai.herokuapp.com", "127.0.0.1", "localhost"]
+ALLOWED_HOSTS = [
+    "bibliothekai.herokuapp.com",
+    "biblia.ktema.org",
+    "biblia.aori.st",
+    "127.0.0.1",
+    "localhost",
+]
 
 AUTH_USER_MODEL = "users.User"
 
