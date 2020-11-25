@@ -9,7 +9,7 @@ Translators
 <h1 class="mt-4">
     Translators
 </h1>
-{% for a in object_list %}
+{% for a in page_obj %}
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">{{ a.full_name }}</h5>
@@ -24,5 +24,5 @@ Translators
     </div>
 </div>
 {% endfor %}
-
+{% include "components/pagination.html" %}
 {% endblock %}

@@ -32,16 +32,20 @@ class SourceTextDetailView(generic.DetailView):
 
 class SourceTextIndexView(generic.ListView):
     template_name = "translations/source_text_index.html"
+    paginate_by = 10
 
     def get_queryset(self):
-        return SourceText.objects.order_by(
-            Case(
-                When(author__sole_name="", then="author__last_name"),
-                When(author__last_name="", then="author__sole_name"),
-            ),
-            "author__first_name",
-            "author__middle_name",
-            "title",
+        return (
+            Person.objects.prefetch_related("sourcetext_set")
+            .annotate(
+                sort_key=Case(
+                    When(sole_name="", then="last_name"),
+                    When(last_name="", then="sole_name"),
+                )
+            )
+            .filter(sourcetext__title__isnull=False)
+            .distinct()
+            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
@@ -67,6 +71,7 @@ class VolumeIndexView(generic.ListView):
 
 class AuthorIndexView(generic.ListView):
     template_name = "translations/author_index.html"
+    paginate_by = 10
 
     def get_queryset(self):
         return (
@@ -84,6 +89,7 @@ class AuthorIndexView(generic.ListView):
 
 class TranslatorIndexView(generic.ListView):
     template_name = "translations/translator_index.html"
+    paginate_by = 10
 
     def get_queryset(self):
         return (
