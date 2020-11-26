@@ -142,12 +142,13 @@
     <span class="float-right">
         <a class="btn btn-secondary btn-sm" href="{% url 'review_list' volume.id %}">
             View all</a>
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-sm ml-3" href="{% url 'review_create' volume.id %}">
+            Add review
+        </a>
+        {% endif %}
     </span>
-    {% if user.is_authenticated %}
-    <a class="btn btn-primary btn-sm ml-3" href="{% url 'review_create' volume.id %}">
-        Add review
-    </a>
-    {% endif %}
+
 </h2>
 
 {% for r in reviews %}
