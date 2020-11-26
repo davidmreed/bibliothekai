@@ -252,6 +252,9 @@ class Rating(models.IntegerChoices):
 
 
 class Review(models.Model):
+    class Meta:
+        ordering = ["-date_created"]
+
     title = models.CharField(max_length=255, blank=True)
     closeness_rating = models.IntegerField(
         blank=True, null=True, choices=Rating.choices
@@ -263,6 +266,7 @@ class Review(models.Model):
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def readability_rating_string(self):
         return self.get_readability_rating_display() or _("Not Set")

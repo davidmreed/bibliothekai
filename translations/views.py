@@ -56,9 +56,17 @@ class VolumeDetailView(generic.DetailView):
     def get_features(self):
         return self.get_object().feature_set.order_by("source_text", "feature")
 
+    def get_reviews(self):
+        return self.get_object().review_set.order_by("-date_created").all()[:5]
+
+    def get_published_reviews(self):
+        return self.get_object().publishedreview_set.all()[:5]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["features"] = self.get_features()
+        context["reviews"] = self.get_reviews()
+        context["publishedreviews"] = self.get_published_reviews()
         return context
 
 
@@ -105,6 +113,39 @@ class TranslatorIndexView(generic.ListView):
         )
 
 
+class ReviewIndexView(generic.ListView):
+    model = Review
+    template_name = "translations/review_list.html"
+    paginate_by = 10
+
+    def get_volume(self):
+        volume_id = self.kwargs["vol"]
+        return get_object_or_404(Volume, pk=volume_id)  # FIXME: this is not right
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["volume"] = self.get_volume()
+        return context
+
+    def get_queryset(self):
+        return Review.objects.filter(volume=self.get_volume())
+
+
+class PublishedReviewIndexView(generic.ListView):
+    model = PublishedReview
+    template_name = "translations/publishedreview_list.html"
+    paginate_by = 10
+
+    def get_volume(self):
+        volume_id = self.kwargs["vol"]
+        return get_object_or_404(Volume, pk=volume_id)  # FIXME: this is not right
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["volume"] = self.get_volume()
+        return context
+
+
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
@@ -138,7 +179,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.user = self.request.user
-        pk = self.kwargs["pk"]
+        pk = self.kwargs["vol"]
         volume = get_object_or_404(Volume, pk=pk)  # FIXME: This doesn't work
         self.object.volume_id = volume.id
         self.object.save()

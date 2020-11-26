@@ -18,7 +18,17 @@ urlpatterns = [
         name="published_review_detail",
     ),
     path(
-        "volume/<int:pk>/review", views.ReviewCreateView.as_view(), name="review_create"
+        "volume/<int:vol>/reviews", views.ReviewIndexView.as_view(), name="review_list",
+    ),
+    path(
+        "volume/<int:vol>/published-reviews",
+        views.PublishedReviewIndexView.as_view(),
+        name="publishedreview_list",
+    ),
+    path(
+        "volume/<int:vol>/review",
+        views.ReviewCreateView.as_view(),
+        name="review_create",
     ),
     path(
         "review/<int:pk>",
