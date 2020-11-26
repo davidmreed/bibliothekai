@@ -145,6 +145,9 @@ class PublishedReviewIndexView(generic.ListView):
         context["volume"] = self.get_volume()
         return context
 
+    def get_queryset(self):
+        return PublishedReview.objects.filter(volume=self.get_volume())
+
 
 class PersonDetailView(generic.DetailView):
     model = Person
