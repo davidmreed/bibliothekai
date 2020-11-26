@@ -37,7 +37,7 @@
                 by
                 {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </p>
             {% if f.description %}
@@ -78,7 +78,7 @@
             <a href="{% url 'source_text_detail' t.grouper.id %}" class="btn btn-primary btn-sm">
                 More translations
             </a>
-            <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary btn-sm">
+            <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary btn-sm mt-2">
                 More {{ t.grouper.author.full_name }}
             </a>
 
@@ -144,7 +144,7 @@
             View all</a>
     </span>
     {% if user.is_authenticated %}
-    <span class="float-right">
+    <span class="ml-3 float-right">
         <a class="btn btn-primary btn-sm" href="{% url 'review_create' volume.id %}">
             Add review</a>
     </span>
