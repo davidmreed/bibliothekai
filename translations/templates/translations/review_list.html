@@ -11,6 +11,8 @@ User Reviews of {{ volume.title }}
 
 {% for review in page_obj %}
 {% include "components/user_review.html" with review=review abbreviate=True %}
+{% empty %}
+<p>We don't have any user reviews for this volume yet.</p>
 {% endfor %}
 {% include "components/pagination.html" %}
 {% endblock %}

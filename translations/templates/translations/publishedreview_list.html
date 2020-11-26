@@ -11,6 +11,8 @@ Published Reviews of {{ volume.title }}
 
 {% for review in page_obj %}
 {% include "components/published_review.html" with review=review abbreviate=True %}
+{% empty %}
+<p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 {% include "components/pagination.html" %}
 {% endblock %}
