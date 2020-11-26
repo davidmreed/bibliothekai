@@ -138,7 +138,7 @@ class PublishedReviewIndexView(generic.ListView):
 
     def get_volume(self):
         volume_id = self.kwargs["vol"]
-        return get_object_or_404(Volume, pk=volume_id)  # FIXME: this is not right
+        return get_object_or_404(Volume, pk=volume_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
