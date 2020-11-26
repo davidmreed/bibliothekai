@@ -91,7 +91,7 @@
             <td>{% spaceless %}
                 {% for p in t.persons.all %}{% if not forloop.first and t.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </td>
             <td>{{ t.volume.publisher }}</td>

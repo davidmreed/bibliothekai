@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}
+User Reviews of {{ volume.title }}
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">
+    User Reviews of <a href="{% url 'volume_detail' volume.id %}">{{ volume.title }}</a>
+</h1>
+
+{% for review in page_obj %}
+{% include "components/user_review.html" with review=review abbreviate=True %}
+{% empty %}
+<p>We don't have any user reviews for this volume yet.</p>
+{% endfor %}
+{% include "components/pagination.html" %}
+{% endblock %}

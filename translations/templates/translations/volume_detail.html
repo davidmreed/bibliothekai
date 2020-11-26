@@ -37,7 +37,7 @@
                 by
                 {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p }}</a>{% endfor %}
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </p>
             {% if f.description %}
@@ -123,24 +123,35 @@
 
 {% include "components/links_component.html" with links=volume.all_links %}
 
-<h2 class="mt-4">Published Reviews</h2>
+<h2 class="mt-4">
+    Published Reviews
+    <span class="float-right">
+        <a class="btn btn-secondary btn-sm" href="{% url 'publishedreview_list' volume.id %}">
+            View all</a>
+    </span>
+</h2>
 
-{% for r in volume.publishedreview_set.all %}
+{% for r in publishedreviews %}
 {% include "components/published_review.html" with review=r %}
 {% empty %}
 <p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 
 <h2 class="mt-4">
-    User Reviews {% if user.is_authenticated %}
+    User Reviews
     <span class="float-right">
-        <a class="btn btn-primary btn-sm" href="{% url 'review_create' volume.id %}">
-            Add review</a>
+        <a class="btn btn-secondary btn-sm" href="{% url 'review_list' volume.id %}">
+            View all</a>
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-sm ml-1" href="{% url 'review_create' volume.id %}">
+            Add review
+        </a>
+        {% endif %}
     </span>
-    {% endif %}
+
 </h2>
 
-{% for r in volume.review_set.all %}
+{% for r in reviews %}
 {% include "components/user_review.html" with review=r abbreviate=True %}
 {% empty %}
 <p>We don't have any user reviews for this volume yet.</p>

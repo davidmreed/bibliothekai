@@ -10,16 +10,15 @@ Source Texts
     Source Texts
 </h1>
 
-{% regroup object_list by author as authors %}
-{% for a in authors %}
+{% for a in page_obj %}
 <div class="card mb-3">
     <div class="card-body">
         <h4 class="card-title">
-            {{ a.grouper.full_name }}
+            {{ a.full_name }}
         </h4>
     </div>
     <ul class="list-group list-group-flush">
-        {% for s in a.list %}
+        {% for s in a.sourcetext_set.all %}
         <li class="list-group-item">
             {{ s.title }}
             <div class="float-right">
@@ -32,10 +31,10 @@ Source Texts
         {% endfor %}
     </ul>
     <div class="card-body">
-        <a class="btn btn-primary" href="{% url 'person_detail' a.grouper.id %}"> More about
-            {{ a.grouper.full_name }}</a>
+        <a class="btn btn-primary" href="{% url 'person_detail' a.id %}"> More about
+            {{ a.full_name }}</a>
     </div>
 </div>
 {% endfor %}
-
+{% include "components/pagination.html" %}
 {% endblock %}
