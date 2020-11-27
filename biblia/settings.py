@@ -34,8 +34,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", default=False) == "True"
 
 ALLOWED_HOSTS = [
     "bibliothekai.herokuapp.com",
-    "biblia.ktema.org",
-    "biblia.aori.st",
+    "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
 ]
