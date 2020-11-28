@@ -19,6 +19,7 @@
         </div>
         <div class="card-text">
             Published in {{ review.location }}.
+            {% if review.published_date %} {{ review.published_date }}. {% endif %}
         </div>
         {% include "components/links_list_component.html" with links=review.links.all %}
     </div>

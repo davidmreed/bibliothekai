@@ -283,6 +283,7 @@ class PublishedReview(models.Model, AuthorNameMixin):
     persons = models.ManyToManyField(Person)
     title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
+    published_date = models.DateField(null=True)
     links = GenericRelation(Link)
 
     def __str__(self):
