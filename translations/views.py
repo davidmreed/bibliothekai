@@ -79,7 +79,7 @@ class VolumeIndexView(generic.ListView):
 
 class AuthorIndexView(generic.ListView):
     template_name = "translations/author_index.html"
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         return (
@@ -97,7 +97,7 @@ class AuthorIndexView(generic.ListView):
 
 class TranslatorIndexView(generic.ListView):
     template_name = "translations/translator_index.html"
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         return (
@@ -120,7 +120,7 @@ class ReviewIndexView(generic.ListView):
 
     def get_volume(self):
         volume_id = self.kwargs["vol"]
-        return get_object_or_404(Volume, pk=volume_id)  # FIXME: this is not right
+        return get_object_or_404(Volume, pk=volume_id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
