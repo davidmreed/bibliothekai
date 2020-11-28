@@ -5,18 +5,13 @@
         </h5>
         {% if include_volume or review.volumes.count > 1 %}
         <div class="card-text mb-3">
-            {% if review.volumes.count > 1 %}
-            This review covers multiple volumes:
+            This review covers:
             <ul>
                 {% for vol in review.volumes.all %}
                 <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
                     {{vol.publisher}} ({{vol.published_date.year}})</li>
                 {% endfor %}
             </ul>
-            {% else %}
-            Review of <a href="{% url 'volume_detail' review.volumes.one.id %}">{{ review.volumes.one.title }}</a>,
-            {{review.volumes.one.publisher}} ({{review.volumes.one.published_date.year}})
-            {% endif %}
         </div>
         {% endif %}
         <div class="card-text">
