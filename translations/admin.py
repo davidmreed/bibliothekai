@@ -56,6 +56,7 @@ class PublisherAdmin(admin.ModelAdmin):
 
 @admin.register(PublishedReview)
 class PublishedReviewAdmin(admin.ModelAdmin):
+    filter_horizontal = ["volumes", "persons"]
     inlines = [LinkInline]
 
 
