@@ -20,16 +20,22 @@
         </div>
         {% endif %}
         <div class="card-text">
-            {% spaceless %}
-            by
-            {% for p in review.persons.all %}{% if not forloop.first and review.persons.count > 2 %},
-            {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-            {% endspaceless %}
+            <p>
+                {% spaceless %}
+                by
+                {% for p in review.persons.all %}{% if not forloop.first and review.persons.count > 2 %},
+                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
+                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
+                {% endspaceless %}.
+                Published in {{ review.location }}.
+                {% if review.published_date %} {{ review.published_date }}. {% endif %}
+
+            </p>
         </div>
         <div class="card-text">
-            Published in {{ review.location }}.
-            {% if review.published_date %} {{ review.published_date }}. {% endif %}
+            <p>
+                <a href="{% url 'published_review_detail' review.id %}">Permalink</a>
+            </p>
         </div>
         {% include "components/links_list_component.html" with links=review.links.all %}
     </div>

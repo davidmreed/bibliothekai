@@ -4,7 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import When, Case
-from django.contrib.auth.models import User
+from django.urls import reverse
 
 from biblia import settings
 
@@ -122,6 +122,9 @@ class SourceText(models.Model):
     def __str__(self):
         return f"{self.title} ({self.author})"
 
+    def get_absolute_url(self):
+        return reverse("source_text_detail", args=[str(self.id)])
+
 
 class Publisher(models.Model):
     class Meta:
@@ -192,6 +195,9 @@ class Volume(models.Model):
             return f"{self.title} ({self.publisher}, {self.published_date.year})"
 
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("volume_detail", args=[str(self.id)])
 
 
 class Feature(models.Model, AuthorNameMixin):
@@ -274,6 +280,12 @@ class Review(models.Model):
     def closeness_rating_string(self):
         return self.get_closeness_rating_display() or _("Not Set")
 
+    def get_absolute_url(self):
+        return reverse("user_review_detail", args=[str(self.id)])
+
+    def __str__(self):
+        return f"User Review of {self.volume.title} by {self.user.display_name}"
+
 
 class PublishedReview(models.Model, AuthorNameMixin):
     class Meta:
@@ -291,3 +303,6 @@ class PublishedReview(models.Model, AuthorNameMixin):
 
     def __str__(self):
         return f"Review of {self.volume_string()} by {self.author_string()}"
+
+    def get_absolute_url(self):
+        return reverse("published_review_detail", args=[str(self.id)])

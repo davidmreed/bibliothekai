@@ -14,7 +14,7 @@ urlpatterns = [
     path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
     path(
         "publishedreview/<int:pk>",
-        views.PublishedReviewDetailView,
+        views.PublishedReviewDetailView.as_view(),
         name="published_review_detail",
     ),
     path(
