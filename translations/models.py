@@ -279,12 +279,15 @@ class PublishedReview(models.Model, AuthorNameMixin):
     class Meta:
         ordering = ["title"]
 
-    volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
+    volumes = models.ManyToManyField(Volume)
     persons = models.ManyToManyField(Person)
     title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
-    published_date = models.DateField(null=True)
+    published_date = models.DateField(null=True, blank=True)
     links = GenericRelation(Link)
 
+    def volume_string(self):
+        return ", ".join(v.title for v in self.volumes.all())
+
     def __str__(self):
-        return f"Review of {self.volume} by {self.author_string()}"
+        return f"Review of {self.volume_string()} by {self.author_string()}"

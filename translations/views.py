@@ -146,7 +146,7 @@ class PublishedReviewIndexView(generic.ListView):
         return context
 
     def get_queryset(self):
-        return PublishedReview.objects.filter(volume=self.get_volume())
+        return PublishedReview.objects.filter(volumes=self.get_volume())
 
 
 class PersonDetailView(generic.DetailView):
