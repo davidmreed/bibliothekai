@@ -3,11 +3,12 @@
     "description": "My amazing LWC app",
     "version": "0.0.1",
     "author": "David Reed",
-    "bugs": "https://github.com/David Reed/bibliothekai/issues",
+    "bugs": "https://github.com/davidmreed/bibliothekai/issues",
     "dependencies": {
         "compression": "^1.7.4",
         "express": "^4.17.1",
-        "helmet": "^4.1.1"
+        "helmet": "^4.1.1",
+        "lightning-base-components": "^1.10.6-alpha"
     },
     "devDependencies": {
         "eslint": "^7.11.0",
@@ -21,7 +22,10 @@
         "npm": ">=6.4.1",
         "yarn": ">=1.9.4"
     },
-    "homepage": "https://github.com/David Reed/bibliothekai",
+    "resolutions": {
+        "braces": ">=2.3.1"
+    },
+    "homepage": "https://github.com/davidmreed/bibliothekai",
     "husky": {
         "hooks": {
             "pre-commit": "lint-staged"
@@ -39,7 +43,7 @@
             "eslint"
         ]
     },
-    "repository": "David Reed/bibliothekai",
+    "repository": "https://github.com/davidmreed/bibliothekai",
     "scripts": {
         "build": "lwc-services build -m production",
         "build:development": "lwc-services build",
