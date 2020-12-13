@@ -14,7 +14,7 @@ urlpatterns = [
     path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
     path(
         "publishedreview/<int:pk>",
-        views.PublishedReviewDetailView,
+        views.PublishedReviewDetailView.as_view(),
         name="published_review_detail",
     ),
     path(
@@ -45,4 +45,5 @@ urlpatterns = [
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
+    path("search", views.SearchView.as_view(), name="search"),
 ]

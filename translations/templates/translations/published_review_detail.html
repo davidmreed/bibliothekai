@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if publishedreview.title %} {{ publishedreview.title }} {% else %} Review {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>Published Review</h1>
+{% include "components/published_review.html" with review=publishedreview include_volume=True %}
+{% endblock %}

@@ -3,8 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import When, Case
-from django.contrib.auth.models import User
+from django.urls import reverse
 
 from biblia import settings
 
@@ -57,21 +56,23 @@ class Language(models.Model):
 
 class Person(models.Model):
     class Meta:
-        ordering = [
-            Case(
-                When(sole_name="", then="last_name"),
-                When(last_name="", then="sole_name"),
-            ),
-            "first_name",
-            "middle_name",
-        ]
+        ordering = ["sort_name"]
 
     first_name = models.CharField(max_length=255, blank=True)
     middle_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     sole_name = models.CharField(max_length=255, blank=True)
+    sort_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
+
+    def save(self, *args, **kwargs):
+        self.sort_name = (
+            self.sole_name
+            if self.sole_name
+            else f"{self.last_name}, {self.first_name} {self.middle_name}".strip()
+        )
+        super().save(*args, **kwargs)
 
     def clean(self):
         if (not self.sole_name and (not self.first_name or not self.last_name)) or (
@@ -93,14 +94,8 @@ class Person(models.Model):
 
         return f"{self.first_name} {self.last_name}"
 
-    def sort_name(self):
-        if self.sole_name:
-            return self.sole_name
-
-        return f"{self.last_name}, {self.first_name} {self.middle_name}"
-
     def __str__(self):
-        return self.sort_name()
+        return self.sort_name
 
     def translation_count(self):
         return self.feature_set.filter(feature="TR").count()
@@ -121,6 +116,9 @@ class SourceText(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.author})"
+
+    def get_absolute_url(self):
+        return reverse("source_text_detail", args=[str(self.id)])
 
 
 class Publisher(models.Model):
@@ -193,10 +191,18 @@ class Volume(models.Model):
 
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("volume_detail", args=[str(self.id)])
+
 
 class Feature(models.Model, AuthorNameMixin):
     class Meta:
-        ordering = ["volume", "source_text", "feature"]
+        ordering = [
+            "volume",
+            "source_text__author__sort_name",
+            "source_text",
+            "feature",
+        ]
 
     feature_types = {
         "ED": "Edited",
@@ -274,16 +280,29 @@ class Review(models.Model):
     def closeness_rating_string(self):
         return self.get_closeness_rating_display() or _("Not Set")
 
+    def get_absolute_url(self):
+        return reverse("user_review_detail", args=[str(self.id)])
+
+    def __str__(self):
+        return f"User Review of {self.volume.title} by {self.user.display_name}"
+
 
 class PublishedReview(models.Model, AuthorNameMixin):
     class Meta:
         ordering = ["title"]
 
-    volume = models.ForeignKey(Volume, blank=True, on_delete=models.CASCADE)
+    volumes = models.ManyToManyField(Volume)
     persons = models.ManyToManyField(Person)
     title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
+    published_date = models.DateField(null=True, blank=True)
     links = GenericRelation(Link)
 
+    def volume_string(self):
+        return ", ".join(v.title for v in self.volumes.all())
+
     def __str__(self):
-        return f"Review of {self.volume} by {self.author_string()}"
+        return f"Review of {self.volume_string()} by {self.author_string()}"
+
+    def get_absolute_url(self):
+        return reverse("published_review_detail", args=[str(self.id)])

@@ -26,11 +26,18 @@
         </div>
         <div class="card-text">
             {% if abbreviate %}
-            {{ review.content|linebreaks|truncatewords:100 }}
+            {{ review.content|linebreaks|truncatewords:80 }}
             <p><a href="{% url 'user_review_detail' review.id %}">Read more</a></p>
             {% else %}
             {{ review.content|linebreaks }}
             {% endif %}
         </div>
+        {% if not abbreviate %}
+        <div class="card-text">
+            <p>
+                <a href="{% url 'user_review_detail' review.id %}">Permalink</a>
+            </p>
+        </div>
+        {% endif %}
     </div>
 </div>

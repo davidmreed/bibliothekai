@@ -34,8 +34,8 @@ DEBUG = os.getenv("DJANGO_DEBUG", default=False) == "True"
 
 ALLOWED_HOSTS = [
     "bibliothekai.herokuapp.com",
-    "biblia.ktema.org",
-    "biblia.aori.st",
+    "bibliothekai-staging.herokuapp.com",
+    "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
 ]
@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "users",
+    "anymail",
 ]
 
 MIDDLEWARE = [
@@ -148,10 +149,12 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_FORM_CLASS = "users.forms.SignupForm"
 
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-else:
-    EMAIL_HOST = os.getenv("MAILGUN_SMTP_SERVER")
-    EMAIL_HOST_PASSWORD = os.getenv("MAILGUN_SMTP_PASSWORD")
-    EMAIL_HOST_USER = os.getenv("MAILGUN_SMTP_LOGIN")
-    EMAIL_PORT = os.getenv("MAILGUN_SMTP_PORT")
+ACCOUNT_USER_DISPLAY = lambda u: u.display_name
+
+ANYMAIL = {
+    "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY"),
+    "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY"),
+}
+EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+DEFAULT_FROM_EMAIL = "bibliothekai@ktema.org"
+SERVER_EMAIL = "bibliothekai@ktema.org"

@@ -95,7 +95,7 @@
                 {% endspaceless %}
             </td>
             <td>{{ t.volume.publisher }}</td>
-            <td>{{ t.volume.published_date.year }}</td>
+            <td>{% if t.volume.published_date %}{{ t.volume.published_date.year }}{% endif %}</td>
             <td>{{ t.language }}</td>
             <td>{{ t.get_kind_display }}</td>
             <td>{% if t.has_accompanying_introduction %}Yes{% else %}No{%endif%}</td>

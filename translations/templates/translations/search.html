@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">
+    Search Results
+</h1>
+<h2 class="mt-4">
+    Source Texts
+</h2>
+
+<ul>
+    {% for s in source_texts %}
+    <li><a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a></li>
+    {% empty %}
+    <li>No source texts found.</li>
+    {% endfor %}
+</ul>
+
+<h2 class="mt-4">
+    Volumes
+</h2>
+
+<ul>
+    {% for v in volumes %}
+    <li><a href="{% url 'volume_detail' v.id %}">{{ v.title }} ({{v.publisher.name}}{% if v.published_date %},
+            {{ v.published_date.year }}{% endif %})</a></li>
+    {% empty %}
+    <li>No volumes found.</li>
+    {% endfor %}
+</ul>
+<h2 class="mt-4">
+    People
+</h2>
+
+<ul>
+    {% for p in persons %}
+    <li><a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a></li>
+    {% empty %}
+    <li>No people found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}
