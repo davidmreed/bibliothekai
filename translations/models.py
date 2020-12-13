@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import When, Case
 from django.urls import reverse
 
 from biblia import settings
@@ -57,21 +56,23 @@ class Language(models.Model):
 
 class Person(models.Model):
     class Meta:
-        ordering = [
-            Case(
-                When(sole_name="", then="last_name"),
-                When(last_name="", then="sole_name"),
-            ),
-            "first_name",
-            "middle_name",
-        ]
+        ordering = ["sort_name"]
 
     first_name = models.CharField(max_length=255, blank=True)
     middle_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     sole_name = models.CharField(max_length=255, blank=True)
+    sort_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
+
+    def save(self, *args, **kwargs):
+        self.sort_name = (
+            self.sole_name
+            if self.sole_name
+            else f"{self.last_name}, {self.first_name} {self.middle_name}".strip()
+        )
+        super().save(*args, **kwargs)
 
     def clean(self):
         if (not self.sole_name and (not self.first_name or not self.last_name)) or (
@@ -93,14 +94,8 @@ class Person(models.Model):
 
         return f"{self.first_name} {self.last_name}"
 
-    def sort_name(self):
-        if self.sole_name:
-            return self.sole_name
-
-        return f"{self.last_name}, {self.first_name} {self.middle_name}"
-
     def __str__(self):
-        return self.sort_name()
+        return self.sort_name
 
     def translation_count(self):
         return self.feature_set.filter(feature="TR").count()
@@ -202,7 +197,12 @@ class Volume(models.Model):
 
 class Feature(models.Model, AuthorNameMixin):
     class Meta:
-        ordering = ["volume", "source_text", "feature"]
+        ordering = [
+            "volume",
+            "source_text__author__sort_name",
+            "source_text",
+            "feature",
+        ]
 
     feature_types = {
         "ED": "Edited",

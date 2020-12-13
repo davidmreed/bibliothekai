@@ -37,15 +37,8 @@ class SourceTextIndexView(generic.ListView):
     def get_queryset(self):
         return (
             Person.objects.prefetch_related("sourcetext_set")
-            .annotate(
-                sort_key=Case(
-                    When(sole_name="", then="last_name"),
-                    When(last_name="", then="sole_name"),
-                )
-            )
             .filter(sourcetext__title__isnull=False)
             .distinct()
-            .order_by("sort_key", "first_name", "middle_name")
         )
 
 
@@ -82,17 +75,7 @@ class AuthorIndexView(generic.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return (
-            Person.objects.annotate(
-                sort_key=Case(
-                    When(sole_name="", then="last_name"),
-                    When(last_name="", then="sole_name"),
-                )
-            )
-            .filter(sourcetext__title__isnull=False)
-            .distinct()
-            .order_by("sort_key", "first_name", "middle_name")
-        )
+        return Person.objects.filter(sourcetext__title__isnull=False).distinct()
 
 
 class TranslatorIndexView(generic.ListView):
@@ -100,17 +83,7 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return (
-            Person.objects.annotate(
-                sort_key=Case(
-                    When(sole_name="", then="last_name"),
-                    When(last_name="", then="sole_name"),
-                )
-            )
-            .filter(feature__feature__exact="TR")
-            .distinct()
-            .order_by("sort_key", "first_name", "middle_name")
-        )
+        return Person.objects.filter(feature__feature__exact="TR").distinct()
 
 
 class ReviewIndexView(generic.ListView):
