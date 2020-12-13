@@ -201,11 +201,9 @@ class SearchView(generic.TemplateView):
             "description", weight="C"
         )
 
-        persons = (
-            Person.objects.annotate(rank=SearchRank(person_vector, query))
-            .order_by("-rank")
-            .filter(search=query)
-        )
+        persons = Person.objects.annotate(
+            rank=SearchRank(person_vector, query)
+        ).order_by("-rank")
 
         volume_vector = (
             SearchVector("title", weight="A")
@@ -215,11 +213,9 @@ class SearchView(generic.TemplateView):
             + SearchVector("description", weight="B")
         )
 
-        volumes = (
-            Volume.objects.annotate(rank=SearchRank(volume_vector, query))
-            .order_by("-rank")
-            .filter(search=query)
-        )
+        volumes = Volume.objects.annotate(
+            rank=SearchRank(volume_vector, query)
+        ).order_by("-rank")
 
         source_text_vector = (
             SearchVector("title", weight="A")
@@ -229,11 +225,9 @@ class SearchView(generic.TemplateView):
             + SearchVector("language", weight="C")
         )
 
-        source_texts = (
-            SourceText.objects.annotate(rank=SearchRank(source_text_vector, query))
-            .order_by("-rank")
-            .filter(search=query)
-        )
+        source_texts = SourceText.objects.annotate(
+            rank=SearchRank(source_text_vector, query)
+        ).order_by("-rank")
 
         context["persons"] = persons
         context["volumes"] = volumes
