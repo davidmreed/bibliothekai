@@ -45,4 +45,5 @@ urlpatterns = [
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
+    path("search", views.SearchView.as_view(), name="search"),
 ]

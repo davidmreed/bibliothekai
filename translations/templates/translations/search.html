@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}
+Search Results
+{% endblock %}
+
+{% block content %}
+<h2 class="mt-4">
+    Source Texts
+</h2>
+
+{% for s in source_texts %}
+<p><a href="{% url 'source_text_detail' s.id %}">{{ s.title }}</a></p>
+{% empty %}
+<p>No source texts found.</p>
+{% endfor %}
+
+<h2 class="mt-4">
+    Volumes
+</h2>
+
+{% for v in volumes %}
+<p><a href="{% url 'volume_detail' v.id %}">{{ v.title }}</a></p>
+{% empty %}
+<p>No volumes found.</p>
+{% endfor %}
+
+<h2 class="mt-4">
+    People
+</h2>
+
+{% for p in persons %}
+<p><a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a></p>
+{% empty %}
+<p>No people found.</p>
+{% endfor %}
+
+{% endblock %}

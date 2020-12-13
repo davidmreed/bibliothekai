@@ -33,6 +33,11 @@
                     <li class="nav-item">
                         <a class="nav-link" style="color: red;" href="/">Alpha version!</a>
                     </li>
+                    <li style="margin-left: 2rem;" class="nav-link">
+                        <form action="{% url 'search' %}" method="GET">
+                            <input name="query" type="search" placeholder="Search...">
+                        </form>
+                    </li>
                 </ul>
                 {% if request.user.is_authenticated %}
                 <a class="nav-link" href="{% url 'user_detail' user.id %}">Profile</a>

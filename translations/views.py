@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from django.db.models import When, Case
 from django.urls import reverse, reverse_lazy
+
 
 from .models import SourceText, Feature, Volume, Person, Review, PublishedReview
 from users.models import User
@@ -185,3 +186,57 @@ class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     def get_queryset(self):
         qs = super().get_queryset()
         return qs.filter(user=self.request.user)
+
+
+class SearchView(generic.TemplateView):
+    template_name = "translations/search.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        user_query = self.request.GET.get("query")
+        query = SearchQuery(user_query)  # , search_type="websearch")
+
+        person_vector = SearchVector("sort_name", weight="A") + SearchVector(
+            "description", weight="C"
+        )
+
+        persons = (
+            Person.objects.annotate(rank=SearchRank(person_vector, query))
+            .order_by("-rank")
+            .filter(search=query)
+        )
+
+        volume_vector = (
+            SearchVector("title", weight="A")
+            + SearchVector("isbn", weight="A")
+            + SearchVector("series__name", weight="B")
+            + SearchVector("publisher__name", weight="B")
+            + SearchVector("description", weight="B")
+        )
+
+        volumes = (
+            Volume.objects.annotate(rank=SearchRank(volume_vector, query))
+            .order_by("-rank")
+            .filter(search=query)
+        )
+
+        source_text_vector = (
+            SearchVector("title", weight="A")
+            + SearchVector("original_language_title", weight="A")
+            + SearchVector("author__sort_name", weight="A")
+            + SearchVector("description", weight="B")
+            + SearchVector("language", weight="C")
+        )
+
+        source_texts = (
+            SourceText.objects.annotate(rank=SearchRank(source_text_vector, query))
+            .order_by("-rank")
+            .filter(search=query)
+        )
+
+        context["persons"] = persons
+        context["volumes"] = volumes
+        context["source_texts"] = source_texts
+
+        return context
