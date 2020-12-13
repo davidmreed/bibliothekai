@@ -5,34 +5,42 @@ Search Results
 {% endblock %}
 
 {% block content %}
+<h1 class="mt-4">
+    Search Results
+</h1>
 <h2 class="mt-4">
     Source Texts
 </h2>
 
-{% for s in source_texts %}
-<p><a href="{% url 'source_text_detail' s.id %}">{{ s.title }}</a></p>
-{% empty %}
-<p>No source texts found.</p>
-{% endfor %}
+<ul>
+    {% for s in source_texts %}
+    <li><a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a></li>
+    {% empty %}
+    <li>No source texts found.</li>
+    {% endfor %}
+</ul>
 
 <h2 class="mt-4">
     Volumes
 </h2>
 
-{% for v in volumes %}
-<p><a href="{% url 'volume_detail' v.id %}">{{ v.title }}</a></p>
-{% empty %}
-<p>No volumes found.</p>
-{% endfor %}
-
+<ul>
+    {% for v in volumes %}
+    <li><a href="{% url 'volume_detail' v.id %}">{{ v.title }} ({{v.publisher.name}}{% if v.published_date %},
+            {{ v.published_date.year }}{% endif %})</a></li>
+    {% empty %}
+    <li>No volumes found.</li>
+    {% endfor %}
+</ul>
 <h2 class="mt-4">
     People
 </h2>
 
-{% for p in persons %}
-<p><a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a></p>
-{% empty %}
-<p>No people found.</p>
-{% endfor %}
-
+<ul>
+    {% for p in persons %}
+    <li><a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a></li>
+    {% empty %}
+    <li>No people found.</li>
+    {% endfor %}
+</ul>
 {% endblock %}
