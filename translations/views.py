@@ -195,15 +195,19 @@ class SearchView(generic.TemplateView):
         context = super().get_context_data(**kwargs)
 
         user_query = self.request.GET.get("query")
-        query = SearchQuery(user_query)  # , search_type="websearch")
+        query = SearchQuery(user_query, search_type="websearch")
 
         person_vector = SearchVector("sort_name", weight="A") + SearchVector(
             "description", weight="C"
         )
 
-        persons = Person.objects.annotate(
-            rank=SearchRank(person_vector, query)
-        ).order_by("-rank")
+        persons = (
+            Person.objects.annotate(
+                rank=SearchRank(person_vector, query), search=person_vector
+            )
+            .filter(search=query)
+            .order_by("-rank")
+        )
 
         volume_vector = (
             SearchVector("title", weight="A")
@@ -213,9 +217,13 @@ class SearchView(generic.TemplateView):
             + SearchVector("description", weight="B")
         )
 
-        volumes = Volume.objects.annotate(
-            rank=SearchRank(volume_vector, query)
-        ).order_by("-rank")
+        volumes = (
+            Volume.objects.annotate(
+                rank=SearchRank(volume_vector, query), search=volume_vector
+            )
+            .filter(search=query)
+            .order_by("-rank")
+        )
 
         source_text_vector = (
             SearchVector("title", weight="A")
@@ -225,9 +233,13 @@ class SearchView(generic.TemplateView):
             + SearchVector("language", weight="C")
         )
 
-        source_texts = SourceText.objects.annotate(
-            rank=SearchRank(source_text_vector, query)
-        ).order_by("-rank")
+        source_texts = (
+            SourceText.objects.annotate(
+                rank=SearchRank(source_text_vector, query), search=source_text_vector
+            )
+            .filter(search=query)
+            .order_by("-rank")
+        )
 
         context["persons"] = persons
         context["volumes"] = volumes
