@@ -63,6 +63,7 @@ class PublishedReviewAdmin(admin.ModelAdmin):
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     inlines = [LinkInline]
+    exclude = ["sort_name"]
 
 
 @admin.register(SourceText)
