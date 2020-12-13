@@ -5,6 +5,7 @@
     "author": "David Reed",
     "bugs": "https://github.com/davidmreed/bibliothekai/issues",
     "dependencies": {
+        "@salesforce-ux/design-system": "^2.13.7",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "helmet": "^4.1.1",
