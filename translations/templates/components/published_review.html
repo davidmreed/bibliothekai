@@ -27,11 +27,6 @@
 
             </p>
         </div>
-        <div class="card-text">
-            <p>
-                <a href="{% url 'published_review_detail' review.id %}">Permalink</a>
-            </p>
-        </div>
         {% include "components/links_list_component.html" with links=review.links.all %}
     </div>
 </div>
