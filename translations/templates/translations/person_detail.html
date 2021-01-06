@@ -36,9 +36,9 @@
 {% endfor %}
 {% endif %}
 
-{% if person.feature_set.count %}
+{% if person.features.count %}
 <h2 class="mt-4">Translations</h2>
-{% for f in person.feature_set.all %}
+{% for f in person.features.all %}
 {% if f.source_text and f.feature == 'TR' %}
 <div class="card mb-3">
     <div class="card-body">
