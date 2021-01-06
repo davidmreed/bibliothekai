@@ -220,7 +220,7 @@ class SearchView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user_query = self.request.GET.get("query")  # FIXME: what if there is no query?
+        user_query = self.request.GET.get("query")
         query = SearchQuery(user_query, search_type="websearch")
 
         person_vector = SearchVector("sort_name", weight="A") + SearchVector(
