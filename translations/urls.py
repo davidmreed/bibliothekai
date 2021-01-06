@@ -1,5 +1,18 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
+
+router = DefaultRouter()
+router.register(r"persons", views.PersonViewSet)
+router.register(r"languages", views.LanguageViewSet)
+router.register(r"texts", views.SourceTextViewSet)
+router.register(r"volumes", views.VolumeViewSet)
+router.register(r"publishers", views.PublisherViewSet)
+router.register(r"series", views.SeriesViewSet)
+router.register(r"features", views.FeatureViewSet)
+router.register(r"reviews", views.ReviewViewSet)
+router.register(r"publishedreviews", views.PublishedReviewViewSet)
+
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
@@ -46,4 +59,5 @@ urlpatterns = [
         name="review_delete",
     ),
     path("search", views.SearchView.as_view(), name="search"),
+    path("api/", include(router.urls)),
 ]

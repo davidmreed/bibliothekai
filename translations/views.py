@@ -4,9 +4,33 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
+from rest_framework import viewsets
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
+from .models import (
+    SourceText,
+    Feature,
+    Volume,
+    Person,
+    Review,
+    PublishedReview,
+    Publisher,
+    Series,
+    Language,
+)
+from .serializers import (
+    PersonSerializer,
+    SourceTextSerializer,
+    LanguageSerializer,
+    PublisherSerializer,
+    SeriesSerializer,
+    VolumeSerializer,
+    FeatureSerializer,
+    ReviewSerializer,
+    PublishedReviewSerializer,
+)
+from .permissions import IsOwnerOrReadOnly
 
-from .models import SourceText, Feature, Volume, Person, Review, PublishedReview
 from users.models import User
 
 
@@ -33,7 +57,7 @@ class SourceTextDetailView(generic.DetailView):
 
 class SourceTextIndexView(generic.ListView):
     template_name = "translations/source_text_index.html"
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         return (
@@ -48,7 +72,7 @@ class VolumeDetailView(generic.DetailView):
     template_name = "translations/volume_detail.html"
 
     def get_features(self):
-        return self.get_object().feature_set.order_by("source_text", "feature")
+        return self.get_object().features.order_by("source_text", "feature")
 
     def get_reviews(self):
         return self.get_object().review_set.order_by("-date_created").all()[:5]
@@ -73,7 +97,7 @@ class VolumeIndexView(generic.ListView):
 
 class AuthorIndexView(generic.ListView):
     template_name = "translations/author_index.html"
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         return Person.objects.filter(sourcetext__title__isnull=False).distinct()
@@ -81,7 +105,7 @@ class AuthorIndexView(generic.ListView):
 
 class TranslatorIndexView(generic.ListView):
     template_name = "translations/translator_index.html"
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         return Person.objects.filter(feature__feature__exact="TR").distinct()
@@ -179,7 +203,9 @@ class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         return qs.filter(user=self.request.user)
 
 
-class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
+class ReviewDeleteView(
+    LoginRequiredMixin, generic.edit.DeleteView
+):  # TODO: Is this safe? Where is the ownership being checked?
     model = Review
     success_url = reverse_lazy("index")
 
@@ -194,7 +220,7 @@ class SearchView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user_query = self.request.GET.get("query")
+        user_query = self.request.GET.get("query")  # FIXME: what if there is no query?
         query = SearchQuery(user_query, search_type="websearch")
 
         person_vector = SearchVector("sort_name", weight="A") + SearchVector(
@@ -246,3 +272,60 @@ class SearchView(generic.TemplateView):
         context["source_texts"] = source_texts
 
         return context
+
+
+# API views
+
+
+class PersonViewSet(viewsets.ModelViewSet):
+    queryset = Person.objects.all()
+    serializer_class = PersonSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class LanguageViewSet(viewsets.ModelViewSet):
+    queryset = Language.objects.all()
+    serializer_class = LanguageSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class SourceTextViewSet(viewsets.ModelViewSet):
+    queryset = SourceText.objects.all()
+    serializer_class = SourceTextSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class VolumeViewSet(viewsets.ModelViewSet):
+    queryset = Volume.objects.all()
+    serializer_class = VolumeSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class PublisherViewSet(viewsets.ModelViewSet):
+    queryset = Publisher.objects.all()
+    serializer_class = PublisherSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class SeriesViewSet(viewsets.ModelViewSet):
+    queryset = Series.objects.all()
+    serializer_class = SeriesSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class FeatureViewSet(viewsets.ModelViewSet):
+    queryset = Feature.objects.all()
+    serializer_class = FeatureSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, IsOwnerOrReadOnly]
+
+
+class PublishedReviewViewSet(viewsets.ModelViewSet):
+    queryset = PublishedReview.objects.all()
+    serializer_class = PublishedReviewSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]

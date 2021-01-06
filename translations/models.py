@@ -25,20 +25,20 @@ class Link(models.Model):
     class Meta:
         ordering = ["resource_type"]
 
+    RESOURCE_TYPE_CHOICES = [
+        ("CO", "Get a Copy"),
+        ("FT", "Full Text"),
+        ("WS", "Website"),
+        ("BO", "Bio"),
+        ("RS", "Resources"),
+    ]
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
     link = models.URLField()
     source = models.CharField(max_length=255)
-    resource_type = models.TextField(
-        choices=[
-            ("CO", "Get a Copy"),
-            ("FT", "Full Text"),
-            ("WS", "Website"),
-            ("BO", "Bio"),
-            ("RS", "Resources"),
-        ]
-    )
+    resource_type = models.TextField(choices=RESOURCE_TYPE_CHOICES)
 
     def __str__(self):
         return f"Link {self.link}"
@@ -98,7 +98,7 @@ class Person(models.Model):
         return self.sort_name
 
     def translation_count(self):
-        return self.feature_set.filter(feature="TR").count()
+        return self.features.filter(feature="TR").count()
 
 
 class SourceText(models.Model):
@@ -212,12 +212,16 @@ class Feature(models.Model, AuthorNameMixin):
         "NT": "Notes",
     }
 
-    volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    FEATURE_CHOICES = list(feature_types.items())
+
+    volume = models.ForeignKey(
+        Volume, related_name="features", on_delete=models.CASCADE
+    )
     source_text = models.ForeignKey(
         SourceText, blank=True, null=True, on_delete=models.PROTECT
     )
-    feature = models.CharField(max_length=2, choices=list(feature_types.items()),)
-    persons = models.ManyToManyField(Person)
+    feature = models.CharField(max_length=2, choices=FEATURE_CHOICES)
+    persons = models.ManyToManyField(Person, related_name="features")
     language = models.ForeignKey(Language, on_delete=models.PROTECT)
     title = models.CharField(max_length=255, blank=True)
     kind = models.TextField(choices=KIND_CHOICES, blank=True)

@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "users",
     "anymail",
+    "rest_framework",
 ]
 
 MIDDLEWARE = [
