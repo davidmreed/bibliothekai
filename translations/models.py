@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+import requests
 
 from biblia import settings
 
@@ -157,8 +158,14 @@ class Volume(models.Model):
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
 
-    def bookshop_link(self):
-        return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '')}"
+    def __str__(self):
+        if self.published_date:
+            return f"{self.title} ({self.publisher}, {self.published_date.year})"
+
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse("volume_detail", args=[str(self.id)])
 
     def oclc_link(self):
         if self.oclc_number:
@@ -169,30 +176,47 @@ class Volume(models.Model):
                 "&qt=advanced&dblist=638"
             )
 
-    def auto_links(self):
-        links = []
+    def bookshop_link(self):
         if self.isbn:
-            links.append(
-                Link(link=self.bookshop_link(), source="Bookshop", resource_type="CO")
+            return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '').replace(' ', '')}"
+
+    def update_automatic_links(self):
+        links = self.links.all()[:]
+
+        # Do we need an OCLC link?
+        url = self.oclc_link()
+        if (
+            url
+            and not any(
+                this_link.link.startswith("https://www.worldcat.org")
+                for this_link in links
             )
-        if self.isbn or self.oclc_number:
-            links.append(
-                Link(link=self.oclc_link(), source="Worldcat", resource_type="CO")
+            and requests.head(url).status_code != 404
+        ):
+            oclc = Link(
+                content_object=self,
+                link=self.oclc_link(),
+                source="Worldcat",
+                resource_type="CO",
             )
+            oclc.save()
 
-        return links
+        url = self.bookshop_link()
+        if (
+            url
+            and not any(
+                this_link.link.startswith("https://bookshop.org") for this_link in links
+            )
+            and requests.head(url).status_code != 404
+        ):
+            bookshop = Link(
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
+            )
+            bookshop.save()
 
-    def all_links(self):
-        return self.auto_links() + list(self.links.all())
-
-    def __str__(self):
-        if self.published_date:
-            return f"{self.title} ({self.publisher}, {self.published_date.year})"
-
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse("volume_detail", args=[str(self.id)])
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.update_automatic_links()
 
 
 class Feature(models.Model, AuthorNameMixin):
