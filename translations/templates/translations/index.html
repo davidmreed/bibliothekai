@@ -16,18 +16,35 @@ Bibliothekai
     evaluating, and selecting translations of classical works.
 </p>
 <p>
-    Please be aware that this site is under heavy development and considered alpha stage. Please contact <a
+    Please be aware that this site is under heavy development and considered beta stage. Please contact <a
         href="mailto:david@ktema.org">David Reed</a> with any questions.
 </p>
 <div class="card-deck">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                Source Texts
+                Explore
             </h5>
-            <p class="card-text">Start by exploring available source texts.</p>
+            <p class="card-text">Start by exploring source texts, ancient authors, or modern translators.</p>
             </p>
-            <a href="{% url 'source_text_index' %}" class="btn btn-primary">Browse</a>
+            <a href="{% url 'source_text_index' %}" class="btn btn-primary">Texts</a>
+            <a href="{% url 'author_index' %}" class="btn btn-primary">Ancient authors</a>
+            <a href="{% url 'translator_index' %}" class="btn btn-primary">Modern translators</a>
+
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                Search
+            </h5>
+            <p class="card-text">Enter a search term, like a title or author, to find what you need to know.</p>
+            </p>
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
+                <input name="query" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
         </div>
     </div>
 </div>

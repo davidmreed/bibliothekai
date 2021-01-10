@@ -22,19 +22,19 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/texts">Source Texts</a>
+                        <a class="nav-link" href="{% url 'source_text_index' %}">Source Texts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/authors">Authors</a>
+                        <a class="nav-link" href="{% url 'author_index' %}">Authors</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/translators">Translators</a>
+                        <a class="nav-link" href="{% url 'translator_index %}">Translators</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'submit' %}">Submit</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" style="color: red;" href="/">Alpha version!</a>
+                        <a class="nav-link" style="color: red;" href="/">Beta version!</a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
