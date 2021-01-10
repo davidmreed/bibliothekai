@@ -15,8 +15,8 @@ Search Results
             Source Texts
         </h2>
         <h4 class="card-subtitle mb-2 text-muted">
-            {{ source_texts.count }} result
-            {% if source_texts.count != 1 %} s {% endif %}
+            {{ source_texts.count }}
+            {% if source_texts.count != 1 %} results {% else %} result {% endif %}
         </h4>
     </div>
     <ul class="list-group list-group-flush">
@@ -36,8 +36,8 @@ Search Results
             Volumes
         </h2>
         <h4 class="card-subtitle mb-2 text-muted">
-            {{ volumes.count }} result
-            {% if volumes.count != 1 %} s {% endif %}
+            {{ volumes.count }}
+            {% if volumes.count != 1 %} results {% else %} result {% endif %}
         </h4>
     </div>
     <ul class="list-group list-group-flush">
@@ -58,8 +58,8 @@ Search Results
             People
         </h2>
         <h4 class="card-subtitle mb-2 text-muted">
-            {{ people.count }} result
-            {% if people.count != 1 %} s {% endif %}
+            {{ people.count }}
+            {% if people.count != 1 %} results {% else %} result {% endif %}
         </h4>
     </div>
     <ul class="list-group list-group-flush">
