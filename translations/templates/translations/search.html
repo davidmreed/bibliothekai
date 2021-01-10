@@ -8,39 +8,61 @@ Search Results
 <h1 class="mt-4">
     Search Results
 </h1>
-<h2 class="mt-4">
-    Source Texts
-</h2>
 
-<ul>
-    {% for s in source_texts %}
-    <li><a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a></li>
-    {% empty %}
-    <li>No source texts found.</li>
-    {% endfor %}
-</ul>
+<div class="card mb-3">
+    <div class="card-body">
+        <h2 class="card-title">
+            Source Texts
+        </h2>
+        <h4 class="card-subtitle mb-2 text-muted">{{ source_texts.count }} result {% if source_texts.count != 1
+            %}s{%endif%}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for s in source_texts %}
+        <li class="list-group-item">
+            <a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a>
+        </li>
+        {% empty %}
+        <li>No source texts found.</li>
+        {% endfor %}
+    </ul>
+</div>
 
-<h2 class="mt-4">
-    Volumes
-</h2>
+<div class="card mb-3">
+    <div class="card-body">
+        <h2 class="card-title">
+            Volumes
+        </h2>
+        <h4 class="card-subtitle mb-2 text-muted">{{ volumes.count }}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for v in volumes %}
+        <li class="list-group-item">
+            <a href="{% url 'volume_detail' v.id %}">{{ v.title }} ({{v.publisher.name}}{% if v.published_date %},
+                {{ v.published_date.year }}{% endif %})</a>
+        </li>
+        {% empty %}
+        <li>No volumes found.</li>
+        {% endfor %}
+    </ul>
+</div>
 
-<ul>
-    {% for v in volumes %}
-    <li><a href="{% url 'volume_detail' v.id %}">{{ v.title }} ({{v.publisher.name}}{% if v.published_date %},
-            {{ v.published_date.year }}{% endif %})</a></li>
-    {% empty %}
-    <li>No volumes found.</li>
-    {% endfor %}
-</ul>
-<h2 class="mt-4">
-    People
-</h2>
+<div class="card mb-3">
+    <div class="card-body">
+        <h2 class="card-title">
+            People
+        </h2>
+        <h4 class="card-subtitle mb-2 text-muted">{{ people.count }}</h4>
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for p in persons %}
+        <li class="list-group-item">
+            <a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>
+        </li>
+        {% empty %}
+        <li>No people found.</li>
+        {% endfor %}
+    </ul>
+</div>
 
-<ul>
-    {% for p in persons %}
-    <li><a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a></li>
-    {% empty %}
-    <li>No people found.</li>
-    {% endfor %}
-</ul>
 {% endblock %}
