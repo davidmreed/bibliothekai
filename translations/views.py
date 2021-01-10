@@ -341,7 +341,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly | IsOwnerOrReadOnly]
 
 
 class PublishedReviewViewSet(viewsets.ModelViewSet):
