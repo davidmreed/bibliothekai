@@ -35,6 +35,8 @@
     <div class="card-body">
         <h5 class="card-title">
             {{ s.title }}
+            {% if s.get_original_language_title and s.title != s.get_original_language_title %}({{
+            s.get_original_language_title }}){% endif %}
             <div class="float-right">
                 <a class="ml-3 btn btn-primary btn-sm" href="{% url 'source_text_detail' s.id %}">
                     View translations
@@ -42,12 +44,7 @@
             </div>
         </h5>
         <div class="card-text">
-            <p>
-                {% if s.get_original_language_title %}
-                ({{ s.get_original_language_title }}){% endif %}
-            </p>
-            <p>{{ s.language }} {{ s.get_kind_display|lower }}.</p>
-            <p>{{ s.date }}</p>
+            <p>{{ s.language }} {{ s.get_kind_display|lower }}. {{ s.date }}</p>
         </div>
     </div>
 </div>
