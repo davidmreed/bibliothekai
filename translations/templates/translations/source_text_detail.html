@@ -32,13 +32,17 @@
             </div>
         </div>
     </div>
-    {% if sourcetext.original_language_title %}
+    {% if sourcetext.alternate_names %}
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Original Title</h5>
-            <div class="card-text">
-                {{ sourcetext.original_language_title }}
-            </div>
+            <h5 class="card-title">Other Titles</h5>
+            <ul class="list-group list-group-flush">
+                {% for a in sourcetext.alternate_names.all %}
+                <li class="list-group-item">
+                    {{ a.name }}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
     {% endif %}

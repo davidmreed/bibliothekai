@@ -12,6 +12,7 @@ from translations.models import (
     Rating,
     PublishedReview,
     Link,
+    AlternateName,
     KIND_CHOICES,
 )
 
@@ -43,8 +44,17 @@ class LinkSerializer(serializers.ModelSerializer):
         fields = ["id", "link", "source", "resource_type"]
 
 
+class AlternateNameSerializer(serializers.ModelSerializer):
+    alternate_name_type = ChoiceField(choices=AlternateName.ALTERNATE_NAME_TYPE_CHOICES)
+
+    class Meta:
+        model = AlternateName
+        fields = ["id", "name", "alternate_name_type"]
+
+
 class PersonSerializer(serializers.ModelSerializer):
     links = LinkSerializer(many=True)
+    alternate_names = AlternateNameSerializer(many=True)
 
     class Meta:
         model = Person
@@ -57,6 +67,7 @@ class PersonSerializer(serializers.ModelSerializer):
             "sort_name",
             "description",
             "links",
+            "alternate_names",
         ]
 
 
@@ -69,19 +80,20 @@ class LanguageSerializer(serializers.ModelSerializer):
 class SourceTextSerializer(serializers.ModelSerializer):
     kind = ChoiceField(choices=KIND_CHOICES)
     links = LinkSerializer(many=True)
+    alternate_names = AlternateNameSerializer(many=True)
 
     class Meta:
         model = SourceText
         fields = [
             "id",
             "title",
-            "original_language_title",
             "author",
             "language",
             "kind",
             "date",
             "description",
             "links",
+            "alternate_names",
         ]
 
 

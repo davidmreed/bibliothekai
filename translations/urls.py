@@ -12,6 +12,8 @@ router.register(r"series", views.SeriesViewSet)
 router.register(r"features", views.FeatureViewSet)
 router.register(r"reviews", views.ReviewViewSet)
 router.register(r"publishedreviews", views.PublishedReviewViewSet)
+router.register(r"links", views.LinkViewSet)
+router.register(r"alternatenames", views.AlternateNameViewSet)
 
 
 urlpatterns = [
@@ -31,7 +33,9 @@ urlpatterns = [
         name="published_review_detail",
     ),
     path(
-        "volume/<int:vol>/reviews", views.ReviewIndexView.as_view(), name="review_list",
+        "volume/<int:vol>/reviews",
+        views.ReviewIndexView.as_view(),
+        name="review_list",
     ),
     path(
         "volume/<int:vol>/published-reviews",
@@ -59,5 +63,6 @@ urlpatterns = [
         name="review_delete",
     ),
     path("search", views.SearchView.as_view(), name="search"),
+    path("submit", views.UserSubmissionCreateView.as_view(), name="submit"),
     path("api/", include(router.urls)),
 ]

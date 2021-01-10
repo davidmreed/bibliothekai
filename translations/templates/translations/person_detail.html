@@ -25,8 +25,8 @@
         </h5>
         <div class="card-text">
             <p>
-                {% if s.original_language_title %}
-                ({{ s.original_language_title }}){% endif %}
+                {% if s.get_original_language_title %}
+                ({{ s.get_original_language_title }}){% endif %}
             </p>
             <p>{{ s.language }} {{ s.get_kind_display|lower }}.</p>
             <p>{{ s.date }}</p>

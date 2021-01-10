@@ -63,8 +63,8 @@
             <h5 class="card-title">
                 Original
             </h5>
-            <p class="card-text">{{ t.grouper.title }} {% if t.grouper.original_language_title %}
-                ({{ t.grouper.original_language_title }}){% endif %}
+            <p class="card-text">{{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
+                ({{ t.grouper.get_original_language_title }}){% endif %}
             </p>
             <p class="card-text">
                 {{ t.grouper.author.full_name }},

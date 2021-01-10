@@ -45,6 +45,25 @@ class Link(models.Model):
         return f"Link {self.link}"
 
 
+class AlternateName(models.Model):
+    ALTERNATE_NAME_TYPE_CHOICES = [
+        ("OR", "Original Language Name"),
+        ("TL", "Transliterated Original Language Name"),
+        ("TR", "Alternate Name Translation"),
+        ("NM", "Alternate Name"),
+    ]
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+    name = models.CharField(max_length=255, blank=False, null=False)
+    alternate_name_type = models.CharField(
+        max_length=2, choices=ALTERNATE_NAME_TYPE_CHOICES
+    )
+
+    def __str__(self):
+        return f"Alternate Name {self.name}"
+
+
 class Language(models.Model):
     class Meta:
         ordering = ["name"]
@@ -66,6 +85,7 @@ class Person(models.Model):
     sort_name = models.CharField(max_length=255, blank=True, null=True)
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
+    alternate_names = GenericRelation(AlternateName)
 
     def save(self, *args, **kwargs):
         self.sort_name = (
@@ -107,19 +127,25 @@ class SourceText(models.Model):
         ordering = ["title"]
 
     title = models.CharField(max_length=255)
-    original_language_title = models.CharField(max_length=255, blank=True)
     author = models.ForeignKey(Person, on_delete=models.PROTECT)
     language = models.ForeignKey(Language, on_delete=models.PROTECT)
     kind = models.TextField(choices=KIND_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
+    alternate_names = GenericRelation(AlternateName)
 
     def __str__(self):
         return f"{self.title} ({self.author})"
 
     def get_absolute_url(self):
         return reverse("source_text_detail", args=[str(self.id)])
+
+    def get_original_language_title(self):
+        olt = self.alternate_names.filter(alternate_name_type="OR")
+
+        if olt:
+            return olt[0].name
 
 
 class Publisher(models.Model):
@@ -210,7 +236,10 @@ class Volume(models.Model):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
@@ -334,3 +363,9 @@ class PublishedReview(models.Model, AuthorNameMixin):
 
     def get_absolute_url(self):
         return reverse("published_review_detail", args=[str(self.id)])
+
+
+class UserSubmission(models.Model):
+    processed = models.BooleanField(default=False)
+    submission = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}
+Submit Content
+{% endblock %}
+
+{% block content %}
+<h1 class="mt-4">
+    Submit Content
+</h1>
+
+<p>
+    Thank you for contributing information about classical texts and translations. To propose an ancient text, author,
+    or translation for inclusion, please provide as much information as possible below.
+</p>
+<p>
+    For translations, please include a link to the publisher, a major book retailer, or Worldcat, if possible, and
+    include as much information as possible about the content of the translation.
+</p>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <table class="table">
+        {{ form.as_table }}
+    </table>
+    <input class="btn btn-primary" type="submit" value="Submit">
+</form>
+{% endblock %}
