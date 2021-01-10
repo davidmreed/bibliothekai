@@ -15,6 +15,10 @@
     <span class="badge badge-secondary">Series</span>
     <span class="mr-4">{{ volume.series }}</span>
     {% endif %}
+    {% if volume.isbn %}
+    <span class="badge badge-secondary">ISBN</span>
+    <span class="mr-4">{{ volume.isbn }}</span>
+    {% endif %}
 </p>
 <p>
     {{ volume.description|linebreaks }}
