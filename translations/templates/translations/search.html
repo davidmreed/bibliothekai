@@ -25,7 +25,7 @@ Search Results
             <a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a>
         </li>
         {% empty %}
-        <li>No source texts found.</li>
+        <li class="list-group-item">No source texts found.</li>
         {% endfor %}
     </ul>
 </div>
@@ -47,7 +47,7 @@ Search Results
                 {{ v.published_date.year }}{% endif %})</a>
         </li>
         {% empty %}
-        <li>No volumes found.</li>
+        <li class="list-group-item">No volumes found.</li>
         {% endfor %}
     </ul>
 </div>
@@ -68,7 +68,7 @@ Search Results
             <a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>
         </li>
         {% empty %}
-        <li>No people found.</li>
+        <li class="list-group-item">No people found.</li>
         {% endfor %}
     </ul>
 </div>
