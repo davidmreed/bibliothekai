@@ -9,6 +9,24 @@
 <p>
     {{ person.description }}
 </p>
+{% if person.alternate_names.count %}
+<p>
+    Also known as
+    {% if person.alternate_names.count > 1 %}
+<ul>
+    {% for a in person.alternate_names.all %}
+    <li>
+        {{ a.name }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+{% for a in person.alternate_names.all %}
+{{ a.name }}.
+{% endfor %}
+{% endif %}
+</p>
+{% endif %}
 {% if person.sourcetext_set.count %}
 
 <h2 class="mt-4">Source Texts</h2>

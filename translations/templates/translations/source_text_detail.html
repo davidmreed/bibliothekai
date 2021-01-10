@@ -32,10 +32,11 @@
             </div>
         </div>
     </div>
-    {% if sourcetext.alternate_names %}
+    {% if sourcetext.alternate_names.count %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Other Titles</h5>
+            {% if sourcetext.alternate_names.count > 1 %}
             <ul class="list-group list-group-flush">
                 {% for a in sourcetext.alternate_names.all %}
                 <li class="list-group-item">
@@ -43,6 +44,13 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% else %}
+            <div class="card-text">
+                {% for a in sourcetext.alternate_names.all %}
+                {{ a.name }}
+                {% endfor %}
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endif %}
