@@ -222,7 +222,7 @@ class Volume(models.Model):
             oclc = Link(
                 content_object=self,
                 link=self.oclc_link(),
-                source="Worldcat",
+                source="Worldcat Libraries",
                 resource_type="CO",
             )
             oclc.save()
@@ -236,10 +236,7 @@ class Volume(models.Model):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 

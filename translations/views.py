@@ -113,7 +113,7 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return Person.objects.filter(feature__feature__exact="TR").distinct()
+        return Person.objects.filter(features__feature__exact="TR").distinct()
 
 
 class ReviewIndexView(generic.ListView):
