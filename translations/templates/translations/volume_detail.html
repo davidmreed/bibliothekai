@@ -126,7 +126,7 @@
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
             <p class="card-text">
-                Into {{ f.language }} {{f.get_kind_display | lower}}.
+                Translated into {{ f.language }} {{f.get_kind_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
