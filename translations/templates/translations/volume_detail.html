@@ -29,26 +29,36 @@
 
 {% for t in texts %}
 {% if not t.grouper.id %}
+{% regroup t.list by author_string as grouped_features %}
 <div class="card-deck">
-    {% for f in t.list %}
+    {% for feature_set in grouped_features %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ f.get_feature_display }}
+                {% for f in feature_set.list %}
+                {% spaceless %}
+                {% if not forloop.first and feature_set.count > 2 %},{% endif %}
+                {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
+                {% endspaceless %}
+                {% endfor %}
             </h5>
             <p class="card-text">
+                {% with f=feature_set.list|first %}
                 {% spaceless %}
                 by
                 {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
                 {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
                     href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
+                {% endwith %}
             </p>
+            {% for f in feature_set.list %}
             {% if f.description %}
             <p class="card-text">
                 {{ f.description|linebreaks }}
             </p>
             {% endif %}
+            {% endfor %}
         </div>
     </div>
     {% endfor %}
