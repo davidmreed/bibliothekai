@@ -68,6 +68,7 @@
 
 {% for t in texts %}
 {% if t.grouper.id %}
+{% regroup t.list by author_string as grouped_features %}
 <h3 class="mt-4">
     {{ t.grouper.title }}
 </h3>
@@ -98,15 +99,21 @@
 
         </div>
     </div>
-    {% for f in t.list %}
+    {% for feature_set in grouped_features %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ f.get_feature_display }}
+                {% for f in feature_set.list %}
+                {% spaceless %}
+                {% if not forloop.first and feature_set.count > 2 %},{% endif %}
+                {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
+                {% endspaceless %}
+                {% endfor %}
                 {% if f.title and f.title != f.source_text.title %}
                 (as <cite>{{ f.title }}</cite>)
                 {% endif %}
             </h5>
+            {% with f=feature_set.list|first %}
             <p class="card-text">
                 {% spaceless %}
                 by
@@ -115,6 +122,8 @@
                     href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
                 {% endspaceless %}
             </p>
+            {% endwith %}
+            {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
             <p class="card-text">
                 Into {{ f.language }} {{f.get_kind_display | lower}}.
@@ -128,6 +137,7 @@
                 {{ f.description|linebreaks }}
             </p>
             {% endif %}
+            {% endfor %}
         </div>
     </div>
     {% endfor %}
