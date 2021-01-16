@@ -37,7 +37,7 @@
             <h5 class="card-title">
                 {% for f in feature_set.list %}
                 {% spaceless %}
-                {% if not forloop.first and feature_set.count > 2 %},{% endif %}
+                {% if not forloop.first and feature_set.list.count > 2 %},{% endif %}
                 {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
                 {% endspaceless %}
                 {% endfor %}
@@ -105,7 +105,7 @@
             <h5 class="card-title">
                 {% for f in feature_set.list %}
                 {% spaceless %}
-                {% if not forloop.first and feature_set.count > 2 %},{% endif %}
+                {% if not forloop.first and feature_set.list.count > 2 %},{% endif %}
                 {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
                 {% endspaceless %}
                 {% endfor %}
