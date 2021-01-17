@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load comma_lists %}
 {% block title %}
 {{ volume.title }}
 {% endblock %}
@@ -35,21 +35,16 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {% for f in feature_set.list %}
-                {% spaceless %}
-                {% if not forloop.first and feature_set.list.count > 2 %},{% endif %}
-                {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
-                {% endspaceless %}
-                {% endfor %}
+                {% commalist feature_set.list %}
+                {{ f.get_feature_display }}
+                {% endcommalist %}
             </h5>
             <p class="card-text">
                 {% with f=feature_set.list|first %}
-                {% spaceless %}
                 by
-                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}
+                {% commalist f.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
                 {% endwith %}
             </p>
             {% for f in feature_set.list %}
@@ -103,24 +98,19 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {% for f in feature_set.list %}
-                {% spaceless %}
-                {% if not forloop.first and feature_set.list.count > 2 %},{% endif %}
-                {% if forloop.last and not forloop.first %} and {% endif %}{{ f.get_feature_display }}
-                {% endspaceless %}
-                {% endfor %}
-                {% if f.title and f.title != f.source_text.title %}
-                (as <cite>{{ f.title }}</cite>)
+                {% commalist feature_set.list %}
+                {{ item.get_feature_display }}
+                {% if item.title and item.title != item.source_text.title %}
+                (as <cite>{{ item.title }}</cite>)
                 {% endif %}
+                {% endcommalist %}
             </h5>
             {% with f=feature_set.list|first %}
             <p class="card-text">
-                {% spaceless %}
                 by
-                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}
+                {% commalist f.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
             </p>
             {% endwith %}
             {% for f in feature_set.list %}

@@ -121,6 +121,9 @@ class Person(models.Model):
     def translation_count(self):
         return self.features.filter(feature="TR").count()
 
+    def get_absolute_url(self):
+        return reverse("person_detail", args=[str(self.id)])
+
 
 class SourceText(models.Model):
     class Meta:
