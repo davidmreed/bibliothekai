@@ -24,16 +24,19 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/texts">Source Texts</a>
+                        <a class="nav-link" href="{% url 'source_text_index' %}">Texts</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/authors">Authors</a>
+                        <a class="nav-link" href="{% url 'author_index' %}">Authors</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/translators">Translators</a>
+                        <a class="nav-link" href="{% url 'translator_index' %}">Translators</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" style="color: red;" href="/">Alpha version!</a>
+                        <a class="nav-link" href="{% url 'submit' %}">Submit</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="color: red;" href="/">Beta version!</a>
                     </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
@@ -62,6 +65,12 @@
         <div class="container-md" id="content">
             {% block content %}{% endblock %}
         </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
     </body>
     <script src="{% static '0.app.js' %}"></script>
     <script src="{% static '2.app.js' %}"></script>

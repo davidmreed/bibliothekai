@@ -11,18 +11,21 @@ from .models import (
     PublishedReview,
     Series,
     Link,
+    AlternateName,
+    UserSubmission,
 )
 
-for model in [
-    Language,
-    Review,
-    Series,
-]:
+for model in [Language, Review, Series, UserSubmission]:
     admin.site.register(model)
 
 
 class LinkInline(GenericTabularInline):
     model = Link
+    extra = 1
+
+
+class AlternateNameInline(GenericTabularInline):
+    model = AlternateName
     extra = 1
 
 
@@ -62,11 +65,11 @@ class PublishedReviewAdmin(admin.ModelAdmin):
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    inlines = [LinkInline]
+    inlines = [AlternateNameInline, LinkInline]
     exclude = ["sort_name"]
 
 
 @admin.register(SourceText)
 class SourceTextAdmin(admin.ModelAdmin):
-    inlines = [LinkInline]
+    inlines = [AlternateNameInline, LinkInline]
     list_filter = ["author", "language"]

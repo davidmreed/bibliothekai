@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load comma_lists %}
 {% block title %}
 {{ volume.title }}
 {% endblock %}
@@ -7,13 +7,13 @@
 {% block content %}
 <h1 class="mt-4">{{ volume.title }}</h1>
 <p>
-    <span class="badge badge-secondary">Publisher</span>
-    <span class="mr-4">{{ volume.publisher }}</span>
-    <span class="badge badge-secondary">Date</span>
-    <span class="mr-4">{{ volume.published_date.year }}</span>
+    {% pill "Publisher" volume.publisher %}
+    {% pill "Date" volume.published_date.year %}
     {% if volume.series %}
-    <span class="badge badge-secondary">Series</span>
-    <span class="mr-4">{{ volume.series }}</span>
+    {% pill "Series" volume.series %}
+    {% endif %}
+    {% if volume.isbn %}
+    {% pill "ISBN" volume.isbn %}
     {% endif %}
 </p>
 <p>
@@ -25,26 +25,31 @@
 
 {% for t in texts %}
 {% if not t.grouper.id %}
+{% regroup t.list by author_string as grouped_features %}
 <div class="card-deck">
-    {% for f in t.list %}
+    {% for feature_set in grouped_features %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ f.get_feature_display }}
+                {% commalist feature_set.list %}
+                {{ item.get_feature_display }}
+                {% endcommalist %}
             </h5>
             <p class="card-text">
-                {% spaceless %}
+                {% with f=feature_set.list|first %}
                 by
-                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}
+                {% commalist f.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
+                {% endwith %}
             </p>
+            {% for f in feature_set.list %}
             {% if f.description %}
             <p class="card-text">
                 {{ f.description|linebreaks }}
             </p>
             {% endif %}
+            {% endfor %}
         </div>
     </div>
     {% endfor %}
@@ -54,6 +59,7 @@
 
 {% for t in texts %}
 {% if t.grouper.id %}
+{% regroup t.list by author_string as grouped_features %}
 <h3 class="mt-4">
     {{ t.grouper.title }}
 </h3>
@@ -63,8 +69,8 @@
             <h5 class="card-title">
                 Original
             </h5>
-            <p class="card-text">{{ t.grouper.title }} {% if t.grouper.original_language_title %}
-                ({{ t.grouper.original_language_title }}){% endif %}
+            <p class="card-text">{{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
+                ({{ t.grouper.get_original_language_title }}){% endif %}
             </p>
             <p class="card-text">
                 {{ t.grouper.author.full_name }},
@@ -84,26 +90,29 @@
 
         </div>
     </div>
-    {% for f in t.list %}
+    {% for feature_set in grouped_features %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ f.get_feature_display }}
-                {% if f.title and f.title != f.source_text.title %}
-                (as <cite>{{ f.title }}</cite>)
+                {% commalist feature_set.list %}
+                {{ item.get_feature_display }}
+                {% if item.title and item.title != item.source_text.title %}
+                (as <cite>{{ item.title }}</cite>)
                 {% endif %}
+                {% endcommalist %}
             </h5>
+            {% with f=feature_set.list|first %}
             <p class="card-text">
-                {% spaceless %}
                 by
-                {% for p in f.persons.all %}{% if not forloop.first and f.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}
+                {% commalist f.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
             </p>
+            {% endwith %}
+            {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
             <p class="card-text">
-                Into {{ f.language }} {{f.get_kind_display | lower}}.
+                Translated into {{ f.language }} {{f.get_kind_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
@@ -114,6 +123,7 @@
                 {{ f.description|linebreaks }}
             </p>
             {% endif %}
+            {% endfor %}
         </div>
     </div>
     {% endfor %}
@@ -121,7 +131,7 @@
 {% endif %}
 {% endfor %}
 
-{% include "components/links_component.html" with links=volume.all_links %}
+{% include "components/links_component.html" with links=volume.links.all %}
 
 <h2 class="mt-4">
     Published Reviews

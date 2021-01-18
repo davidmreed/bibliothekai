@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load comma_lists %}
 
 {% block title %}
 {{ sourcetext.title }}
@@ -32,13 +33,25 @@
             </div>
         </div>
     </div>
-    {% if sourcetext.original_language_title %}
+    {% if sourcetext.alternate_names.count %}
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">Original Title</h5>
+            <h5 class="card-title">Other Titles</h5>
+            {% if sourcetext.alternate_names.count > 1 %}
+            <ul class="list-group list-group-flush">
+                {% for a in sourcetext.alternate_names.all %}
+                <li class="list-group-item">
+                    {{ a.name }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
             <div class="card-text">
-                {{ sourcetext.original_language_title }}
+                {% for a in sourcetext.alternate_names.all %}
+                {{ a.name }}
+                {% endfor %}
             </div>
+            {% endif %}
         </div>
     </div>
     {% endif %}
@@ -88,11 +101,10 @@
         {% for t in translations.all %}
         <tr>
             <td><a href="{% url 'volume_detail' t.volume.id %}">{{ t.volume.title }}</a></td>
-            <td>{% spaceless %}
-                {% for p in t.persons.all %}{% if not forloop.first and t.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}
+            <td>
+                {% commalist t.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
             </td>
             <td>{{ t.volume.publisher }}</td>
             <td>{% if t.volume.published_date %}{{ t.volume.published_date.year }}{% endif %}</td>

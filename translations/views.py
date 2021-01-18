@@ -17,6 +17,9 @@ from .models import (
     Publisher,
     Series,
     Language,
+    UserSubmission,
+    Link,
+    AlternateName,
 )
 from .serializers import (
     PersonSerializer,
@@ -28,6 +31,8 @@ from .serializers import (
     FeatureSerializer,
     ReviewSerializer,
     PublishedReviewSerializer,
+    LinkSerializer,
+    AlternateNameSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 
@@ -108,7 +113,7 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return Person.objects.filter(feature__feature__exact="TR").distinct()
+        return Person.objects.filter(features__feature__exact="TR").distinct()
 
 
 class ReviewIndexView(generic.ListView):
@@ -223,8 +228,10 @@ class SearchView(generic.TemplateView):
         user_query = self.request.GET.get("query")  # FIXME: what if there is no query?
         query = SearchQuery(user_query, search_type="websearch")
 
-        person_vector = SearchVector("sort_name", weight="A") + SearchVector(
-            "description", weight="C"
+        person_vector = (
+            SearchVector("sort_name", weight="A")
+            + SearchVector("description", weight="C")
+            + SearchVector("alternate_names__name", weight="A")
         )
 
         persons = (
@@ -253,10 +260,10 @@ class SearchView(generic.TemplateView):
 
         source_text_vector = (
             SearchVector("title", weight="A")
-            + SearchVector("original_language_title", weight="A")
             + SearchVector("author__sort_name", weight="A")
             + SearchVector("description", weight="B")
             + SearchVector("language", weight="C")
+            + SearchVector("alternate_names__name", weight="A")
         )
 
         source_texts = (
@@ -272,6 +279,18 @@ class SearchView(generic.TemplateView):
         context["source_texts"] = source_texts
 
         return context
+
+
+class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
+    model = UserSubmission
+    fields = ["submission"]
+    template_name = "translations/user_submission_create.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.user = self.request.user
+        self.object.save()
+        return HttpResponseRedirect(reverse_lazy("index"))
 
 
 # API views
@@ -322,10 +341,22 @@ class FeatureViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly, IsOwnerOrReadOnly]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
 
 class PublishedReviewViewSet(viewsets.ModelViewSet):
     queryset = PublishedReview.objects.all()
     serializer_class = PublishedReviewSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class LinkViewSet(viewsets.ModelViewSet):
+    queryset = Link.objects.all()
+    serializer_class = LinkSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class AlternateNameViewSet(viewsets.ModelViewSet):
+    queryset = AlternateName.objects.all()
+    serializer_class = AlternateNameSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]

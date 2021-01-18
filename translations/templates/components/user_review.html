@@ -1,3 +1,5 @@
+{% load comma_lists %}
+
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
@@ -17,12 +19,13 @@
         </div>
         {% endif %}
         <div class="card-text mb-3">
-            <span class="badge badge-secondary">Recommended</span>
-            <span class="mr-4">{% if review.recommended %} Yes {% else %} No {% endif %}</span>
-            <span class="badge badge-secondary">Readability</span>
-            <span class="mr-4">{{ review.readability_rating_string }}</span>
-            <span class="badge badge-secondary">Closeness</span>
-            <span class="mr-4">{{ review.closeness_rating_string }}</span>
+            {% if review.recommended %}
+            {% pill "Recommended" "Yes" %}
+            {% else %}
+            {% pill "Recommended" "No" %}
+            {% endif %}
+            {% pill "Readability" review.readability_rating_string %}
+            {% pill "Closeness" review.closeness_rating_string %}
         </div>
         <div class="card-text">
             {% if abbreviate %}

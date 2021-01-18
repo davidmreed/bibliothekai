@@ -11,7 +11,9 @@ router.register(r"publishers", views.PublisherViewSet)
 router.register(r"series", views.SeriesViewSet)
 router.register(r"features", views.FeatureViewSet)
 router.register(r"reviews", views.ReviewViewSet)
-router.register(r"publishedreviews", views.PublishedReviewViewSet)
+router.register(r"published-reviews", views.PublishedReviewViewSet)
+router.register(r"links", views.LinkViewSet)
+router.register(r"alternate-names", views.AlternateNameViewSet)
 
 
 urlpatterns = [
@@ -20,44 +22,49 @@ urlpatterns = [
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
     path("translators/", views.TranslatorIndexView.as_view(), name="translator_index"),
     path(
-        "text/<int:pk>", views.SourceTextDetailView.as_view(), name="source_text_detail"
+        "texts/<int:pk>",
+        views.SourceTextDetailView.as_view(),
+        name="source_text_detail",
     ),
-    path("volume/<int:pk>", views.VolumeDetailView.as_view(), name="volume_detail"),
-    path("person/<int:pk>", views.PersonDetailView.as_view(), name="person_detail"),
-    path("user/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
+    path("volumes/<int:pk>", views.VolumeDetailView.as_view(), name="volume_detail"),
+    path("persons/<int:pk>", views.PersonDetailView.as_view(), name="person_detail"),
+    path("users/<int:pk>", views.UserDetailView.as_view(), name="user_detail"),
     path(
-        "publishedreview/<int:pk>",
+        "published-reviews/<int:pk>",
         views.PublishedReviewDetailView.as_view(),
         name="published_review_detail",
     ),
     path(
-        "volume/<int:vol>/reviews", views.ReviewIndexView.as_view(), name="review_list",
+        "volumes/<int:vol>/reviews",
+        views.ReviewIndexView.as_view(),
+        name="review_list",
     ),
     path(
-        "volume/<int:vol>/published-reviews",
+        "volumes/<int:vol>/published-reviews",
         views.PublishedReviewIndexView.as_view(),
         name="publishedreview_list",
     ),
     path(
-        "volume/<int:vol>/review",
+        "volumes/<int:vol>/review",
         views.ReviewCreateView.as_view(),
         name="review_create",
     ),
     path(
-        "review/<int:pk>",
+        "reviews/<int:pk>",
         views.UserReviewDetailView.as_view(),
         name="user_review_detail",
     ),
     path(
-        "review/<int:pk>/update/",
+        "reviews/<int:pk>/update/",
         views.ReviewUpdateView.as_view(),
         name="review_update",
     ),
     path(
-        "review/<int:pk>/delete/",
+        "reviews/<int:pk>/delete/",
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
     path("search", views.SearchView.as_view(), name="search"),
+    path("submit", views.UserSubmissionCreateView.as_view(), name="submit"),
     path("api/", include(router.urls)),
 ]

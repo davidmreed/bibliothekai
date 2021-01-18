@@ -1,3 +1,5 @@
+{% load comma_lists %}
+
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
@@ -16,12 +18,10 @@
         {% endif %}
         <div class="card-text">
             <p>
-                {% spaceless %}
                 by
-                {% for p in review.persons.all %}{% if not forloop.first and review.persons.count > 2 %},
-                {% endif %}{% if forloop.last and not forloop.first %} and {% endif %}<a
-                    href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>{% endfor %}
-                {% endspaceless %}.
+                {% commalist review.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}.
                 Published in {{ review.location }}.
                 {% if review.published_date %} {{ review.published_date }}. {% endif %}
 

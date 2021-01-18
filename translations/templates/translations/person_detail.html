@@ -9,14 +9,35 @@
 <p>
     {{ person.description }}
 </p>
+{% if person.alternate_names.count %}
+<p>
+    Also known as
+    {% if person.alternate_names.count > 1 %}
+<ul>
+    {% for a in person.alternate_names.all %}
+    <li>
+        {{ a.name }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+{% for a in person.alternate_names.all %}
+{{ a.name }}.
+{% endfor %}
+{% endif %}
+</p>
+{% endif %}
 {% if person.sourcetext_set.count %}
 
-<h2 class="mt-4">Source Texts</h2>
+<h2 class="mt-4">Texts</h2>
 {% for s in person.sourcetext_set.all %}
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
             {{ s.title }}
+            {% if s.get_original_language_title and s.title != s.get_original_language_title %}
+            ({{ s.get_original_language_title }})
+            {% endif %}
             <div class="float-right">
                 <a class="ml-3 btn btn-primary btn-sm" href="{% url 'source_text_detail' s.id %}">
                     View translations
@@ -24,12 +45,7 @@
             </div>
         </h5>
         <div class="card-text">
-            <p>
-                {% if s.original_language_title %}
-                ({{ s.original_language_title }}){% endif %}
-            </p>
-            <p>{{ s.language }} {{ s.get_kind_display|lower }}.</p>
-            <p>{{ s.date }}</p>
+            <p>{{ s.language }} {{ s.get_kind_display|lower }}. {{ s.date }}</p>
         </div>
     </div>
 </div>
