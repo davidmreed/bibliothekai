@@ -12,7 +12,7 @@ Search Results
 <div class="card mb-3">
     <div class="card-body">
         <h2 class="card-title">
-            Source Texts
+            Texts
         </h2>
         <h4 class="card-subtitle mb-2 text-muted">
             {{ source_texts.count }}
@@ -25,7 +25,7 @@ Search Results
             <a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a>
         </li>
         {% empty %}
-        <li class="list-group-item">No source texts found.</li>
+        <li class="list-group-item">No texts found.</li>
         {% endfor %}
     </ul>
 </div>
