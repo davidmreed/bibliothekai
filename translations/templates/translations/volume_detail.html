@@ -7,17 +7,13 @@
 {% block content %}
 <h1 class="mt-4">{{ volume.title }}</h1>
 <p>
-    <span class="badge badge-secondary">Publisher</span>
-    <span class="mr-4">{{ volume.publisher }}</span>
-    <span class="badge badge-secondary">Date</span>
-    <span class="mr-4">{{ volume.published_date.year }}</span>
+    {% pill "Publisher" volume.publisher %}
+    {% pill "Date" volume.published_date.year %}
     {% if volume.series %}
-    <span class="badge badge-secondary">Series</span>
-    <span class="mr-4">{{ volume.series }}</span>
+    {% pill "Series" volume.series %}
     {% endif %}
     {% if volume.isbn %}
-    <span class="badge badge-secondary">ISBN</span>
-    <span class="mr-4">{{ volume.isbn }}</span>
+    {% pill "ISBN" volume.isbn %}
     {% endif %}
 </p>
 <p>

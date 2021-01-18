@@ -3,6 +3,11 @@ from django import template
 register = template.Library()
 
 
+@register.inclusion_tag("components/pill.html")
+def pill(title, content):
+    return {"title": title, "content": content}
+
+
 @register.tag(name="commalist")
 def do_comma_list(parser, token):
     try:
