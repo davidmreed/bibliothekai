@@ -66,5 +66,6 @@ urlpatterns = [
     ),
     path("search", views.SearchView.as_view(), name="search"),
     path("submit", views.UserSubmissionCreateView.as_view(), name="submit"),
+    path("test", views.TestLWCView.as_view(), name="test"),
     path("api/", include(router.urls)),
 ]

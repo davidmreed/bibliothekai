@@ -1,14 +1,18 @@
 <template>
-    <bib-dualing-listbox entity-name="persons" name-field="full_name" onadd={addPerson}></bib-dualing-listbox>
+    <h2>Persons</h2>
+    <bib-dualing-listbox entity-name="persons" name-field="sort_name" onadd={addPerson}></bib-dualing-listbox>
+    <h2 class="mt-3">Volumes</h2>
     <bib-dualing-listbox entity-name="volumes" name-field="title" allow-add="false"></bib-dualing-listbox>
-
-    <label for="title">Title</label>
-    <input id="title" type="text" value={title}></input>
-    <label for="date">Date</label>
-    <input id="date" type="date" value={published_date}></input>
-    <label for="location">Location</label>
-    <input id="location" type="text" value={location}></input>
-    <label for="link">Link</label>
-    <input id="link" type="url" value={link}></input>
-    <input type="submit" onclick={create}></input>
+    <h2 class="mt-5">Review Information</h2>
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input class="form-control" id="title" type="text" value={title}></input>
+        <label for="date">Date</label>
+        <input class="form-control" id="date" type="date" value={published_date}></input>
+        <label for="location">Location</label>
+        <input class="form-control" id="location" type="text" value={location}></input>
+        <label for="link">Link</label>
+        <input class="form-control" id="link" type="url" value={link}></input>
+        <input class="btn btn-primary" type="submit" onclick={create} value="Create"></input>
+    </div>
 </template>

@@ -3,17 +3,20 @@ import { getRecords } from 'bib/drf';
 
 export default class DualingListbox extends LightningElement {
     @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
+    setEntities(data) {
+        this.entities = data || [];
+        this.updateDisplay();
+    }
     entities = [];
     @api entityName;
     @api nameField;
-    @api allowAdd = false;
+    @api allowAdd = false; // FIXME: allowAdd is being processed incorrectly (backwards)
     @track selectedEntities = [];
     @track filteredEntities = [];
     @track filteredSelectedEntities = [];
     @track searchKey = null;
 
     connectedCallback() {
-        this.updateDisplay();
     }
 
     doSearch(event) {

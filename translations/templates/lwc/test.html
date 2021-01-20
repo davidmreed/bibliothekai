@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+LWC Test
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">
+    LWC Test
+</h1>
+<div id="main"></div>
+
+<script src="{% static '0.app.js' %}"></script>
+<script src="{% static '2.app.js' %}"></script>
+<script src="{% static 'app.js' %}"></script>
+
+{% endblock %}

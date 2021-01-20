@@ -1,25 +1,47 @@
 <template>
-    <input name="search" type="search" placeholder="Search" aria-label="search" oninput={doSearch}></input>
+    <input class="form-control" name="search" type="search" placeholder="Search" aria-label="search"
+        oninput={doSearch}></input>
     <br />
-    <select class="entities" name="entities" size="6" multiple>
-        <template for:each={filteredEntities} for:item="entity">
-            <option key={entity.id} value={entity.id}>{entity.name}</option>
-        </template>
-    </select>
-    Showing {filteredEntityCount} of {entityCount}
+    <div class="card-deck">
+        <div class="card">
+            <div class="card-body form-group">
+                <select class="entities form-control" name="entities" size="5" multiple>
+                    <template for:each={filteredEntities} for:item="entity">
+                        <option key={entity.id} value={entity.id}>{entity.name}</option>
+                    </template>
+                </select>
+                <br />
+                <small class="text-muted">Showing {filteredEntityCount} of {entityCount} available</small>
+                <div class="float-right">
+                    <template if:true={allowAdd}>
+                        <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
+                            &raquo;</button>
+                    </template>
+                    <template if:false={allowAdd}>
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
+                                &raquo;</button>
 
-    <button type="button" onclick={moveRight}>&rangle;</button>
-    <button type="button" onclick={moveLeft}>&langle;</button>
-
-    <template if:true={allowAdd}>
-        <button type="button" onclick={add}>+</button>
-    </template>
-
-    <select class="selectedEntities" name="selectedEntities" size="6" multiple>
-        <template for:each={filteredSelectedEntities} for:item="entity">
-            <option key={entity.id} value={entity.id}>{entity.name}</option>
-        </template>
-    </select>
-    <br />
-    Showing {filteredSelectedCount} of {selectedCount}
+                            <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={add}>Add
+                                +</button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body form-group">
+                <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple>
+                    <template for:each={filteredSelectedEntities} for:item="entity">
+                        <option key={entity.id} value={entity.id}>{entity.name}</option>
+                    </template>
+                </select>
+                <br />
+                <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveLeft}>Unselect
+                    &laquo;</button>
+                <small class="text-muted float-right">Showing {filteredSelectedCount} of {selectedCount}
+                    selected</small>
+            </div>
+        </div>
+    </div>
 </template>

@@ -1,7 +1,7 @@
 const getRecordsStore = new Map();
 
 function getEndpoint() {
-    return 'http://localhost:8000/api';
+    return 'http://127.0.0.1:8001/api';
 }
 
 export class getRecords {
