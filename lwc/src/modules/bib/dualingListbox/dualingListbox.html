@@ -1,0 +1,25 @@
+<template>
+    <input name="search" type="search" placeholder="Search" aria-label="search" oninput={doSearch}></input>
+    <br />
+    <select class="entities" name="entities" size="6" multiple>
+        <template for:each={filteredEntities} for:item="entity">
+            <option key={entity.id} value={entity.id}>{entity.name}</option>
+        </template>
+    </select>
+    Showing {filteredEntityCount} of {entityCount}
+
+    <button type="button" onclick={moveRight}>&rangle;</button>
+    <button type="button" onclick={moveLeft}>&langle;</button>
+
+    <template if:true={allowAdd}>
+        <button type="button" onclick={add}>+</button>
+    </template>
+
+    <select class="selectedEntities" name="selectedEntities" size="6" multiple>
+        <template for:each={filteredSelectedEntities} for:item="entity">
+            <option key={entity.id} value={entity.id}>{entity.name}</option>
+        </template>
+    </select>
+    <br />
+    Showing {filteredSelectedCount} of {selectedCount}
+</template>

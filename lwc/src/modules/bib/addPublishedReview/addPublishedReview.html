@@ -1,0 +1,14 @@
+<template>
+    <bib-dualing-listbox entity-name="persons" name-field="full_name" onadd={addPerson}></bib-dualing-listbox>
+    <bib-dualing-listbox entity-name="volumes" name-field="title" allow-add="false"></bib-dualing-listbox>
+
+    <label for="title">Title</label>
+    <input id="title" type="text" value={title}></input>
+    <label for="date">Date</label>
+    <input id="date" type="date" value={published_date}></input>
+    <label for="location">Location</label>
+    <input id="location" type="text" value={location}></input>
+    <label for="link">Link</label>
+    <input id="link" type="url" value={link}></input>
+    <input type="submit" onclick={create}></input>
+</template>
