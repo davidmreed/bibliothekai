@@ -1,8 +1,10 @@
 <template>
     <h2>Persons</h2>
-    <bib-dualing-listbox entity-name="persons" name-field="sort_name" onadd={addPerson}></bib-dualing-listbox>
+    <bib-dualing-listbox class="persons-listbox" entity-name="persons" name-field="sort_name" onadd={addPerson}>
+    </bib-dualing-listbox>
     <h2 class="mt-3">Volumes</h2>
-    <bib-dualing-listbox entity-name="volumes" name-field="title" allow-add="false"></bib-dualing-listbox>
+    <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" name-field="title" allow-add="false">
+    </bib-dualing-listbox>
     <h2 class="mt-5">Review Information</h2>
     <div class="form-group">
         <label for="title">Title</label>

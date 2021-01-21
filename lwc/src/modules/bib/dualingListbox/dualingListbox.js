@@ -4,7 +4,7 @@ import { getRecords } from 'bib/drf';
 export default class DualingListbox extends LightningElement {
     @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
     setEntities(data) {
-        this.entities = data || [];
+        this.entities = data;
         this.updateDisplay();
     }
     entities = [];
@@ -15,6 +15,11 @@ export default class DualingListbox extends LightningElement {
     @track filteredEntities = [];
     @track filteredSelectedEntities = [];
     @track searchKey = null;
+
+    @api
+    getSelectedIds() {
+        return this.selectedEntities.map(e => e.id);
+    }
 
     connectedCallback() {
     }
@@ -33,7 +38,7 @@ export default class DualingListbox extends LightningElement {
             this.filteredSelectedEntities = this.selectedEntities;
         }
 
-        this.filteredEntities.sort((a, b) => {
+        let sortFunction = (a, b) => {
             let nameA = a.name.toUpperCase();
             let nameB = b.name.toUpperCase();
             if (nameA < nameB) {
@@ -43,7 +48,10 @@ export default class DualingListbox extends LightningElement {
                 return 1;
             }
             return 0;
-        });
+        };
+
+        this.filteredEntities.sort(sortFunction);
+        this.filteredSelectedEntities.sort(sortFunction);
     }
 
     moveRight() {

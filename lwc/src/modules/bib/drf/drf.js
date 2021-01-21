@@ -1,7 +1,7 @@
 const getRecordsStore = new Map();
 
 function getEndpoint() {
-    return 'http://127.0.0.1:8001/api';
+    return 'http://127.0.0.1:8000/api';
 }
 
 export class getRecords {
@@ -10,11 +10,13 @@ export class getRecords {
 
     constructor(dataCallback) {
         this.dataCallback = dataCallback;
-        this.dataCallback();
     }
 
     connect() {
         this._register();
+        if (this.entityName) {
+            this._refresh();
+        }
     }
 
     _register() {
@@ -83,14 +85,12 @@ export function createRecord(entity, record) {
     let endpoint = getEndpoint();
 
     fetch(
-        new Request(
-            `${endpoint}/${entity}/`,
-            { headers: { 'X-CSRFToken': getCookie('csrftoken') } }
-        ),
+        `${endpoint}/${entity}/`,
         {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json;charset=utf-8'
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-CSRFToken': getCookie('csrftoken')
             },
             body: JSON.stringify(record)
         }
