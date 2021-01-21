@@ -53,8 +53,12 @@ class AlternateNameSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    links = LinkSerializer(many=True)
-    alternate_names = AlternateNameSerializer(many=True)
+    links = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Link.objects.all(), required=False
+    )
+    alternate_names = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=AlternateName.objects.all(), required=False
+    )
 
     class Meta:
         model = Person
@@ -79,8 +83,12 @@ class LanguageSerializer(serializers.ModelSerializer):
 
 class SourceTextSerializer(serializers.ModelSerializer):
     kind = ChoiceField(choices=KIND_CHOICES)
-    links = LinkSerializer(many=True)
-    alternate_names = AlternateNameSerializer(many=True)
+    links = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Link.objects.all(), required=False
+    )
+    alternate_names = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=AlternateName.objects.all(), required=False
+    )
 
     class Meta:
         model = SourceText
@@ -98,7 +106,9 @@ class SourceTextSerializer(serializers.ModelSerializer):
 
 
 class PublisherSerializer(serializers.ModelSerializer):
-    links = LinkSerializer(many=True)
+    links = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Link.objects.all(), required=False
+    )
 
     class Meta:
         model = Publisher
@@ -134,7 +144,9 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 class VolumeSerializer(serializers.ModelSerializer):
     features = FeatureSerializer(many=True)
-    links = LinkSerializer(many=True)
+    links = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Link.objects.all(), required=False
+    )
 
     class Meta:
         model = Volume
@@ -173,7 +185,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class PublishedReviewSerializer(serializers.ModelSerializer):
-    links = LinkSerializer(many=True)
+    links = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Link.objects.all(), required=False
+    )
 
     class Meta:
         model = PublishedReview
