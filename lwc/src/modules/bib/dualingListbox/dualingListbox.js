@@ -10,15 +10,43 @@ export default class DualingListbox extends LightningElement {
     entities = [];
     @api entityName;
     @api nameField;
-    @api allowAdd = false; // FIXME: allowAdd is being processed incorrectly (backwards)
+    @api allowAdd;
     @track selectedEntities = [];
     @track filteredEntities = [];
     @track filteredSelectedEntities = [];
     @track searchKey = null;
 
+    get shouldAllowAdd() {
+        return this.allowAdd === "true" ? true : false; // FIXME: what if a bound boolean is passed in?
+    }
+
     @api
     getSelectedIds() {
         return this.selectedEntities.map(e => e.id);
+    }
+
+    @api
+    selectIds(ids) {
+        for (let value of ids) {
+            let index = this.entities.findIndex((f) => f.id === value);
+            if (index !== -1) {
+                this.selectedEntities.splice(this.selectedEntities.length, 0, ...this.entities.splice(index, 1));
+            }
+        }
+        this.updateDisplay();
+    }
+
+    @api
+    unselectIds(ids) {
+        for (let value of ids) {
+            let index = this.selectedEntities.findIndex((f) => f.id === value);
+            if (index !== -1) {
+                this.entities.splice(this.entities.length, 0, ...this.selectedEntities.splice(index, 1));
+            }
+        }
+
+        this.updateDisplay();
+
     }
 
     connectedCallback() {
@@ -55,26 +83,15 @@ export default class DualingListbox extends LightningElement {
     }
 
     moveRight() {
-        let leftBoxSelected = Array.from(this.template.querySelector('.entities').selectedOptions).map((f) => Number(f.value));
-
-        for (let value of leftBoxSelected) {
-            let index = this.entities.findIndex((f) => f.id === value);
-            this.selectedEntities.splice(this.selectedEntities.length, 0, ...this.entities.splice(index, 1));
-        }
-
-        this.updateDisplay();
+        this.selectIds(
+            Array.from(this.template.querySelector('.entities').selectedOptions).map((f) => Number(f.value))
+        );
     }
 
     moveLeft() {
-        let rightBoxSelected = Array.from(this.template.querySelector('.selectedEntities').selectedOptions).map((f) => Number(f.value));
-
-        for (let value of rightBoxSelected) {
-            let index = this.selectedEntities.findIndex((f) => f.id === value);
-            this.entities.splice(this.entities.length, 0, ...this.selectedEntities.splice(index, 1));
-        }
-
-        this.updateDisplay();
-
+        this.unselectIds(
+            Array.from(this.template.querySelector('.selectedEntities').selectedOptions).map((f) => Number(f.value))
+        );
     }
 
     add() {

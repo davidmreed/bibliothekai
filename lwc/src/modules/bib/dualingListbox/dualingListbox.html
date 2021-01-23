@@ -6,18 +6,23 @@
         <div class="card">
             <div class="card-body form-group">
                 <select class="entities form-control" name="entities" size="5" multiple>
-                    <template for:each={filteredEntities} for:item="entity">
-                        <option key={entity.id} value={entity.id}>{entity.name}</option>
+                    <template if:true={filteredEntities.length}>
+                        <template for:each={filteredEntities} for:item="entity">
+                            <option key={entity.id} value={entity.id}>{entity.name}</option>
+                        </template>
+                    </template>
+                    <template if:false={filteredEntities.length}>
+                        <option disabled>-- No items --</option>
                     </template>
                 </select>
                 <br />
                 <small class="text-muted">Showing {filteredEntityCount} of {entityCount} available</small>
                 <div class="float-right">
-                    <template if:true={allowAdd}>
+                    <template if:false={shouldAllowAdd}>
                         <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
                             &raquo;</button>
                     </template>
-                    <template if:false={allowAdd}>
+                    <template if:true={shouldAllowAdd}>
                         <div class="btn-group">
                             <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
                                 &raquo;</button>
@@ -32,8 +37,13 @@
         <div class="card">
             <div class="card-body form-group">
                 <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple>
-                    <template for:each={filteredSelectedEntities} for:item="entity">
-                        <option key={entity.id} value={entity.id}>{entity.name}</option>
+                    <template if:true={filteredSelectedEntities.length}>
+                        <template for:each={filteredSelectedEntities} for:item="entity">
+                            <option key={entity.id} value={entity.id}>{entity.name}</option>
+                        </template>
+                    </template>
+                    <template if:false={filteredSelectedEntities.length}>
+                        <option disabled>-- No items --</option>
                     </template>
                 </select>
                 <br />

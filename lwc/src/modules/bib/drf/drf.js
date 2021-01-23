@@ -84,19 +84,22 @@ function getCookie(name) {
 export function createRecord(entity, record) {
     let endpoint = getEndpoint();
 
-    fetch(
-        `${endpoint}/${entity}/`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(record)
-        }
-    ).then(() => {
-        if (getRecordsStore.has(entity)) {
-            getRecordsStore.get(entity).forEach(r => r._refresh());
-        }
+    return new Promise((resolve, reject) => {
+        fetch(
+            `${endpoint}/${entity}/`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(record)
+            }
+        ).then((data) => {
+            if (getRecordsStore.has(entity)) {
+                getRecordsStore.get(entity).forEach(r => r._refresh());
+            }
+            resolve(data);
+        }).catch(reason => reject(reason));
     });
 }

@@ -1,44 +1,55 @@
 <template>
-    <ul class="nav nav-tabs mb-3" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" data-tab="persons" onclick={changeTab} role="tab" aria-controls="persons"
-                aria-selected="true">Select Authors</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-tab="volumes" onclick={changeTab} role="tab" aria-controls="volumes">Select
-                Volumes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" data-tab="review" onclick={changeTab} role="tab" aria-controls="review">Enter
-                Review Data</a>
-        </li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" data-tab="persons" role="tabpanel" aria-labelledby="persons-tab">
-            <small class="form-text text-muted">Select one or more authors of this review.</small>
-            <bib-dualing-listbox class="persons-listbox" entity-name="persons" name-field="sort_name" onadd={addPerson}>
-            </bib-dualing-listbox>
-        </div>
-        <div class="tab-pane" data-tab="volumes" role="tabpanel" aria-labelledby="volumes-tab">
-            <small class="form-text text-muted">Select one or more volumes evaluated in this review.</small>
-            <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" name-field="title" allow-add="false">
-            </bib-dualing-listbox>
-        </div>
-        <div class="tab-pane" data-tab="review" role="tabpanel" aria-labelledby="review-tab">
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input class="form-control" name="title" placeholder="Title of the review, if any" type="text"
-                    value={title} onchange={handleChange}></input>
-                <label for="date">Date</label>
-                <input class="form-control" name="date" type="date" value={published_date} required="required"
-                    onchange={handleChange}></input>
-                <label for="location">Location</label>
-                <input class="form-control" name="location" placeholder="Where was this review published?" type="text"
-                    value={location} required="required" onchange={handleChange}></input>
-                <label for="link">Link</label>
-                <input class="form-control" name="link" type="url" value={link} onchange={handleChange}></input>
-                <input class="btn btn-primary" type="submit" onclick={create} value="Create"></input>
+    <div class="main-block">
+        <ul class="nav nav-tabs mb-3" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" data-tab="persons" onclick={changeTab} role="tab" aria-controls="persons"
+                    aria-selected="true">Select Authors</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-tab="volumes" onclick={changeTab} role="tab" aria-controls="volumes">Select
+                    Volumes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-tab="review" onclick={changeTab} role="tab" aria-controls="review">Enter
+                    Review Data</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" data-tab="persons" role="tabpanel" aria-labelledby="persons-tab">
+                <small class="form-text text-muted validity-persons">Select one or more authors of this review.</small>
+                <bib-dualing-listbox class="persons-listbox" entity-name="persons" name-field="sort_name"
+                    allow-add="true" onadd={addPerson}>
+                </bib-dualing-listbox>
+            </div>
+            <div class="tab-pane" data-tab="volumes" role="tabpanel" aria-labelledby="volumes-tab">
+                <small class="form-text text-muted validity-volumes">Select one or more volumes evaluated in this
+                    review.</small>
+                <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" name-field="title">
+                </bib-dualing-listbox>
+            </div>
+            <div class="tab-pane" data-tab="review" role="tabpanel" aria-labelledby="review-tab">
+                <small class="form-text text-muted validity-review">Enter details about this review. A date and location
+                    published are required.</small>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input class="form-control" name="title" placeholder="Title of the review, if any" type="text"
+                        value={title} onchange={handleChange}></input>
+                    <label for="date">Date</label>
+                    <input class="form-control" name="date" type="date" value={published_date}
+                        onchange={handleChange}></input>
+                    <label for="location">Location</label>
+                    <input class="form-control" name="location" placeholder="Where was this review published?"
+                        type="text" value={location} onchange={handleChange}></input>
+                    <label for="link">Link</label>
+                    <input class="form-control" name="link" type="url" value={link} onchange={handleChange}></input>
+                    <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+                </div>
             </div>
         </div>
     </div>
+    <template if:true={addingPerson}>
+        <h4><button class="btn btn-outline-secondary mr-3" onclick={stopAddingPerson}>&lt; Back</button>Adding New
+            Author</h4>
+        <bib-add-person onsave={personAdded}></bib-add-person>
+    </template>
 </template>
