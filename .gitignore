@@ -9,3 +9,4 @@ db.sqlite3
 .vscode
 *.dump
 **/node_modules
+**/static/lwc
