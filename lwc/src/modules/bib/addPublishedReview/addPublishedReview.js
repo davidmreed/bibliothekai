@@ -2,10 +2,10 @@ import { LightningElement } from 'lwc';
 import { createRecord } from 'bib/drf';
 
 export default class AddPublishedReview extends LightningElement {
-    title = "";
-    location = "";
-    published_date = "";
-    link = "";
+    title = '';
+    location = '';
+    published_date = '';
+    link = '';
     addingPerson = false;
 
     get isFormValid() {
@@ -26,8 +26,8 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     get currentTab() {
-        for (let elem of this.template.querySelectorAll(".nav-link")) {
-            if (elem.classList.contains("active")) {
+        for (let elem of this.template.querySelectorAll('.nav-link')) {
+            if (elem.classList.contains('active')) {
                 return elem.dataset.tab;
             }
         }
@@ -41,36 +41,36 @@ export default class AddPublishedReview extends LightningElement {
 
     markTabInvalid(tab) {
         let validityElem = this.getTabValidityElement(tab);
-        validityElem.classList.add("is-invalid");
-        validityElem.classList.add("form-control");
-        validityElem.classList.add("mb-2");
+        validityElem.classList.add('is-invalid');
+        validityElem.classList.add('form-control');
+        validityElem.classList.add('mb-2');
     }
 
     markTabValid(tab) {
         let validityElem = this.getTabValidityElement(tab);
-        if (validityElem.classList.contains("is-invalid")) {
-            validityElem.classList.remove("is-invalid");
-            validityElem.classList.remove("form-control");
-            validityElem.classList.remove("mb-2");
+        if (validityElem.classList.contains('is-invalid')) {
+            validityElem.classList.remove('is-invalid');
+            validityElem.classList.remove('form-control');
+            validityElem.classList.remove('mb-2');
         }
     }
 
     selectTab(tab) {
         // Select the correct tab.
-        for (let elem of this.template.querySelectorAll(".nav-link")) {
+        for (let elem of this.template.querySelectorAll('.nav-link')) {
             if (elem.dataset.tab === tab) {
-                elem.classList.add("active");
+                elem.classList.add('active');
             } else {
-                elem.classList.remove("active");
+                elem.classList.remove('active');
             }
         }
 
         // Show the corresponding tab pane.
-        for (let elem of this.template.querySelectorAll(".tab-pane")) {
+        for (let elem of this.template.querySelectorAll('.tab-pane')) {
             if (elem.dataset.tab === tab) {
-                elem.classList.add("active");
+                elem.classList.add('active');
             } else {
-                elem.classList.remove("active");
+                elem.classList.remove('active');
             }
         }
     }
@@ -82,8 +82,10 @@ export default class AddPublishedReview extends LightningElement {
         if (activeTab === tabName) return;
 
         if (
-            (activeTab === 'persons' && this.selectedPersons.length === 0)
-            || (activeTab === 'volumes' && this.selectedVolumes.length === 0 && tabName !== 'persons')
+            (activeTab === 'persons' && this.selectedPersons.length === 0) ||
+            (activeTab === 'volumes' &&
+                this.selectedVolumes.length === 0 &&
+                tabName !== 'persons')
         ) {
             this.markTabInvalid(activeTab);
             event.preventDefault();
@@ -96,12 +98,13 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     get personsListbox() {
-        return this.template.querySelector(".persons-listbox");
+        return this.template.querySelector('.persons-listbox');
     }
 
     get volumesListbox() {
-        return this.template.querySelector(".volumes-listbox");
+        return this.template.querySelector('.volumes-listbox');
     }
+
     get selectedPersons() {
         return this.personsListbox.getSelectedIds();
     }
@@ -117,12 +120,12 @@ export default class AddPublishedReview extends LightningElement {
         let volumes = this.selectedVolumes;
 
         if (!this.isFormValid) {
-            this.markTabInvalid("review");
+            this.markTabInvalid('review');
             event.preventDefault();
             event.stopPropagation();
             return;
         }
-        this.markTabValid("review");
+        this.markTabValid('review');
 
         let record = {
             volumes: volumes,
@@ -130,7 +133,7 @@ export default class AddPublishedReview extends LightningElement {
             published_date: this.published_date,
             title: this.title,
             location: this.location
-        }
+        };
         /*if (this.link) {
             record.links = [
                 {
@@ -139,25 +142,22 @@ export default class AddPublishedReview extends LightningElement {
                 }
             ]
         }*/
-        createRecord(
-            "published-reviews",
-            record
-        );
+        createRecord('published-reviews', record);
     }
 
     addPerson() {
         this.addingPerson = true;
-        this.template.querySelector(".main-block").classList.add("d-none");
+        this.template.querySelector('.main-block').classList.add('d-none');
     }
 
     stopAddingPerson() {
         this.addingPerson = false;
-        this.template.querySelector(".main-block").classList.remove("d-none");
+        this.template.querySelector('.main-block').classList.remove('d-none');
     }
 
     personAdded() {
         this.addingPerson = false;
-        this.template.querySelector(".main-block").classList.remove("d-none");
+        this.template.querySelector('.main-block').classList.remove('d-none');
         // TODO: We can't auto-select the new entity in the dualing listbox
         // because its wire refresh hasn't happened yet.
     }

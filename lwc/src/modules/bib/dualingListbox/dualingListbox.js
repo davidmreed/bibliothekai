@@ -5,6 +5,10 @@ export default class DualingListbox extends LightningElement {
     @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
     setEntities(data) {
         this.entities = data;
+
+        let selected = this.getSelectedIds();
+        this.selectedEntities = [];
+        this.selectIds(selected);
         this.updateDisplay();
     }
     entities = [];
@@ -17,12 +21,15 @@ export default class DualingListbox extends LightningElement {
     @track searchKey = null;
 
     get shouldAllowAdd() {
-        return this.allowAdd === "true" ? true : false; // FIXME: what if a bound boolean is passed in?
+        if (typeof this.allowAdd === 'boolean') {
+            return this.allowAdd;
+        }
+        return this.allowAdd === 'true' ? true : false;
     }
 
     @api
     getSelectedIds() {
-        return this.selectedEntities.map(e => e.id);
+        return this.selectedEntities.map((e) => e.id);
     }
 
     @api
@@ -30,7 +37,11 @@ export default class DualingListbox extends LightningElement {
         for (let value of ids) {
             let index = this.entities.findIndex((f) => f.id === value);
             if (index !== -1) {
-                this.selectedEntities.splice(this.selectedEntities.length, 0, ...this.entities.splice(index, 1));
+                this.selectedEntities.splice(
+                    this.selectedEntities.length,
+                    0,
+                    ...this.entities.splice(index, 1)
+                );
             }
         }
         this.updateDisplay();
@@ -41,16 +52,18 @@ export default class DualingListbox extends LightningElement {
         for (let value of ids) {
             let index = this.selectedEntities.findIndex((f) => f.id === value);
             if (index !== -1) {
-                this.entities.splice(this.entities.length, 0, ...this.selectedEntities.splice(index, 1));
+                this.entities.splice(
+                    this.entities.length,
+                    0,
+                    ...this.selectedEntities.splice(index, 1)
+                );
             }
         }
 
         this.updateDisplay();
-
     }
 
-    connectedCallback() {
-    }
+    connectedCallback() {}
 
     doSearch(event) {
         this.searchKey = event.target.value;
@@ -59,8 +72,12 @@ export default class DualingListbox extends LightningElement {
 
     updateDisplay() {
         if (this.searchKey) {
-            this.filteredEntities = this.entities.filter((f) => f.name.toLowerCase().includes(this.searchKey.toLowerCase()));
-            this.filteredSelectedEntities = this.selectedEntities.filter((f) => f.name.toLowerCase().includes(this.searchKey.toLowerCase()));
+            this.filteredEntities = this.entities.filter((f) =>
+                f.name.toLowerCase().includes(this.searchKey.toLowerCase())
+            );
+            this.filteredSelectedEntities = this.selectedEntities.filter((f) =>
+                f.name.toLowerCase().includes(this.searchKey.toLowerCase())
+            );
         } else {
             this.filteredEntities = this.entities;
             this.filteredSelectedEntities = this.selectedEntities;
@@ -84,13 +101,17 @@ export default class DualingListbox extends LightningElement {
 
     moveRight() {
         this.selectIds(
-            Array.from(this.template.querySelector('.entities').selectedOptions).map((f) => Number(f.value))
+            Array.from(
+                this.template.querySelector('.entities').selectedOptions
+            ).map((f) => Number(f.value))
         );
     }
 
     moveLeft() {
         this.unselectIds(
-            Array.from(this.template.querySelector('.selectedEntities').selectedOptions).map((f) => Number(f.value))
+            Array.from(
+                this.template.querySelector('.selectedEntities').selectedOptions
+            ).map((f) => Number(f.value))
         );
     }
 

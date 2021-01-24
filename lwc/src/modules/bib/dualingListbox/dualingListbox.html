@@ -1,14 +1,26 @@
 <template>
-    <input class="form-control" name="search" type="search" placeholder="Search" aria-label="search"
-        oninput={doSearch}></input>
-    <br />
+    <input
+        class="form-control mb-2"
+        name="search"
+        type="search"
+        placeholder="Search"
+        aria-label="search"
+        oninput={doSearch}
+    />
     <div class="card-group">
         <div class="card">
             <div class="card-body form-group">
-                <select class="entities form-control" name="entities" size="5" multiple>
+                <select
+                    class="entities form-control"
+                    name="entities"
+                    size="5"
+                    multiple
+                >
                     <template if:true={filteredEntities.length}>
                         <template for:each={filteredEntities} for:item="entity">
-                            <option key={entity.id} value={entity.id}>{entity.name}</option>
+                            <option key={entity.id} value={entity.id}>
+                                {entity.name}
+                            </option>
                         </template>
                     </template>
                     <template if:false={filteredEntities.length}>
@@ -16,19 +28,37 @@
                     </template>
                 </select>
                 <br />
-                <small class="text-muted">Showing {filteredEntityCount} of {entityCount} available</small>
+                <small class="text-muted"
+                    >Showing {filteredEntityCount} of {entityCount}
+                    available</small
+                >
                 <div class="float-right">
                     <template if:false={shouldAllowAdd}>
-                        <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
-                            &raquo;</button>
+                        <button
+                            class="btn btn-primary btn-sm btn-outline"
+                            type="button"
+                            onclick={moveRight}
+                        >
+                            Select &raquo;
+                        </button>
                     </template>
                     <template if:true={shouldAllowAdd}>
                         <div class="btn-group">
-                            <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveRight}>Select
-                                &raquo;</button>
+                            <button
+                                class="btn btn-primary btn-sm btn-outline"
+                                type="button"
+                                onclick={moveRight}
+                            >
+                                Select &raquo;
+                            </button>
 
-                            <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={add}>Add
-                                +</button>
+                            <button
+                                class="btn btn-primary btn-sm btn-outline"
+                                type="button"
+                                onclick={add}
+                            >
+                                Add +
+                            </button>
                         </div>
                     </template>
                 </div>
@@ -36,10 +66,20 @@
         </div>
         <div class="card">
             <div class="card-body form-group">
-                <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple>
+                <select
+                    class="selectedEntities form-control"
+                    name="selectedEntities"
+                    size="5"
+                    multiple
+                >
                     <template if:true={filteredSelectedEntities.length}>
-                        <template for:each={filteredSelectedEntities} for:item="entity">
-                            <option key={entity.id} value={entity.id}>{entity.name}</option>
+                        <template
+                            for:each={filteredSelectedEntities}
+                            for:item="entity"
+                        >
+                            <option key={entity.id} value={entity.id}>
+                                {entity.name}
+                            </option>
                         </template>
                     </template>
                     <template if:false={filteredSelectedEntities.length}>
@@ -47,10 +87,17 @@
                     </template>
                 </select>
                 <br />
-                <button class="btn btn-primary btn-sm btn-outline" type="button" onclick={moveLeft}>Unselect
-                    &laquo;</button>
-                <small class="text-muted float-right">Showing {filteredSelectedCount} of {selectedCount}
-                    selected</small>
+                <button
+                    class="btn btn-primary btn-sm btn-outline"
+                    type="button"
+                    onclick={moveLeft}
+                >
+                    Unselect &laquo;
+                </button>
+                <small class="text-muted float-right"
+                    >Showing {filteredSelectedCount} of {selectedCount}
+                    selected</small
+                >
             </div>
         </div>
     </div>
