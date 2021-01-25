@@ -1,6 +1,7 @@
 const getRecordsStore = new Map();
 
 function getEndpoint() {
+    // eslint-disable-next-line no-undef
     return process.env.ENDPOINT;
 }
 
@@ -39,7 +40,10 @@ export class getRecords {
     }
 
     update(config) {
-        if (this.entityName !== config.entityName || this.nameField !== config.nameField) {
+        if (
+            this.entityName !== config.entityName ||
+            this.nameField !== config.nameField
+        ) {
             this._unregister();
             this.entityName = config.entityName;
             this.nameField = config.nameField;
@@ -50,14 +54,13 @@ export class getRecords {
 
     _refresh() {
         let endpoint = getEndpoint();
-        fetch(
-            new Request(
-                `${endpoint}/${this.entityName}/`,
-            )
-        ).then(result => result.json())
-            .then(data => {
+        fetch(new Request(`${endpoint}/${this.entityName}/`))
+            .then((result) => result.json())
+            .then((data) => {
                 this.dataCallback(
-                    data.map((elem) => { return { "id": elem.id, "name": elem[this.nameField] } })
+                    data.map((elem) => {
+                        return { id: elem.id, name: elem[this.nameField] };
+                    })
                 );
             });
     }
@@ -72,8 +75,10 @@ function getCookie(name) {
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            if (cookie.substring(0, name.length + 1) === name + '=') {
+                cookieValue = decodeURIComponent(
+                    cookie.substring(name.length + 1)
+                );
                 break;
             }
         }
@@ -85,21 +90,20 @@ export function createRecord(entity, record) {
     let endpoint = getEndpoint();
 
     return new Promise((resolve, reject) => {
-        fetch(
-            `${endpoint}/${entity}/`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify(record)
-            }
-        ).then(response => {
-            if (getRecordsStore.has(entity)) {
-                getRecordsStore.get(entity).forEach(r => r._refresh());
-            }
-            resolve(response.json());
-        }).catch(reason => reject(reason));
+        fetch(`${endpoint}/${entity}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(record)
+        })
+            .then((response) => {
+                if (getRecordsStore.has(entity)) {
+                    getRecordsStore.get(entity).forEach((r) => r._refresh());
+                }
+                resolve(response.json());
+            })
+            .catch((reason) => reject(reason));
     });
 }
