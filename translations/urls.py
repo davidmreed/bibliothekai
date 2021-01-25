@@ -45,6 +45,11 @@ urlpatterns = [
         name="publishedreview_list",
     ),
     path(
+        "published-reviews/add",
+        views.PublishedReviewLWCView.as_view(),
+        name="publishedreview_add",
+    ),
+    path(
         "volumes/<int:vol>/review",
         views.ReviewCreateView.as_view(),
         name="review_create",
@@ -66,6 +71,5 @@ urlpatterns = [
     ),
     path("search", views.SearchView.as_view(), name="search"),
     path("submit", views.UserSubmissionCreateView.as_view(), name="submit"),
-    path("test", views.TestLWCView.as_view(), name="test"),
     path("api/", include(router.urls)),
 ]

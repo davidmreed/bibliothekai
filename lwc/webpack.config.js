@@ -1,18 +1,17 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const webpack = require('webpack');
+
 module.exports = {
     entry: {
         addPublishedReview: './src/addPublishedReview.js',
-        addPerson: './src/addPerson.js'
     },
     output: {
-        filename: '[name].js'
+        filename: '[name].js',
     },
-    optimization: {}
-    /* plugins: [
-         new HtmlWebpackPlugin({
-             filename: 'addPublishedReview.html',
-             template: 'addPublishedReview.html',
-             chunks: ['addPublishedReview']
-         })
-     ]*/
-};
+    plugins: [
+        new WebpackManifestPlugin(),
+        new webpack.EnvironmentPlugin({
+            ENDPOINT: 'http://127.0.0.1:8000/api'
+        })
+    ]
+}

@@ -43,8 +43,8 @@ class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
 
 
-class TestLWCView(generic.TemplateView):
-    template_name = "lwc/test.html"
+class PublishedReviewLWCView(generic.TemplateView):
+    template_name = "lwc/add_published_review.html"
 
 
 class SourceTextDetailView(generic.DetailView):

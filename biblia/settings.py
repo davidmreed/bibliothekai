@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "users",
     "anymail",
     "rest_framework",
+    "manifest_loader",
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,12 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ]
+}
+
+MANIFEST_LOADER = {
+    "output_dir": "translations/static",  # where webpack outputs to, if not set, will search in STATICFILES_DIRS for the manifest.
+    "manifest_file": "manifest.json",  # name of your manifest file
+    "cache": True,  # recommended True for production, requires a server restart to pick up new values from the manifest.
 }
 
 # Database
