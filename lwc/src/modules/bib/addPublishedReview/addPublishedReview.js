@@ -8,6 +8,18 @@ export default class AddPublishedReview extends LightningElement {
     link = '';
     addingPerson = false;
 
+    renderedCallback() {
+        // If we're being displayed within a volume's path,
+        // preselect that volume.
+        const regex = /volumes\/([0-9]+)\//;
+        const loc = document.location.pathname;
+        const volumeIdMatch = loc.match(regex);
+
+        if (volumeIdMatch && volumeIdMatch.length === 2) {
+            this.volumesListbox.preselectIds([Number(volumeIdMatch[1])]);
+        }
+    }
+
     get isFormValid() {
         return !!this.title && !!this.location && !!this.published_date;
     }
@@ -155,10 +167,9 @@ export default class AddPublishedReview extends LightningElement {
         this.template.querySelector('.main-block').classList.remove('d-none');
     }
 
-    personAdded() {
+    personAdded(event) {
         this.addingPerson = false;
         this.template.querySelector('.main-block').classList.remove('d-none');
-        // TODO: We can't auto-select the new entity in the dualing listbox
-        // because its wire refresh hasn't happened yet.
+        this.personsListbox.preselectIds([event.detail]);
     }
 }

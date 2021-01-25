@@ -45,7 +45,7 @@ urlpatterns = [
         name="publishedreview_list",
     ),
     path(
-        "published-reviews/add",
+        "volumes/<int:vol>/published-reviews/add",
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),

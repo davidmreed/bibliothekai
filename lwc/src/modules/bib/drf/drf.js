@@ -95,11 +95,11 @@ export function createRecord(entity, record) {
                 },
                 body: JSON.stringify(record)
             }
-        ).then((data) => {
+        ).then(response => {
             if (getRecordsStore.has(entity)) {
                 getRecordsStore.get(entity).forEach(r => r._refresh());
             }
-            resolve(data);
+            resolve(response.json());
         }).catch(reason => reject(reason));
     });
 }

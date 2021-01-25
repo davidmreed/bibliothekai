@@ -9,9 +9,16 @@ export default class DualingListbox extends LightningElement {
         let selected = this.getSelectedIds();
         this.selectedEntities = [];
         this.selectIds(selected);
+
+        if (this.preselectedIds) {
+            this.selectIds(this.preselectedIds);
+            this.preselectedIds = null;
+        }
+
         this.updateDisplay();
     }
     entities = [];
+    preselectedIds;
     @api entityName;
     @api nameField;
     @api allowAdd;
@@ -63,7 +70,19 @@ export default class DualingListbox extends LightningElement {
         this.updateDisplay();
     }
 
-    connectedCallback() {}
+    @api
+    preselectIds(ids) {
+        // Sometimes we need to select an entity id that is not in our entities yet,
+        // as it's just been created and is pending a wire refresh.
+        // Likewise, we may need to preselect an entity before the first wire refresh
+        // completes.
+
+        if (ids.map(id => this.entities.includes(id)).reduce((a, b) => a && b)) {
+            this.selectIds(ids);
+        } else {
+            this.preselectedIds = ids;
+        }
+    }
 
     doSearch(event) {
         this.searchKey = event.target.value;
