@@ -40,8 +40,8 @@
     },
     "repository": "https://github.com/davidmreed/bibliothekai",
     "scripts": {
-        "build": "lwc-services build -m production",
-        "build:development": "lwc-services build",
+        "build": "lwc-services build -m production -w webpack.config.js",
+        "build:development": "lwc-services build -w webpack.config.js",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",

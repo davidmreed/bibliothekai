@@ -6,4 +6,4 @@ const app = createElement('bib-add-published-review', {
     is: AddPublishedReview
 });
 // eslint-disable-next-line @lwc/lwc/no-document-query
-document.querySelector('#main').appendChild(app);
+document.querySelector('#lwc').appendChild(app);
