@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "anymail",
     "rest_framework",
     "manifest_loader",
+    "generic_relations",
 ]
 
 MIDDLEWARE = [
