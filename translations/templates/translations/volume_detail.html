@@ -137,7 +137,13 @@
     Published Reviews
     <span class="float-right">
         <a class="btn btn-secondary btn-sm" href="{% url 'publishedreview_list' volume.id %}">
-            View all</a>
+            View all
+        </a>
+        {% if user.is_authenticated %}
+        <a class="btn btn-primary btn-sm ml-1" href="{% url 'publishedreview_add' volume.id %}">
+            Add
+        </a>
+        {% endif %}
     </span>
 </h2>
 
@@ -154,7 +160,7 @@
             View all</a>
         {% if user.is_authenticated %}
         <a class="btn btn-primary btn-sm ml-1" href="{% url 'review_create' volume.id %}">
-            Add review
+            Add
         </a>
         {% endif %}
     </span>
