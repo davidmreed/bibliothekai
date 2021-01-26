@@ -9,7 +9,7 @@ module.exports = {
         filename: '[name].js'
     },
     plugins: [
-        new WebpackManifestPlugin({ publicPath: 'static/' }),
+        new WebpackManifestPlugin({ publicPath: '' }),
         new webpack.EnvironmentPlugin({
             ENDPOINT: 'http://127.0.0.1:8000/api'
         })
