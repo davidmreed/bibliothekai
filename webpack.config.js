@@ -3,15 +3,15 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        addPublishedReview: './src/addPublishedReview.js',
+        addPublishedReview: './src/addPublishedReview.js'
     },
     output: {
-        filename: '[name].js',
+        filename: '[name].js'
     },
     plugins: [
-        new WebpackManifestPlugin(),
+        new WebpackManifestPlugin({ publicPath: 'static/' }),
         new webpack.EnvironmentPlugin({
             ENDPOINT: 'http://127.0.0.1:8000/api'
         })
     ]
-}
+};
