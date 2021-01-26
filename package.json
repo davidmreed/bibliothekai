@@ -9,7 +9,7 @@
         "eslint": "^7.11.0",
         "husky": "^4.3.0",
         "lint-staged": "^10.4.0",
-        "lwc-services": "^2.2.2",
+        "lwc-services": "^2.3.2",
         "prettier": "^2.1.2",
         "webpack-manifest-plugin": "^3.0.0"
     },
@@ -37,6 +37,10 @@
         ],
         "./src/**/*.js": [
             "eslint"
+        ],
+        "**/*.py": [
+            "black",
+            "flake8"
         ]
     },
     "repository": "https://github.com/davidmreed/bibliothekai",
