@@ -10,3 +10,4 @@ db.sqlite3
 *.dump
 **/node_modules
 translations/static
+static
