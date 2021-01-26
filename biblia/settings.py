@@ -164,7 +164,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_SIGNUP_FORM_CLASS = "users.forms.SignupForm"
 
-ACCOUNT_USER_DISPLAY = lambda u: u.display_name
+ACCOUNT_USER_DISPLAY = lambda u: u.display_name  # noqa: E731
 
 ANYMAIL = {
     "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY"),

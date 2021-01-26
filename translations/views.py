@@ -34,7 +34,6 @@ from .serializers import (
     LinkSerializer,
     AlternateNameSerializer,
 )
-from .permissions import IsOwnerOrReadOnly
 
 from users.models import User
 
