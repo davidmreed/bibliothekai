@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from generic_relations.relations import GenericRelatedField
 from translations.models import (
     Person,
     Language,
@@ -38,10 +38,30 @@ class ChoiceField(serializers.ChoiceField):
 
 class LinkSerializer(serializers.ModelSerializer):
     resource_type = ChoiceField(choices=Link.RESOURCE_TYPE_CHOICES)
+    content_object = GenericRelatedField(
+        {
+            Volume: serializers.HyperlinkedRelatedField(
+                queryset=Volume.objects.all(), view_name="volumes-detail",
+            ),
+            PublishedReview: serializers.HyperlinkedRelatedField(
+                queryset=PublishedReview.objects.all(),
+                view_name="published-reviews-detail",
+            ),
+            Person: serializers.HyperlinkedRelatedField(
+                queryset=Person.objects.all(), view_name="persons-detail",
+            ),
+            SourceText: serializers.HyperlinkedRelatedField(
+                queryset=SourceText.objects.all(), view_name="texts-detail",
+            ),
+            Publisher: serializers.HyperlinkedRelatedField(
+                queryset=Publisher.objects.all(), view_name="publishers-detail",
+            ),
+        }
+    )
 
     class Meta:
         model = Link
-        fields = ["id", "link", "source", "resource_type"]
+        fields = ["id", "link", "source", "resource_type", "content_object"]
 
 
 class AlternateNameSerializer(serializers.ModelSerializer):
