@@ -11,7 +11,7 @@ module.exports = {
     plugins: [
         new WebpackManifestPlugin({ publicPath: '' }),
         new webpack.EnvironmentPlugin({
-            ENDPOINT: 'http://127.0.0.1:8000/api'
+            ENDPOINT: 'http://127.0.0.1:8000'
         })
     ]
 };

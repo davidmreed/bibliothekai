@@ -5,8 +5,16 @@ function getEndpoint() {
     return process.env.ENDPOINT;
 }
 
-export function getRecordUrl(entityName, id) {
-    return `${getEndpoint()}/${entityName}/${id}/`;
+function getApiEndpoint() {
+    return `${getEndpoint()}/api`
+}
+
+export function getRecordApiUrl(entityName, id) {
+    return `${getApiEndpoint()}/${entityName}/${id}/`;
+}
+
+export function getRecordUiUrl(entityName, id) {
+    return `${getEndpoint()}/${entityName}/${id}`;
 }
 
 export class getRecords {
@@ -57,7 +65,7 @@ export class getRecords {
     }
 
     _refresh() {
-        let endpoint = getEndpoint();
+        let endpoint = getApiEndpoint();
         fetch(new Request(`${endpoint}/${this.entityName}/`))
             .then((result) => result.json())
             .then((data) => {
@@ -91,7 +99,7 @@ function getCookie(name) {
 }
 
 export function createRecord(entity, record) {
-    let endpoint = getEndpoint();
+    let endpoint = getApiEndpoint();
 
     return new Promise((resolve, reject) => {
         fetch(`${endpoint}/${entity}/`, {

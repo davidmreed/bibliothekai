@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { createRecord, getRecordUrl } from 'bib/drf';
+import { createRecord, getRecordApiUrl, getRecordUiUrl } from 'bib/drf';
 
 export default class AddPublishedReview extends LightningElement {
     title = '';
@@ -146,8 +146,8 @@ export default class AddPublishedReview extends LightningElement {
         this.markTabValid('review');
 
         let record = {
-            volumes: volumes.map(v => getRecordUrl("volumes", v)),
-            persons: persons.map(p => getRecordUrl("persons", p)),
+            volumes: volumes.map(v => getRecordApiUrl("volumes", v)),
+            persons: persons.map(p => getRecordApiUrl("persons", p)),
             published_date: this.published_date,
             title: this.title,
             location: `${this.source}, ${this.location}`
@@ -156,13 +156,14 @@ export default class AddPublishedReview extends LightningElement {
             .then(result => {
                 if (this.link) {
                     let link = {
-                        content_object: getRecordUrl("published-reviews", result.id),
+                        content_object: getRecordApiUrl("published-reviews", result.id),
                         link: this.link,
                         source: this.source,
                         resource_type: "Full Text"
                     };
                     createRecord("links", link);
                 }
+                window.location.href = getRecordUiUrl("published-reviews", result.id);
             })
             .catch(error => {
                 this.markTabInvalid("review", error);
