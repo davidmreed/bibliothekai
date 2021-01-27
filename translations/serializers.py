@@ -92,6 +92,7 @@ class PersonSerializer(serializers.ModelSerializer):
         required=False,
         view_name="alternatename-detail",
     )
+    sort_name = serializers.ReadOnlyField()
 
     class Meta:
         model = Person
