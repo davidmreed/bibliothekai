@@ -67,13 +67,23 @@ export class getRecords {
     _refresh() {
         let endpoint = getApiEndpoint();
         fetch(new Request(`${endpoint}/${this.entityName}/`))
-            .then((result) => result.json())
-            .then((data) => {
-                this.dataCallback(
-                    data.map((elem) => {
-                        return { id: elem.id, name: elem[this.nameField] };
-                    }) // FIXME: implement error handling/propagation
-                );
+            .then(result => {
+                if (result.ok) {
+                    result.json().then(data => {
+                        this.dataCallback(
+                            {
+                                data: data.map((elem) => {
+                                    return { id: elem.id, name: elem[this.nameField] };
+                                }),
+                                error: null
+                            }
+                        );
+                    });
+                } else {
+                    this.dataCallback({ data: null, error: `The API returned an error: ${result.status}.` })
+                }
+            }).catch(error => {
+                this.dataCallback({ data: null, error });
             });
     }
 }

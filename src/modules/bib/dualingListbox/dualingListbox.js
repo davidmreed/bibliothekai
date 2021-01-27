@@ -3,19 +3,24 @@ import { getRecords } from 'bib/drf';
 
 export default class DualingListbox extends LightningElement {
     @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
-    setEntities(data) {
-        this.entities = data;
+    setEntities({ data, error }) {
+        if (data) {
+            this.entities = data;
 
-        let selected = this.getSelectedIds();
-        this.selectedEntities = [];
-        this.selectIds(selected);
+            let selected = this.getSelectedIds();
+            this.selectedEntities = [];
+            this.selectIds(selected);
 
-        if (this.preselectedIds) {
-            this.selectIds(this.preselectedIds);
-            this.preselectedIds = null;
+            if (this.preselectedIds) {
+                this.selectIds(this.preselectedIds);
+                this.preselectedIds = null;
+            }
+
+            this.updateDisplay();
+        } else {
+            this.setErrorStatus(error);
         }
-
-        this.updateDisplay();
+        this.template.querySelector(".spinner-grow").classList.add("d-none");
     }
     entities = [];
     preselectedIds;
@@ -136,6 +141,16 @@ export default class DualingListbox extends LightningElement {
 
     add() {
         this.dispatchEvent(new CustomEvent('add'));
+    }
+
+    getValidityElement() {
+        return this.template.querySelector(".validity");
+    }
+
+    setErrorStatus(message) {
+        let validityElem = this.getValidityElement();
+        validityElem.innerText = message;
+        validityElem.classList.remove("d-none");
     }
 
     get selectedCount() {

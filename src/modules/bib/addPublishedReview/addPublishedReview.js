@@ -38,6 +38,9 @@ export default class AddPublishedReview extends LightningElement {
         } else if (field === 'source') {
             this.source = event.target.value;
         }
+        if (this.isFormValid) {
+            this.markTabValid("review");
+        }
     }
 
     get currentTab() {

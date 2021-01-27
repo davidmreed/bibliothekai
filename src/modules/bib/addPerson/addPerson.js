@@ -22,6 +22,9 @@ export default class AddPerson extends LightningElement {
         } else if (field === 'description') {
             this.description = event.target.value;
         }
+        if (this.isFormValid) {
+            this.markFormValid();
+        }
     }
 
     getValidityElement() {
