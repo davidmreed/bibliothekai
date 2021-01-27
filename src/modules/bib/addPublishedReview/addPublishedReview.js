@@ -1,9 +1,10 @@
 import { LightningElement } from 'lwc';
-import { createRecord } from 'bib/drf';
+import { createRecord, getRecordUrl } from 'bib/drf';
 
 export default class AddPublishedReview extends LightningElement {
     title = '';
     location = '';
+    source = '';
     published_date = '';
     link = '';
     addingPerson = false;
@@ -21,7 +22,7 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     get isFormValid() {
-        return !!this.title && !!this.location && !!this.published_date;
+        return !!this.location && !!this.published_date && !!this.source && !!this.location;
     }
 
     handleChange(event) {
@@ -34,6 +35,8 @@ export default class AddPublishedReview extends LightningElement {
             this.published_date = event.target.value;
         } else if (field === 'link') {
             this.link = event.target.value;
+        } else if (field === 'source') {
+            this.source = event.target.value;
         }
     }
 
@@ -51,11 +54,14 @@ export default class AddPublishedReview extends LightningElement {
         return this.template.querySelector(`.validity-${tab}`);
     }
 
-    markTabInvalid(tab) {
+    markTabInvalid(tab, message) {
         let validityElem = this.getTabValidityElement(tab);
         validityElem.classList.add('is-invalid');
         validityElem.classList.add('form-control');
         validityElem.classList.add('mb-2');
+        if (message) {
+            validityElem.innerText = message;
+        }
     }
 
     markTabValid(tab) {
@@ -140,21 +146,27 @@ export default class AddPublishedReview extends LightningElement {
         this.markTabValid('review');
 
         let record = {
-            volumes: volumes,
-            persons: persons,
+            volumes: volumes.map(v => getRecordUrl("volumes", v)),
+            persons: persons.map(p => getRecordUrl("persons", p)),
             published_date: this.published_date,
             title: this.title,
-            location: this.location
+            location: `${this.source}, ${this.location}`
         };
-        /*if (this.link) {
-            record.links = [
-                {
-                    link: this.link,
-                    resource_type: "Full Text"
+        createRecord('published-reviews', record)
+            .then(result => {
+                if (this.link) {
+                    let link = {
+                        content_object: getRecordUrl("published-reviews", result.id),
+                        link: this.link,
+                        source: this.source,
+                        resource_type: "Full Text"
+                    };
+                    createRecord("links", link);
                 }
-            ]
-        }*/
-        createRecord('published-reviews', record);
+            })
+            .catch(error => {
+                this.markTabInvalid("review", error);
+            });
     }
 
     addPerson() {

@@ -28,8 +28,9 @@
                 </bib-dualing-listbox>
             </div>
             <div class="tab-pane" data-tab="review" role="tabpanel" aria-labelledby="review-tab">
-                <small class="form-text text-muted validity-review">Enter details about this review. A date and location
-                    published are required.</small>
+                <small class="form-text text-muted validity-review">
+                    Enter details about this review. A date, publication, and volume, issue, or pages are required.
+                </small>
                 <div class="form-group">
                     <label for="title">Title</label>
                     <input class="form-control" name="title" placeholder="Title of the review, if any" type="text"
@@ -37,9 +38,12 @@
                     <label for="date">Date</label>
                     <input class="form-control" name="date" type="date" value={published_date}
                         onchange={handleChange}></input>
-                    <label for="location">Location</label>
-                    <input class="form-control" name="location" placeholder="Where was this review published?"
-                        type="text" value={location} onchange={handleChange}></input>
+                    <label for="location">Publication</label>
+                    <input class="form-control" name="source" placeholder="Where was this review published?" type="text"
+                        value={source} onchange={handleChange}></input>
+                    <label for="location">Volume, Issue or Pages</label>
+                    <input class="form-control" name="location" placeholder="What volume or issue?" type="text"
+                        value={location} onchange={handleChange}></input>
                     <label for="link">Link</label>
                     <input class="form-control" name="link" type="url" value={link} onchange={handleChange}></input>
                     <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>

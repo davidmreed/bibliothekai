@@ -28,11 +28,14 @@ export default class AddPerson extends LightningElement {
         return this.template.querySelector(".validity");
     }
 
-    markFormInvalid(tab) {
+    markFormInvalid(tab, message) {
         let validityElem = this.getValidityElement(tab);
         validityElem.classList.add("is-invalid");
         validityElem.classList.add("form-control");
         validityElem.classList.add("mb-2");
+        if (message) {
+            validityElem.innerText = message;
+        }
     }
 
     markFormValid(tab) {
@@ -68,6 +71,7 @@ export default class AddPerson extends LightningElement {
         ).then(result => {
             this.dispatchEvent(new CustomEvent('save', { detail: result.id }));
         }).catch(error => {
+            this.markFormInvalid(error);
             this.dispatchEvent(new CustomEvent('error', { detail: error }))
         });
     }

@@ -41,20 +41,20 @@ class LinkSerializer(serializers.ModelSerializer):
     content_object = GenericRelatedField(
         {
             Volume: serializers.HyperlinkedRelatedField(
-                queryset=Volume.objects.all(), view_name="volumes-detail",
+                queryset=Volume.objects.all(), view_name="volume-detail",
             ),
             PublishedReview: serializers.HyperlinkedRelatedField(
                 queryset=PublishedReview.objects.all(),
-                view_name="published-reviews-detail",
+                view_name="publishedreview-detail",
             ),
             Person: serializers.HyperlinkedRelatedField(
-                queryset=Person.objects.all(), view_name="persons-detail",
+                queryset=Person.objects.all(), view_name="person-detail",
             ),
             SourceText: serializers.HyperlinkedRelatedField(
-                queryset=SourceText.objects.all(), view_name="texts-detail",
+                queryset=SourceText.objects.all(), view_name="text-detail",
             ),
             Publisher: serializers.HyperlinkedRelatedField(
-                queryset=Publisher.objects.all(), view_name="publishers-detail",
+                queryset=Publisher.objects.all(), view_name="publisher-detail",
             ),
         }
     )
@@ -66,18 +66,31 @@ class LinkSerializer(serializers.ModelSerializer):
 
 class AlternateNameSerializer(serializers.ModelSerializer):
     alternate_name_type = ChoiceField(choices=AlternateName.ALTERNATE_NAME_TYPE_CHOICES)
+    content_object = GenericRelatedField(
+        {
+            Person: serializers.HyperlinkedRelatedField(
+                queryset=Person.objects.all(), view_name="person-detail",
+            ),
+            SourceText: serializers.HyperlinkedRelatedField(
+                queryset=SourceText.objects.all(), view_name="text-detail",
+            ),
+        }
+    )
 
     class Meta:
         model = AlternateName
-        fields = ["id", "name", "alternate_name_type"]
+        fields = ["id", "name", "alternate_name_type", "content_object"]
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    links = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Link.objects.all(), required=False
+    links = serializers.HyperlinkedRelatedField(
+        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
     )
-    alternate_names = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=AlternateName.objects.all(), required=False
+    alternate_names = serializers.HyperlinkedRelatedField(
+        many=True,
+        queryset=AlternateName.objects.all(),
+        required=False,
+        view_name="alternatename-detail",
     )
 
     class Meta:
@@ -103,11 +116,17 @@ class LanguageSerializer(serializers.ModelSerializer):
 
 class SourceTextSerializer(serializers.ModelSerializer):
     kind = ChoiceField(choices=KIND_CHOICES)
-    links = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Link.objects.all(), required=False
+    links = serializers.HyperlinkedRelatedField(
+        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
     )
-    alternate_names = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=AlternateName.objects.all(), required=False
+    alternate_names = serializers.HyperlinkedRelatedField(
+        many=True,
+        queryset=AlternateName.objects.all(),
+        required=False,
+        view_name="alternatename-detail",
+    )
+    author = serializers.HyperlinkedRelatedField(
+        queryset=Person.objects.all(), view_name="person-detail",
     )
 
     class Meta:
@@ -126,8 +145,8 @@ class SourceTextSerializer(serializers.ModelSerializer):
 
 
 class PublisherSerializer(serializers.ModelSerializer):
-    links = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Link.objects.all(), required=False
+    links = serializers.HyperlinkedRelatedField(
+        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
     )
 
     class Meta:
@@ -144,6 +163,12 @@ class SeriesSerializer(serializers.ModelSerializer):
 class FeatureSerializer(serializers.ModelSerializer):
     kind = ChoiceField(choices=KIND_CHOICES)
     feature = ChoiceField(choices=Feature.FEATURE_CHOICES)
+    persons = serializers.HyperlinkedRelatedField(
+        queryset=Person.objects.all(), view_name="person-detail", many=True
+    )
+    volumes = serializers.HyperlinkedRelatedField(
+        queryset=Volume.objects.all(), view_name="volume-detail", many=True
+    )
 
     class Meta:
         model = Feature
@@ -164,8 +189,14 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 class VolumeSerializer(serializers.ModelSerializer):
     features = FeatureSerializer(many=True)
-    links = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Link.objects.all(), required=False
+    links = serializers.HyperlinkedRelatedField(
+        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+    )
+    features = serializers.HyperlinkedRelatedField(
+        queryset=Feature.objects.all(), view_name="feature-detail", many=True
+    )
+    publisher = serializers.HyperlinkedRelatedField(
+        queryset=Publisher.objects.all(), view_name="publisher-detail"
     )
 
     class Meta:
@@ -187,7 +218,10 @@ class VolumeSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     closeness_rating = ChoiceField(choices=Rating.choices)
     readability_rating = ChoiceField(choices=Rating.choices)
-    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    user = serializers.HyperlinkedRelatedField(read_only=True, view_name="user-detail")
+    volume = serializers.HyperlinkedRelatedField(
+        queryset=Volume.objects.all(), view_name="volume-detail"
+    )
 
     class Meta:
         model = Review
@@ -205,8 +239,14 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class PublishedReviewSerializer(serializers.ModelSerializer):
-    links = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Link.objects.all(), required=False
+    links = serializers.HyperlinkedRelatedField(
+        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+    )
+    volumes = serializers.HyperlinkedRelatedField(
+        queryset=Volume.objects.all(), view_name="volume-detail", many=True
+    )
+    persons = serializers.HyperlinkedRelatedField(
+        queryset=Person.objects.all(), view_name="person-detail", many=True
     )
 
     class Meta:

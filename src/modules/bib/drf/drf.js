@@ -5,6 +5,10 @@ function getEndpoint() {
     return process.env.ENDPOINT;
 }
 
+export function getRecordUrl(entityName, id) {
+    return `${getEndpoint()}/${entityName}/${id}/`;
+}
+
 export class getRecords {
     entityName;
     nameField;
@@ -60,7 +64,7 @@ export class getRecords {
                 this.dataCallback(
                     data.map((elem) => {
                         return { id: elem.id, name: elem[this.nameField] };
-                    })
+                    }) // FIXME: implement error handling/propagation
                 );
             });
     }
@@ -99,10 +103,14 @@ export function createRecord(entity, record) {
             body: JSON.stringify(record)
         })
             .then((response) => {
-                if (getRecordsStore.has(entity)) {
-                    getRecordsStore.get(entity).forEach((r) => r._refresh());
+                if (response.ok) {
+                    if (getRecordsStore.has(entity)) {
+                        getRecordsStore.get(entity).forEach((r) => r._refresh());
+                    }
+                    resolve(response.json());
+                } else {
+                    reject(`The API returned an error: ${response.status}.`);
                 }
-                resolve(response.json());
             })
             .catch((reason) => reject(reason));
     });
