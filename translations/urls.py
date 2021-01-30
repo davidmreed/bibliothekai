@@ -3,17 +3,21 @@ from rest_framework.routers import DefaultRouter
 from . import views
 
 router = DefaultRouter()
-router.register(r"persons", views.PersonViewSet)
-router.register(r"languages", views.LanguageViewSet)
-router.register(r"texts", views.SourceTextViewSet)
-router.register(r"volumes", views.VolumeViewSet)
-router.register(r"publishers", views.PublisherViewSet)
-router.register(r"series", views.SeriesViewSet)
-router.register(r"features", views.FeatureViewSet)
-router.register(r"reviews", views.ReviewViewSet)
-router.register(r"published-reviews", views.PublishedReviewViewSet)
-router.register(r"links", views.LinkViewSet)
-router.register(r"alternate-names", views.AlternateNameViewSet)
+router.register(r"persons", views.PersonViewSet, basename="person")
+router.register(r"languages", views.LanguageViewSet, basename="language")
+router.register(r"texts", views.SourceTextViewSet, basename="text")
+router.register(r"volumes", views.VolumeViewSet, basename="volume")
+router.register(r"publishers", views.PublisherViewSet, basename="publisher")
+router.register(r"series", views.SeriesViewSet, basename="series")
+router.register(r"features", views.FeatureViewSet, basename="feature")
+router.register(r"reviews", views.ReviewViewSet, basename="review")
+router.register(
+    r"published-reviews", views.PublishedReviewViewSet, basename="published-review"
+)
+router.register(r"links", views.LinkViewSet, basename="link")
+router.register(
+    r"alternate-names", views.AlternateNameViewSet, basename="alternate-name"
+)
 
 
 urlpatterns = [

@@ -45,7 +45,7 @@ class LinkSerializer(serializers.ModelSerializer):
             ),
             PublishedReview: serializers.HyperlinkedRelatedField(
                 queryset=PublishedReview.objects.all(),
-                view_name="publishedreview-detail",
+                view_name="published-review-detail",
             ),
             Person: serializers.HyperlinkedRelatedField(
                 queryset=Person.objects.all(), view_name="person-detail",
@@ -90,7 +90,7 @@ class PersonSerializer(serializers.ModelSerializer):
         many=True,
         queryset=AlternateName.objects.all(),
         required=False,
-        view_name="alternatename-detail",
+        view_name="alternate-name-detail",
     )
     sort_name = serializers.ReadOnlyField()
 
@@ -124,7 +124,7 @@ class SourceTextSerializer(serializers.ModelSerializer):
         many=True,
         queryset=AlternateName.objects.all(),
         required=False,
-        view_name="alternatename-detail",
+        view_name="alternate-name-detail",
     )
     author = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(), view_name="person-detail",
@@ -167,8 +167,8 @@ class FeatureSerializer(serializers.ModelSerializer):
     persons = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(), view_name="person-detail", many=True
     )
-    volumes = serializers.HyperlinkedRelatedField(
-        queryset=Volume.objects.all(), view_name="volume-detail", many=True
+    volume = serializers.HyperlinkedRelatedField(
+        queryset=Volume.objects.all(), view_name="volume-detail"
     )
 
     class Meta:

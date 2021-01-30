@@ -22,6 +22,15 @@ class AuthorNameMixin:
             return f"{first}, and {last}"
 
 
+class UserCreatedMixin:
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    date_created = models.DateTimeField(auto_now_add=True)
+
+
+class UserCreatedApprovalMixin(UserCreatedMixin):
+    approved = models.BooleanField(default=False)
+
+
 class Link(models.Model):
     class Meta:
         ordering = ["resource_type"]
@@ -33,6 +42,8 @@ class Link(models.Model):
         ("BO", "Bio"),
         ("RS", "Resources"),
     ]
+
+    parent_relationship = "content_object"
 
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
@@ -52,6 +63,8 @@ class AlternateName(models.Model):
         ("TR", "Alternate Name Translation"),
         ("NM", "Alternate Name"),
     ]
+    parent_relationship = "content_object"
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -74,7 +87,7 @@ class Language(models.Model):
         return self.name
 
 
-class Person(models.Model):
+class Person(models.Model, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["sort_name"]
 
@@ -125,7 +138,7 @@ class Person(models.Model):
         return reverse("person_detail", args=[str(self.id)])
 
 
-class SourceText(models.Model):
+class SourceText(models.Model, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
@@ -151,7 +164,7 @@ class SourceText(models.Model):
             return olt[0].name
 
 
-class Publisher(models.Model):
+class Publisher(models.Model, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["name"]
 
@@ -163,7 +176,7 @@ class Publisher(models.Model):
         return self.name
 
 
-class Series(models.Model):
+class Series(models.Model, UserCreatedApprovalMixin):
     class Meta:
         verbose_name_plural = "series"
         ordering = ["name"]
@@ -174,7 +187,7 @@ class Series(models.Model):
         return self.name
 
 
-class Volume(models.Model):
+class Volume(models.Model, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
@@ -265,6 +278,8 @@ class Feature(models.Model, AuthorNameMixin):
         "NT": "Notes",
     }
 
+    parent_relationship = "volume"
+
     FEATURE_CHOICES = list(feature_types.items())
 
     volume = models.ForeignKey(
@@ -314,9 +329,9 @@ class Rating(models.IntegerChoices):
     EXCELLENT = 3
 
 
-class Review(models.Model):
-    class Meta:
-        ordering = ["-date_created"]
+class Review(UserCreatedMixin, models.Model):
+    # class Meta:
+    #     ordering = ["-date_created"]  FIXME
 
     title = models.CharField(max_length=255, blank=True)
     closeness_rating = models.IntegerField(
@@ -328,8 +343,6 @@ class Review(models.Model):
     recommended = models.BooleanField()
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
-    date_created = models.DateTimeField(auto_now_add=True)
 
     def readability_rating_string(self):
         return self.get_readability_rating_display() or _("Not Set")
@@ -344,7 +357,7 @@ class Review(models.Model):
         return f"User Review of {self.volume.title} by {self.user.display_name}"
 
 
-class PublishedReview(models.Model, AuthorNameMixin):
+class PublishedReview(models.Model, AuthorNameMixin, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
@@ -365,7 +378,6 @@ class PublishedReview(models.Model, AuthorNameMixin):
         return reverse("published_review_detail", args=[str(self.id)])
 
 
-class UserSubmission(models.Model):
+class UserSubmission(models.Model, UserCreatedMixin):
     processed = models.BooleanField(default=False)
     submission = models.TextField()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

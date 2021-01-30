@@ -36,6 +36,14 @@ from .serializers import (
 )
 
 from users.models import User
+from .permissions import (
+    approval_filtered_queryset,
+    filter_queryset_approval,
+    filter_queryset_parent_approval,
+    CreateChildOfUnapprovedParent,
+    IsAuthenticatedCreateOrReadOnly,
+    IsOwnerEditOrReadOnly,
+)
 
 
 class IndexView(generic.TemplateView):
@@ -51,10 +59,12 @@ class SourceTextDetailView(generic.DetailView):
     template_name = "translations/source_text_detail.html"
 
     def get_translations(self):
-        return (
+        return filter_queryset_parent_approval(
+            Feature,
             Feature.objects.filter(source_text=self.get_object())
             .filter(feature="TR")
-            .order_by("-volume__published_date")
+            .order_by("-volume__published_date"),
+            self.request.user,
         )
 
     def get_context_data(self, **kwargs):
@@ -67,9 +77,15 @@ class SourceTextIndexView(generic.ListView):
     template_name = "translations/source_text_index.html"
     paginate_by = 20
 
+    @approval_filtered_queryset
     def get_queryset(self):
         return (
-            Person.objects.prefetch_related("sourcetext_set")
+            Person.objects.prefetch_related(
+                "sourcetext_set",
+                queryset=filter_queryset_approval(
+                    SourceText.objects.all(), self.request.user
+                ),
+            )
             .filter(sourcetext__title__isnull=False)
             .distinct()
         )
@@ -79,12 +95,15 @@ class VolumeDetailView(generic.DetailView):
     model = Volume
     template_name = "translations/volume_detail.html"
 
+    # No filter necessary (approval is at volume level)
     def get_features(self):
         return self.get_object().features.order_by("source_text", "feature")
 
+    # No filter necessary (user reviews are not approved)
     def get_reviews(self):
         return self.get_object().review_set.order_by("-date_created").all()[:5]
 
+    @approval_filtered_queryset
     def get_published_reviews(self):
         return self.get_object().publishedreview_set.all()[:5]
 
@@ -99,6 +118,7 @@ class VolumeDetailView(generic.DetailView):
 class VolumeIndexView(generic.ListView):
     template_name = "translations/volume_index.html"
 
+    @approval_filtered_queryset
     def get_queryset(self):
         return Volume.objects.order_by("published_date")
 
@@ -107,6 +127,7 @@ class AuthorIndexView(generic.ListView):
     template_name = "translations/author_index.html"
     paginate_by = 50
 
+    @approval_filtered_queryset  # FIXME: if a Source Text is not approved, but the Person is, odd results
     def get_queryset(self):
         return Person.objects.filter(sourcetext__title__isnull=False).distinct()
 
@@ -115,7 +136,10 @@ class TranslatorIndexView(generic.ListView):
     template_name = "translations/translator_index.html"
     paginate_by = 50
 
-    def get_queryset(self):
+    @approval_filtered_queryset
+    def get_queryset(
+        self,
+    ):  # FIXME: if a Person is approved but the Feature/Volume is not, odd results.
         return Person.objects.filter(features__feature__exact="TR").distinct()
 
 
@@ -133,6 +157,7 @@ class ReviewIndexView(generic.ListView):
         context["volume"] = self.get_volume()
         return context
 
+    # No filter necessary (user reviews are not approved)
     def get_queryset(self):
         return Review.objects.filter(volume=self.get_volume())
 
@@ -151,10 +176,12 @@ class PublishedReviewIndexView(generic.ListView):
         context["volume"] = self.get_volume()
         return context
 
+    @approval_filtered_queryset
     def get_queryset(self):
         return PublishedReview.objects.filter(volumes=self.get_volume())
 
 
+@approval_filtered_queryset
 class PersonDetailView(generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
@@ -170,6 +197,7 @@ class UserReviewDetailView(generic.DetailView):
     template_name = "translations/user_review_detail.html"
 
 
+@approval_filtered_queryset
 class PublishedReviewDetailView(generic.DetailView):
     model = PublishedReview
     template_name = "translations/published_review_detail.html"
@@ -185,7 +213,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
         "content",
     ]
 
-    def form_valid(self, form):
+    def form_valid(self, form):  # FIXME: need to filter the Volume queryset
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         pk = self.kwargs["vol"]
@@ -237,7 +265,7 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        persons = (
+        persons = filter_queryset_approval(
             Person.objects.annotate(
                 rank=SearchRank(person_vector, query), search=person_vector
             )
@@ -253,7 +281,7 @@ class SearchView(generic.TemplateView):
             + SearchVector("description", weight="B")
         )
 
-        volumes = (
+        volumes = filter_queryset_approval(
             Volume.objects.annotate(
                 rank=SearchRank(volume_vector, query), search=volume_vector
             )
@@ -269,7 +297,7 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        source_texts = (
+        source_texts = filter_queryset_approval(
             SourceText.objects.annotate(
                 rank=SearchRank(source_text_vector, query), search=source_text_vector
             )
@@ -300,9 +328,12 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
 
 class PersonViewSet(viewsets.ModelViewSet):
-    queryset = Person.objects.all()
     serializer_class = PersonSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return Person.objects.all()
 
 
 class LanguageViewSet(viewsets.ModelViewSet):
@@ -312,54 +343,94 @@ class LanguageViewSet(viewsets.ModelViewSet):
 
 
 class SourceTextViewSet(viewsets.ModelViewSet):
-    queryset = SourceText.objects.all()
     serializer_class = SourceTextSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return SourceText.objects.all()
+
 
 class VolumeViewSet(viewsets.ModelViewSet):
-    queryset = Volume.objects.all()
     serializer_class = VolumeSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return Volume.objects.all()
+
 
 class PublisherViewSet(viewsets.ModelViewSet):
-    queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return Publisher.objects.all()
+
 
 class SeriesViewSet(viewsets.ModelViewSet):
-    queryset = Series.objects.all()
     serializer_class = SeriesSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return Series.objects.all()
+
 
 class FeatureViewSet(viewsets.ModelViewSet):
-    queryset = Feature.objects.all()
     serializer_class = FeatureSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
+    ]
+
+    def get_queryset(self):
+        return filter_queryset_parent_approval(
+            Feature, Feature.objects.all(), self.request.user
+        )
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        IsOwnerEditOrReadOnly
+        | IsAuthenticatedCreateOrReadOnly
+        | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
 class PublishedReviewViewSet(viewsets.ModelViewSet):
-    queryset = PublishedReview.objects.all()
     serializer_class = PublishedReviewSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
+
+    @approval_filtered_queryset
+    def get_queryset(self):
+        return PublishedReview.objects.all()
 
 
 class LinkViewSet(viewsets.ModelViewSet):
-    queryset = Link.objects.all()
     serializer_class = LinkSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
+    ]
+
+    def get_queryset(self):
+        return filter_queryset_parent_approval(
+            Link, Link.objects.all(), self.request.user
+        )
 
 
 class AlternateNameViewSet(viewsets.ModelViewSet):
-    queryset = AlternateName.objects.all()
     serializer_class = AlternateNameSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [
+        CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
+    ]
+
+    def get_queryset(self):
+        return filter_queryset_parent_approval(
+            AlternateName, AlternateName.objects.all(), self.request.user
+        )
+
