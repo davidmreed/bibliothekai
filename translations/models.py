@@ -27,7 +27,7 @@ class UserCreatedMixin(models.Model):
         abstract = True
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, null=True, blank=True
     )
     date_created = models.DateTimeField(auto_now_add=True)
 

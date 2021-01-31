@@ -168,15 +168,27 @@ class FeatureSerializer(serializers.ModelSerializer):
         queryset=Person.objects.all(), view_name="person-detail", many=True
     )
     volume = serializers.HyperlinkedRelatedField(
-        queryset=Volume.objects.all(), view_name="volume-detail"
+        queryset=Volume.objects.all(),
+        view_name="volume-detail",  # FIXME: all of these querysets need to be sanitized
     )
+    text = serializers.HyperlinkedRelatedField(
+        source="source_text", queryset=SourceText.objects.all(), view_name="text-detail"
+    )
+
+    language = serializers.HyperlinkedRelatedField(
+        queryset=Language.objects.all(), view_name="language-detail"
+    )
+    partial = serializers.BooleanField(default=False)
+    description = serializers.CharField(required=False)
+    title = serializers.CharField(required=False, max_length=255)
+    has_facing_text = serializers.BooleanField(default=False)
 
     class Meta:
         model = Feature
         fields = [
             "id",
             "volume",
-            "source_text",
+            "text",
             "feature",
             "persons",
             "language",
@@ -189,12 +201,14 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 
 class VolumeSerializer(serializers.ModelSerializer):
-    features = FeatureSerializer(many=True)
     links = serializers.HyperlinkedRelatedField(
         many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
     )
     features = serializers.HyperlinkedRelatedField(
-        queryset=Feature.objects.all(), view_name="feature-detail", many=True
+        queryset=Feature.objects.all(),
+        view_name="feature-detail",
+        many=True,
+        required=False,
     )
     publisher = serializers.HyperlinkedRelatedField(
         queryset=Publisher.objects.all(), view_name="publisher-detail"

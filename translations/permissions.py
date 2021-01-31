@@ -1,22 +1,28 @@
 from django.db.models import Q
 from rest_framework import permissions
+import logging
 
 
 class CreateChildOfUnapprovedParent(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
 
         if request.method == "POST":
-            return (
-                obj.get_parent().user == request.user and not obj.get_parent().approved
-            )
+            serializer = view.get_serializer(data=request.data)
+
+            if serializer.is_valid():
+                parent = serializer.validated_data[
+                    view.serializer_class.Meta.model.parent_relationship
+                ]
+
+                return parent.user == request.user and not parent.approved
 
         return False
 
 
 class IsAuthenticatedCreateOrReadOnly(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
+    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -33,8 +39,14 @@ class IsOwnerEditOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if request.method == "PATCH":
+        if request.method == "PATCH" and request.user.is_authenticated:
             return obj.user == request.user
+
+        return False
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
 
         return False
 

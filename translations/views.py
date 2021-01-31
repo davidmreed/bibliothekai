@@ -14,6 +14,8 @@ from .models import (
     Person,
     Review,
     PublishedReview,
+    Publisher,
+    Series,
     Language,
     UserSubmission,
     Link,
@@ -354,6 +356,7 @@ class PersonViewSet(
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Person.objects.none()  # Required for DjangoModelPermissions
 
 
 class LanguageViewSet(viewsets.ModelViewSet):
@@ -369,6 +372,7 @@ class SourceTextViewSet(
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = SourceText.objects.none()  # Required for DjangoModelPermissions
 
 
 class VolumeViewSet(
@@ -378,6 +382,7 @@ class VolumeViewSet(
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Volume.objects.none()  # Required for DjangoModelPermissions
 
 
 class PublisherViewSet(
@@ -387,6 +392,7 @@ class PublisherViewSet(
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Publisher.objects.none()  # Required for DjangoModelPermissions
 
 
 class SeriesViewSet(
@@ -396,6 +402,7 @@ class SeriesViewSet(
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Series.objects.none()  # Required for DjangoModelPermissions
 
 
 class FeatureViewSet(viewsets.ModelViewSet):
@@ -403,6 +410,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
     permission_classes = [
         CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Feature.objects.none()  # Required for DjangoModelPermissions
 
     def get_queryset(self):
         return filter_queryset_parent_approval(
@@ -425,6 +433,7 @@ class PublishedReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = PublishedReview.objects.none()  # Required for DjangoModelPermissions
 
     @approval_filtered_queryset
     def get_queryset(self):
@@ -436,14 +445,15 @@ class LinkViewSet(viewsets.ModelViewSet):
     permission_classes = [
         CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = Link.objects.none()  # Required for DjangoModelPermissions
 
     def list(self, request):
         raise MethodNotAllowed("GET", "A record id is required for this path.")
 
     def get_queryset(self):
-        return filter_queryset_parent_approval(
-            Link, Link.objects.all(), self.request.user
-        )
+        # TODO: This doesn't filter by parent approval state,
+        # because it's a generic relation.
+        return Link.objects.all()
 
 
 class AlternateNameViewSet(viewsets.ModelViewSet):
@@ -451,11 +461,13 @@ class AlternateNameViewSet(viewsets.ModelViewSet):
     permission_classes = [
         CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
     ]
+    queryset = AlternateName.objects.none()  # Required for DjangoModelPermissions
 
     def list(self, request):
         raise MethodNotAllowed("GET", "A record id is required for this path.")
 
     def get_queryset(self):
-        return filter_queryset_parent_approval(
-            AlternateName, AlternateName.objects.all(), self.request.user
-        )
+        # TODO: This doesn't filter by parent approval state,
+        # because it's a generic relation.
+
+        return AlternateName.objects.all()
