@@ -43,7 +43,10 @@ def filter_queryset_approval(qs, user):
     if user.is_superuser:
         return qs
 
-    return qs.filter(Q(approved=True) | Q(user=user))
+    if user.is_authenticated:
+        return qs.filter(Q(approved=True) | Q(user=user))
+
+    return qs.filter(Q(approved=True))
 
 
 def filter_queryset_parent_approval(model, qs, user):
@@ -52,25 +55,30 @@ def filter_queryset_parent_approval(model, qs, user):
 
     parent_relationship = model.parent_relationship
 
-    return qs.filter(
-        Q(**{f"{parent_relationship}.approved": True})
-        | Q(**{f"{parent_relationship}.user": user})
-    )
+    if user.is_authenticated:
+        return qs.filter(
+            Q(**{f"{parent_relationship}__approved": True})
+            | Q(**{f"{parent_relationship}__user": user})
+        )
+    else:
+        return qs.filter(Q(**{f"{parent_relationship}__approved": True}))
 
 
 def approval_filtered_queryset(f):
-    if type(f) is type:
-        # We're decorating a class.
-        def filter_qs(self):
-            request_user = self.request.user
-            return filter_queryset_approval(super.get_queryset(), request_user)
+    def filter_qs(self):
+        request_user = self.request.user
+        return filter_queryset_approval(f(self), request_user)
 
-        f.get_queryset = filter_qs
-        return f
-    else:
-        # We're decorating a function
-        def filter_qs(self):
-            request_user = self.request.user
-            return filter_queryset_approval(f(self), request_user)
+    return filter_qs
 
-        return filter_qs
+
+class ApprovalFilteredQuerysetMixin:
+    def get_queryset(self):
+        if hasattr(self, "model"):
+            # View class
+            return filter_queryset_approval(self.model.objects.all(), self.request.user)
+        else:
+            # Viewset class
+            return filter_queryset_approval(
+                self.serializer_class.Meta.model.objects.all(), self.request.user
+            )

@@ -1,12 +1,12 @@
+from django.db.models import Prefetch
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect, Http404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from rest_framework import viewsets
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-
 from .models import (
     SourceText,
     Feature,
@@ -14,8 +14,6 @@ from .models import (
     Person,
     Review,
     PublishedReview,
-    Publisher,
-    Series,
     Language,
     UserSubmission,
     Link,
@@ -43,6 +41,7 @@ from .permissions import (
     CreateChildOfUnapprovedParent,
     IsAuthenticatedCreateOrReadOnly,
     IsOwnerEditOrReadOnly,
+    ApprovalFilteredQuerysetMixin,
 )
 
 
@@ -50,7 +49,7 @@ class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
 
 
-class PublishedReviewLWCView(generic.TemplateView):
+class PublishedReviewLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_published_review.html"
 
 
@@ -81,10 +80,12 @@ class SourceTextIndexView(generic.ListView):
     def get_queryset(self):
         return (
             Person.objects.prefetch_related(
-                "sourcetext_set",
-                queryset=filter_queryset_approval(
-                    SourceText.objects.all(), self.request.user
-                ),
+                Prefetch(
+                    "sourcetext_set",
+                    queryset=filter_queryset_approval(
+                        SourceText.objects.all(), self.request.user
+                    ),
+                )
             )
             .filter(sourcetext__title__isnull=False)
             .distinct()
@@ -103,9 +104,10 @@ class VolumeDetailView(generic.DetailView):
     def get_reviews(self):
         return self.get_object().review_set.order_by("-date_created").all()[:5]
 
-    @approval_filtered_queryset
     def get_published_reviews(self):
-        return self.get_object().publishedreview_set.all()[:5]
+        return filter_queryset_approval(
+            self.get_object().publishedreview_set.all(), self.request.user
+        )[:5]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -150,7 +152,13 @@ class ReviewIndexView(generic.ListView):
 
     def get_volume(self):
         volume_id = self.kwargs["vol"]
-        return get_object_or_404(Volume, pk=volume_id)
+        volume = filter_queryset_approval(
+            Volume.objects.filter(id=volume_id), self.request.user
+        ).first()
+        if not volume:
+            raise Http404
+
+        return volume
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -169,7 +177,13 @@ class PublishedReviewIndexView(generic.ListView):
 
     def get_volume(self):
         volume_id = self.kwargs["vol"]
-        return get_object_or_404(Volume, pk=volume_id)
+        volume = filter_queryset_approval(
+            Volume.objects.filter(id=volume_id), self.request.user
+        ).first()
+        if not volume:
+            raise Http404
+
+        return volume
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -181,8 +195,7 @@ class PublishedReviewIndexView(generic.ListView):
         return PublishedReview.objects.filter(volumes=self.get_volume())
 
 
-@approval_filtered_queryset
-class PersonDetailView(generic.DetailView):
+class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
 
@@ -197,8 +210,7 @@ class UserReviewDetailView(generic.DetailView):
     template_name = "translations/user_review_detail.html"
 
 
-@approval_filtered_queryset
-class PublishedReviewDetailView(generic.DetailView):
+class PublishedReviewDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = PublishedReview
     template_name = "translations/published_review_detail.html"
 
@@ -213,14 +225,18 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
         "content",
     ]
 
-    def form_valid(self, form):  # FIXME: need to filter the Volume queryset
-        self.object = form.save(commit=False)
-        self.object.user = self.request.user
+    def form_valid(self, form):
         pk = self.kwargs["vol"]
-        volume = get_object_or_404(Volume, pk=pk)  # FIXME: This doesn't work
-        self.object.volume_id = volume.id
-        self.object.save()
-        return HttpResponseRedirect(reverse("volume_detail", kwargs={"pk": volume.id}))
+        volume = filter_queryset_approval(Volume.objects.filter(id=pk)).first()
+        if volume:
+            form.instance.volume_id = volume.id
+            form.instance.user = self.request.user
+            super().form_valid(form)
+            return HttpResponseRedirect(
+                reverse("volume_detail", kwargs={"pk": volume.id})
+            )
+        else:
+            raise Http404
 
 
 class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
@@ -318,22 +334,26 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
     template_name = "translations/user_submission_create.html"
 
     def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.object.user = self.request.user
-        self.object.save()
+        form.instance.user = self.request.user
+        super().form_valid(form)
         return HttpResponseRedirect(reverse_lazy("index"))
 
 
 # API views
 
 
-class PersonViewSet(viewsets.ModelViewSet):
-    serializer_class = PersonSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+class AutofillUserFieldMixin:
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
-    @approval_filtered_queryset
-    def get_queryset(self):
-        return Person.objects.all()
+
+class PersonViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
+    serializer_class = PersonSerializer
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
 class LanguageViewSet(viewsets.ModelViewSet):
@@ -342,40 +362,40 @@ class LanguageViewSet(viewsets.ModelViewSet):
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
 
-class SourceTextViewSet(viewsets.ModelViewSet):
+class SourceTextViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
     serializer_class = SourceTextSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-
-    @approval_filtered_queryset
-    def get_queryset(self):
-        return SourceText.objects.all()
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
-class VolumeViewSet(viewsets.ModelViewSet):
+class VolumeViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
     serializer_class = VolumeSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-
-    @approval_filtered_queryset
-    def get_queryset(self):
-        return Volume.objects.all()
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
-class PublisherViewSet(viewsets.ModelViewSet):
+class PublisherViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
     serializer_class = PublisherSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-
-    @approval_filtered_queryset
-    def get_queryset(self):
-        return Publisher.objects.all()
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
-class SeriesViewSet(viewsets.ModelViewSet):
+class SeriesViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
     serializer_class = SeriesSerializer
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
-
-    @approval_filtered_queryset
-    def get_queryset(self):
-        return Series.objects.all()
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
 
 
 class FeatureViewSet(viewsets.ModelViewSet):
@@ -390,7 +410,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
         )
 
 
-class ReviewViewSet(viewsets.ModelViewSet):
+class ReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [
@@ -400,7 +420,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
     ]
 
 
-class PublishedReviewViewSet(viewsets.ModelViewSet):
+class PublishedReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     serializer_class = PublishedReviewSerializer
     permission_classes = [
         IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
@@ -417,6 +437,9 @@ class LinkViewSet(viewsets.ModelViewSet):
         CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
     ]
 
+    def list(self, request):
+        raise MethodNotAllowed("GET", "A record id is required for this path.")
+
     def get_queryset(self):
         return filter_queryset_parent_approval(
             Link, Link.objects.all(), self.request.user
@@ -429,8 +452,10 @@ class AlternateNameViewSet(viewsets.ModelViewSet):
         CreateChildOfUnapprovedParent | DjangoModelPermissionsOrAnonReadOnly
     ]
 
+    def list(self, request):
+        raise MethodNotAllowed("GET", "A record id is required for this path.")
+
     def get_queryset(self):
         return filter_queryset_parent_approval(
             AlternateName, AlternateName.objects.all(), self.request.user
         )
-
