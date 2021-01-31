@@ -1,6 +1,5 @@
 from django.db.models import Q
 from rest_framework import permissions
-import logging
 
 
 class CreateChildOfUnapprovedParent(permissions.BasePermission):

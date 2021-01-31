@@ -1,4 +1,4 @@
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.http import HttpResponseRedirect, Http404
@@ -131,9 +131,11 @@ class AuthorIndexView(generic.ListView):
     template_name = "translations/author_index.html"
     paginate_by = 50
 
-    @approval_filtered_queryset  # FIXME: if a Source Text is not approved, but the Person is, odd results
+    @approval_filtered_queryset
     def get_queryset(self):
-        return Person.objects.filter(sourcetext__title__isnull=False).distinct()
+        return Person.objects.filter(
+            Q(sourcetext__title__isnull=False) & Q(sourcetext__approved=True)
+        ).distinct()
 
 
 class TranslatorIndexView(generic.ListView):
@@ -141,10 +143,10 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     @approval_filtered_queryset
-    def get_queryset(
-        self,
-    ):  # FIXME: if a Person is approved but the Feature/Volume is not, odd results.
-        return Person.objects.filter(features__feature__exact="TR").distinct()
+    def get_queryset(self,):
+        return Person.objects.filter(
+            Q(features__feature__exact="TR") & Q(features__volume__approved=True)
+        ).distinct()
 
 
 class ReviewIndexView(generic.ListView):
@@ -274,7 +276,7 @@ class SearchView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        user_query = self.request.GET.get("query")  # FIXME: what if there is no query?
+        user_query = self.request.GET.get("query")
         query = SearchQuery(user_query, search_type="websearch")
 
         person_vector = (

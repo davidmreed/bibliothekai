@@ -21,14 +21,15 @@ class ChoiceField(serializers.ChoiceField):
     def to_representation(self, obj):
         if obj == "" and self.allow_blank:
             return obj
-        return self._choices.get(
-            obj, ""
-        )  # FIXME: probably the wrong solution to blank kind fields.
+        return self._choices.get(obj, "")
 
     def to_internal_value(self, data):
         # To support inserts with the value
         if data == "" and self.allow_blank:
             return ""
+
+        if data in self._choices:
+            return data
 
         for key, val in self._choices.items():
             if val == data:
@@ -84,13 +85,10 @@ class AlternateNameSerializer(serializers.ModelSerializer):
 
 class PersonSerializer(serializers.ModelSerializer):
     links = serializers.HyperlinkedRelatedField(
-        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+        many=True, required=False, read_only=True, view_name="link-detail",
     )
     alternate_names = serializers.HyperlinkedRelatedField(
-        many=True,
-        queryset=AlternateName.objects.all(),
-        required=False,
-        view_name="alternate-name-detail",
+        many=True, required=False, read_only=True, view_name="alternate-name-detail",
     )
     sort_name = serializers.ReadOnlyField()
 
@@ -118,13 +116,10 @@ class LanguageSerializer(serializers.ModelSerializer):
 class SourceTextSerializer(serializers.ModelSerializer):
     kind = ChoiceField(choices=KIND_CHOICES)
     links = serializers.HyperlinkedRelatedField(
-        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+        many=True, read_only=True, required=False, view_name="link-detail"
     )
     alternate_names = serializers.HyperlinkedRelatedField(
-        many=True,
-        queryset=AlternateName.objects.all(),
-        required=False,
-        view_name="alternate-name-detail",
+        many=True, read_only=True, required=False, view_name="alternate-name-detail",
     )
     author = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(), view_name="person-detail",
@@ -147,7 +142,7 @@ class SourceTextSerializer(serializers.ModelSerializer):
 
 class PublisherSerializer(serializers.ModelSerializer):
     links = serializers.HyperlinkedRelatedField(
-        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+        many=True, read_only=True, required=False, view_name="link-detail"
     )
 
     class Meta:
@@ -202,13 +197,10 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 class VolumeSerializer(serializers.ModelSerializer):
     links = serializers.HyperlinkedRelatedField(
-        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+        many=True, read_only=True, required=False, view_name="link-detail"
     )
     features = serializers.HyperlinkedRelatedField(
-        queryset=Feature.objects.all(),
-        view_name="feature-detail",
-        many=True,
-        required=False,
+        view_name="feature-detail", many=True, required=False, read_only=True
     )
     publisher = serializers.HyperlinkedRelatedField(
         queryset=Publisher.objects.all(), view_name="publisher-detail"
@@ -255,13 +247,13 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 class PublishedReviewSerializer(serializers.ModelSerializer):
     links = serializers.HyperlinkedRelatedField(
-        many=True, queryset=Link.objects.all(), required=False, view_name="link-detail"
+        many=True, read_only=True, required=False, view_name="link-detail"
     )
     volumes = serializers.HyperlinkedRelatedField(
-        queryset=Volume.objects.all(), view_name="volume-detail", many=True
+        view_name="volume-detail", many=True, read_only=True
     )
     persons = serializers.HyperlinkedRelatedField(
-        queryset=Person.objects.all(), view_name="person-detail", many=True
+        view_name="person-detail", many=True, read_only=True
     )
 
     class Meta:
