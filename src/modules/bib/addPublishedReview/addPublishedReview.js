@@ -164,9 +164,12 @@ export default class AddPublishedReview extends LightningElement {
                         source: this.source,
                         resource_type: "Full Text"
                     };
-                    createRecord("links", link);
+                    createRecord("links", link).then(() => {
+                        window.location.href = getRecordUiUrl("published-reviews", result.id);
+                    });
+                } else {
+                    window.location.href = getRecordUiUrl("published-reviews", result.id);
                 }
-                window.location.href = getRecordUiUrl("published-reviews", result.id);
             })
             .catch(error => {
                 this.markTabInvalid("review", error);
