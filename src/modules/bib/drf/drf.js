@@ -1,5 +1,12 @@
 const getRecordsStore = new Map();
-const recordCache = new Map(); // FIXME: cache is not working
+const recordCache = new Map();
+const nameFields = {
+    publishers: 'name',
+    persons: 'sort_name',
+    volumes: 'title',
+    texts: 'title',
+    languages: 'name'
+}
 
 function getEndpoint() {
     // eslint-disable-next-line no-undef
@@ -20,7 +27,6 @@ export function getRecordUiUrl(entityName, id) {
 
 export class getRecords {
     entityName;
-    nameField;
 
     constructor(dataCallback) {
         this.dataCallback = dataCallback;
@@ -28,9 +34,7 @@ export class getRecords {
 
     connect() {
         this._register();
-        if (this.entityName) {
-            this._refresh();
-        }
+        this._refresh();
     }
 
     _register() {
@@ -53,41 +57,25 @@ export class getRecords {
     }
 
     update(config) {
-        if (
-            this.entityName !== config.entityName ||
-            this.nameField !== config.nameField
-        ) {
+        if (this.entityName !== config.entityName) {
             this._unregister();
             this.entityName = config.entityName;
-            this.nameField = config.nameField;
             this._register();
             this._refresh();
         }
     }
 
-    _refresh() {
-        if (this.entityName && recordCache.has(this.entityName)) {
-            this.dataCallback({ data: recordCache.get(this.entityName), error: null });
-            return;
-        }
-
-        let endpoint = getApiEndpoint();
-        fetch(new Request(`${endpoint}/${this.entityName}/`))
-            .then(result => {
-                if (result.ok) {
-                    result.json().then(data => {
-                        let recordData = data.map((elem) => {
-                            return { id: elem.id, name: elem[this.nameField] };
-                        });
-                        recordCache.set(this.entityName, recordData)
-                        this.dataCallback({ data: recordData, error: null });
-                    });
-                } else {
-                    this.dataCallback({ data: null, error: `The API returned an error: ${result.status}.` })
+    async _refresh() {
+        if (this.entityName) {
+            try {
+                if (!recordCache.has(this.entityName)) {
+                    await getRecordsFromApi(this.entityName);
                 }
-            }).catch(error => {
+                this.dataCallback({ data: recordCache.get(this.entityName), error: null });
+            } catch (error) {
                 this.dataCallback({ data: null, error });
-            });
+            }
+        }
     }
 }
 
@@ -111,34 +99,47 @@ function getCookie(name) {
     return cookieValue;
 }
 
-export function createRecord(entity, record) {
+async function getRecordsFromApi(entityName) {
+    let result = await fetch(new Request(`${getApiEndpoint()}/${entityName}/`));
+    if (result.ok) {
+        let data = await result.json();
+        let recordData = data.map(
+            elem => {
+                return { id: elem.id, name: elem[nameFields[entityName]] };
+            });
+        recordCache.set(entityName, recordData)
+    } else {
+        throw new Error(`The API returned an error: ${result.status}.`);
+    }
+}
+
+export async function createRecord(entity, record) {
     let endpoint = getApiEndpoint();
 
-    return new Promise((resolve, reject) => {
-        fetch(`${endpoint}/${entity}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(record)
-        })
-            .then((response) => {
-                if (response.ok) {
-                    if (recordCache.has(entity)) {
-                        recordCache.delete(entity);
-                    }
-                    // TODO: perform only one refresh and return cached data.
-                    if (getRecordsStore.has(entity)) {
-                        getRecordsStore.get(entity).forEach((r) => r._refresh());
-                    }
-                    resolve(response.json());
-                } else {
-                    reject(`The API returned an error: ${response.status}.`);
-                }
-            })
-            .catch((reason) => reject(reason));
-    });
+    let response = await fetch(
+        `${endpoint}/${entity}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(record)
+    }
+    );
+
+    if (response.ok) {
+        if (recordCache.has(entity)) {
+            recordCache.delete(entity);
+        }
+        if (getRecordsStore.has(entity) && getRecordsStore.get(entity).length) {
+            // Make exactly one API call to refresh the cache.
+            await getRecordsFromApi(entity);
+            getRecordsStore.get(entity).forEach((r) => r._refresh());
+        }
+        return response.json();
+    }
+
+    throw new Error(`The API returned an error: ${response.status}.`);
 }
 
 export function sortRecordsByName(a, b) {

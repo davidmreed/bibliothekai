@@ -2,21 +2,20 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecords, sortRecordsByName } from 'bib/drf';
 
 export default class PopUpMenu extends LightningElement {
-    @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
+    @wire(getRecords, { entityName: '$entityName' })
     setEntities({ data, error }) {
         if (data) {
             this.entities = data;
             this.entities.sort(sortRecordsByName);
-            // Handle race condition between setting value and loading entities.
-            this.template.querySelector(".entities").value = this.value;
         } else {
             this.setErrorStatus(error);
         }
+        // Handle race condition between setting value and loading entities.
+        this.template.querySelector(".entities").value = this.value;
         this.template.querySelector(".spinner-grow").classList.add("d-none");
     }
     entities = [];
     @api entityName;
-    @api nameField;
     @api allowAdd;
     @api labelText;
     @api value;
@@ -34,6 +33,11 @@ export default class PopUpMenu extends LightningElement {
     @api
     getSelectedRecord() {
         return this.entities.filter(e => e.id === this.getSelectedId())[0];
+    }
+
+    renderedCallback() {
+        // Handle race condition between setting value and loading entities.
+        this.template.querySelector(".entities").value = this.value;
     }
 
     get shouldAllowAdd() {

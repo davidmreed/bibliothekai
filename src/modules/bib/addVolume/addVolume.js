@@ -4,13 +4,13 @@ import { createRecord, getRecordUiUrl } from 'bib/drf';
 export default class AddVolume extends LightningElement {
     title = '';
     published_date = '';
-    publisher = null;
+    publisher = '';
     series = '';
     isbn = '';
     oclc_number = '';
     description = '';
     addingPerson = false;
-    features = [];
+    features = [0];
 
     get isFormValid() {
         return !!this.title && !!this.published_date && !!this.publisher;
@@ -123,7 +123,11 @@ export default class AddVolume extends LightningElement {
     }
 
     get selectedPersons() {
-        return this.personsListbox.getSelectedRecords();
+        if (this.personsListbox) {
+            return this.personsListbox.getSelectedRecords();
+        }
+
+        return [];
     }
 
     get publisherPopup() {

@@ -1,10 +1,10 @@
 import { LightningElement, api, track } from 'lwc';
 
 export default class FeatureEditor extends LightningElement {
-    @track text = { id: null };
+    @track text = { id: "" };
     authors = [];
     partial = false;
-    language = null;
+    language = "";
     proseOrVerse = 'Prose';
     hasIntroduction = false;
     introductionAuthors = null;
@@ -58,7 +58,6 @@ export default class FeatureEditor extends LightningElement {
     }
 
     changeText(event) {
-        console.log("changing text to " + JSON.stringify(event.detail));
         this.text = event.detail;
     }
 

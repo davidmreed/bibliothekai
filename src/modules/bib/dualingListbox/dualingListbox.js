@@ -2,7 +2,7 @@ import { LightningElement, api, track, wire } from 'lwc';
 import { getRecords, sortRecordsByName } from 'bib/drf';
 
 export default class DualingListbox extends LightningElement {
-    @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
+    @wire(getRecords, { entityName: '$entityName' })
     setEntities({ data, error }) {
         if (data) {
             this.entities = data;
@@ -25,7 +25,6 @@ export default class DualingListbox extends LightningElement {
     entities = [];
     preselectedIds;
     @api entityName;
-    @api nameField;
     @api allowAdd;
     @track selectedEntities = [];
     @track filteredEntities = [];

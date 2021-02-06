@@ -17,14 +17,13 @@
         <div class="tab-content">
             <div class="tab-pane active" data-tab="persons" role="tabpanel" aria-labelledby="persons-tab">
                 <small class="form-text text-muted validity-persons">Select one or more authors of this review.</small>
-                <bib-dualing-listbox class="persons-listbox" entity-name="persons" name-field="sort_name"
-                    allow-add="true" onadd={addPerson}>
+                <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={addPerson}>
                 </bib-dualing-listbox>
             </div>
             <div class="tab-pane" data-tab="volumes" role="tabpanel" aria-labelledby="volumes-tab">
                 <small class="form-text text-muted validity-volumes">Select one or more volumes evaluated in this
                     review.</small>
-                <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" name-field="title">
+                <bib-dualing-listbox class="volumes-listbox" entity-name="volumes">
                 </bib-dualing-listbox>
             </div>
             <div class="tab-pane" data-tab="review" role="tabpanel" aria-labelledby="review-tab">

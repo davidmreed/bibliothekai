@@ -30,7 +30,7 @@
                     <div class="form-row">
                         <div class="col-6">
                             <bib-pop-up-menu label-text="Publisher" class="publisher-popup" entity-name="publishers"
-                                name-field="name" allow-add="true" onchange={handlePublisherChange}>
+                                allow-add="true" onchange={handlePublisherChange} value={publisher}>
                             </bib-pop-up-menu>
                         </div>
                         <div class="col">
@@ -63,8 +63,7 @@
                     Select or create the authors for this volume.
                     These authors will be available when adding translations and features.
                 </small>
-                <bib-dualing-listbox class="persons-listbox" entity-name="persons" name-field="sort_name"
-                    allow-add="true" onadd={addPerson}>
+                <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={addPerson}>
                 </bib-dualing-listbox>
             </div>
             <div class="tab-pane" data-tab="features" role="tabpanel" aria-labelledby="features-tab">
