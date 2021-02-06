@@ -26,13 +26,8 @@ export default class PopUpMenu extends LightningElement {
         return Array.from(
             this.template.querySelector('.entities').selectedOptions
         ).map(
-            (f) => Number(f.value)
+            f => (f === '' ? '' : Number(f.value))
         )[0];
-    }
-
-    @api
-    getSelectedRecord() {
-        return this.entities.filter(e => e.id === this.getSelectedId())[0];
     }
 
     renderedCallback() {
@@ -53,7 +48,7 @@ export default class PopUpMenu extends LightningElement {
 
     handleChange(event) {
         event.stopPropagation();
-        this.dispatchEvent(new CustomEvent('change', { detail: this.getSelectedRecord() }));
+        this.dispatchEvent(new CustomEvent('change', { detail: this.getSelectedId() }));
     }
 
     getValidityElement() {

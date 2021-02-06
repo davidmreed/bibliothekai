@@ -1,5 +1,6 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
 import { createRecord, getRecordUiUrl } from 'bib/drf';
+import { Feature } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
     title = '';
@@ -10,7 +11,8 @@ export default class AddVolume extends LightningElement {
     oclc_number = '';
     description = '';
     addingPerson = false;
-    features = [0];
+    @track
+    features = [new Feature(0)];
 
     get isFormValid() {
         return !!this.title && !!this.published_date && !!this.publisher;
@@ -21,6 +23,11 @@ export default class AddVolume extends LightningElement {
         if (this.isFormValid) {
             this.markTabValid("data");
         }
+    }
+
+    handleFeatureChange(event) {
+        let newFeature = event.detail;
+        this.features[newFeature.id] = newFeature;
     }
 
     handleChange(event) {
@@ -115,7 +122,7 @@ export default class AddVolume extends LightningElement {
     }
 
     addFeature() {
-        this.features = this.features + [this.features.length + 1];
+        this.features.push(new Feature(this.features.length));
     }
 
     get personsListbox() {
@@ -138,7 +145,7 @@ export default class AddVolume extends LightningElement {
         return this.publisherPopup.getSelectedId();
     }
 
-    create(event) {
+    async create(event) {
         if (!this.features.length) {
             this.markTabInvalid('features');
             event.preventDefault();
@@ -165,20 +172,18 @@ export default class AddVolume extends LightningElement {
             record.series = this.series;
         }
 
-        createRecord('volumes', record)
-            .then(result => {
-                let featureEditors = this.template.querySelectorAll(".feature-editor");
-                Promise.all(
-                    featureEditors.map(f => f.getFeatures())
-                        .reduce((acc, val) => acc.concat(val), [])
-                        .map(f => createRecord("features", f))
-                ).then(() => {
-                    window.location.href = getRecordUiUrl("volumes", result.id);
-                })
-            })
-            .catch(error => {
-                this.markTabInvalid("review", error);
-            });
+        try {
+            let result = createRecord('volumes', record);
+
+            await Promise.all(
+                this.features.map(f => f.getFeatures())
+                    .reduce((acc, val) => acc.concat(val), [])
+                    .map(f => createRecord("features", f))
+            );
+            window.location.href = getRecordUiUrl("volumes", result.id);
+        } catch (error) {
+            this.markTabInvalid("review", error);
+        }
     }
 
     addPerson() {
@@ -194,6 +199,6 @@ export default class AddVolume extends LightningElement {
     personAdded(event) {
         this.addingPerson = false;
         this.template.querySelector('.main-block').classList.remove('d-none');
-        this.personsListbox.preselectIds([event.detail.id]);
+        this.personsListbox.preselectIds([event.detail]);
     }
 }

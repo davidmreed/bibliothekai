@@ -74,7 +74,8 @@
                     + Add
                 </button>
                 <template for:each={features} for:item="item">
-                    <bib-feature-editor available-authors={selectedPersons} class="feature-editor" key={item}>
+                    <bib-feature-editor available-authors={selectedPersons} class="feature-editor" feature={item}
+                        key={item.id} onchange={handleFeatureChange}>
                     </bib-feature-editor>
                 </template>
             </div>

@@ -9,17 +9,18 @@
                         <div class="form-row">
                             <div class="col-6">
                                 <bib-pop-up-menu label-text="Text" entity-name="texts" allow-add="false"
-                                    onchange={changeText} value={text.id}>
+                                    onchange={changeText} value={feature.text}>
                                 </bib-pop-up-menu>
                             </div>
                             <div class="col">
                                 <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
-                                    onchange={changeLanguage} value={language}>
+                                    onchange={changeLanguage} value={feature.language}>
                                 </bib-pop-up-menu>
                             </div>
                             <div class="col">
                                 <label for="kind">Format</label>
-                                <select class="form-control" name="kind" size="1" onchange={handleChange}>
+                                <select class="form-control" name="kind" size="1" onchange={handleChange}
+                                    value={feature.proseOrVerse}>
                                     <option value="Prose">Prose</option>
                                     <option value="Verse">Verse</option>
                                 </select>
@@ -34,27 +35,29 @@
 
                         <label for="title">Title</label>
                         <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
-                            value={title} onchange={handleChange}></input>
+                            value={feature.title} onchange={handleChange}></input>
 
                         <label for="title">Description</label>
                         <input class="form-control" name="title" placeholder="Description" type="text"
-                            value={description} onchange={handleChange}></input>
+                            value={feature.description} onchange={handleChange}></input>
 
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" name="hasIntroduction"
-                                value={hasIntroduction}>
+                                value={feature.hasIntroduction} onchange={handleChange}>
                             <label class="form-check-label" for="hasIntroduction">Has Introduction?</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="hasNotes" value={hasNotes}>
+                            <input class="form-check-input" type="checkbox" name="hasNotes" value={feature.hasNotes}
+                                onchange={handleChange}>
                             <label class="form-check-label" for="hasNotes">Has Notes?</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="partial" value={partial}>
+                            <input class="form-check-input" type="checkbox" name="partial" value={feature.partial}
+                                onchange={handleChange}>
                             <label class="form-check-label" for="partial">Partial Translation?</label>
                         </div>
                         <br />
-                        <input class="btn btn-primary mt-3" type="submit" onclick={toggle} value="Done"></input>
+                        <input class="btn btn-primary mt-3" type="button" onclick={toggle} value="Done"></input>
                     </div>
                 </form>
             </div>
@@ -62,8 +65,8 @@
     </template>
     <template if:false={expanded}>
         <div class="card">
-            <input class="btn btn-primary mt-3" type="submit" onclick={toggle} value="Expand"></input>
-            Translation of {text.name}
+            <input class="btn btn-primary mt-3" type="button" onclick={toggle} value="Expand"></input>
+            Translation
         </div>
     </template>
 </template>
