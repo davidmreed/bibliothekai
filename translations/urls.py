@@ -53,6 +53,7 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
+    path("add_volume", views.VolumeLWCView.as_view(), name="volume_add",),
     path(
         "volumes/<int:vol>/review",
         views.ReviewCreateView.as_view(),

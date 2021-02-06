@@ -1,0 +1,69 @@
+<template>
+    <template if:true={expanded}>
+        <small class="form-text text-muted validity is-invalid form-control mb-2 d-none">
+        </small>
+        <div class="card-group">
+            <div class="card">
+                <form>
+                    <div class="card-body form-group">
+                        <div class="form-row">
+                            <div class="col-6">
+                                <bib-pop-up-menu label-text="Text" entity-name="texts" name-field="title"
+                                    allow-add="false" onchange={changeText} value={text.id}>
+                                </bib-pop-up-menu>
+                            </div>
+                            <div class="col">
+                                <bib-pop-up-menu label-text="Language" entity-name="languages" name-field="name"
+                                    allow-add="false" onchange={changeLanguage} value={language}>
+                                </bib-pop-up-menu>
+                            </div>
+                            <div class="col">
+                                <label for="kind">Format</label>
+                                <select class="form-control" name="kind" size="1" onchange={handleChange}>
+                                    <option value="Prose">Prose</option>
+                                    <option value="Verse">Verse</option>
+                                </select>
+                            </div>
+                        </div>
+                        <label for="authors">Authors</label>
+                        <select class="form-control" name="authors" multiple size="3" onchange={handleChange}>
+                            <template for:each={availableAuthors} for:item="author">
+                                <option key={author.id} value={author.id}>{author.name}</option>
+                            </template>
+                        </select>
+
+                        <label for="title">Title</label>
+                        <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
+                            value={title} onchange={handleChange}></input>
+
+                        <label for="title">Description</label>
+                        <input class="form-control" name="title" placeholder="Description" type="text"
+                            value={description} onchange={handleChange}></input>
+
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="hasIntroduction"
+                                value={hasIntroduction}>
+                            <label class="form-check-label" for="hasIntroduction">Has Introduction?</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="hasNotes" value={hasNotes}>
+                            <label class="form-check-label" for="hasNotes">Has Notes?</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" name="partial" value={partial}>
+                            <label class="form-check-label" for="partial">Partial Translation?</label>
+                        </div>
+                        <br />
+                        <input class="btn btn-primary mt-3" type="submit" onclick={toggle} value="Done"></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
+    <template if:false={expanded}>
+        <div class="card">
+            <input class="btn btn-primary mt-3" type="submit" onclick={toggle} value="Expand"></input>
+            Translation of {text.name}
+        </div>
+    </template>
+</template>

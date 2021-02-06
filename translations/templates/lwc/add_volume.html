@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load manifest %}
+
+{% block title %}
+Add Published Review
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4">
+    Add Volume
+</h1>
+<div id="lwc"></div>
+
+{% manifest_match '*addVolume*.js' '<script src="{match}"></script>' %}
+
+{% endblock %}

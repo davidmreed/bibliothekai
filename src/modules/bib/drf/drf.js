@@ -1,4 +1,5 @@
 const getRecordsStore = new Map();
+const recordCache = new Map(); // FIXME: cache is not working
 
 function getEndpoint() {
     // eslint-disable-next-line no-undef
@@ -65,19 +66,20 @@ export class getRecords {
     }
 
     _refresh() {
+        if (this.entityName && recordCache.has(this.entityName)) {
+            this.dataCallback({ data: recordCache.get(this.entityName), error: null });
+        }
+
         let endpoint = getApiEndpoint();
         fetch(new Request(`${endpoint}/${this.entityName}/`))
             .then(result => {
                 if (result.ok) {
                     result.json().then(data => {
-                        this.dataCallback(
-                            {
-                                data: data.map((elem) => {
-                                    return { id: elem.id, name: elem[this.nameField] };
-                                }),
-                                error: null
-                            }
-                        );
+                        let recordData = data.map((elem) => {
+                            return { id: elem.id, name: elem[this.nameField] };
+                        });
+                        recordCache.set(this.entityName, recordData)
+                        this.dataCallback({ data: recordData, error: null });
                     });
                 } else {
                     this.dataCallback({ data: null, error: `The API returned an error: ${result.status}.` })
@@ -122,6 +124,10 @@ export function createRecord(entity, record) {
         })
             .then((response) => {
                 if (response.ok) {
+                    if (recordCache.has(entity)) {
+                        recordCache.delete(entity);
+                    }
+                    // TODO: perform only one refresh and return cached data.
                     if (getRecordsStore.has(entity)) {
                         getRecordsStore.get(entity).forEach((r) => r._refresh());
                     }
@@ -132,4 +138,16 @@ export function createRecord(entity, record) {
             })
             .catch((reason) => reject(reason));
     });
+}
+
+export function sortRecordsByName(a, b) {
+    let nameA = a.name.toUpperCase();
+    let nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
+        return -1;
+    }
+    if (nameA > nameB) {
+        return 1;
+    }
+    return 0;
 }

@@ -3,7 +3,8 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: {
-        addPublishedReview: './src/addPublishedReview.js'
+        addPublishedReview: './src/addPublishedReview.js',
+        addVolume: './src/addVolume.js'
     },
     output: {
         filename: '[name].js'

@@ -1,5 +1,5 @@
 import { LightningElement, api, track, wire } from 'lwc';
-import { getRecords } from 'bib/drf';
+import { getRecords, sortRecordsByName } from 'bib/drf';
 
 export default class DualingListbox extends LightningElement {
     @wire(getRecords, { entityName: '$entityName', nameField: '$nameField' })
@@ -42,6 +42,11 @@ export default class DualingListbox extends LightningElement {
     @api
     getSelectedIds() {
         return this.selectedEntities.map((e) => e.id);
+    }
+
+    @api
+    getSelectedRecords() {
+        return this.selectedEntities;
     }
 
     @api
@@ -107,20 +112,8 @@ export default class DualingListbox extends LightningElement {
             this.filteredSelectedEntities = this.selectedEntities;
         }
 
-        let sortFunction = (a, b) => {
-            let nameA = a.name.toUpperCase();
-            let nameB = b.name.toUpperCase();
-            if (nameA < nameB) {
-                return -1;
-            }
-            if (nameA > nameB) {
-                return 1;
-            }
-            return 0;
-        };
-
-        this.filteredEntities.sort(sortFunction);
-        this.filteredSelectedEntities.sort(sortFunction);
+        this.filteredEntities.sort(sortRecordsByName);
+        this.filteredSelectedEntities.sort(sortRecordsByName);
     }
 
     moveRight() {

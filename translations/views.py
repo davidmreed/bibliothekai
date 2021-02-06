@@ -55,6 +55,10 @@ class PublishedReviewLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_published_review.html"
 
 
+class VolumeLWCView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "lwc/add_volume.html"
+
+
 class SourceTextDetailView(generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
