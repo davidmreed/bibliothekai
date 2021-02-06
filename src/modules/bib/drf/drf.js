@@ -68,6 +68,7 @@ export class getRecords {
     _refresh() {
         if (this.entityName && recordCache.has(this.entityName)) {
             this.dataCallback({ data: recordCache.get(this.entityName), error: null });
+            return;
         }
 
         let endpoint = getApiEndpoint();
