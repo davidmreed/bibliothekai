@@ -25,14 +25,6 @@
             </div>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Original Language</h5>
-            <div class="card-text">
-                {{ sourcetext.language }}
-            </div>
-        </div>
-    </div>
     {% if sourcetext.alternate_names.count %}
     <div class="card">
         <div class="card-body">
@@ -55,6 +47,14 @@
         </div>
     </div>
     {% endif %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Original Language</h5>
+            <div class="card-text">
+                {{ sourcetext.language }}
+            </div>
+        </div>
+    </div>
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Format</h5>
