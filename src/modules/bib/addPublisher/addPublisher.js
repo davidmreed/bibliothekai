@@ -1,26 +1,20 @@
 import { LightningElement } from 'lwc';
-import { createRecord } from 'bib/drf';
+import { createRecord, getRecordApiUrl } from 'bib/drf';
 
-export default class AddPerson extends LightningElement {
-    firstName = "";
-    middleName = "";
-    lastName = "";
-    description = "";
+export default class AddPublisher extends LightningElement {
+    name = "";
+    link = "";
 
     get isFormValid() {
-        return !!this.firstName && !!this.lastName;
+        return !!this.name;
     }
 
     handleChange(event) {
         const field = event.target.name;
-        if (field === 'first_name') {
-            this.firstName = event.target.value;
-        } else if (field === 'middle_name') {
-            this.middleName = event.target.value;
-        } else if (field === 'last_name') {
-            this.lastName = event.target.value;
-        } else if (field === 'description') {
-            this.description = event.target.value;
+        if (field === 'name') {
+            this.name = event.target.value;
+        } else if (field === 'link') {
+            this.link = event.target.value;
         }
         if (this.isFormValid) {
             this.markFormValid();
@@ -61,15 +55,18 @@ export default class AddPerson extends LightningElement {
         }
         this.markFormValid();
 
-        let record = {
-            first_name: this.firstName,
-            middle_name: this.middleName,
-            last_name: this.lastName,
-            description: this.description
-        };
-
         try {
-            let result = await createRecord("persons", record);
+            let result = await createRecord("publishers", { name: this.name });
+            if (this.link) {
+                let link = {
+                    content_object: getRecordApiUrl("publishers", result.id),
+                    link: this.link,
+                    source: this.name,
+                    resource_type: "Website"
+                };
+                await createRecord("links", link);
+            }
+
             this.dispatchEvent(new CustomEvent('save', { detail: result.id }));
         } catch (error) {
             this.markFormInvalid(error);

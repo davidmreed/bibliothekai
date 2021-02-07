@@ -26,6 +26,17 @@ export default class FeatureEditor extends LightningElement {
         this.dispatchUpdate("language", event.detail);
     }
 
+    changeNotesLanguage(event) {
+        event.stopPropagation();
+        this.dispatchUpdate("notesLanguage", event.detail);
+
+    }
+
+    changeIntroLanguage(event) {
+        event.stopPropagation();
+        this.dispatchUpdate("introLanguage", event.detail);
+    }
+
     handleChange(event) {
         const field = event.target.name;
         event.stopPropagation();
@@ -36,9 +47,9 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate("description", event.target.value);
         } else if (field === 'kind') {
             this.dispatchUpdate("proseOrVerse", event.target.value);
-        } else if (field === 'authors') {
+        } else if (field === 'authors' || field === 'introAuthors' || field === 'notesAuthors') {
             this.dispatchUpdate(
-                "authors",
+                field,
                 Array.from(event.target.selectedOptions).map((f) => Number(f.value))
             );
         } else if (field === 'hasIntroduction') {
@@ -47,6 +58,10 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate("hasNotes", event.target.value);
         } else if (field === 'partial') {
             this.dispatchUpdate("partial", event.target.value);
+        } else if (field === 'introDescription') {
+            this.dispatchUpdate("introDescription", event.target.value);
+        } else if (field === 'notesDescription') {
+            this.dispatchUpdate("notesDescription", event.target.value);
         }
         if (this.isFormValid) {
             this.markFormValid();
@@ -69,5 +84,17 @@ export default class FeatureEditor extends LightningElement {
 
     toggle() {
         this.expanded = !this.expanded;
+    }
+
+    remove() {
+        this.dispatchEvent(new CustomEvent('remove', { detail: this.feature.id }));
+    }
+
+    toggleIntroduction() {
+        this.dispatchUpdate("hasIntroduction", !this.feature.hasIntroduction);
+    }
+
+    toggleNotes() {
+        this.dispatchUpdate("hasNotes", !this.feature.hasNotes);
     }
 }

@@ -30,7 +30,8 @@
                     <div class="form-row">
                         <div class="col-6">
                             <bib-pop-up-menu label-text="Publisher" class="publisher-popup" entity-name="publishers"
-                                allow-add="true" onchange={handlePublisherChange} value={publisher}>
+                                allow-add="true" onchange={handlePublisherChange} onadd={addPublisher}
+                                value={publisher}>
                             </bib-pop-up-menu>
                         </div>
                         <div class="col">
@@ -75,7 +76,7 @@
                 </button>
                 <template for:each={features} for:item="item">
                     <bib-feature-editor available-authors={selectedPersons} class="feature-editor" feature={item}
-                        key={item.id} onchange={handleFeatureChange}>
+                        key={item.id} onchange={handleFeatureChange} onremove={handleFeatureRemove}>
                     </bib-feature-editor>
                 </template>
             </div>
@@ -90,4 +91,14 @@
         </h4>
         <bib-add-person onsave={personAdded}></bib-add-person>
     </template>
+    <template if:true={addingPublisher}>
+        <h4>
+            <button class="btn btn-outline-secondary mr-3" onclick={stopAddingPublisher}>
+                &lt; Back
+            </button>
+            Adding New Publisher
+        </h4>
+        <bib-add-publisher onsave={publisherAdded}></bib-add-publisher>
+    </template>
+
 </template>

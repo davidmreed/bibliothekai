@@ -107,7 +107,7 @@ async function getRecordsFromApi(entityName) {
             elem => {
                 return { id: elem.id, name: elem[nameFields[entityName]] };
             });
-        recordCache.set(entityName, recordData)
+        recordCache.set(entityName, recordData);
     } else {
         throw new Error(`The API returned an error: ${result.status}.`);
     }
@@ -117,26 +117,28 @@ export async function createRecord(entity, record) {
     let endpoint = getApiEndpoint();
 
     let response = await fetch(
-        `${endpoint}/${entity}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify(record)
-    }
+        `${endpoint}/${entity}/`,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(record)
+        }
     );
 
     if (response.ok) {
+        let result = await response.json();
         if (recordCache.has(entity)) {
             recordCache.delete(entity);
         }
-        if (getRecordsStore.has(entity) && getRecordsStore.get(entity).length) {
+        if (getRecordsStore.has(entity) && getRecordsStore.get(entity).size) {
             // Make exactly one API call to refresh the cache.
             await getRecordsFromApi(entity);
-            getRecordsStore.get(entity).forEach((r) => r._refresh());
+            getRecordsStore.get(entity).forEach(r => r._refresh());
         }
-        return response.json();
+        return result;
     }
 
     throw new Error(`The API returned an error: ${response.status}.`);

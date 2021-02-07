@@ -1,0 +1,15 @@
+<template>
+    <div>
+        <small class="form-text text-muted validity">Enter information about this publisher. The name is
+            required.</small>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input class="form-control" name="name" placeholder="Name" type="text" value={name}
+                onchange={handleChange}></input>
+            <label for="link">Website</label>
+            <input class="form-control" name="link" placeholder="Website" type="url" value={link}
+                onchange={handleChange}></input>
+            <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+        </div>
+    </div>
+</template>

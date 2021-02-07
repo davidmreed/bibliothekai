@@ -5,9 +5,11 @@ export class Feature {
     language = '';
     proseOrVerse = 'Prose';
     hasIntroduction = false;
-    introductionAuthors = null;
+    introAuthors = [];
+    introDescription = '';
     hasNotes = false;
-    notesAuthors = null;
+    notesAuthors = [];
+    notesDescription = '';
     title = '';
     description = '';
     expanded = true;
@@ -28,13 +30,15 @@ export class Feature {
         newFeature.language = this.language;
         newFeature.proseOrVerse = this.proseOrVerse;
         newFeature.hasIntroduction = this.hasIntroduction;
+        newFeature.introDescription = this.introDescription;
         newFeature.hasNotes = this.hasNotes;
+        newFeature.notesDescription = this.notesDescription;
         newFeature.title = this.title;
         newFeature.description = this.description;
         newFeature.expanded = this.expanded;
         newFeature.authors = [...this.authors];
-        newFeature.introductionAuthors = this.introductionAuthors ? [...this.introductionAuthors] : this.introductionAuthors;
-        newFeature.notesAuthors = this.notesAuthors ? [...this.notesAuthors] : this.notesAuthors;
+        newFeature.introAuthors = [...this.introAuthors];
+        newFeature.notesAuthors = [...this.notesAuthors];
         return newFeature;
     }
 
@@ -61,12 +65,12 @@ export class Feature {
 
         if (this.hasNotes) {
             features.push({
-                persons: this.notesAuthors || this.authors, language: this.language, text: this.text.id, feature: "Notes"
+                persons: this.notesAuthors, language: this.language, text: this.text.id, description: this.notesDescription, feature: "Notes"
             });
         }
         if (this.hasIntroduction) {
             features.push({
-                persons: this.introductionAuthors || this.authors, language: this.language, text: this.text, feature: "Introduction"
+                persons: this.introAuthors, language: this.language, text: this.text, description: this.introDescription, feature: "Introduction"
             });
         }
 

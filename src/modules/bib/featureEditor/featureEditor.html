@@ -1,72 +1,124 @@
 <template>
-    <template if:true={expanded}>
+    <div>
         <small class="form-text text-muted validity is-invalid form-control mb-2 d-none">
         </small>
-        <div class="card-group">
-            <div class="card">
-                <form>
-                    <div class="card-body form-group">
-                        <div class="form-row">
-                            <div class="col-6">
-                                <bib-pop-up-menu label-text="Text" entity-name="texts" allow-add="false"
-                                    onchange={changeText} value={feature.text}>
-                                </bib-pop-up-menu>
-                            </div>
-                            <div class="col">
-                                <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
-                                    onchange={changeLanguage} value={feature.language}>
-                                </bib-pop-up-menu>
-                            </div>
-                            <div class="col">
-                                <label for="kind">Format</label>
-                                <select class="form-control" name="kind" size="1" onchange={handleChange}
-                                    value={feature.proseOrVerse}>
-                                    <option value="Prose">Prose</option>
-                                    <option value="Verse">Verse</option>
-                                </select>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Text Selection</h5>
+                <div class="float-right">
+                    <input class="btn btn-primary" type="button" onclick={remove} value="Remove"></input>
+                    <template if:false={expanded}>
+                        <input class="btn btn-primary" type="button" onclick={toggle} value="Expand"></input>
+                    </template>
+                    <template if:true={expanded}>
+                        <input class="btn btn-primary" type="button" onclick={toggle} value="Collapse"></input>
+                    </template>
+                </div>
+            </div>
+            <div class="card-body">
+                <bib-pop-up-menu entity-name="texts" allow-add="false" onchange={changeText} value={feature.text}>
+                </bib-pop-up-menu>
+            </div>
+        </div>
+        <template if:true={expanded}>
+            <div class="card ml-3">
+                <div class="card-header">
+                    <h5 class="card-title">Translation</h5>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
+                                onchange={changeLanguage} value={feature.language}>
+                            </bib-pop-up-menu>
+                        </div>
+                        <div class="col">
+                            <label for="kind">Format</label>
+                            <select class="form-control" name="kind" size="1" onchange={handleChange}
+                                value={feature.proseOrVerse}>
+                                <option value="Prose">Prose</option>
+                                <option value="Verse">Verse</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="partial" value={feature.partial}
+                                    onchange={handleChange}>
+                                <label class="form-check-label" for="partial">Partial Translation?</label>
                             </div>
                         </div>
+                    </div>
+                    <label for="authors">Authors</label>
+                    <select class="form-control" name="authors" multiple size="3" onchange={handleChange}>
+                        <template for:each={availableAuthors} for:item="author">
+                            <option key={author.id} value={author.id}>{author.name}</option>
+                        </template>
+                    </select>
+
+                    <label for="title">Title</label>
+                    <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
+                        value={feature.title} onchange={handleChange}></input>
+
+                    <label for="description">Description</label>
+                    <input class="form-control" name="description" placeholder="Description" type="text"
+                        value={feature.description} onchange={handleChange}></input>
+                </div>
+            </div>
+            <div class="card ml-3">
+                <div class="card-header">
+                    <h5 class="card-title">Introduction</h5>
+                    <template if:false={feature.hasIntroduction}>
+                        <input class="btn btn-secondary float-right" type="button" onclick={toggleIntroduction}
+                            value="Add"></input>
+                    </template>
+                </div>
+                <div class="card-body">
+                    <template if:true={feature.hasIntroduction}>
+                        <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
+                            onchange={changeIntroductionLanguage} value={feature.introLanguage}>
+                        </bib-pop-up-menu>
+
                         <label for="authors">Authors</label>
-                        <select class="form-control" name="authors" multiple size="3" onchange={handleChange}>
+                        <select class="form-control" name="introAuthors" multiple size="3" onchange={handleChange}>
                             <template for:each={availableAuthors} for:item="author">
                                 <option key={author.id} value={author.id}>{author.name}</option>
                             </template>
                         </select>
-
-                        <label for="title">Title</label>
-                        <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
-                            value={feature.title} onchange={handleChange}></input>
-
-                        <label for="title">Description</label>
-                        <input class="form-control" name="title" placeholder="Description" type="text"
-                            value={feature.description} onchange={handleChange}></input>
-
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="hasIntroduction"
-                                value={feature.hasIntroduction} onchange={handleChange}>
-                            <label class="form-check-label" for="hasIntroduction">Has Introduction?</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="hasNotes" value={feature.hasNotes}
-                                onchange={handleChange}>
-                            <label class="form-check-label" for="hasNotes">Has Notes?</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="partial" value={feature.partial}
-                                onchange={handleChange}>
-                            <label class="form-check-label" for="partial">Partial Translation?</label>
-                        </div>
-                        <br />
-                        <input class="btn btn-primary mt-3" type="button" onclick={toggle} value="Done"></input>
-                    </div>
-                </form>
+                        <label for="introDescription">Description</label>
+                        <input class="form-control" name="introDescription" placeholder="Description" type="text"
+                            value={feature.introDescription} onchange={handleChange}>
+                    </template>
+                </div>
             </div>
-        </div>
-    </template>
-    <template if:false={expanded}>
-        <div class="card">
-            <input class="btn btn-primary mt-3" type="button" onclick={toggle} value="Expand"></input>
-            Translation
-        </div>
-    </template>
+            <div class="card ml-3">
+                <div class="card-header">
+                    <h5 class="card-title">Notes</h5>
+                    <template if:false={feature.hasNotes}>
+                        <input class="float-right btn btn-secondary" type="button" onclick={toggleNotes}
+                            value="Add"></input>
+                    </template>
+                </div>
+                <div class="card-body">
+                    <template if:true={feature.hasNotes}>
+                        <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
+                            onchange={changeNotesLanguage} value={feature.notesLanguage}>
+                        </bib-pop-up-menu>
+
+                        <label for="authors">Authors</label>
+                        <select class="form-control" name="notesAuthors" multiple size="3" onchange={handleChange}>
+                            <template for:each={availableAuthors} for:item="author">
+                                <option key={author.id} value={author.id}>{author.name}</option>
+                            </template>
+                        </select>
+                        <label for="notesDescription">Description</label>
+                        <input class="form-control" name="notesDescription" placeholder="Description" type="text"
+                            value={feature.notesDescription} onchange={handleChange}>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
 </template>

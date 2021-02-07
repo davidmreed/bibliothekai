@@ -134,7 +134,7 @@ export default class AddPublishedReview extends LightningElement {
         return this.volumesListbox.getSelectedIds();
     }
 
-    create(event) {
+    async create(event) {
         // Validate data.
         // We must have at least one Volume and at least one Author.
         let persons = this.selectedPersons;
@@ -155,25 +155,21 @@ export default class AddPublishedReview extends LightningElement {
             title: this.title,
             location: `${this.source}, ${this.location}`
         };
-        createRecord('published-reviews', record)
-            .then(result => {
-                if (this.link) {
-                    let link = {
-                        content_object: getRecordApiUrl("published-reviews", result.id),
-                        link: this.link,
-                        source: this.source,
-                        resource_type: "Full Text"
-                    };
-                    createRecord("links", link).then(() => {
-                        window.location.href = getRecordUiUrl("published-reviews", result.id);
-                    });
-                } else {
-                    window.location.href = getRecordUiUrl("published-reviews", result.id);
-                }
-            })
-            .catch(error => {
-                this.markTabInvalid("review", error);
-            });
+        try {
+            let result = await createRecord('published-reviews', record);
+            if (this.link) {
+                let link = {
+                    content_object: getRecordApiUrl("published-reviews", result.id),
+                    link: this.link,
+                    source: this.source,
+                    resource_type: "Full Text"
+                };
+                await createRecord("links", link);
+            }
+            window.location.href = getRecordUiUrl("published-reviews", result.id);
+        } catch (error) {
+            this.markTabInvalid("review", error);
+        }
     }
 
     addPerson() {

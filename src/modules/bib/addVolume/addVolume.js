@@ -11,6 +11,7 @@ export default class AddVolume extends LightningElement {
     oclc_number = '';
     description = '';
     addingPerson = false;
+    addingPublisher = false;
     @track
     features = [new Feature(0)];
 
@@ -28,6 +29,10 @@ export default class AddVolume extends LightningElement {
     handleFeatureChange(event) {
         let newFeature = event.detail;
         this.features[newFeature.id] = newFeature;
+    }
+
+    handleFeatureRemove(event) {
+        this.features.splice(this.features.findIndex(f => f.id === event.detail));
     }
 
     handleChange(event) {
@@ -201,4 +206,21 @@ export default class AddVolume extends LightningElement {
         this.template.querySelector('.main-block').classList.remove('d-none');
         this.personsListbox.preselectIds([event.detail]);
     }
+
+    addPublisher() {
+        this.addingPublisher = true;
+        this.template.querySelector('.main-block').classList.add('d-none');
+    }
+
+    stopAddingPublisher() {
+        this.addingPublisher = false;
+        this.template.querySelector('.main-block').classList.remove('d-none');
+    }
+
+    publisherAdded(event) {
+        this.addingPublisher = false;
+        this.template.querySelector('.main-block').classList.remove('d-none');
+        this.publisher = event.detail;
+    }
+
 }
