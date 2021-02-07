@@ -1,3 +1,5 @@
+import { getRecordApiUrl } from 'bib/drf';
+
 export class Feature {
     text = '';
     authors = [];
@@ -42,11 +44,12 @@ export class Feature {
         return newFeature;
     }
 
-    getFeatures() {
+    getFeatures(volumeId) {
         let translation = {
-            persons: this.authors,
-            language: this.language,
-            text: this.text,
+            volume: getRecordApiUrl("volumes", volumeId),
+            persons: this.authors.map(a => getRecordApiUrl("persons", a)),
+            language: getRecordApiUrl("languages", this.language),
+            text: getRecordApiUrl("texts", this.text),
             partial: this.partial,
             kind: this.proseOrVerse,
             feature: "Translation"
@@ -65,12 +68,22 @@ export class Feature {
 
         if (this.hasNotes) {
             features.push({
-                persons: this.notesAuthors, language: this.language, text: this.text.id, description: this.notesDescription, feature: "Notes"
+                volume: getRecordApiUrl("volumes", volumeId),
+                persons: this.notesAuthors.map(a => getRecordApiUrl("persons", a)),
+                language: getRecordApiUrl("languages", this.language),
+                text: getRecordApiUrl("texts", this.text),
+                description: this.notesDescription,
+                feature: "Notes"
             });
         }
         if (this.hasIntroduction) {
             features.push({
-                persons: this.introAuthors, language: this.language, text: this.text, description: this.introDescription, feature: "Introduction"
+                volume: getRecordApiUrl("volumes", volumeId),
+                persons: this.introAuthors.map(a => getRecordApiUrl("persons", a)),
+                language: getRecordApiUrl(this.language),
+                text: getRecordApiUrl(this.text),
+                description: this.introDescription,
+                feature: "Introduction"
             });
         }
 

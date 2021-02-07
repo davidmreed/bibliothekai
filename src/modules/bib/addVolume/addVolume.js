@@ -1,5 +1,5 @@
 import { LightningElement, track } from 'lwc';
-import { createRecord, getRecordUiUrl } from 'bib/drf';
+import { createRecord, getRecordUiUrl, getRecordApiUrl } from 'bib/drf';
 import { Feature } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
@@ -162,7 +162,7 @@ export default class AddVolume extends LightningElement {
         let record = {
             title: this.title,
             published_date: this.published_date,
-            publisher: this.publisher
+            publisher: getRecordApiUrl("publishers", this.publisher)
         };
         if (this.isbn) {
             record.isbn = this.isbn;
@@ -178,16 +178,16 @@ export default class AddVolume extends LightningElement {
         }
 
         try {
-            let result = createRecord('volumes', record);
+            let result = await createRecord('volumes', record);
 
             await Promise.all(
-                this.features.map(f => f.getFeatures())
+                this.features.map(f => f.getFeatures(result.id))
                     .reduce((acc, val) => acc.concat(val), [])
                     .map(f => createRecord("features", f))
             );
             window.location.href = getRecordUiUrl("volumes", result.id);
         } catch (error) {
-            this.markTabInvalid("review", error);
+            this.markTabInvalid("data", error);
         }
     }
 
