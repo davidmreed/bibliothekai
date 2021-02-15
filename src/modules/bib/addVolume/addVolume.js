@@ -10,10 +10,15 @@ export default class AddVolume extends LightningElement {
     isbn = '';
     oclc_number = '';
     description = '';
+    primaryLanguage = '';
     addingPerson = false;
     addingPublisher = false;
-    @track
-    features = [new Feature(0)];
+    editingFeature = false;
+    @track features = [];
+    @track generalFeatures = [];
+    featureToEdit;
+
+    detailsExpanded = true;
 
     get isFormValid() {
         return !!this.title && !!this.published_date && !!this.publisher;
@@ -28,7 +33,10 @@ export default class AddVolume extends LightningElement {
 
     handleFeatureChange(event) {
         let newFeature = event.detail;
-        this.features[newFeature.id] = newFeature;
+        this.features[newFeature.id - 1] = newFeature;
+        if (this.editingFeature) {
+            this.featureToEdit = newFeature;
+        }
     }
 
     handleFeatureRemove(event) {
@@ -37,6 +45,7 @@ export default class AddVolume extends LightningElement {
 
     handleChange(event) {
         const field = event.target.name;
+
         if (field === 'title') {
             this.title = event.target.value;
         } else if (field === 'date') {
@@ -51,20 +60,6 @@ export default class AddVolume extends LightningElement {
         if (this.isFormValid) {
             this.markTabValid("data");
         }
-    }
-
-    get currentTab() {
-        for (let elem of this.template.querySelectorAll('.nav-link')) {
-            if (elem.classList.contains('active')) {
-                return elem.dataset.tab;
-            }
-        }
-
-        return null;
-    }
-
-    getTabValidityElement(tab) {
-        return this.template.querySelector(`.validity-${tab}`);
     }
 
     markTabInvalid(tab, message) {
@@ -84,62 +79,6 @@ export default class AddVolume extends LightningElement {
             validityElem.classList.remove('form-control');
             validityElem.classList.remove('mb-2');
         }
-    }
-
-    selectTab(tab) {
-        // Select the correct tab.
-        for (let elem of this.template.querySelectorAll('.nav-link')) {
-            if (elem.dataset.tab === tab) {
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
-        }
-
-        // Show the corresponding tab pane.
-        for (let elem of this.template.querySelectorAll('.tab-pane')) {
-            if (elem.dataset.tab === tab) {
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
-        }
-    }
-
-    changeTab(event) {
-        let tabName = event.target.dataset.tab;
-        let activeTab = this.currentTab;
-
-        if (activeTab === tabName) return;
-
-        if (
-            (activeTab === 'persons' && this.selectedPersons.length === 0) ||
-            (activeTab === 'data' && !this.isFormValid)
-        ) {
-            this.markTabInvalid(activeTab);
-            event.preventDefault();
-            event.stopPropagation();
-            return;
-        }
-
-        this.markTabValid(activeTab);
-        this.selectTab(tabName);
-    }
-
-    addFeature() {
-        this.features.push(new Feature(this.features.length));
-    }
-
-    get personsListbox() {
-        return this.template.querySelector('.persons-listbox');
-    }
-
-    get selectedPersons() {
-        if (this.personsListbox) {
-            return this.personsListbox.getSelectedRecords();
-        }
-
-        return [];
     }
 
     get publisherPopup() {
@@ -191,36 +130,83 @@ export default class AddVolume extends LightningElement {
         }
     }
 
+    done(event) {
+        let section = event.target.name;
+        // TODO: complete
+        // Collapse this section and expand the next one.
+    }
+
+    changePrimaryLanguage(event) {
+        this.primaryLanguage = event.detail;
+    }
+
+    toggleDetails() {
+        this.detailsExpanded = !this.detailsExpanded;
+    }
+
+    addGeneralFeature() {
+        // TODO
+    }
+
+    addFeature() {
+        this.hideMainSection();
+
+        let newFeature = new Feature(this.features.length + 1);
+        if (this.primaryLanguage) {
+            newFeature.language = newFeature.introLanguage = newFeature.notesLanguage = this.primaryLanguage;
+        }
+        this.features.push(newFeature);
+        this.featureToEdit = newFeature;
+        this.editingFeature = true;
+    }
+
+    handleFeatureEdit(event) {
+        this.hideMainSection();
+        this.featureToEdit = this.features.filter(f => f.id === event.detail)[0];
+        this.editingFeature = true;
+    }
+
+    stopEditingFeature() {
+        this.editingFeature = false;
+        this.showMainSection();
+    }
+
+    hideMainSection() {
+        this.template.querySelector('.main-block').classList.add('d-none');
+    }
+
+    showMainSection() {
+        this.template.querySelector('.main-block').classList.remove('d-none');
+    }
+
     addPerson() {
         this.addingPerson = true;
-        this.template.querySelector('.main-block').classList.add('d-none');
+        this.hideMainSection();
     }
 
     stopAddingPerson() {
         this.addingPerson = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
+        this.showMainSection();
     }
 
-    personAdded(event) {
+    personAdded() {
         this.addingPerson = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
-        this.personsListbox.preselectIds([event.detail]);
+        this.showMainSection();
     }
 
     addPublisher() {
         this.addingPublisher = true;
-        this.template.querySelector('.main-block').classList.add('d-none');
+        this.hideMainSection();
     }
 
     stopAddingPublisher() {
         this.addingPublisher = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
+        this.showMainSection();
     }
 
     publisherAdded(event) {
         this.addingPublisher = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
+        this.showMainSection();
         this.publisher = event.detail;
     }
-
 }

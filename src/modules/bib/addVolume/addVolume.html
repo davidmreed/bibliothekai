@@ -1,87 +1,121 @@
 <template>
     <div class="main-block">
-        <ul class="nav nav-tabs mb-3" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-tab="data" onclick={changeTab} role="tab" aria-controls="data"
-                    aria-selected="true">
-                    Enter Publication Data
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab="persons" onclick={changeTab} role="tab" aria-controls="persons">
-                    Select Authors
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab="features" onclick={changeTab} role="tab" aria-controls="features">
-                    Add Translations and Features
-                </a>
-            </li>
-        </ul>
         <div class="tab-content">
-            <div class="tab-pane active" data-tab="data" role="tabpanel" aria-labelledby="data-tab">
-                <small class="form-text text-muted validity-data">
-                    Enter details about this volume. A title, published date, and publisher are required.
-                </small>
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input class="form-control" name="title" placeholder="Title" type="text" value={title}
-                        onchange={handleChange}></input>
-                    <div class="form-row">
-                        <div class="col-6">
-                            <bib-pop-up-menu label-text="Publisher" class="publisher-popup" entity-name="publishers"
-                                allow-add="true" onchange={handlePublisherChange} onadd={addPublisher}
-                                value={publisher}>
-                            </bib-pop-up-menu>
-                        </div>
-                        <div class="col">
-                            <label for="date">Publication Date</label>
-                            <input class="form-control" name="date" type="date" value={published_date}
-                                onchange={handleChange}></input>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="col">
-                            <label for="isbn">ISBN</label>
-                            <input class="form-control" name="isbn" placeholder="ISBN, if available" type="text"
-                                value={isbn} onchange={handleChange}></input>
-                        </div>
-                        <div class="col">
-                            <label for="oclc">OCLC Number</label>
-                            <input class="form-control" name="oclc" placeholder="OCLC number, if available" type="text"
-                                value={oclc_number} onchange={handleChange}></input>
-                        </div>
-                    </div>
-                    <label for="description">Description</label>
-                    <input class="form-control" name="description" placeholder="Description" type="text"
-                        value={description} onchange={handleChange}></input>
-
-                    <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+            <h2>
+                Publication Details
+                <div class="float-right">
+                    <template if:false={detailsExpanded}>
+                        <input class="btn btn-primary" type="button" onclick={toggleDetails} value="Expand"></input>
+                    </template>
+                    <template if:true={detailsExpanded}>
+                        <input class="btn btn-primary" type="button" onclick={toggleDetails} value="Collapse"></input>
+                    </template>
+                    <input class="btn btn-primary" type="button" onclick={create} value="Create"></input>
                 </div>
-            </div>
-            <div class="tab-pane" data-tab="persons" role="tabpanel" aria-labelledby="persons-tab">
-                <small class="form-text text-muted validity-persons">
-                    Select or create the authors for this volume.
-                    These authors will be available when adding translations and features.
-                </small>
-                <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={addPerson}>
-                </bib-dualing-listbox>
-            </div>
-            <div class="tab-pane" data-tab="features" role="tabpanel" aria-labelledby="features-tab">
-                <small class="form-text text-muted validity-features">
-                    Add translations and other features to this volume.
-                </small>
-                <button class="btn btn-outline-secondary" onclick={addFeature}>
-                    + Add
-                </button>
-                <template for:each={features} for:item="item">
-                    <bib-feature-editor available-authors={selectedPersons} class="feature-editor" feature={item}
-                        key={item.id} onchange={handleFeatureChange} onremove={handleFeatureRemove}>
-                    </bib-feature-editor>
+            </h2>
+            <small class="form-text text-muted validity-data">
+                Enter details about this volume. A title, published date, and publisher are required.
+            </small>
+
+            <template if:true={detailsExpanded}>
+                <div class="details" data-tab="data">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-6">
+                                <label for="title">Title</label>
+                                <input class="form-control" name="title" placeholder="Title" type="text" value={title}
+                                    onchange={handleChange}></input>
+                            </div>
+                            <div class="col">
+                                <bib-pop-up-menu label-text="Primary Language" entity-name="languages" allow-add="false"
+                                    onchange={changePrimaryLanguage} value={primaryLanguage}>
+                                </bib-pop-up-menu>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-6">
+                                <bib-pop-up-menu label-text="Publisher" class="publisher-popup" entity-name="publishers"
+                                    allow-add="true" onchange={handlePublisherChange} onadd={addPublisher}
+                                    value={publisher}>
+                                </bib-pop-up-menu>
+                            </div>
+                            <div class="col">
+                                <label for="date">Publication Date</label>
+                                <input class="form-control" name="date" type="date" value={published_date}
+                                    onchange={handleChange}></input>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <label for="isbn">ISBN</label>
+                                <input class="form-control" name="isbn" placeholder="ISBN, if available" type="text"
+                                    value={isbn} onchange={handleChange}></input>
+                            </div>
+                            <div class="col">
+                                <label for="oclc">OCLC Number</label>
+                                <input class="form-control" name="oclc" placeholder="OCLC number, if available"
+                                    type="text" value={oclc_number} onchange={handleChange}></input>
+                            </div>
+                        </div>
+                        <label for="description">Description</label>
+                        <input class="form-control" name="description" placeholder="Description" type="text"
+                            value={description} onchange={handleChange}></input>
+
+                        <input class="btn btn-primary mt-3" name="details-done" type="button" onclick={done}
+                            value="Done"></input>
+                    </div>
+                </div>
+            </template>
+            <h2>
+                Volume Features
+                <div class="float-right">
+                    <button class="btn btn-outline-secondary" onclick={addGeneralFeature}>
+                        + Add
+                    </button>
+                </div>
+            </h2>
+            <small class="form-text text-muted validity-features">
+                Add features of the volume as a whole, like general introductions and notes that aren't
+                associated with a specific translation.
+            </small>
+
+            <div class="volume-features">
+                <template for:each={generalFeatures} for:item="item">
                 </template>
             </div>
+            <h2>
+                Translations
+                <div class="float-right">
+                    <button class="btn btn-outline-secondary" onclick={addFeature}>
+                        + Add
+                    </button>
+                </div>
+            </h2>
+            <small class="form-text text-muted validity-features">
+                Add translations to this volume.
+            </small>
+
+            <div class="translations">
+                <template for:each={features} for:item="item">
+                    <bib-feature-display class="feature-display" feature={item} key={item.id} data-item={item.id}
+                        onedit={handleFeatureEdit} onremove={handleFeatureRemove}>
+                    </bib-feature-display>
+                </template>
+            </div>
+            <input class="btn btn-primary" type="button" onclick={create} value="Create"></input>
         </div>
     </div>
+    <template if:true={editingFeature}>
+        <h4>
+            <button class="btn btn-outline-secondary mr-3" onclick={stopEditingFeature}>
+                &lt; Back
+            </button>
+            Editing Translation
+        </h4>
+        <bib-feature-editor class="feature-editor" feature={featureToEdit} onsave={stopEditingFeature}
+            onchange={handleFeatureChange}>
+        </bib-feature-editor>
+    </template>
     <template if:true={addingPerson}>
         <h4>
             <button class="btn btn-outline-secondary mr-3" onclick={stopAddingPerson}>

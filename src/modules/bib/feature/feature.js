@@ -5,6 +5,8 @@ export class Feature {
     authors = [];
     partial = false;
     language = '';
+    notesLanguage = '';
+    introLanguage = '';
     proseOrVerse = 'Prose';
     hasIntroduction = false;
     introAuthors = [];
@@ -30,6 +32,8 @@ export class Feature {
         newFeature.text = this.text;
         newFeature.partial = this.partial;
         newFeature.language = this.language;
+        newFeature.introLanguage = this.introLanguage;
+        newFeature.notesLanguage = this.notesLanguage;
         newFeature.proseOrVerse = this.proseOrVerse;
         newFeature.hasIntroduction = this.hasIntroduction;
         newFeature.introDescription = this.introDescription;
@@ -70,7 +74,7 @@ export class Feature {
             features.push({
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.notesAuthors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl("languages", this.language),
+                language: getRecordApiUrl("languages", this.notesLanguage),
                 text: getRecordApiUrl("texts", this.text),
                 description: this.notesDescription,
                 feature: "Notes"
@@ -80,7 +84,7 @@ export class Feature {
             features.push({
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.introAuthors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl(this.language),
+                language: getRecordApiUrl(this.introLanguage),
                 text: getRecordApiUrl(this.text),
                 description: this.introDescription,
                 feature: "Introduction"

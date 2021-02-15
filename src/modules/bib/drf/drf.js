@@ -1,5 +1,7 @@
 const getRecordsStore = new Map();
 const recordCache = new Map();
+const individualRecordCache = new Map();
+
 const nameFields = {
     publishers: 'name',
     persons: 'sort_name',
@@ -23,6 +25,16 @@ export function getRecordApiUrl(entityName, id) {
 
 export function getRecordUiUrl(entityName, id) {
     return `${getEndpoint()}/${entityName}/${id}`;
+}
+
+export async function getRecord(entityName, recordId) {
+    // TODO: Optimize further. Make it fetch exactly one record.
+    let cacheKey = `${entityName}/${recordId}`;
+    if (!individualRecordCache.has(cacheKey)) {
+        await getRecordsFromApi(entityName);
+    }
+
+    return individualRecordCache.get(`${entityName}/${recordId}`);
 }
 
 export class getRecords {
@@ -103,11 +115,18 @@ async function getRecordsFromApi(entityName) {
     let result = await fetch(new Request(`${getApiEndpoint()}/${entityName}/`));
     if (result.ok) {
         let data = await result.json();
+
+        // Populate the list-based record cache
         let recordData = data.map(
             elem => {
                 return { id: elem.id, name: elem[nameFields[entityName]] };
             });
         recordCache.set(entityName, recordData);
+
+        // And the individual record cache
+        data.forEach(r => {
+            individualRecordCache.set(`${entityName}/${r.id}`, r);
+        });
     } else {
         throw new Error(`The API returned an error: ${result.status}.`);
     }

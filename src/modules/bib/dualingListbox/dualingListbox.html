@@ -1,12 +1,12 @@
 <template>
     <input class="form-control mb-2" name="search" type="search" placeholder="Search" aria-label="search"
-        oninput={doSearch} />
+        oninput={handleSearch} />
     <small class="form-text text-muted validity is-invalid form-control mb-2 d-none">
     </small>
     <div class="card-group">
         <div class="card">
             <div class="card-body form-group">
-                <select class="entities form-control" name="entities" size="5" multiple>
+                <select class="entities form-control" name="entities" size="5" multiple onchange={handleChange}>
                     <template if:true={filteredEntities.length}>
                         <template for:each={filteredEntities} for:item="entity">
                             <option key={entity.id} value={entity.id}>
@@ -48,7 +48,8 @@
         </div>
         <div class="card">
             <div class="card-body form-group">
-                <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple>
+                <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple
+                    onchange={handleChange}>
                     <template if:true={filteredSelectedEntities.length}>
                         <template for:each={filteredSelectedEntities} for:item="entity">
                             <option key={entity.id} value={entity.id}>

@@ -52,11 +52,9 @@
                         </div>
                     </div>
                     <label for="authors">Authors</label>
-                    <select class="form-control" name="authors" multiple size="3" onchange={handleChange}>
-                        <template for:each={availableAuthors} for:item="author">
-                            <option key={author.id} value={author.id}>{author.name}</option>
-                        </template>
-                    </select>
+                    <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="false"
+                        value={feature.authors} onchange={changePersons}>
+                    </bib-dualing-listbox>
 
                     <label for="title">Title</label>
                     <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
@@ -81,12 +79,9 @@
                             onchange={changeIntroductionLanguage} value={feature.introLanguage}>
                         </bib-pop-up-menu>
 
-                        <label for="authors">Authors</label>
-                        <select class="form-control" name="introAuthors" multiple size="3" onchange={handleChange}>
-                            <template for:each={availableAuthors} for:item="author">
-                                <option key={author.id} value={author.id}>{author.name}</option>
-                            </template>
-                        </select>
+                        <label for="introAuthors">Authors</label>
+                        <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.introAuthors}
+                            onchange={changeIntroPersons}></bib-dualing-listbox>
                         <label for="introDescription">Description</label>
                         <input class="form-control" name="introDescription" placeholder="Description" type="text"
                             value={feature.introDescription} onchange={handleChange}>
@@ -107,12 +102,9 @@
                             onchange={changeNotesLanguage} value={feature.notesLanguage}>
                         </bib-pop-up-menu>
 
-                        <label for="authors">Authors</label>
-                        <select class="form-control" name="notesAuthors" multiple size="3" onchange={handleChange}>
-                            <template for:each={availableAuthors} for:item="author">
-                                <option key={author.id} value={author.id}>{author.name}</option>
-                            </template>
-                        </select>
+                        <label for="notesAuthors">Authors</label>
+                        <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.notesAuthors}
+                            onchange={changeNotesPersons}></bib-dualing-listbox>
                         <label for="notesDescription">Description</label>
                         <input class="form-control" name="notesDescription" placeholder="Description" type="text"
                             value={feature.notesDescription} onchange={handleChange}>

@@ -6,26 +6,19 @@ export default class DualingListbox extends LightningElement {
     setEntities({ data, error }) {
         if (data) {
             this.entities = data;
-
-            let selected = this.getSelectedIds();
-            this.selectedEntities = [];
-            this.selectIds(selected);
-
-            if (this.preselectedIds) {
-                this.selectIds(this.preselectedIds);
-                this.preselectedIds = null;
-            }
-
-            this.updateDisplay();
+            this.update();
         } else {
             this.setErrorStatus(error);
         }
         this.template.querySelector(".spinner-grow").classList.add("d-none");
     }
-    entities = [];
-    preselectedIds;
+    entities;
+    _value;
+
     @api entityName;
     @api allowAdd;
+
+    @track availableEntities = [];
     @track selectedEntities = [];
     @track filteredEntities = [];
     @track filteredSelectedEntities = [];
@@ -39,75 +32,45 @@ export default class DualingListbox extends LightningElement {
     }
 
     @api
-    getSelectedIds() {
-        return this.selectedEntities.map((e) => e.id);
-    }
-
-    @api
     getSelectedRecords() {
         return this.selectedEntities;
     }
 
     @api
-    selectIds(ids) {
-        for (let value of ids) {
-            let index = this.entities.findIndex((f) => f.id === value);
-            if (index !== -1) {
-                this.selectedEntities.splice(
-                    this.selectedEntities.length,
-                    0,
-                    ...this.entities.splice(index, 1)
-                );
-            }
-        }
-        this.updateDisplay();
+    get value() {
+        return this._value;
     }
 
-    @api
-    unselectIds(ids) {
-        for (let value of ids) {
-            let index = this.selectedEntities.findIndex((f) => f.id === value);
-            if (index !== -1) {
-                this.entities.splice(
-                    this.entities.length,
-                    0,
-                    ...this.selectedEntities.splice(index, 1)
-                );
-            }
-        }
-
-        this.updateDisplay();
-    }
-
-    @api
-    preselectIds(ids) {
-        // Sometimes we need to select an entity id that is not in our entities yet,
-        // as it's just been created and is pending a wire refresh.
-        // Likewise, we may need to preselect an entity before the first wire refresh
-        // completes.
-
-        if (ids.map(id => this.entities.includes(id)).reduce((a, b) => a && b)) {
-            this.selectIds(ids);
-        } else {
-            this.preselectedIds = ids;
+    set value(val) {
+        this._value = val;
+        if (this.entities) {
+            this.update();
         }
     }
 
-    doSearch(event) {
+    handleSearch(event) {
         this.searchKey = event.target.value;
-        this.updateDisplay();
+        this.update();
     }
 
-    updateDisplay() {
+    handleChange(event) {
+        // We don't want change events from our select boxes to propagate
+        event.stopPropagation();
+    }
+
+    update() {
+        this.availableEntities = this.entities.filter(f => !this.value.includes(f.id));
+        this.selectedEntities = this.entities.filter(f => this.value.includes(f.id));
+
         if (this.searchKey) {
-            this.filteredEntities = this.entities.filter((f) =>
+            this.filteredEntities = this.availableEntities.filter((f) =>
                 f.name.toLowerCase().includes(this.searchKey.toLowerCase())
             );
             this.filteredSelectedEntities = this.selectedEntities.filter((f) =>
                 f.name.toLowerCase().includes(this.searchKey.toLowerCase())
             );
         } else {
-            this.filteredEntities = this.entities;
+            this.filteredEntities = this.availableEntities;
             this.filteredSelectedEntities = this.selectedEntities;
         }
 
@@ -116,19 +79,31 @@ export default class DualingListbox extends LightningElement {
     }
 
     moveRight() {
-        this.selectIds(
-            Array.from(
-                this.template.querySelector('.entities').selectedOptions
-            ).map((f) => Number(f.value))
-        );
+        this.dispatchEvent(
+            new CustomEvent(
+                'change',
+                {
+                    detail: this._value.concat(Array.from(
+                        this.template.querySelector('.entities').selectedOptions
+                    ).map((f) => Number(f.value)))
+                }
+            )
+        )
     }
 
     moveLeft() {
-        this.unselectIds(
-            Array.from(
-                this.template.querySelector('.selectedEntities').selectedOptions
-            ).map((f) => Number(f.value))
-        );
+        let itemsUnselect = Array.from(
+            this.template.querySelector('.selectedEntities').selectedOptions
+        ).map((f) => Number(f.value));
+
+        this.dispatchEvent(
+            new CustomEvent(
+                'change',
+                {
+                    detail: this._value.filter(f => !itemsUnselect.includes(f))
+                }
+            )
+        )
     }
 
     add() {
@@ -154,7 +129,7 @@ export default class DualingListbox extends LightningElement {
     }
 
     get entityCount() {
-        return this.entities.length;
+        return this.availableEntities.length;
     }
 
     get filteredEntityCount() {

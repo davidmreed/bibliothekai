@@ -8,6 +8,8 @@ export default class AddPublishedReview extends LightningElement {
     published_date = '';
     link = '';
     addingPerson = false;
+    persons;
+    volumes;
 
     renderedCallback() {
         // If we're being displayed within a volume's path,
@@ -38,9 +40,18 @@ export default class AddPublishedReview extends LightningElement {
         } else if (field === 'source') {
             this.source = event.target.value;
         }
+
         if (this.isFormValid) {
             this.markTabValid("review");
         }
+    }
+
+    handleChangeVolumes(event) {
+        this.volumes = event.detail;
+    }
+
+    handleChangePersons(event) {
+        this.persons = event.detail;
     }
 
     get currentTab() {
@@ -126,19 +137,9 @@ export default class AddPublishedReview extends LightningElement {
         return this.template.querySelector('.volumes-listbox');
     }
 
-    get selectedPersons() {
-        return this.personsListbox.getSelectedIds();
-    }
-
-    get selectedVolumes() {
-        return this.volumesListbox.getSelectedIds();
-    }
-
     async create(event) {
         // Validate data.
         // We must have at least one Volume and at least one Author.
-        let persons = this.selectedPersons;
-        let volumes = this.selectedVolumes;
 
         if (!this.isFormValid) {
             this.markTabInvalid('review');
@@ -149,8 +150,8 @@ export default class AddPublishedReview extends LightningElement {
         this.markTabValid('review');
 
         let record = {
-            volumes: volumes.map(v => getRecordApiUrl("volumes", v)),
-            persons: persons.map(p => getRecordApiUrl("persons", p)),
+            volumes: this.volumes.map(v => getRecordApiUrl("volumes", v)),
+            persons: this.persons.map(p => getRecordApiUrl("persons", p)),
             published_date: this.published_date,
             title: this.title,
             location: `${this.source}, ${this.location}`
@@ -185,6 +186,6 @@ export default class AddPublishedReview extends LightningElement {
     personAdded(event) {
         this.addingPerson = false;
         this.template.querySelector('.main-block').classList.remove('d-none');
-        this.personsListbox.preselectIds([event.detail]);
+        this.persons.push(event.detail);
     }
 }

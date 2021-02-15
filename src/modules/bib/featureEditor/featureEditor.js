@@ -2,7 +2,6 @@ import { LightningElement, api } from 'lwc';
 
 export default class FeatureEditor extends LightningElement {
     @api feature;
-    @api availableAuthors;
 
     expanded = true;
 
@@ -29,12 +28,23 @@ export default class FeatureEditor extends LightningElement {
     changeNotesLanguage(event) {
         event.stopPropagation();
         this.dispatchUpdate("notesLanguage", event.detail);
-
     }
 
     changeIntroLanguage(event) {
         event.stopPropagation();
         this.dispatchUpdate("introLanguage", event.detail);
+    }
+
+    changePersons(event) {
+        this.dispatchUpdate("authors", event.detail);
+    }
+
+    changeIntroPersons(event) {
+        this.dispatchUpdate("introAuthors", event.detail);
+    }
+
+    changeNotesPersons(event) {
+        this.dispatchUpdate("notesAuthors", event.detail);
     }
 
     handleChange(event) {
