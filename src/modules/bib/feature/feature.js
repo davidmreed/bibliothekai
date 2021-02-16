@@ -77,8 +77,7 @@ export class Feature {
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.notesAuthors.map(a => getRecordApiUrl("persons", a)),
                 language: getRecordApiUrl("languages", this.notesLanguage),
-                feature: "Notes",
-                kind: "Prose" // TODO
+                feature: "Notes"
             };
             if (this.text) {
                 notes.text = getRecordApiUrl("texts", this.text);
@@ -93,8 +92,7 @@ export class Feature {
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.introAuthors.map(a => getRecordApiUrl("persons", a)),
                 language: getRecordApiUrl("languages", this.introLanguage),
-                feature: "Introduction",
-                kind: "Prose" // TODO
+                feature: "Introduction"
             }
             if (this.text) {
                 intro.text = getRecordApiUrl("texts", this.text);

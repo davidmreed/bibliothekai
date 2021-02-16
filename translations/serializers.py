@@ -157,7 +157,7 @@ class SeriesSerializer(serializers.ModelSerializer):
 
 
 class FeatureSerializer(serializers.ModelSerializer):
-    kind = ChoiceField(choices=KIND_CHOICES)
+    kind = ChoiceField(choices=KIND_CHOICES, default="Prose", required=False)
     feature = ChoiceField(choices=Feature.FEATURE_CHOICES)
     persons = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(), view_name="person-detail", many=True
@@ -167,7 +167,10 @@ class FeatureSerializer(serializers.ModelSerializer):
         view_name="volume-detail",  # FIXME: all of these querysets need to be sanitized
     )
     text = serializers.HyperlinkedRelatedField(
-        source="source_text", queryset=SourceText.objects.all(), view_name="text-detail"
+        source="source_text",
+        queryset=SourceText.objects.all(),
+        view_name="text-detail",
+        required=False,
     )
 
     language = serializers.HyperlinkedRelatedField(
