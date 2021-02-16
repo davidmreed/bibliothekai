@@ -24,7 +24,20 @@ export class Feature {
     }
 
     get isValid() {
-        return this.authors.length && !!this.language && !!this.text;
+        let valid = true;
+
+        if (this.text) {
+            valid = valid && this.authors.length && !!this.language;
+        }
+        if (this.hasIntroduction) {
+            valid = valid && this.introAuthors.length && !!this.introLanguage;
+        }
+
+        if (this.hasNotes) {
+            valid = valid && this.notesAuthors.length && !!this.notesLanguage;
+        }
+
+        return valid;
     }
 
     clone() {

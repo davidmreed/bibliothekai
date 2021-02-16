@@ -40,32 +40,33 @@
                                 </div>
                                 <div class="col">
                                     <label for="kind">Format</label>
-                                    <select class="form-control" name="kind" size="1" onchange={handleChange}
-                                        value={feature.proseOrVerse}>
+                                    <select class="form-control format-picklist" name="kind" size="1"
+                                        onchange={handleChange} value={feature.proseOrVerse}>
                                         <option value="Prose">Prose</option>
                                         <option value="Verse">Verse</option>
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="partial"
-                                            value={feature.partial} onchange={handleChange}>
-                                        <label class="form-check-label" for="partial">Partial Translation?</label>
-                                    </div>
+                                    <label for="partial">Coverage</label>
+                                    <select class="form-control coverage-picklist" name="partial" size="1"
+                                        onchange={handleChange} value={partialValue}>
+                                        <option value="false">Complete translation</option>
+                                        <option value="true">Partial translation</option>
+                                    </select>
                                 </div>
                             </div>
+                            <label for="description">Description</label>
+                            <input class="form-control" name="description" placeholder="Description" type="text"
+                                value={feature.description} onchange={handleChange}></input>
+                            <label for="title">Title</label>
+                            <input class="form-control" name="title" placeholder="Title, if different from text"
+                                type="text" value={feature.title} onchange={handleChange}></input>
+
                             <label for="authors">Authors</label>
                             <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="false"
                                 value={feature.authors} onchange={changePersons}>
                             </bib-dualing-listbox>
 
-                            <label for="title">Title</label>
-                            <input class="form-control" name="title" placeholder="Title, if different from text"
-                                type="text" value={feature.title} onchange={handleChange}></input>
-
-                            <label for="description">Description</label>
-                            <input class="form-control" name="description" placeholder="Description" type="text"
-                                value={feature.description} onchange={handleChange}></input>
                             <button class="btn btn-sm btn-outline-primary btn-block mt-3"
                                 onclick={toggleTranslationExpanded}>
                                 Done
@@ -110,7 +111,7 @@
                     <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.introAuthors}
                         onchange={changeIntroPersons}></bib-dualing-listbox>
                     <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleIntroductionExpanded}>
-                        Done
+                        Done with Introduction
                     </button>
                 </div>
             </template>
@@ -147,13 +148,13 @@
                         onchange={changeNotesPersons}></bib-dualing-listbox>
                 </div>
                 <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleNotesExpanded}>
-                    Done
+                    Done with Notes
                 </button>
             </template>
         </div>
         <template if:false={generalFeature}>
             <hr>
-            <button class="btn btn-primary btn-block mb-3" onclick={save}>Save</button>
+            <button class="btn btn-primary btn-block mb-3" onclick={save}>Done with Translation</button>
         </template>
     </template>
     <template if:true={addingPerson}>

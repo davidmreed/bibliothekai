@@ -16,10 +16,22 @@ export default class FeatureEditor extends LightningElement {
         return this.feature.hasNotes && this.notesExpanded;
     }
 
+    get partialValue() {
+        return this.feature.partial.toString();
+    }
+
     @api
     get isValid() {
         return this.feature.isValid;
     }
+
+    renderedCallback() {
+        if (!this.generalFeature) {
+            this.template.querySelector(".format-picklist").value = this.feature.proseOrVerse;
+            this.template.querySelector(".coverage-picklist").value = this.partialValue;
+        }
+    }
+
 
     dispatchUpdate(field, newValue) {
         let updates = {};
@@ -78,13 +90,8 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate("description", event.target.value);
         } else if (field === 'kind') {
             this.dispatchUpdate("proseOrVerse", event.target.value);
-        } else if (field === 'authors' || field === 'introAuthors' || field === 'notesAuthors') {
-            this.dispatchUpdate(
-                field,
-                Array.from(event.target.selectedOptions).map((f) => Number(f.value))
-            );
         } else if (field === 'partial') {
-            this.dispatchUpdate("partial", event.target.value);
+            this.dispatchUpdate("partial", event.target.value === "true");
         } else if (field === 'introDescription') {
             this.dispatchUpdate("introDescription", event.target.value);
         } else if (field === 'notesDescription') {

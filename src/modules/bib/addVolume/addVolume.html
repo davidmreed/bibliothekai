@@ -56,14 +56,13 @@
                             value={description} onchange={handleChange}></input>
                     </div>
                     <button class="btn btn-outline-primary btn-block mb-3" onclick={toggleDetails}>
-                        Done
+                        Done with Details
                     </button>
                 </div>
             </template>
 
-            <h2>
-                Contents
-            </h2>
+            <h2>Contents</h2>
+
             <h3 class="mt-3">General Features</h3>
             <small class="form-text text-muted mb-2">
                 Add features of the volume as a whole, like general introductions and notes that aren't
@@ -71,8 +70,10 @@
             </small>
             <div class="volume-features">
                 <bib-feature-editor feature={generalFeatures} general-feature="true"
-                    onchange={handleGeneralFeatureChange}></bib-feature-editor>
+                    onchange={handleGeneralFeatureChange}>
+                </bib-feature-editor>
             </div>
+
             <h3 class="mt-3">
                 Translations
                 <div class="float-right">
