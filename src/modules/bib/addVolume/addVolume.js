@@ -21,8 +21,11 @@ export default class AddVolume extends LightningElement {
 
     detailsExpanded = true;
 
-    get isFormValid() {
-        return !!this.title && !!this.published_date && !!this.publisher;
+    // Getters
+    // -------
+
+    get showingModal() {
+        return this.addingPerson || this.addingPublisher || this.editingFeature;
     }
 
     // Change Handlers
@@ -113,9 +116,10 @@ export default class AddVolume extends LightningElement {
         }
     }
 
-    addFeature() {
-        this.hideMainSection();
+    // Section Visibility
+    // ------------------
 
+    addFeature() {
         let newFeature = new Feature(this.features.length + 1);
         if (this.primaryLanguage) {
             newFeature.language = newFeature.introLanguage = newFeature.notesLanguage = this.primaryLanguage;
@@ -126,53 +130,25 @@ export default class AddVolume extends LightningElement {
     }
 
     handleFeatureEdit(event) {
-        this.hideMainSection();
         this.featureToEdit = this.features.filter(f => f.id === event.detail)[0];
-        this.editingFeature = true;
+        this.toggleEditingFeature();
     }
 
-    stopEditingFeature() {
-        this.editingFeature = false;
-        this.showMainSection();
+    toggleEditingFeature() {
+        this.editingFeature = !this.editingFeature;
     }
 
-    hideMainSection() {
-        this.template.querySelector('.main-block').classList.add('d-none');
+    toggleAddingPerson() {
+        this.addingPerson = !this.addingPerson;
     }
 
-    showMainSection() {
-        this.template.querySelector('.main-block').classList.remove('d-none');
-    }
-
-    addPerson() {
-        this.addingPerson = true;
-        this.hideMainSection();
-    }
-
-    stopAddingPerson() {
-        this.addingPerson = false;
-        this.showMainSection();
-    }
-
-    personAdded() {
-        this.addingPerson = false;
-        this.showMainSection();
-    }
-
-    addPublisher() {
-        this.addingPublisher = true;
-        this.hideMainSection();
-    }
-
-    stopAddingPublisher() {
-        this.addingPublisher = false;
-        this.showMainSection();
+    toggleAddingPublisher() {
+        this.addingPublisher = !this.addingPublisher;
     }
 
     publisherAdded(event) {
-        this.addingPublisher = false;
-        this.showMainSection();
         this.publisher = event.detail;
+        this.toggleAddingPublisher();
     }
 
     toggleDetails(event) {

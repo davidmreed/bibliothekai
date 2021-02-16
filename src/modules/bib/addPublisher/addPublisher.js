@@ -2,58 +2,41 @@ import { LightningElement } from 'lwc';
 import { createRecord, getRecordApiUrl } from 'bib/drf';
 
 export default class AddPublisher extends LightningElement {
-    name = "";
-    link = "";
-
-    get isFormValid() {
-        return !!this.name;
-    }
+    name = '';
+    link = '';
+    error = ''
 
     handleChange(event) {
         const field = event.target.name;
+
         if (field === 'name') {
             this.name = event.target.value;
         } else if (field === 'link') {
             this.link = event.target.value;
         }
-        if (this.isFormValid) {
-            this.markFormValid();
-        }
     }
 
-    getValidityElement() {
-        return this.template.querySelector(".validity");
-    }
+    checkValidity() {
+        let form = this.template.querySelector("form");
+        let status = form.checkValidity();
 
-    markFormInvalid(tab, message) {
-        let validityElem = this.getValidityElement(tab);
-        validityElem.classList.add("is-invalid");
-        validityElem.classList.add("form-control");
-        validityElem.classList.add("mb-2");
-        if (message) {
-            validityElem.innerText = message;
+        if (!status) {
+            this.template.querySelectorAll(":invalid").forEach(elem => {
+                elem.classList.add('is-invalid');
+                elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+            });
         }
-    }
 
-    markFormValid(tab) {
-        let validityElem = this.getValidityElement(tab);
-        if (validityElem.classList.contains("is-invalid")) {
-            validityElem.classList.remove("is-invalid");
-            validityElem.classList.remove("form-control");
-            validityElem.classList.remove("mb-2");
-        }
+        return status;
     }
 
     async create(event) {
         // Validate data.
+        event.preventDefault();
 
-        if (!this.isFormValid) {
-            this.markFormInvalid();
-            event.preventDefault();
-            event.stopPropagation();
+        if (!this.checkValidity()) {
             return;
         }
-        this.markFormValid();
 
         try {
             let result = await createRecord("publishers", { name: this.name });
@@ -69,8 +52,7 @@ export default class AddPublisher extends LightningElement {
 
             this.dispatchEvent(new CustomEvent('save', { detail: result.id }));
         } catch (error) {
-            this.markFormInvalid(error);
-            this.dispatchEvent(new CustomEvent('error', { detail: error }))
+            this.error = error;
         }
     }
 }

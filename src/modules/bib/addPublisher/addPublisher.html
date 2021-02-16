@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <small class="form-text text-muted validity">Enter information about this publisher. The name is
-            required.</small>
+    <form>
         <div class="form-group">
             <label for="name">Name</label>
-            <input class="form-control" name="name" placeholder="Name" type="text" value={name}
-                onchange={handleChange}></input>
+            <input class="form-control" name="name" placeholder="Name" type="text" value={name} onchange={handleChange}
+                required></input>
+            <div class="invalid-feedback">The publisher name is required.</div>
             <label for="link">Website</label>
             <input class="form-control" name="link" placeholder="Website" type="url" value={link}
                 onchange={handleChange}></input>
-            <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+            <div class="text-danger">{error}</div>
+            <button class="btn btn-primary mt-3" type="submit" onclick={create}>Create</button>
         </div>
-    </div>
+    </form>
 </template>
