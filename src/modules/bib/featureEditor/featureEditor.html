@@ -19,46 +19,61 @@
             </div>
             <div class="card mb-2">
                 <div class="card-header">
-                    <h5 class="card-title">Translation</h5>
+                    <h5 class="card-title">
+                        Translation
+                        <template if:false={translationExpanded}>
+                            <button class="float-right btn btn-sm btn-outline-primary"
+                                onclick={toggleTranslationExpanded}>
+                                Edit
+                            </button>
+                        </template>
+                    </h5>
                 </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col">
-                                <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
-                                    onchange={changeLanguage} value={feature.language}>
-                                </bib-pop-up-menu>
-                            </div>
-                            <div class="col">
-                                <label for="kind">Format</label>
-                                <select class="form-control" name="kind" size="1" onchange={handleChange}
-                                    value={feature.proseOrVerse}>
-                                    <option value="Prose">Prose</option>
-                                    <option value="Verse">Verse</option>
-                                </select>
-                            </div>
-                            <div class="col">
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="partial"
-                                        value={feature.partial} onchange={handleChange}>
-                                    <label class="form-check-label" for="partial">Partial Translation?</label>
+                <template if:true={translationExpanded}>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col">
+                                    <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
+                                        onchange={changeLanguage} value={feature.language}>
+                                    </bib-pop-up-menu>
+                                </div>
+                                <div class="col">
+                                    <label for="kind">Format</label>
+                                    <select class="form-control" name="kind" size="1" onchange={handleChange}
+                                        value={feature.proseOrVerse}>
+                                        <option value="Prose">Prose</option>
+                                        <option value="Verse">Verse</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="checkbox" name="partial"
+                                            value={feature.partial} onchange={handleChange}>
+                                        <label class="form-check-label" for="partial">Partial Translation?</label>
+                                    </div>
                                 </div>
                             </div>
+                            <label for="authors">Authors</label>
+                            <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="false"
+                                value={feature.authors} onchange={changePersons}>
+                            </bib-dualing-listbox>
+
+                            <label for="title">Title</label>
+                            <input class="form-control" name="title" placeholder="Title, if different from text"
+                                type="text" value={feature.title} onchange={handleChange}></input>
+
+                            <label for="description">Description</label>
+                            <input class="form-control" name="description" placeholder="Description" type="text"
+                                value={feature.description} onchange={handleChange}></input>
+                            <button class="btn btn-sm btn-outline-primary btn-block mt-3"
+                                onclick={toggleTranslationExpanded}>
+                                Done
+                            </button>
+
                         </div>
-                        <label for="authors">Authors</label>
-                        <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="false"
-                            value={feature.authors} onchange={changePersons}>
-                        </bib-dualing-listbox>
-
-                        <label for="title">Title</label>
-                        <input class="form-control" name="title" placeholder="Title, if different from text" type="text"
-                            value={feature.title} onchange={handleChange}></input>
-
-                        <label for="description">Description</label>
-                        <input class="form-control" name="description" placeholder="Description" type="text"
-                            value={feature.description} onchange={handleChange}></input>
                     </div>
-                </div>
+                </template>
             </div>
         </template>
         <div class="card mb-2">
@@ -66,8 +81,16 @@
                 <h5 class="card-title">
                     Introduction
                     <template if:true={feature.hasIntroduction}>
-                        <button class="float-right btn btn-sm btn-outline-danger"
-                            onclick={toggleIntroduction}>Remove</button>
+                        <div class="float-right btn-group btn-group-sm" role="group" aria-label="Feature actions">
+                            <template if:false={introductionExpanded}>
+                                <button class="btn btn-outline-primary" onclick={toggleIntroductionExpanded}>
+                                    Edit
+                                </button>
+                            </template>
+                            <button class="btn btn-outline-danger" onclick={toggleIntroduction}>
+                                Remove
+                            </button>
+                        </div>
                     </template>
                     <template if:false={feature.hasIntroduction}>
                         <button class="float-right btn btn-sm btn-outline-primary"
@@ -75,7 +98,7 @@
                     </template>
                 </h5>
             </div>
-            <template if:true={feature.hasIntroduction}>
+            <template if:true={showIntroduction}>
                 <div class="card-body">
                     <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
                         onchange={changeIntroductionLanguage} value={feature.introLanguage}>
@@ -86,6 +109,9 @@
                     <label for="introAuthors">Authors</label>
                     <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.introAuthors}
                         onchange={changeIntroPersons}></bib-dualing-listbox>
+                    <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleIntroductionExpanded}>
+                        Done
+                    </button>
                 </div>
             </template>
         </div>
@@ -94,15 +120,21 @@
                 <h5 class="card-title">
                     Notes
                     <template if:true={feature.hasNotes}>
-                        <button class="float-right btn btn-sm btn-outline-danger" onclick={toggleNotes}
-                            value="Remove">Remove</button>
+                        <div class="float-right btn-group btn-group-sm" role="group" aria-label="Feature actions">
+                            <template if:false={notesExpanded}>
+                                <button class="btn btn-outline-primary" onclick={toggleNotesExpanded}>
+                                    Edit
+                                </button>
+                            </template>
+                            <button class="btn btn-outline-danger" onclick={toggleNotes}>Remove</button>
+                        </div>
                     </template>
                     <template if:false={feature.hasNotes}>
                         <button class="float-right btn btn-sm btn-outline-primary" onclick={toggleNotes}>Add</button>
                     </template>
                 </h5>
             </div>
-            <template if:true={feature.hasNotes}>
+            <template if:true={showNotes}>
                 <div class="card-body">
                     <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
                         onchange={changeNotesLanguage} value={feature.notesLanguage}>
@@ -114,6 +146,9 @@
                     <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.notesAuthors}
                         onchange={changeNotesPersons}></bib-dualing-listbox>
                 </div>
+                <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleNotesExpanded}>
+                    Done
+                </button>
             </template>
         </div>
         <template if:false={generalFeature}>

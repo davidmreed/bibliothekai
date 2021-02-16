@@ -18,12 +18,22 @@ export default class AddVolume extends LightningElement {
     generalFeatures = new Feature(-1);
     featureToEdit;
 
+    detailsExpanded = true;
+
     get isFormValid() {
         return !!this.title && !!this.published_date && !!this.publisher;
     }
 
+    // Change Handlers
+    // ---------------
+
     handlePublisherChange(event) {
         this.publisher = event.detail;
+    }
+
+    handlePrimaryLanguageChange(event) {
+        this.primaryLanguage = event.detail;
+        this.generalFeatures.language = event.detail;
     }
 
     handleFeatureChange(event) {
@@ -58,13 +68,8 @@ export default class AddVolume extends LightningElement {
         }
     }
 
-    get publisherPopup() {
-        return this.template.querySelector(".publisher-popup");
-    }
-
-    get selectedPublisher() {
-        return this.publisherPopup.getSelectedId();
-    }
+    // Actions
+    // -------
 
     async create() {
         let record = {
@@ -85,25 +90,20 @@ export default class AddVolume extends LightningElement {
             record.series = this.series;
         }
 
-        //try {
-        let result = await createRecord('volumes', record);
+        try {
+            let result = await createRecord('volumes', record);
 
-        await Promise.all(
-            this.features
-                .concat([this.generalFeatures])
-                .map(f => f.getFeatures(result.id))
-                .reduce((acc, val) => acc.concat(val), [])
-                .map(f => createRecord("features", f))
-        );
-        window.location.href = getRecordUiUrl("volumes", result.id);
-        //} catch (error) {
-        //   console.log(`error: ${JSON.stringify(error)}`);
-        //}
-    }
-
-    changePrimaryLanguage(event) {
-        this.primaryLanguage = event.detail;
-        this.generalFeatures.language = event.detail;
+            await Promise.all(
+                this.features
+                    .concat([this.generalFeatures])
+                    .map(f => f.getFeatures(result.id))
+                    .reduce((acc, val) => acc.concat(val), [])
+                    .map(f => createRecord("features", f))
+            );
+            window.location.href = getRecordUiUrl("volumes", result.id);
+        } catch (error) {
+            console.log(`error: ${JSON.stringify(error)}`);
+        }
     }
 
     addFeature() {
@@ -166,5 +166,9 @@ export default class AddVolume extends LightningElement {
         this.addingPublisher = false;
         this.showMainSection();
         this.publisher = event.detail;
+    }
+
+    toggleDetails() {
+        this.detailsExpanded = !this.detailsExpanded;
     }
 }

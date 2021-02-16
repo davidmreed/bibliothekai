@@ -4,6 +4,18 @@ export default class FeatureEditor extends LightningElement {
     @api feature;
     @api generalFeature = false;
 
+    translationExpanded = true;
+    introductionExpanded = true;
+    notesExpanded = true;
+
+    get showIntroduction() {
+        return this.feature.hasIntroduction && this.introductionExpanded;
+    }
+
+    get showNotes() {
+        return this.feature.hasNotes && this.notesExpanded;
+    }
+
     @api
     get isValid() {
         return this.feature.isValid;
@@ -98,6 +110,15 @@ export default class FeatureEditor extends LightningElement {
         }
     }
 
+    toggleTranslationExpanded() {
+        this.translationExpanded = !this.translationExpanded;
+    }
+
+
+    toggleIntroductionExpanded() {
+        this.introductionExpanded = !this.introductionExpanded;
+    }
+
     toggleNotes() {
         if (this.feature.notesLanguage === '') {
             this.dispatchUpdates({
@@ -108,4 +129,9 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate("hasNotes", !this.feature.hasNotes);
         }
     }
+
+    toggleNotesExpanded() {
+        this.notesExpanded = !this.notesExpanded;
+    }
+
 }
