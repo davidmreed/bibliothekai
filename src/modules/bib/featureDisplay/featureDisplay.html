@@ -2,11 +2,15 @@
     <div>
         <div class="card">
             <div class="card-header">
-                <h5 class="card-title">{textTitle}</h5>
-                <div class="float-right">
-                    <input class="btn btn-primary" type="button" onclick={remove} value="Remove"></input>
-                    <input class="btn btn-primary" type="button" onclick={edit} value="Edit"></input>
-                </div>
+                <h5 class="card-title">
+                    {textTitle}
+                    <div class="float-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Translation actions">
+                            <button class="btn btn-outline-primary" type="button" onclick={edit}>Edit</button>
+                            <button class="btn btn-outline-danger" type="button" onclick={remove}>Remove</button>
+                        </div>
+                    </div>
+                </h5>
                 <div>
                     {featureDescription}
                 </div>

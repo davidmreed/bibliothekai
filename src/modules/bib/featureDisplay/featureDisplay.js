@@ -5,10 +5,12 @@ export default class FeatureDisplay extends LightningElement {
     @api feature;
     textTitle;
 
-    async connectedCallback() {
+    async renderedCallback() {
         if (this.feature.text) {
             let record = await getRecord("texts", this.feature.text);
             this.textTitle = record.title;
+        } else {
+            this.textTitle = "(No text selected)";
         }
     }
 
@@ -21,7 +23,7 @@ export default class FeatureDisplay extends LightningElement {
             features.push('notes');
         }
 
-        return 'Includes ' + features.join(', ');
+        return `Includes ${features.join(', ')}.`;
     }
 
     remove() {

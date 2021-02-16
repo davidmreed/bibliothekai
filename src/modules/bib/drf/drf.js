@@ -154,6 +154,7 @@ export async function createRecord(entity, record) {
         }
         if (getRecordsStore.has(entity) && getRecordsStore.get(entity).size) {
             // Make exactly one API call to refresh the cache.
+            // TODO: fetch only the new record.
             await getRecordsFromApi(entity);
             getRecordsStore.get(entity).forEach(r => r._refresh());
         }

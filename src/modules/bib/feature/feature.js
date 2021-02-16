@@ -49,46 +49,60 @@ export class Feature {
     }
 
     getFeatures(volumeId) {
-        let translation = {
-            volume: getRecordApiUrl("volumes", volumeId),
-            persons: this.authors.map(a => getRecordApiUrl("persons", a)),
-            language: getRecordApiUrl("languages", this.language),
-            text: getRecordApiUrl("texts", this.text),
-            partial: this.partial,
-            kind: this.proseOrVerse,
-            feature: "Translation"
-        };
+        let features = [];
 
-        if (this.title) {
-            translation.title = this.title;
-        }
-        if (this.description) {
-            translation.description = this.description;
-        }
+        if (this.text) {
+            let translation = {
+                volume: getRecordApiUrl("volumes", volumeId),
+                persons: this.authors.map(a => getRecordApiUrl("persons", a)),
+                language: getRecordApiUrl("languages", this.language),
+                text: getRecordApiUrl("texts", this.text),
+                partial: this.partial,
+                kind: this.proseOrVerse,
+                feature: "Translation"
+            };
 
-        let features = [
-            translation
-        ];
+            if (this.title) {
+                translation.title = this.title;
+            }
+            if (this.description) {
+                translation.description = this.description;
+            }
+
+            features.push(translation);
+        }
 
         if (this.hasNotes) {
-            features.push({
+            let notes = {
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.notesAuthors.map(a => getRecordApiUrl("persons", a)),
                 language: getRecordApiUrl("languages", this.notesLanguage),
-                text: getRecordApiUrl("texts", this.text),
-                description: this.notesDescription,
-                feature: "Notes"
-            });
+                feature: "Notes",
+                kind: "Prose" // TODO
+            };
+            if (this.text) {
+                notes.text = getRecordApiUrl("texts", this.text);
+            }
+            if (this.notesDescription) {
+                notes.description = this.notesDescription;
+            }
+            features.push(notes);
         }
         if (this.hasIntroduction) {
-            features.push({
+            let intro = {
                 volume: getRecordApiUrl("volumes", volumeId),
                 persons: this.introAuthors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl(this.introLanguage),
-                text: getRecordApiUrl(this.text),
-                description: this.introDescription,
-                feature: "Introduction"
-            });
+                language: getRecordApiUrl("languages", this.introLanguage),
+                feature: "Introduction",
+                kind: "Prose" // TODO
+            }
+            if (this.text) {
+                intro.text = getRecordApiUrl("texts", this.text);
+            }
+            if (this.introDescription) {
+                intro.description = this.introDescription;
+            }
+            features.push(intro);
         }
 
         return features;

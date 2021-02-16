@@ -2,16 +2,25 @@ import { LightningElement, api } from 'lwc';
 
 export default class FeatureEditor extends LightningElement {
     @api feature;
+    @api generalFeature = false;
 
-    expanded = true;
-
-    get isFormValid() {
+    @api
+    get isValid() {
         return this.feature.isValid;
     }
 
     dispatchUpdate(field, newValue) {
+        let updates = {};
+        updates[field] = newValue;
+        this.dispatchUpdates(updates);
+    }
+
+    dispatchUpdates(updates) {
         let newFeature = this.feature.clone();
-        newFeature[field] = newValue;
+        for (const key in updates) {
+            newFeature[key] = updates[key];
+        }
+
         this.dispatchEvent(new CustomEvent('change', { detail: newFeature }));
     }
 
@@ -62,10 +71,6 @@ export default class FeatureEditor extends LightningElement {
                 field,
                 Array.from(event.target.selectedOptions).map((f) => Number(f.value))
             );
-        } else if (field === 'hasIntroduction') {
-            this.dispatchUpdate("hasIntroduction", event.target.value);
-        } else if (field === 'hasNotes') {
-            this.dispatchUpdate("hasNotes", event.target.value);
         } else if (field === 'partial') {
             this.dispatchUpdate("partial", event.target.value);
         } else if (field === 'introDescription') {
@@ -78,33 +83,29 @@ export default class FeatureEditor extends LightningElement {
         }
     }
 
-    getValidityElement() {
-        return this.template.querySelector(".validity");
-    }
-
-    setErrorStatus(message) {
-        let validityElem = this.getValidityElement();
-        validityElem.innerText = message;
-        validityElem.classList.remove("d-none");
-    }
-
-    markFormValid() {
-        this.template.querySelector(".validity").classList.add("d-none");
-    }
-
-    toggle() {
-        this.expanded = !this.expanded;
-    }
-
-    remove() {
-        this.dispatchEvent(new CustomEvent('remove', { detail: this.feature.id }));
+    save() {
+        this.dispatchEvent(new CustomEvent('save', { detail: this.feature }));
     }
 
     toggleIntroduction() {
-        this.dispatchUpdate("hasIntroduction", !this.feature.hasIntroduction);
+        if (this.feature.introLanguage === '') {
+            this.dispatchUpdates({
+                "introLanguage": this.feature.language,
+                "hasIntroduction": !this.feature.hasIntroduction
+            });
+        } else {
+            this.dispatchUpdate("hasIntroduction", !this.feature.hasIntroduction);
+        }
     }
 
     toggleNotes() {
-        this.dispatchUpdate("hasNotes", !this.feature.hasNotes);
+        if (this.feature.notesLanguage === '') {
+            this.dispatchUpdates({
+                "notesLanguage": this.feature.language,
+                "hasNotes": !this.feature.hasNotes
+            });
+        } else {
+            this.dispatchUpdate("hasNotes", !this.feature.hasNotes);
+        }
     }
 }

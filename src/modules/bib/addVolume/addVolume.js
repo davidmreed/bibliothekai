@@ -15,10 +15,8 @@ export default class AddVolume extends LightningElement {
     addingPublisher = false;
     editingFeature = false;
     @track features = [];
-    @track generalFeatures = [];
+    generalFeatures = new Feature(-1);
     featureToEdit;
-
-    detailsExpanded = true;
 
     get isFormValid() {
         return !!this.title && !!this.published_date && !!this.publisher;
@@ -26,9 +24,6 @@ export default class AddVolume extends LightningElement {
 
     handlePublisherChange(event) {
         this.publisher = event.detail;
-        if (this.isFormValid) {
-            this.markTabValid("data");
-        }
     }
 
     handleFeatureChange(event) {
@@ -39,8 +34,12 @@ export default class AddVolume extends LightningElement {
         }
     }
 
+    handleGeneralFeatureChange(event) {
+        this.generalFeatures = event.detail;
+    }
+
     handleFeatureRemove(event) {
-        this.features.splice(this.features.findIndex(f => f.id === event.detail));
+        this.features.splice(this.features.findIndex(f => f.id === event.detail), 1);
     }
 
     handleChange(event) {
@@ -57,28 +56,6 @@ export default class AddVolume extends LightningElement {
         } else if (field === 'description') {
             this.description = event.target.value;
         }
-        if (this.isFormValid) {
-            this.markTabValid("data");
-        }
-    }
-
-    markTabInvalid(tab, message) {
-        let validityElem = this.getTabValidityElement(tab);
-        validityElem.classList.add('is-invalid');
-        validityElem.classList.add('form-control');
-        validityElem.classList.add('mb-2');
-        if (message) {
-            validityElem.innerText = message;
-        }
-    }
-
-    markTabValid(tab) {
-        let validityElem = this.getTabValidityElement(tab);
-        if (validityElem.classList.contains('is-invalid')) {
-            validityElem.classList.remove('is-invalid');
-            validityElem.classList.remove('form-control');
-            validityElem.classList.remove('mb-2');
-        }
     }
 
     get publisherPopup() {
@@ -89,15 +66,7 @@ export default class AddVolume extends LightningElement {
         return this.publisherPopup.getSelectedId();
     }
 
-    async create(event) {
-        if (!this.features.length) {
-            this.markTabInvalid('features');
-            event.preventDefault();
-            event.stopPropagation();
-            return;
-        }
-        this.markTabValid('features');
-
+    async create() {
         let record = {
             title: this.title,
             published_date: this.published_date,
@@ -116,36 +85,25 @@ export default class AddVolume extends LightningElement {
             record.series = this.series;
         }
 
-        try {
-            let result = await createRecord('volumes', record);
+        //try {
+        let result = await createRecord('volumes', record);
 
-            await Promise.all(
-                this.features.map(f => f.getFeatures(result.id))
-                    .reduce((acc, val) => acc.concat(val), [])
-                    .map(f => createRecord("features", f))
-            );
-            window.location.href = getRecordUiUrl("volumes", result.id);
-        } catch (error) {
-            this.markTabInvalid("data", error);
-        }
-    }
-
-    done(event) {
-        let section = event.target.name;
-        // TODO: complete
-        // Collapse this section and expand the next one.
+        await Promise.all(
+            this.features
+                .concat([this.generalFeatures])
+                .map(f => f.getFeatures(result.id))
+                .reduce((acc, val) => acc.concat(val), [])
+                .map(f => createRecord("features", f))
+        );
+        window.location.href = getRecordUiUrl("volumes", result.id);
+        //} catch (error) {
+        //   console.log(`error: ${JSON.stringify(error)}`);
+        //}
     }
 
     changePrimaryLanguage(event) {
         this.primaryLanguage = event.detail;
-    }
-
-    toggleDetails() {
-        this.detailsExpanded = !this.detailsExpanded;
-    }
-
-    addGeneralFeature() {
-        // TODO
+        this.generalFeatures.language = event.detail;
     }
 
     addFeature() {
