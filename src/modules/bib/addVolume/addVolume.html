@@ -13,51 +13,63 @@
                 </small>
 
                 <div class="details">
-                    <div class="form-group">
-                        <div class="form-row">
-                            <div class="col-6">
-                                <label for="title">Title</label>
-                                <input class="form-control" name="title" placeholder="Title" type="text" value={title}
-                                    onchange={handleChange}></input>
+                    <form class="needs-validation" novalidate>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <label for="title">Title</label>
+                                    <input class="form-control" name="title" placeholder="Title" type="text"
+                                        value={title} onchange={handleChange} required></input>
+                                    <div class="invalid-feedback">
+                                        Please enter a title.
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <bib-pop-up-menu label-text="Primary Language" entity-name="languages"
+                                        allow-add="false" onchange={handlePrimaryLanguageChange}
+                                        value={primaryLanguage}>
+                                    </bib-pop-up-menu>
+                                </div>
                             </div>
-                            <div class="col">
-                                <bib-pop-up-menu label-text="Primary Language" entity-name="languages" allow-add="false"
-                                    onchange={handlePrimaryLanguageChange} value={primaryLanguage}>
-                                </bib-pop-up-menu>
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <bib-pop-up-menu label-text="Publisher" class="publisher-popup"
+                                        entity-name="publishers" allow-add="true" onchange={handlePublisherChange}
+                                        onadd={addPublisher} value={publisher}>
+                                    </bib-pop-up-menu>
+                                    <div class="invalid-feedback">
+                                        Please select or create a publisher.
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="date">Publication Date</label>
+                                    <input class="form-control" name="date" type="date" value={published_date}
+                                        onchange={handleChange} required></input>
+                                    <div class="invalid-feedback">
+                                        Please enter a publication date.
+                                    </div>
+                                </div>
                             </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <label for="isbn">ISBN</label>
+                                    <input class="form-control" name="isbn" placeholder="ISBN, if available" type="text"
+                                        value={isbn} onchange={handleChange}></input>
+                                </div>
+                                <div class="col">
+                                    <label for="oclc">OCLC Number</label>
+                                    <input class="form-control" name="oclc" placeholder="OCLC number, if available"
+                                        type="text" value={oclc_number} onchange={handleChange}></input>
+                                </div>
+                            </div>
+                            <label for="description">Description</label>
+                            <input class="form-control" name="description" placeholder="Description" type="text"
+                                value={description} onchange={handleChange}></input>
                         </div>
-                        <div class="form-row">
-                            <div class="col-6">
-                                <bib-pop-up-menu label-text="Publisher" class="publisher-popup" entity-name="publishers"
-                                    allow-add="true" onchange={handlePublisherChange} onadd={addPublisher}
-                                    value={publisher}>
-                                </bib-pop-up-menu>
-                            </div>
-                            <div class="col">
-                                <label for="date">Publication Date</label>
-                                <input class="form-control" name="date" type="date" value={published_date}
-                                    onchange={handleChange}></input>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col">
-                                <label for="isbn">ISBN</label>
-                                <input class="form-control" name="isbn" placeholder="ISBN, if available" type="text"
-                                    value={isbn} onchange={handleChange}></input>
-                            </div>
-                            <div class="col">
-                                <label for="oclc">OCLC Number</label>
-                                <input class="form-control" name="oclc" placeholder="OCLC number, if available"
-                                    type="text" value={oclc_number} onchange={handleChange}></input>
-                            </div>
-                        </div>
-                        <label for="description">Description</label>
-                        <input class="form-control" name="description" placeholder="Description" type="text"
-                            value={description} onchange={handleChange}></input>
-                    </div>
-                    <button class="btn btn-outline-primary btn-block mb-3" onclick={toggleDetails}>
-                        Done with Details
-                    </button>
+                        <button type="submit" class="btn btn-outline-primary btn-block mb-3" onclick={toggleDetails}>
+                            Done with Details
+                        </button>
+                    </form>
                 </div>
             </template>
 
@@ -96,6 +108,7 @@
                 </template>
             </div>
             <hr>
+            <small class="text-danger form-validity mb-2">{error}</small>
             <button class="btn btn-primary btn-block mb-3" onclick={create}>Create Volume</button>
         </div>
     </div>

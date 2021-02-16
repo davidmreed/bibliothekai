@@ -23,18 +23,21 @@ export class Feature {
         this.id = id;
     }
 
+    get isIntroValid() {
+        return !this.hasIntroduction || (!!this.introAuthors.length && !!this.introLanguage);
+    }
+
+    get isNotesValid() {
+        return !this.hasNotes || (!!this.notesAuthors.length && !!this.notesLanguage);
+    }
+
     get isValid() {
-        let valid = true;
-
-        if (this.text) {
-            valid = valid && this.authors.length && !!this.language;
-        }
+        let valid = !!this.authors.length && !!this.language;
         if (this.hasIntroduction) {
-            valid = valid && this.introAuthors.length && !!this.introLanguage;
+            valid = valid && this.isIntroValid;
         }
-
         if (this.hasNotes) {
-            valid = valid && this.notesAuthors.length && !!this.notesLanguage;
+            valid = valid && this.isNotesValid;
         }
 
         return valid;

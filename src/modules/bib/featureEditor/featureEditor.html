@@ -98,6 +98,11 @@
                             onclick={toggleIntroduction}>Add</button>
                     </template>
                 </h5>
+                <template if:true={showIntroError}>
+                    <small class="text-danger">
+                        This feature isn't valid. Edit it before saving.
+                    </small>
+                </template>
             </div>
             <template if:true={showIntroduction}>
                 <div class="card-body">
@@ -134,6 +139,11 @@
                         <button class="float-right btn btn-sm btn-outline-primary" onclick={toggleNotes}>Add</button>
                     </template>
                 </h5>
+                <template if:true={showNotesError}>
+                    <small class="text-danger">
+                        This feature isn't valid. Edit it before saving.
+                    </small>
+                </template>
             </div>
             <template if:true={showNotes}>
                 <div class="card-body">

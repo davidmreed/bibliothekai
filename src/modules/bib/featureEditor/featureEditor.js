@@ -12,8 +12,16 @@ export default class FeatureEditor extends LightningElement {
         return this.feature.hasIntroduction && this.introductionExpanded;
     }
 
+    get showIntroError() {
+        return !this.introductionExpanded && !this.feature.isIntroValid;
+    }
+
     get showNotes() {
         return this.feature.hasNotes && this.notesExpanded;
+    }
+
+    get showNotesError() {
+        return !this.notesExpanded && !this.feature.isNotesValid;
     }
 
     get partialValue() {
@@ -140,5 +148,4 @@ export default class FeatureEditor extends LightningElement {
     toggleNotesExpanded() {
         this.notesExpanded = !this.notesExpanded;
     }
-
 }

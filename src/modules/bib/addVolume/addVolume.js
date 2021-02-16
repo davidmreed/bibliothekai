@@ -17,6 +17,7 @@ export default class AddVolume extends LightningElement {
     @track features = [];
     generalFeatures = new Feature(-1);
     featureToEdit;
+    error;
 
     detailsExpanded = true;
 
@@ -71,7 +72,13 @@ export default class AddVolume extends LightningElement {
     // Actions
     // -------
 
-    async create() {
+    async create(event) {
+        event.preventDefault();
+
+        if (!this.checkValidity()) {
+            return;
+        }
+
         let record = {
             title: this.title,
             published_date: this.published_date,
@@ -102,7 +109,7 @@ export default class AddVolume extends LightningElement {
             );
             window.location.href = getRecordUiUrl("volumes", result.id);
         } catch (error) {
-            console.log(`error: ${JSON.stringify(error)}`);
+            this.error = `The API returned an error: ${error}`;
         }
     }
 
@@ -168,7 +175,59 @@ export default class AddVolume extends LightningElement {
         this.publisher = event.detail;
     }
 
-    toggleDetails() {
-        this.detailsExpanded = !this.detailsExpanded;
+    toggleDetails(event) {
+        event.preventDefault();
+
+        if (this.validateDetails()) {
+            this.detailsExpanded = !this.detailsExpanded;
+        }
     }
+
+    // Validation
+    // ----------
+
+    validateDetails() {
+        if (this.detailsExpanded) {
+            let form = this.template.querySelector("form");
+            let status = form.checkValidity();
+
+            if (!status) {
+                this.template.querySelectorAll(":invalid").forEach(elem => {
+                    elem.classList.add('is-invalid');
+                    elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+                });
+            }
+
+            if (!this.publisher) {
+                let publisherPopup = this.template.querySelector(".publisher-popup");
+                status = false;
+                publisherPopup.classList.add("is-invalid");
+                publisherPopup.addEventListener('change', () => publisherPopup.classList.remove('is-invalid'));
+            }
+
+            return status;
+        }
+
+        return true;
+    }
+
+    checkValidity() {
+        let totalValid = this.validateDetails()
+            && this.generalFeatures.isNotesValid
+            && this.generalFeatures.isIntroValid
+            && this.features.map(f => f.isValid).reduce((cur, next) => cur && next, true);
+
+        if (!totalValid) {
+            this.error = "One or more elements of the volume contain errors. Please edit the volume and try again.";
+            return false;
+        }
+
+        if (!this.features.length) {
+            this.error = "Add one or more translations to this volume and try again.";
+            return false;
+        }
+
+        return true;
+    }
+
 }

@@ -19,10 +19,9 @@ export default class PopUpMenu extends LightningElement {
     @api allowAdd;
     @api labelText;
     @api value;
+    error;
 
-
-    @api
-    getSelectedId() {
+    get selectedId() {
         return Array.from(
             this.template.querySelector('.entities').selectedOptions
         ).map(
@@ -48,17 +47,16 @@ export default class PopUpMenu extends LightningElement {
 
     handleChange(event) {
         event.stopPropagation();
-        this.dispatchEvent(new CustomEvent('change', { detail: this.getSelectedId() }));
-    }
-
-    getValidityElement() {
-        return this.template.querySelector(".validity");
+        this.dispatchEvent(new CustomEvent('change', { detail: this.selectedId() }));
     }
 
     setErrorStatus(message) {
-        let validityElem = this.getValidityElement();
-        validityElem.innerText = message;
-        validityElem.classList.remove("d-none");
+        this.error = message;
+        this.selectElement.classList.add("is-invalid");
+    }
+
+    get selectElement() {
+        return this.template.querySelector(".entities");
     }
 
     get entityCount() {

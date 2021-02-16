@@ -14,6 +14,11 @@
                 <div>
                     {featureDescription}
                 </div>
+                <template if:false={feature.isValid}>
+                    <small class="text-danger">
+                        This translation isn't valid. Edit it before saving.
+                    </small>
+                </template>
             </div>
         </div>
     </div>
