@@ -83,7 +83,7 @@
             </small>
             <div class="volume-features">
                 <bib-feature-editor feature={generalFeatures} general-feature="true"
-                    onchange={handleGeneralFeatureChange}>
+                    onchange={handleGeneralFeatureChange} onaddperson={toggleAddingPerson}>
                 </bib-feature-editor>
             </div>
 
@@ -113,7 +113,7 @@
             <button class="btn btn-primary btn-block mb-3" onclick={create}>Create Volume</button>
         </div>
     </template>
-    <template if:true={editingFeature}>
+    <template if:true={showingTranslationModal}>
         <h4>
             <button class="btn btn-outline-secondary mr-3" onclick={toggleEditingFeature}>
                 &lt; Back
@@ -121,7 +121,7 @@
             Editing Translation
         </h4>
         <bib-feature-editor class="feature-editor" feature={featureToEdit} onchange={handleFeatureChange}
-            onsave={toggleEditingFeature}>
+            onsave={toggleEditingFeature} onaddperson={toggleAddingPerson}>
         </bib-feature-editor>
     </template>
     <template if:true={addingPublisher}>
@@ -133,4 +133,15 @@
         </h4>
         <bib-add-publisher onsave={publisherAdded}></bib-add-publisher>
     </template>
+    <template if:true={addingPerson}>
+        <h4>
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleAddingPerson}>
+                &lt; Back
+            </button>
+            Adding New Person
+        </h4>
+        <bib-add-person onsave={toggleAddingPerson}>
+        </bib-add-person>
+    </template>
+
 </template>

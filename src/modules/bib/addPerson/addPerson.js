@@ -7,10 +7,6 @@ export default class AddPerson extends LightningElement {
     lastName = "";
     description = "";
 
-    get isFormValid() {
-        return !!this.firstName && !!this.lastName;
-    }
-
     handleChange(event) {
         const field = event.target.name;
         if (field === 'first_name') {
@@ -22,44 +18,30 @@ export default class AddPerson extends LightningElement {
         } else if (field === 'description') {
             this.description = event.target.value;
         }
-        if (this.isFormValid) {
-            this.markFormValid();
-        }
     }
 
-    getValidityElement() {
-        return this.template.querySelector(".validity");
-    }
+    checkValidity() {
+        let form = this.template.querySelector("form");
+        let status = form.checkValidity();
 
-    markFormInvalid(tab, message) {
-        let validityElem = this.getValidityElement(tab);
-        validityElem.classList.add("is-invalid");
-        validityElem.classList.add("form-control");
-        validityElem.classList.add("mb-2");
-        if (message) {
-            validityElem.innerText = message;
+        if (!status) {
+            this.template.querySelectorAll(":invalid").forEach(elem => {
+                elem.classList.add('is-invalid');
+                elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+            });
         }
-    }
 
-    markFormValid(tab) {
-        let validityElem = this.getValidityElement(tab);
-        if (validityElem.classList.contains("is-invalid")) {
-            validityElem.classList.remove("is-invalid");
-            validityElem.classList.remove("form-control");
-            validityElem.classList.remove("mb-2");
-        }
+        return status;
     }
 
     async create(event) {
         // Validate data.
 
-        if (!this.isFormValid) {
-            this.markFormInvalid();
-            event.preventDefault();
-            event.stopPropagation();
+        event.preventDefault();
+
+        if (!this.checkValidity()) {
             return;
         }
-        this.markFormValid();
 
         let record = {
             first_name: this.firstName,
@@ -72,8 +54,7 @@ export default class AddPerson extends LightningElement {
             let result = await createRecord("persons", record);
             this.dispatchEvent(new CustomEvent('save', { detail: result.id }));
         } catch (error) {
-            this.markFormInvalid(error);
-            this.dispatchEvent(new CustomEvent('error', { detail: error }))
+            this.error = error;
         }
     }
 }

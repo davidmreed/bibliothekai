@@ -1,21 +1,24 @@
 <template>
-    <div>
-        <small class="form-text text-muted validity">Enter information about this person. The first and last name are
+    <form novalidate>
+        <small class="form-text text-muted">Enter information about this person. The first and last name are
             required.</small>
         <div class="form-group">
             <label for="first_name">First Name</label>
             <input class="form-control" name="first_name" placeholder="First name" type="text" value={firstName}
-                onchange={handleChange}></input>
+                onchange={handleChange} required></input>
+            <div class="invalid-feedback">Please enter a first name.</div>
             <label for="middle_name">Middle Name</label>
             <input class="form-control" name="middle_name" placeholder="Middle name" type="text" value={middleName}
                 onchange={handleChange}></input>
             <label for="last_name">Last Name</label>
             <input class="form-control" name="last_name" placeholder="Last name" type="text" value={lastName}
-                onchange={handleChange}></input>
+                onchange={handleChange} required></input>
+            <div class="invalid-feedback">Please enter a last name.</div>
             <label for="description">Description</label>
             <input class="form-control" name="description" placeholder="Description" type="text" value={description}
                 onchange={handleChange}></input>
-            <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+            <div class="text-danger">{error}</div>
+            <button class="btn btn-primary mt-3" type="submit" onclick={create}>Create</button>
         </div>
-    </div>
+    </form>
 </template>

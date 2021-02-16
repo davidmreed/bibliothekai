@@ -63,8 +63,8 @@
                                 type="text" value={feature.title} onchange={handleChange}></input>
 
                             <label for="authors">Authors</label>
-                            <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="false"
-                                value={feature.authors} onchange={changePersons}>
+                            <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true"
+                                onadd={handleAddPerson} value={feature.authors} onchange={changePersons}>
                             </bib-dualing-listbox>
 
                             <button class="btn btn-sm btn-outline-primary btn-block mt-3"
@@ -113,8 +113,8 @@
                     <input class="form-control" name="introDescription" placeholder="Description" type="text"
                         value={feature.introDescription} onchange={handleChange}>
                     <label for="introAuthors">Authors</label>
-                    <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.introAuthors}
-                        onchange={changeIntroPersons}></bib-dualing-listbox>
+                    <bib-dualing-listbox entity-name="persons" value={feature.introAuthors}
+                        onchange={changeIntroPersons} allow-add="true" onadd={handleAddPerson}></bib-dualing-listbox>
                     <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleIntroductionExpanded}>
                         Done with Introduction
                     </button>
@@ -154,8 +154,8 @@
                     <input class="form-control" name="notesDescription" placeholder="Description" type="text"
                         value={feature.notesDescription} onchange={handleChange}>
                     <label for="notesAuthors">Authors</label>
-                    <bib-dualing-listbox entity-name="persons" allow-add="false" value={feature.notesAuthors}
-                        onchange={changeNotesPersons}></bib-dualing-listbox>
+                    <bib-dualing-listbox entity-name="persons" value={feature.notesAuthors} allow-add="true"
+                        onadd={handleAddPerson} onchange={changeNotesPersons}></bib-dualing-listbox>
                 </div>
                 <button class="btn btn-sm btn-outline-primary btn-block mb-3" onclick={toggleNotesExpanded}>
                     Done with Notes

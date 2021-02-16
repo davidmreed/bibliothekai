@@ -28,6 +28,10 @@ export default class AddVolume extends LightningElement {
         return this.addingPerson || this.addingPublisher || this.editingFeature;
     }
 
+    get showingTranslationModal() {
+        return this.editingFeature && !this.addingPerson;
+    }
+
     // Change Handlers
     // ---------------
 

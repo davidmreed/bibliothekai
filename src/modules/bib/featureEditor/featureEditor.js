@@ -110,6 +110,10 @@ export default class FeatureEditor extends LightningElement {
         }
     }
 
+    handleAddPerson() {
+        this.dispatchEvent(new CustomEvent("addperson"));
+    }
+
     save() {
         this.dispatchEvent(new CustomEvent('save', { detail: this.feature }));
     }
