@@ -1,59 +1,55 @@
 <template>
-    <div class="main-block">
-        <ul class="nav nav-tabs mb-3" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" data-tab="persons" onclick={changeTab} role="tab" aria-controls="persons"
-                    aria-selected="true">Select Authors</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab="volumes" onclick={changeTab} role="tab" aria-controls="volumes">Select
-                    Volumes</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-tab="review" onclick={changeTab} role="tab" aria-controls="review">Enter
-                    Review Data</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" data-tab="persons" role="tabpanel" aria-labelledby="persons-tab">
-                <small class="form-text text-muted validity-persons">Select one or more authors of this review.</small>
-                <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={addPerson}
-                    value={persons} onchange={handleChangePersons}>
-                </bib-dualing-listbox>
-            </div>
-            <div class="tab-pane" data-tab="volumes" role="tabpanel" aria-labelledby="volumes-tab">
-                <small class="form-text text-muted validity-volumes">Select one or more volumes evaluated in this
-                    review.</small>
-                <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" value={volumes}
-                    onchange={handleChangeVolumes}>
-                </bib-dualing-listbox>
-            </div>
-            <div class="tab-pane" data-tab="review" role="tabpanel" aria-labelledby="review-tab">
-                <small class="form-text text-muted validity-review">
-                    Enter details about this review. A date, publication, and volume, issue, or pages are required.
-                </small>
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input class="form-control" name="title" placeholder="Title of the review, if any" type="text"
-                        value={title} onchange={handleChange}></input>
-                    <label for="date">Date</label>
-                    <input class="form-control" name="date" type="date" value={published_date}
-                        onchange={handleChange}></input>
-                    <label for="location">Publication</label>
-                    <input class="form-control" name="source" placeholder="Where was this review published?" type="text"
-                        value={source} onchange={handleChange}></input>
-                    <label for="location">Volume, Issue or Pages</label>
-                    <input class="form-control" name="location" placeholder="What volume or issue?" type="text"
-                        value={location} onchange={handleChange}></input>
-                    <label for="link">Link</label>
-                    <input class="form-control" name="link" type="url" value={link} onchange={handleChange}></input>
-                    <input class="btn btn-primary mt-3" type="submit" onclick={create} value="Create"></input>
+    <template if:false={addingPerson}>
+        <h2>Publication Details</h2>
+        <small class="form-text text-muted validity-review">
+            Enter details about this review. A date, publication, and volume, issue, or pages are required.
+        </small>
+        <form novalidate>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input class="form-control" name="title" placeholder="Title of the review, if any" type="text"
+                    value={title} onchange={handleChange}></input>
+                <label for="date">Date</label>
+                <input class="form-control" name="date" type="date" value={published_date} onchange={handleChange}
+                    required></input>
+                <div class="invalid-feedback">
+                    Please enter a publication date.
                 </div>
+
+                <label for="location">Publication</label>
+                <input class="form-control" name="source" placeholder="Where was this review published?" type="text"
+                    value={source} onchange={handleChange} required></input>
+                <div class="invalid-feedback">
+                    Please enter the source of this review.
+                </div>
+
+                <label for="location">Volume, Issue or Pages</label>
+                <input class="form-control" name="location" placeholder="What volume or issue?" type="text"
+                    value={location} onchange={handleChange} required></input>
+                <div class="invalid-feedback">
+                    Please enter the details of the publication.
+                </div>
+                <label for="link">Link</label>
+                <input class="form-control" name="link" type="url" value={link} onchange={handleChange}></input>
             </div>
-        </div>
-    </div>
+        </form>
+        <h2>Authors</h2>
+        <small>Select one or more authors of this review.</small>
+        <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={toggleAddingPerson}
+            value={persons} onchange={handleChangePersons}>
+        </bib-dualing-listbox>
+
+        <h2>Volumes</h2>
+        <small>Select one or more volumes evaluated in this review.</small>
+        <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" value={volumes}
+            onchange={handleChangeVolumes}>
+        </bib-dualing-listbox>
+        <hr>
+        <small class="text-danger form-validity mb-2">{error}</small>
+        <button class="btn btn-primary btn-block mb-3" onclick={create}>Create</button>
+    </template>
     <template if:true={addingPerson}>
-        <h4><button class="btn btn-outline-secondary mr-3" onclick={stopAddingPerson}>&lt; Back</button>Adding New
+        <h4><button class="btn btn-outline-secondary mr-3" onclick={toggleAddingPerson}>&lt; Back</button>Adding New
             Author</h4>
         <bib-add-person onsave={personAdded}></bib-add-person>
     </template>

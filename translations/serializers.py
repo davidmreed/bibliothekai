@@ -253,10 +253,10 @@ class PublishedReviewSerializer(serializers.ModelSerializer):
         many=True, read_only=True, required=False, view_name="link-detail"
     )
     volumes = serializers.HyperlinkedRelatedField(
-        view_name="volume-detail", many=True, read_only=True
+        view_name="volume-detail", many=True, queryset=Volume.objects.all()
     )
     persons = serializers.HyperlinkedRelatedField(
-        view_name="person-detail", many=True, read_only=True
+        view_name="person-detail", many=True, queryset=Person.objects.all()
     )
 
     class Meta:

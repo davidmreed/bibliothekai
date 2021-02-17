@@ -116,7 +116,7 @@ export default class AddVolume extends LightningElement {
             );
             window.location.href = getRecordUiUrl("volumes", result.id);
         } catch (error) {
-            this.error = `The API returned an error: ${error}`;
+            this.error = error;
         }
     }
 

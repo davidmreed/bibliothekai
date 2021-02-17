@@ -8,23 +8,24 @@ export default class AddPublishedReview extends LightningElement {
     published_date = '';
     link = '';
     addingPerson = false;
-    persons;
+    persons = [];
     volumes;
+    error;
 
     renderedCallback() {
-        // If we're being displayed within a volume's path,
-        // preselect that volume.
-        const regex = /volumes\/([0-9]+)\//;
-        const loc = document.location.pathname;
-        const volumeIdMatch = loc.match(regex);
+        if (!this.volumes) {
+            // If we're being displayed within a volume's path,
+            // preselect that volume.
+            const regex = /volumes\/([0-9]+)\//;
+            const loc = document.location.pathname;
+            const volumeIdMatch = loc.match(regex);
 
-        if (volumeIdMatch && volumeIdMatch.length === 2) {
-            this.volumesListbox.preselectIds([Number(volumeIdMatch[1])]);
+            if (volumeIdMatch && volumeIdMatch.length === 2) {
+                this.volumes = [Number(volumeIdMatch[1])];
+            } else {
+                this.volumes = [];
+            }
         }
-    }
-
-    get isFormValid() {
-        return !!this.location && !!this.published_date && !!this.source && !!this.location;
     }
 
     handleChange(event) {
@@ -40,10 +41,6 @@ export default class AddPublishedReview extends LightningElement {
         } else if (field === 'source') {
             this.source = event.target.value;
         }
-
-        if (this.isFormValid) {
-            this.markTabValid("review");
-        }
     }
 
     handleChangeVolumes(event) {
@@ -54,100 +51,31 @@ export default class AddPublishedReview extends LightningElement {
         this.persons = event.detail;
     }
 
-    get currentTab() {
-        for (let elem of this.template.querySelectorAll('.nav-link')) {
-            if (elem.classList.contains('active')) {
-                return elem.dataset.tab;
-            }
+    checkValidity() {
+        let form = this.template.querySelector("form");
+        let status = form.checkValidity();
+
+        if (!status) {
+            this.template.querySelectorAll(":invalid").forEach(elem => {
+                elem.classList.add('is-invalid');
+                elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+            });
         }
 
-        return null;
-    }
-
-    getTabValidityElement(tab) {
-        return this.template.querySelector(`.validity-${tab}`);
-    }
-
-    markTabInvalid(tab, message) {
-        let validityElem = this.getTabValidityElement(tab);
-        validityElem.classList.add('is-invalid');
-        validityElem.classList.add('form-control');
-        validityElem.classList.add('mb-2');
-        if (message) {
-            validityElem.innerText = message;
-        }
-    }
-
-    markTabValid(tab) {
-        let validityElem = this.getTabValidityElement(tab);
-        if (validityElem.classList.contains('is-invalid')) {
-            validityElem.classList.remove('is-invalid');
-            validityElem.classList.remove('form-control');
-            validityElem.classList.remove('mb-2');
-        }
-    }
-
-    selectTab(tab) {
-        // Select the correct tab.
-        for (let elem of this.template.querySelectorAll('.nav-link')) {
-            if (elem.dataset.tab === tab) {
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
-        }
-
-        // Show the corresponding tab pane.
-        for (let elem of this.template.querySelectorAll('.tab-pane')) {
-            if (elem.dataset.tab === tab) {
-                elem.classList.add('active');
-            } else {
-                elem.classList.remove('active');
-            }
-        }
-    }
-
-    changeTab(event) {
-        let tabName = event.target.dataset.tab;
-        let activeTab = this.currentTab;
-
-        if (activeTab === tabName) return;
-
-        if (
-            (activeTab === 'persons' && this.selectedPersons.length === 0) ||
-            (activeTab === 'volumes' &&
-                this.selectedVolumes.length === 0 &&
-                tabName !== 'persons')
-        ) {
-            this.markTabInvalid(activeTab);
-            event.preventDefault();
-            event.stopPropagation();
-            return;
-        }
-
-        this.markTabValid(activeTab);
-        this.selectTab(tabName);
-    }
-
-    get personsListbox() {
-        return this.template.querySelector('.persons-listbox');
-    }
-
-    get volumesListbox() {
-        return this.template.querySelector('.volumes-listbox');
+        return status;
     }
 
     async create(event) {
-        // Validate data.
-        // We must have at least one Volume and at least one Author.
+        event.preventDefault();
 
-        if (!this.isFormValid) {
-            this.markTabInvalid('review');
-            event.preventDefault();
-            event.stopPropagation();
+        if (!this.checkValidity()) {
             return;
         }
-        this.markTabValid('review');
+
+        if (!(this.persons.length && this.volumes.length)) {
+            this.error = "Please add at least one author and volume.";
+            return;
+        }
 
         let record = {
             volumes: this.volumes.map(v => getRecordApiUrl("volumes", v)),
@@ -169,23 +97,16 @@ export default class AddPublishedReview extends LightningElement {
             }
             window.location.href = getRecordUiUrl("published-reviews", result.id);
         } catch (error) {
-            this.markTabInvalid("review", error);
+            this.error = error;
         }
     }
 
-    addPerson() {
-        this.addingPerson = true;
-        this.template.querySelector('.main-block').classList.add('d-none');
-    }
-
-    stopAddingPerson() {
-        this.addingPerson = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
+    toggleAddingPerson() {
+        this.addingPerson = !this.addingPerson;
     }
 
     personAdded(event) {
-        this.addingPerson = false;
-        this.template.querySelector('.main-block').classList.remove('d-none');
+        this.toggleAddingPerson();
         this.persons.push(event.detail);
     }
 }
