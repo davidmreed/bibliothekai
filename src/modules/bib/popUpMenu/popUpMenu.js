@@ -47,7 +47,7 @@ export default class PopUpMenu extends LightningElement {
 
     handleChange(event) {
         event.stopPropagation();
-        this.dispatchEvent(new CustomEvent('change', { detail: this.selectedId() }));
+        this.dispatchEvent(new CustomEvent('change', { detail: this.selectedId }));
     }
 
     setErrorStatus(message) {

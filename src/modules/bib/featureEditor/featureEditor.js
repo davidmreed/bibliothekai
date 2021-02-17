@@ -34,7 +34,7 @@ export default class FeatureEditor extends LightningElement {
     }
 
     renderedCallback() {
-        if (!this.generalFeature) {
+        if (!this.generalFeature && this.translationExpanded) {
             this.template.querySelector(".format-picklist").value = this.feature.proseOrVerse;
             this.template.querySelector(".coverage-picklist").value = this.partialValue;
         }
