@@ -427,11 +427,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [
-        IsOwnerEditOrReadOnly
-        | IsAuthenticatedCreateOrReadOnly
-        | DjangoModelPermissionsOrAnonReadOnly
-    ]
+    permission_classes = [IsOwnerEditOrReadOnly]
 
 
 class PublishedReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):

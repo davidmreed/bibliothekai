@@ -38,12 +38,15 @@ class IsOwnerEditOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
 
-        if request.method == "PATCH" and request.user.is_authenticated:
-            return obj.user == request.user
+        if request.user.is_superuser:
+            return True
 
-        return False
+        if request.user.is_authenticated:
+            if request.method in ["PATCH", "DELETE"]:
+                return obj.user == request.user
+            elif request.method == "CREATE":
+                return True
 
-    def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
             return True
 

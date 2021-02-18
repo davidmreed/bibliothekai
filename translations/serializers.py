@@ -124,6 +124,9 @@ class SourceTextSerializer(serializers.ModelSerializer):
     author = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(), view_name="person-detail",
     )
+    language = serializers.HyperlinkedRelatedField(
+        queryset=Language.objects.all(), view_name="language-detail",
+    )
 
     class Meta:
         model = SourceText
