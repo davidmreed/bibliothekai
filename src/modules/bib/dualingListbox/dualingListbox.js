@@ -38,7 +38,7 @@ export default class DualingListbox extends LightningElement {
 
     @api
     get value() {
-        return this._value;
+        return this._value || [];
     }
 
     set value(val) {
