@@ -106,8 +106,11 @@
             </div>
             <template if:true={showIntroduction}>
                 <div class="card-body">
+                    <div>
+                        <small>A language and authors are required.</small>
+                    </div>
                     <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
-                        onchange={changeIntroductionLanguage} value={feature.introLanguage}>
+                        onchange={changeIntroLanguage} value={feature.introLanguage}>
                     </bib-pop-up-menu>
                     <label for="introDescription">Description</label>
                     <input class="form-control" name="introDescription" placeholder="Description" type="text"
@@ -147,6 +150,9 @@
             </div>
             <template if:true={showNotes}>
                 <div class="card-body">
+                    <div>
+                        <small>A language and authors are required.</small>
+                    </div>
                     <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
                         onchange={changeNotesLanguage} value={feature.notesLanguage}>
                     </bib-pop-up-menu>
