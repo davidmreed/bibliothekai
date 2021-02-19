@@ -53,7 +53,9 @@ export default class FeatureEditor extends LightningElement {
     dispatchUpdates(updates) {
         let newFeature = this.feature.clone();
         for (const key in updates) {
-            newFeature[key] = updates[key];
+            if (Object.prototype.hasOwnProperty.call(updates, key)) {
+                newFeature[key] = updates[key];
+            }
         }
 
         this.dispatchEvent(new CustomEvent('change', { detail: newFeature }));
