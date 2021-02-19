@@ -10,7 +10,7 @@ export default class DualingListbox extends LightningElement {
         } else {
             this.setErrorStatus(error);
         }
-        this.template.querySelector(".spinner-grow").classList.add("d-none");
+        this.template.querySelector('.spinner-grow').classList.add('d-none');
     }
     entities;
     _value;
@@ -59,8 +59,12 @@ export default class DualingListbox extends LightningElement {
     }
 
     update() {
-        this.availableEntities = this.entities.filter(f => !this.value.includes(f.id));
-        this.selectedEntities = this.entities.filter(f => this.value.includes(f.id));
+        this.availableEntities = this.entities.filter(
+            (f) => !this.value.includes(f.id)
+        );
+        this.selectedEntities = this.entities.filter((f) =>
+            this.value.includes(f.id)
+        );
 
         if (this.searchKey) {
             this.filteredEntities = this.availableEntities.filter((f) =>
@@ -80,15 +84,14 @@ export default class DualingListbox extends LightningElement {
 
     moveRight() {
         this.dispatchEvent(
-            new CustomEvent(
-                'change',
-                {
-                    detail: this._value.concat(Array.from(
+            new CustomEvent('change', {
+                detail: this._value.concat(
+                    Array.from(
                         this.template.querySelector('.entities').selectedOptions
-                    ).map((f) => Number(f.value)))
-                }
-            )
-        )
+                    ).map((f) => Number(f.value))
+                )
+            })
+        );
     }
 
     moveLeft() {
@@ -97,13 +100,10 @@ export default class DualingListbox extends LightningElement {
         ).map((f) => Number(f.value));
 
         this.dispatchEvent(
-            new CustomEvent(
-                'change',
-                {
-                    detail: this._value.filter(f => !itemsUnselect.includes(f))
-                }
-            )
-        )
+            new CustomEvent('change', {
+                detail: this._value.filter((f) => !itemsUnselect.includes(f))
+            })
+        );
     }
 
     add() {
@@ -111,13 +111,13 @@ export default class DualingListbox extends LightningElement {
     }
 
     getValidityElement() {
-        return this.template.querySelector(".validity");
+        return this.template.querySelector('.validity');
     }
 
     setErrorStatus(message) {
         let validityElem = this.getValidityElement();
         validityElem.innerText = message;
-        validityElem.classList.remove("d-none");
+        validityElem.classList.remove('d-none');
     }
 
     get selectedCount() {

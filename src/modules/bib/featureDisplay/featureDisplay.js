@@ -7,10 +7,10 @@ export default class FeatureDisplay extends LightningElement {
 
     async renderedCallback() {
         if (this.feature && this.feature.text) {
-            let record = await getRecord("texts", this.feature.text);
+            let record = await getRecord('texts', this.feature.text);
             this.textTitle = record.title;
         } else {
-            this.textTitle = "(No text selected)";
+            this.textTitle = '(No text selected)';
         }
     }
 
@@ -27,10 +27,14 @@ export default class FeatureDisplay extends LightningElement {
     }
 
     remove() {
-        this.dispatchEvent(new CustomEvent('remove', { detail: this.feature.id }));
+        this.dispatchEvent(
+            new CustomEvent('remove', { detail: this.feature.id })
+        );
     }
 
     edit() {
-        this.dispatchEvent(new CustomEvent('edit', { detail: this.feature.id }));
+        this.dispatchEvent(
+            new CustomEvent('edit', { detail: this.feature.id })
+        );
     }
 }

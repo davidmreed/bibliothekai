@@ -24,11 +24,17 @@ export class Feature {
     }
 
     get isIntroValid() {
-        return !this.hasIntroduction || (!!this.introAuthors.length && !!this.introLanguage);
+        return (
+            !this.hasIntroduction ||
+            (!!this.introAuthors.length && !!this.introLanguage)
+        );
     }
 
     get isNotesValid() {
-        return !this.hasNotes || (!!this.notesAuthors.length && !!this.notesLanguage);
+        return (
+            !this.hasNotes ||
+            (!!this.notesAuthors.length && !!this.notesLanguage)
+        );
     }
 
     get isValid() {
@@ -69,13 +75,13 @@ export class Feature {
 
         if (this.text) {
             let translation = {
-                volume: getRecordApiUrl("volumes", volumeId),
-                persons: this.authors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl("languages", this.language),
-                text: getRecordApiUrl("texts", this.text),
+                volume: getRecordApiUrl('volumes', volumeId),
+                persons: this.authors.map((a) => getRecordApiUrl('persons', a)),
+                language: getRecordApiUrl('languages', this.language),
+                text: getRecordApiUrl('texts', this.text),
                 partial: this.partial,
                 kind: this.proseOrVerse,
-                feature: "Translation"
+                feature: 'Translation'
             };
 
             if (this.title) {
@@ -90,13 +96,15 @@ export class Feature {
 
         if (this.hasNotes) {
             let notes = {
-                volume: getRecordApiUrl("volumes", volumeId),
-                persons: this.notesAuthors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl("languages", this.notesLanguage),
-                feature: "Notes"
+                volume: getRecordApiUrl('volumes', volumeId),
+                persons: this.notesAuthors.map((a) =>
+                    getRecordApiUrl('persons', a)
+                ),
+                language: getRecordApiUrl('languages', this.notesLanguage),
+                feature: 'Notes'
             };
             if (this.text) {
-                notes.text = getRecordApiUrl("texts", this.text);
+                notes.text = getRecordApiUrl('texts', this.text);
             }
             if (this.notesDescription) {
                 notes.description = this.notesDescription;
@@ -105,13 +113,15 @@ export class Feature {
         }
         if (this.hasIntroduction) {
             let intro = {
-                volume: getRecordApiUrl("volumes", volumeId),
-                persons: this.introAuthors.map(a => getRecordApiUrl("persons", a)),
-                language: getRecordApiUrl("languages", this.introLanguage),
-                feature: "Introduction"
-            }
+                volume: getRecordApiUrl('volumes', volumeId),
+                persons: this.introAuthors.map((a) =>
+                    getRecordApiUrl('persons', a)
+                ),
+                language: getRecordApiUrl('languages', this.introLanguage),
+                feature: 'Introduction'
+            };
             if (this.text) {
-                intro.text = getRecordApiUrl("texts", this.text);
+                intro.text = getRecordApiUrl('texts', this.text);
             }
             if (this.introDescription) {
                 intro.description = this.introDescription;

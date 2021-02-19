@@ -57,7 +57,10 @@ export default class AddVolume extends LightningElement {
     }
 
     handleFeatureRemove(event) {
-        this.features.splice(this.features.findIndex(f => f.id === event.detail), 1);
+        this.features.splice(
+            this.features.findIndex((f) => f.id === event.detail),
+            1
+        );
     }
 
     handleChange(event) {
@@ -86,13 +89,13 @@ export default class AddVolume extends LightningElement {
             return;
         }
 
-        event.target.disabled = "disabled";
-        this.template.querySelector(".status").classList.remove("d-none");
+        event.target.disabled = 'disabled';
+        this.template.querySelector('.status').classList.remove('d-none');
 
         let record = {
             title: this.title,
             published_date: this.published_date,
-            publisher: getRecordApiUrl("publishers", this.publisher)
+            publisher: getRecordApiUrl('publishers', this.publisher)
         };
         if (this.isbn) {
             record.isbn = this.isbn;
@@ -113,14 +116,14 @@ export default class AddVolume extends LightningElement {
             await Promise.all(
                 this.features
                     .concat([this.generalFeatures])
-                    .map(f => f.getFeatures(result.id))
+                    .map((f) => f.getFeatures(result.id))
                     .reduce((acc, val) => acc.concat(val), [])
-                    .map(f => createRecord("features", f))
+                    .map((f) => createRecord('features', f))
             );
-            window.location.href = getRecordUiUrl("volumes", result.id);
+            window.location.href = getRecordUiUrl('volumes', result.id);
         } catch (error) {
             this.error = error;
-            this.template.querySelector(".status").classList.add("d-none");
+            this.template.querySelector('.status').classList.add('d-none');
         }
     }
 
@@ -138,7 +141,9 @@ export default class AddVolume extends LightningElement {
     }
 
     handleFeatureEdit(event) {
-        this.featureToEdit = this.features.filter(f => f.id === event.detail)[0];
+        this.featureToEdit = this.features.filter(
+            (f) => f.id === event.detail
+        )[0];
         this.toggleEditingFeature();
     }
 
@@ -173,21 +178,27 @@ export default class AddVolume extends LightningElement {
 
     validateDetails() {
         if (this.detailsExpanded) {
-            let form = this.template.querySelector("form");
+            let form = this.template.querySelector('form');
             let status = form.checkValidity();
 
             if (!status) {
-                this.template.querySelectorAll(":invalid").forEach(elem => {
+                this.template.querySelectorAll(':invalid').forEach((elem) => {
                     elem.classList.add('is-invalid');
-                    elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+                    elem.addEventListener('change', () =>
+                        elem.classList.remove('is-invalid')
+                    );
                 });
             }
 
             if (!this.publisher) {
-                let publisherPopup = this.template.querySelector(".publisher-popup");
+                let publisherPopup = this.template.querySelector(
+                    '.publisher-popup'
+                );
                 status = false;
-                publisherPopup.classList.add("is-invalid");
-                publisherPopup.addEventListener('change', () => publisherPopup.classList.remove('is-invalid'));
+                publisherPopup.classList.add('is-invalid');
+                publisherPopup.addEventListener('change', () =>
+                    publisherPopup.classList.remove('is-invalid')
+                );
             }
 
             return status;
@@ -197,18 +208,23 @@ export default class AddVolume extends LightningElement {
     }
 
     checkValidity() {
-        let totalValid = this.validateDetails()
-            && this.generalFeatures.isNotesValid
-            && this.generalFeatures.isIntroValid
-            && this.features.map(f => f.isValid).reduce((cur, next) => cur && next, true);
+        let totalValid =
+            this.validateDetails() &&
+            this.generalFeatures.isNotesValid &&
+            this.generalFeatures.isIntroValid &&
+            this.features
+                .map((f) => f.isValid)
+                .reduce((cur, next) => cur && next, true);
 
         if (!totalValid) {
-            this.error = "One or more elements of the volume contain errors. Please edit the volume and try again.";
+            this.error =
+                'One or more elements of the volume contain errors. Please edit the volume and try again.';
             return false;
         }
 
         if (!this.features.length) {
-            this.error = "Add one or more translations to this volume and try again.";
+            this.error =
+                'Add one or more translations to this volume and try again.';
             return false;
         }
 

@@ -9,3 +9,8 @@ dist/
 
 # Default resources folder
 src/resources
+**/templates/**
+venv
+node_modules
+translations/static
+package-lock.json

@@ -11,8 +11,8 @@ export default class PopUpMenu extends LightningElement {
             this.setErrorStatus(error);
         }
         // Handle race condition between setting value and loading entities.
-        this.template.querySelector(".entities").value = this.value;
-        this.template.querySelector(".spinner-grow").classList.add("d-none");
+        this.template.querySelector('.entities').value = this.value;
+        this.template.querySelector('.spinner-grow').classList.add('d-none');
     }
     entities = [];
     @api entityName;
@@ -24,14 +24,12 @@ export default class PopUpMenu extends LightningElement {
     get selectedId() {
         return Array.from(
             this.template.querySelector('.entities').selectedOptions
-        ).map(
-            f => (f === '' ? '' : Number(f.value))
-        )[0];
+        ).map((f) => (f === '' ? '' : Number(f.value)))[0];
     }
 
     renderedCallback() {
         // Handle race condition between setting value and loading entities.
-        this.template.querySelector(".entities").value = this.value;
+        this.template.querySelector('.entities').value = this.value;
     }
 
     get shouldAllowAdd() {
@@ -47,16 +45,18 @@ export default class PopUpMenu extends LightningElement {
 
     handleChange(event) {
         event.stopPropagation();
-        this.dispatchEvent(new CustomEvent('change', { detail: this.selectedId }));
+        this.dispatchEvent(
+            new CustomEvent('change', { detail: this.selectedId })
+        );
     }
 
     setErrorStatus(message) {
         this.error = message;
-        this.selectElement.classList.add("is-invalid");
+        this.selectElement.classList.add('is-invalid');
     }
 
     get selectElement() {
-        return this.template.querySelector(".entities");
+        return this.template.querySelector('.entities');
     }
 
     get entityCount() {

@@ -35,11 +35,14 @@ export default class FeatureEditor extends LightningElement {
 
     renderedCallback() {
         if (!this.generalFeature && this.translationExpanded) {
-            this.template.querySelector(".format-picklist").value = this.feature.proseOrVerse;
-            this.template.querySelector(".coverage-picklist").value = this.partialValue;
+            this.template.querySelector(
+                '.format-picklist'
+            ).value = this.feature.proseOrVerse;
+            this.template.querySelector(
+                '.coverage-picklist'
+            ).value = this.partialValue;
         }
     }
-
 
     dispatchUpdate(field, newValue) {
         let updates = {};
@@ -58,34 +61,34 @@ export default class FeatureEditor extends LightningElement {
 
     changeText(event) {
         event.stopPropagation();
-        this.dispatchUpdate("text", event.detail);
+        this.dispatchUpdate('text', event.detail);
     }
 
     changeLanguage(event) {
         event.stopPropagation();
-        this.dispatchUpdate("language", event.detail);
+        this.dispatchUpdate('language', event.detail);
     }
 
     changeNotesLanguage(event) {
         event.stopPropagation();
-        this.dispatchUpdate("notesLanguage", event.detail);
+        this.dispatchUpdate('notesLanguage', event.detail);
     }
 
     changeIntroLanguage(event) {
         event.stopPropagation();
-        this.dispatchUpdate("introLanguage", event.detail);
+        this.dispatchUpdate('introLanguage', event.detail);
     }
 
     changePersons(event) {
-        this.dispatchUpdate("authors", event.detail);
+        this.dispatchUpdate('authors', event.detail);
     }
 
     changeIntroPersons(event) {
-        this.dispatchUpdate("introAuthors", event.detail);
+        this.dispatchUpdate('introAuthors', event.detail);
     }
 
     changeNotesPersons(event) {
-        this.dispatchUpdate("notesAuthors", event.detail);
+        this.dispatchUpdate('notesAuthors', event.detail);
     }
 
     handleChange(event) {
@@ -93,17 +96,17 @@ export default class FeatureEditor extends LightningElement {
         event.stopPropagation();
 
         if (field === 'title') {
-            this.dispatchUpdate("title", event.target.value);
+            this.dispatchUpdate('title', event.target.value);
         } else if (field === 'description') {
-            this.dispatchUpdate("description", event.target.value);
+            this.dispatchUpdate('description', event.target.value);
         } else if (field === 'kind') {
-            this.dispatchUpdate("proseOrVerse", event.target.value);
+            this.dispatchUpdate('proseOrVerse', event.target.value);
         } else if (field === 'partial') {
-            this.dispatchUpdate("partial", event.target.value === "true");
+            this.dispatchUpdate('partial', event.target.value === 'true');
         } else if (field === 'introDescription') {
-            this.dispatchUpdate("introDescription", event.target.value);
+            this.dispatchUpdate('introDescription', event.target.value);
         } else if (field === 'notesDescription') {
-            this.dispatchUpdate("notesDescription", event.target.value);
+            this.dispatchUpdate('notesDescription', event.target.value);
         }
         if (this.isFormValid) {
             this.markFormValid();
@@ -111,7 +114,7 @@ export default class FeatureEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        this.dispatchEvent(new CustomEvent("addperson"));
+        this.dispatchEvent(new CustomEvent('addperson'));
     }
 
     save() {
@@ -122,16 +125,14 @@ export default class FeatureEditor extends LightningElement {
         this.dispatchUpdates({
             hasIntroduction: !this.feature.hasIntroduction,
             introLanguage: '',
-            introDescription: "",
+            introDescription: '',
             introAuthors: []
         });
-
     }
 
     toggleTranslationExpanded() {
         this.translationExpanded = !this.translationExpanded;
     }
-
 
     toggleIntroductionExpanded() {
         this.introductionExpanded = !this.introductionExpanded;
@@ -141,7 +142,7 @@ export default class FeatureEditor extends LightningElement {
         this.dispatchUpdates({
             hasNotes: !this.feature.hasNotes,
             notesLanguage: this.feature.language,
-            notesDescription: "",
+            notesDescription: '',
             notesAuthors: []
         });
     }

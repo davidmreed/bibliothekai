@@ -8,7 +8,7 @@ const nameFields = {
     volumes: 'title',
     texts: 'title',
     languages: 'name'
-}
+};
 
 function getEndpoint() {
     // eslint-disable-next-line no-undef
@@ -16,7 +16,7 @@ function getEndpoint() {
 }
 
 function getApiEndpoint() {
-    return `${getEndpoint()}/api`
+    return `${getEndpoint()}/api`;
 }
 
 export function getRecordApiUrl(entityName, id) {
@@ -83,7 +83,10 @@ export class getRecords {
                 if (!recordCache.has(this.entityName)) {
                     await getRecordsFromApi(this.entityName);
                 }
-                this.dataCallback({ data: recordCache.get(this.entityName), error: null });
+                this.dataCallback({
+                    data: recordCache.get(this.entityName),
+                    error: null
+                });
             } catch (error) {
                 this.dataCallback({ data: null, error });
             }
@@ -117,14 +120,13 @@ async function getRecordsFromApi(entityName) {
         let data = await result.json();
 
         // Populate the list-based record cache
-        let recordData = data.map(
-            elem => {
-                return { id: elem.id, name: elem[nameFields[entityName]] };
-            });
+        let recordData = data.map((elem) => {
+            return { id: elem.id, name: elem[nameFields[entityName]] };
+        });
         recordCache.set(entityName, recordData);
 
         // And the individual record cache
-        data.forEach(r => {
+        data.forEach((r) => {
             individualRecordCache.set(`${entityName}/${r.id}`, r);
         });
     } else {
@@ -135,17 +137,14 @@ async function getRecordsFromApi(entityName) {
 export async function createRecord(entity, record) {
     let endpoint = getApiEndpoint();
 
-    let response = await fetch(
-        `${endpoint}/${entity}/`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify(record)
-        }
-    );
+    let response = await fetch(`${endpoint}/${entity}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(record)
+    });
 
     if (response.ok) {
         let result = await response.json();
@@ -156,7 +155,7 @@ export async function createRecord(entity, record) {
             // Make exactly one API call to refresh the cache.
             // TODO: fetch only the new record.
             await getRecordsFromApi(entity);
-            getRecordsStore.get(entity).forEach(r => r._refresh());
+            getRecordsStore.get(entity).forEach((r) => r._refresh());
         }
         return result;
     }

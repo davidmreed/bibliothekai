@@ -5,15 +5,29 @@
                 <h5 class="card-title">
                     {textTitle}
                     <div class="float-right">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Translation actions">
-                            <button class="btn btn-outline-primary" type="button" onclick={edit}>Edit</button>
-                            <button class="btn btn-outline-danger" type="button" onclick={remove}>Remove</button>
+                        <div
+                            class="btn-group btn-group-sm"
+                            role="group"
+                            aria-label="Translation actions"
+                        >
+                            <button
+                                class="btn btn-outline-primary"
+                                type="button"
+                                onclick={edit}
+                            >
+                                Edit
+                            </button>
+                            <button
+                                class="btn btn-outline-danger"
+                                type="button"
+                                onclick={remove}
+                            >
+                                Remove
+                            </button>
                         </div>
                     </div>
                 </h5>
-                <div>
-                    {featureDescription}
-                </div>
+                <div>{featureDescription}</div>
                 <template if:false={feature.isValid}>
                     <small class="text-danger">
                         This translation isn't valid. Edit it before saving.

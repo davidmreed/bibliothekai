@@ -2,10 +2,10 @@ import { LightningElement } from 'lwc';
 import { createRecord } from 'bib/drf';
 
 export default class AddPerson extends LightningElement {
-    firstName = "";
-    middleName = "";
-    lastName = "";
-    description = "";
+    firstName = '';
+    middleName = '';
+    lastName = '';
+    description = '';
 
     handleChange(event) {
         const field = event.target.name;
@@ -21,13 +21,15 @@ export default class AddPerson extends LightningElement {
     }
 
     checkValidity() {
-        let form = this.template.querySelector("form");
+        let form = this.template.querySelector('form');
         let status = form.checkValidity();
 
         if (!status) {
-            this.template.querySelectorAll(":invalid").forEach(elem => {
+            this.template.querySelectorAll(':invalid').forEach((elem) => {
                 elem.classList.add('is-invalid');
-                elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+                elem.addEventListener('change', () =>
+                    elem.classList.remove('is-invalid')
+                );
             });
         }
 
@@ -51,7 +53,7 @@ export default class AddPerson extends LightningElement {
         };
 
         try {
-            let result = await createRecord("persons", record);
+            let result = await createRecord('persons', record);
             this.dispatchEvent(new CustomEvent('save', { detail: result.id }));
         } catch (error) {
             this.error = error;

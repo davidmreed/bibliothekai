@@ -52,13 +52,15 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     checkValidity() {
-        let form = this.template.querySelector("form");
+        let form = this.template.querySelector('form');
         let status = form.checkValidity();
 
         if (!status) {
-            this.template.querySelectorAll(":invalid").forEach(elem => {
+            this.template.querySelectorAll(':invalid').forEach((elem) => {
                 elem.classList.add('is-invalid');
-                elem.addEventListener('change', () => elem.classList.remove('is-invalid'));
+                elem.addEventListener('change', () =>
+                    elem.classList.remove('is-invalid')
+                );
             });
         }
 
@@ -73,13 +75,13 @@ export default class AddPublishedReview extends LightningElement {
         }
 
         if (!(this.persons.length && this.volumes.length)) {
-            this.error = "Please add at least one author and volume.";
+            this.error = 'Please add at least one author and volume.';
             return;
         }
 
         let record = {
-            volumes: this.volumes.map(v => getRecordApiUrl("volumes", v)),
-            persons: this.persons.map(p => getRecordApiUrl("persons", p)),
+            volumes: this.volumes.map((v) => getRecordApiUrl('volumes', v)),
+            persons: this.persons.map((p) => getRecordApiUrl('persons', p)),
             published_date: this.published_date,
             title: this.title,
             location: `${this.source}, ${this.location}`
@@ -88,14 +90,20 @@ export default class AddPublishedReview extends LightningElement {
             let result = await createRecord('published-reviews', record);
             if (this.link) {
                 let link = {
-                    content_object: getRecordApiUrl("published-reviews", result.id),
+                    content_object: getRecordApiUrl(
+                        'published-reviews',
+                        result.id
+                    ),
                     link: this.link,
                     source: this.source,
-                    resource_type: "Full Text"
+                    resource_type: 'Full Text'
                 };
-                await createRecord("links", link);
+                await createRecord('links', link);
             }
-            window.location.href = getRecordUiUrl("published-reviews", result.id);
+            window.location.href = getRecordUiUrl(
+                'published-reviews',
+                result.id
+            );
         } catch (error) {
             this.error = error;
         }

@@ -1,12 +1,26 @@
 <template>
-    <input class="form-control mb-2" name="search" type="search" placeholder="Search" aria-label="search"
-        oninput={handleSearch} />
-    <small class="form-text text-muted validity is-invalid form-control mb-2 d-none">
+    <input
+        class="form-control mb-2"
+        name="search"
+        type="search"
+        placeholder="Search"
+        aria-label="search"
+        oninput={handleSearch}
+    />
+    <small
+        class="form-text text-muted validity is-invalid form-control mb-2 d-none"
+    >
     </small>
     <div class="card-group">
         <div class="card">
             <div class="card-body form-group">
-                <select class="entities form-control" name="entities" size="5" multiple onchange={handleChange}>
+                <select
+                    class="entities form-control"
+                    name="entities"
+                    size="5"
+                    multiple
+                    onchange={handleChange}
+                >
                     <template if:true={filteredEntities.length}>
                         <template for:each={filteredEntities} for:item="entity">
                             <option key={entity.id} value={entity.id}>
@@ -28,17 +42,29 @@
                 </div>
                 <div class="float-right">
                     <template if:false={shouldAllowAdd}>
-                        <button class="btn btn-primary btn-sm" type="button" onclick={moveRight}>
+                        <button
+                            class="btn btn-primary btn-sm"
+                            type="button"
+                            onclick={moveRight}
+                        >
                             Select &raquo;
                         </button>
                     </template>
                     <template if:true={shouldAllowAdd}>
                         <div class="btn-group">
-                            <button class="btn btn-primary btn-sm" type="button" onclick={moveRight}>
+                            <button
+                                class="btn btn-primary btn-sm"
+                                type="button"
+                                onclick={moveRight}
+                            >
                                 Select &raquo;
                             </button>
 
-                            <button class="btn btn-secondary btn-sm" type="button" onclick={add}>
+                            <button
+                                class="btn btn-secondary btn-sm"
+                                type="button"
+                                onclick={add}
+                            >
                                 Add +
                             </button>
                         </div>
@@ -48,10 +74,18 @@
         </div>
         <div class="card">
             <div class="card-body form-group">
-                <select class="selectedEntities form-control" name="selectedEntities" size="5" multiple
-                    onchange={handleChange}>
+                <select
+                    class="selectedEntities form-control"
+                    name="selectedEntities"
+                    size="5"
+                    multiple
+                    onchange={handleChange}
+                >
                     <template if:true={filteredSelectedEntities.length}>
-                        <template for:each={filteredSelectedEntities} for:item="entity">
+                        <template
+                            for:each={filteredSelectedEntities}
+                            for:item="entity"
+                        >
                             <option key={entity.id} value={entity.id}>
                                 {entity.name}
                             </option>
@@ -62,7 +96,11 @@
                     </template>
                 </select>
                 <br />
-                <button class="btn btn-primary btn-sm" type="button" onclick={moveLeft}>
+                <button
+                    class="btn btn-primary btn-sm"
+                    type="button"
+                    onclick={moveLeft}
+                >
                     &laquo; Unselect
                 </button>
                 <small class="text-muted float-right">
