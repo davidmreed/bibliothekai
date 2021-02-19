@@ -110,6 +110,11 @@
             </div>
             <hr>
             <small class="text-danger form-validity mb-2">{error}</small>
+            <div class="status text-center mb-2 d-none">
+                <div class="spinner-grow spinner-grow-sm mr-2" role="status">
+                </div>
+                Creating records...
+            </div>
             <button class="btn btn-primary btn-block mb-3" onclick={create}>Create Volume</button>
         </div>
     </template>

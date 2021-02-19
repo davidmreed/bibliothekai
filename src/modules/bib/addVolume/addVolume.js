@@ -86,6 +86,9 @@ export default class AddVolume extends LightningElement {
             return;
         }
 
+        event.target.disabled = "disabled";
+        this.template.querySelector(".status").classList.remove("d-none");
+
         let record = {
             title: this.title,
             published_date: this.published_date,
@@ -117,6 +120,7 @@ export default class AddVolume extends LightningElement {
             window.location.href = getRecordUiUrl("volumes", result.id);
         } catch (error) {
             this.error = error;
+            this.template.querySelector(".status").classList.add("d-none");
         }
     }
 
@@ -140,6 +144,7 @@ export default class AddVolume extends LightningElement {
 
     toggleEditingFeature() {
         this.editingFeature = !this.editingFeature;
+        this.error = '';
     }
 
     toggleAddingPerson() {
@@ -209,5 +214,4 @@ export default class AddVolume extends LightningElement {
 
         return true;
     }
-
 }
