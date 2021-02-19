@@ -119,14 +119,13 @@ export default class FeatureEditor extends LightningElement {
     }
 
     toggleIntroduction() {
-        if (this.feature.introLanguage === '') {
-            this.dispatchUpdates({
-                "introLanguage": this.feature.language,
-                "hasIntroduction": !this.feature.hasIntroduction
-            });
-        } else {
-            this.dispatchUpdate("hasIntroduction", !this.feature.hasIntroduction);
-        }
+        this.dispatchUpdates({
+            hasIntroduction: !this.feature.hasIntroduction,
+            introLanguage: '',
+            introDescription: "",
+            introAuthors: []
+        });
+
     }
 
     toggleTranslationExpanded() {
@@ -139,14 +138,12 @@ export default class FeatureEditor extends LightningElement {
     }
 
     toggleNotes() {
-        if (this.feature.notesLanguage === '') {
-            this.dispatchUpdates({
-                "notesLanguage": this.feature.language,
-                "hasNotes": !this.feature.hasNotes
-            });
-        } else {
-            this.dispatchUpdate("hasNotes", !this.feature.hasNotes);
-        }
+        this.dispatchUpdates({
+            hasNotes: !this.feature.hasNotes,
+            notesLanguage: this.feature.language,
+            notesDescription: "",
+            notesAuthors: []
+        });
     }
 
     toggleNotesExpanded() {
