@@ -28,8 +28,12 @@ class ChoiceField(serializers.ChoiceField):
         if data == "" and self.allow_blank:
             return ""
 
+        str_choices = {str(k): k for k in self._choices}
+
         if data in self._choices:
             return data
+        if data in str_choices:
+            return str_choices[data]
 
         for key, val in self._choices.items():
             if val == data:
