@@ -6,7 +6,7 @@ export default class FeatureDisplay extends LightningElement {
     textTitle;
 
     async renderedCallback() {
-        if (this.feature.text) {
+        if (this.feature && this.feature.text) {
             let record = await getRecord("texts", this.feature.text);
             this.textTitle = record.title;
         } else {
