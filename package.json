@@ -4,7 +4,6 @@
     "version": "0.0.1",
     "author": "David Reed",
     "bugs": "https://github.com/davidmreed/bibliothekai/issues",
-    "dependencies": {},
     "devDependencies": {
         "eslint": "^7.11.0",
         "husky": "^4.3.0",
