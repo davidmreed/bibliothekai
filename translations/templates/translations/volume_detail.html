@@ -71,23 +71,21 @@
             </h5>
             <p class="card-text">{{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
+                <a href="{% url 'source_text_detail' t.grouper.id %}" class="float-right btn btn-outline-secondary btn-sm">
+                    More translations
+                </a>
             </p>
             <p class="card-text">
                 {{ t.grouper.author.full_name }},
-                {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}
-            </p>
-            {% if t.grouper.date %}
-            <p class="card-text">
-                {{ t.grouper.date }}
-            </p>
-            {% endif %}
-            <a href="{% url 'source_text_detail' t.grouper.id %}" class="btn btn-primary btn-sm">
-                More translations
-            </a>
-            <a href="{% url 'person_detail' t.grouper.author.id %}" class="btn btn-outline-secondary btn-sm">
+                {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}.
+                {% if t.grouper.date %}
+                    {{ t.grouper.date }}
+                {% endif %}
+                <a href="{% url 'person_detail' t.grouper.author.id %}" class="float-right btn btn-outline-secondary btn-sm">
                 More {{ t.grouper.author.full_name }}
             </a>
 
+            </p>
         </div>
     </div>
     {% for feature_set in grouped_features %}
@@ -135,16 +133,18 @@
 
 <h2 class="mt-4">
     Published Reviews
-    <span class="float-right">
-        <a class="btn btn-secondary btn-sm" href="{% url 'publishedreview_list' volume.id %}">
+    <div class="float-right">
+        <div class="btn-group btn-group-sm" role="group" aria-label="Published review actions">
+        <a class="btn btn-secondary" href="{% url 'publishedreview_list' volume.id %}">
             View all
         </a>
         {% if user.is_authenticated %}
-        <a class="btn btn-primary btn-sm ml-1" href="{% url 'publishedreview_add' volume.id %}">
+        <a class="btn btn-primary" href="{% url 'publishedreview_add' volume.id %}">
             Add
         </a>
         {% endif %}
-    </span>
+        </div>
+    </div>
 </h2>
 
 {% for r in publishedreviews %}
@@ -155,15 +155,17 @@
 
 <h2 class="mt-4">
     User Reviews
-    <span class="float-right">
-        <a class="btn btn-secondary btn-sm" href="{% url 'review_list' volume.id %}">
+    <div class="float-right">
+    <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">
+        <a class="btn btn-secondary" href="{% url 'review_list' volume.id %}">
             View all</a>
         {% if user.is_authenticated %}
-        <a class="btn btn-primary btn-sm ml-1" href="{% url 'review_create' volume.id %}">
+        <a class="btn btn-primary" href="{% url 'review_create' volume.id %}">
             Add
         </a>
         {% endif %}
-    </span>
+        </div>
+    </div>
 
 </h2>
 
