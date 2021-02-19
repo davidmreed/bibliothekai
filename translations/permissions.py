@@ -10,12 +10,14 @@ class CreateChildOfUnapprovedParent(permissions.BasePermission):
         if request.method == "POST":
             serializer = view.get_serializer(data=request.data)
 
-            if serializer.is_valid():
-                parent = serializer.validated_data[
-                    view.serializer_class.Meta.model.parent_relationship
-                ]
+            if not serializer.is_valid():
+                return True  # Let the API return a data-based error.
 
-                return parent.user == request.user and not parent.approved
+            parent = serializer.validated_data[
+                view.serializer_class.Meta.model.parent_relationship
+            ]
+
+            return parent.user == request.user and not parent.approved
 
         return False
 
