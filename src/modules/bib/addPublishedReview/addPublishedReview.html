@@ -63,13 +63,14 @@
                     type="url"
                     value={link}
                     onchange={handleChange}
+                    placeholder="Link, if the review is available online"
                 />
             </div>
         </form>
         <h2>Authors</h2>
-        <small class="text-muted"
-            >Select one or more authors of this review.</small
-        >
+        <small class="text-muted">
+            Select one or more authors of this review.
+        </small>
         <bib-dualing-listbox
             class="persons-listbox"
             entity-name="persons"
