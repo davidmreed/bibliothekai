@@ -142,6 +142,7 @@ export default class FeatureEditor extends LightningElement {
             introDescription: '',
             introAuthors: []
         });
+        this.introductionExpanded = !this.feature.hasIntroduction;
     }
 
     toggleTranslationExpanded() {
@@ -159,6 +160,7 @@ export default class FeatureEditor extends LightningElement {
             notesDescription: '',
             notesAuthors: []
         });
+        this.notesExpanded = !this.feature.hasNotes;
     }
 
     toggleNotesExpanded() {
