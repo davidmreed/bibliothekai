@@ -308,7 +308,8 @@ class SearchView(generic.TemplateView):
                 rank=SearchRank(person_vector, query), search=person_vector
             )
             .filter(search=query)
-            .order_by("-rank")
+            .order_by("-rank"),
+            self.request.user,
         )
 
         volume_vector = (
@@ -324,7 +325,8 @@ class SearchView(generic.TemplateView):
                 rank=SearchRank(volume_vector, query), search=volume_vector
             )
             .filter(search=query)
-            .order_by("-rank")
+            .order_by("-rank"),
+            self.request.user,
         )
 
         source_text_vector = (
@@ -340,7 +342,8 @@ class SearchView(generic.TemplateView):
                 rank=SearchRank(source_text_vector, query), search=source_text_vector
             )
             .filter(search=query)
-            .order_by("-rank")
+            .order_by("-rank"),
+            self.request.user,
         )
 
         context["persons"] = persons

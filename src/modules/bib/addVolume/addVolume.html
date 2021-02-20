@@ -46,6 +46,10 @@
                                         value={primaryLanguage}
                                     >
                                     </bib-pop-up-menu>
+                                    <small class="text-muted">
+                                        Language of the majority of this volume.
+                                        Translations default to this language.
+                                    </small>
                                 </div>
                             </div>
                             <div class="form-row">
@@ -74,44 +78,35 @@
                                         onchange={handleChange}
                                         required
                                     />
+                                    <small class="text-muted">
+                                        If only a year is present, use January
+                                        1.
+                                    </small>
                                     <div class="invalid-feedback">
                                         Please enter a publication date.
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-row">
                                 <div class="col">
                                     <label for="isbn">ISBN</label>
                                     <input
                                         class="form-control"
                                         name="isbn"
-                                        placeholder="ISBN, if available"
+                                        placeholder="Optional: ISBN, if present"
                                         type="text"
                                         value={isbn}
                                         onchange={handleChange}
                                     />
                                 </div>
-                                <div class="col">
-                                    <label for="oclc">OCLC Number</label>
-                                    <input
-                                        class="form-control"
-                                        name="oclc"
-                                        placeholder="OCLC number, if available"
-                                        type="text"
-                                        value={oclc_number}
-                                        onchange={handleChange}
-                                    />
-                                </div>
                             </div>
                             <label for="description">Description</label>
-                            <input
+                            <textarea
                                 class="form-control"
                                 name="description"
-                                placeholder="Description"
+                                placeholder="Optional: describe unique features of this volume, such as maps, indices, and other supporting material. Record translations, introductions, and notes below."
                                 type="text"
                                 value={description}
                                 onchange={handleChange}
-                            />
+                            ></textarea>
                         </div>
                         <button
                             type="submit"
@@ -125,24 +120,12 @@
             </template>
 
             <h2>Contents</h2>
-
-            <h3 class="mt-3">General Features</h3>
-            <small class="form-text text-muted mb-2">
-                Add features of the volume as a whole, like general
-                introductions and notes that aren't associated with a specific
-                translation. Introductions to specific texts should be part of
-                the translation.
+            <small class="text-muted">
+                Bibliothekai tracks <em>each translated text</em> in a volume
+                separately, including any introduction or notes to the text. You
+                can also record overall introductions and notes that apply to
+                the whole volume as general features below.
             </small>
-            <div class="volume-features">
-                <bib-feature-editor
-                    feature={generalFeatures}
-                    general-feature="true"
-                    onchange={handleGeneralFeatureChange}
-                    onaddperson={toggleAddingPerson}
-                >
-                </bib-feature-editor>
-            </div>
-
             <h3 class="mt-3">
                 Translations
                 <div class="float-right">
@@ -173,6 +156,23 @@
                     </div>
                 </template>
             </div>
+            <h3 class="mt-3">General Features</h3>
+            <small class="form-text text-muted mb-2">
+                Add features of the volume as a whole, like general
+                introductions and notes that aren't associated with a specific
+                translation. Introductions to specific texts should be part of
+                the translation.
+            </small>
+            <div class="volume-features">
+                <bib-feature-editor
+                    feature={generalFeatures}
+                    general-feature="true"
+                    onchange={handleGeneralFeatureChange}
+                    onaddperson={toggleAddingPerson}
+                >
+                </bib-feature-editor>
+            </div>
+
             <hr />
             <small class="text-danger form-validity mb-2">{error}</small>
             <div class="status text-center mb-2 d-none">

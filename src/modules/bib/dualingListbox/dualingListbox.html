@@ -1,10 +1,18 @@
 <template>
+    <small class="text-muted">
+        <br />
+        Browse and filter to find records, then click Select to choose
+        them.&nbsp;
+        <template if:true={shouldAllowAdd}>
+            Click New to add a new record.
+        </template>
+    </small>
     <input
         class="form-control mb-2"
         name="search"
         type="search"
-        placeholder="Search"
-        aria-label="search"
+        placeholder="Filter"
+        aria-label="Filter"
         oninput={handleSearch}
     />
     <small
@@ -53,19 +61,18 @@
                     <template if:true={shouldAllowAdd}>
                         <div class="btn-group">
                             <button
+                                class="btn btn-secondary btn-sm"
+                                type="button"
+                                onclick={add}
+                            >
+                                New +
+                            </button>
+                            <button
                                 class="btn btn-primary btn-sm"
                                 type="button"
                                 onclick={moveRight}
                             >
                                 Select &raquo;
-                            </button>
-
-                            <button
-                                class="btn btn-secondary btn-sm"
-                                type="button"
-                                onclick={add}
-                            >
-                                Add +
                             </button>
                         </div>
                     </template>

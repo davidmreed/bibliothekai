@@ -107,14 +107,13 @@
                                     value={feature.samplePassage}
                                     onchange={handleChange}
                                 ></textarea>
-                                <small class="text-muted"
-                                    >The sample passage for {selectedText.title}
-                                    is
-                                    {selectedText.sample_passage_spec}.</small
-                                >
+                                <small class="text-muted">
+                                    The sample passage for {selectedText.title}
+                                    is {selectedText.sample_passage_spec}.
+                                </small>
                             </template>
                             <hr />
-                            <label for="authors">Authors</label>
+                            <label for="authors">Translators</label>
                             <bib-dualing-listbox
                                 class="persons-listbox"
                                 entity-name="persons"
@@ -191,15 +190,15 @@
                     >
                     </bib-pop-up-menu>
                     <label for="introDescription">Description</label>
-                    <input
+                    <textarea
                         class="form-control"
                         name="introDescription"
-                        placeholder="Description"
+                        placeholder="Optional: description of the introduction provided."
                         type="text"
                         value={feature.introDescription}
                         onchange={handleChange}
-                    />
-                    <label for="introAuthors">Authors</label>
+                    ></textarea>
+                    <label for="introAuthors">Introduction Authors</label>
                     <bib-dualing-listbox
                         entity-name="persons"
                         value={feature.introAuthors}
@@ -271,15 +270,15 @@
                     >
                     </bib-pop-up-menu>
                     <label for="notesDescription">Description</label>
-                    <input
+                    <textarea
                         class="form-control"
                         name="notesDescription"
-                        placeholder="Description"
+                        placeholder="Optional: description of the notes provided."
                         type="text"
                         value={feature.notesDescription}
                         onchange={handleChange}
-                    />
-                    <label for="notesAuthors">Authors</label>
+                    ></textarea>
+                    <label for="notesAuthors">Notes Authors</label>
                     <bib-dualing-listbox
                         entity-name="persons"
                         value={feature.notesAuthors}

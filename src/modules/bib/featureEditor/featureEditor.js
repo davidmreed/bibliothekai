@@ -138,7 +138,7 @@ export default class FeatureEditor extends LightningElement {
     toggleIntroduction() {
         this.dispatchUpdates({
             hasIntroduction: !this.feature.hasIntroduction,
-            introLanguage: '',
+            introLanguage: this.feature.introLanguage || this.feature.language,
             introDescription: '',
             introAuthors: []
         });
@@ -156,7 +156,7 @@ export default class FeatureEditor extends LightningElement {
     toggleNotes() {
         this.dispatchUpdates({
             hasNotes: !this.feature.hasNotes,
-            notesLanguage: this.feature.language,
+            notesLanguage: this.feature.notesLanguage || this.feature.language,
             notesDescription: '',
             notesAuthors: []
         });
