@@ -42,6 +42,7 @@ class FeatureInline(admin.TabularInline):
         "has_facing_text",
         "title",
         "description",
+        "sample_passage",
     ]
 
 

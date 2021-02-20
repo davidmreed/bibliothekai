@@ -123,6 +123,18 @@ class VolumeDetailView(generic.DetailView):
         return context
 
 
+class TranslationDetailView(generic.DetailView):
+    model = Feature
+    template_name = "translations/translation_detail.html"
+
+    def get_queryset(self):
+        return filter_queryset_parent_approval(
+            Feature,
+            Feature.objects.filter(feature="TR"),
+            self.request.user,
+        )
+
+
 class VolumeIndexView(generic.ListView):
     template_name = "translations/volume_index.html"
 
@@ -147,7 +159,9 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     @approval_filtered_queryset
-    def get_queryset(self,):
+    def get_queryset(
+        self,
+    ):
         return Person.objects.filter(
             Q(features__feature__exact="TR") & Q(features__volume__approved=True)
         ).distinct()

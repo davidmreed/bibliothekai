@@ -30,13 +30,18 @@ urlpatterns = [
         views.SourceTextDetailView.as_view(),
         name="source_text_detail",
     ),
-    path("volumes/<int:pk>/", views.VolumeDetailView.as_view(), name="volume_detail"),
     path("persons/<int:pk>/", views.PersonDetailView.as_view(), name="person_detail"),
     path("users/<int:pk>/", views.UserDetailView.as_view(), name="user_detail"),
     path(
         "published-reviews/<int:pk>/",
         views.PublishedReviewDetailView.as_view(),
         name="published_review_detail",
+    ),
+    path("volumes/<int:pk>/", views.VolumeDetailView.as_view(), name="volume_detail"),
+    path(
+        "volumes/<int:vol>/translation/<int:pk>",
+        views.TranslationDetailView.as_view(),
+        name="translation_detail",
     ),
     path(
         "volumes/<int:vol>/reviews/",
@@ -53,7 +58,11 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
+    path(
+        "volumes/add/",
+        views.VolumeLWCView.as_view(),
+        name="volume_add",
+    ),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

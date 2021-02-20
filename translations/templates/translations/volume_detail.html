@@ -114,6 +114,11 @@
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
+                {% if f.sample_passage %}
+                <a class="float-right btn btn-sm btn-outline-secondary" href="{% url 'translation_detail' volume.id f.id %}">
+                    View Sample
+                </a>
+                {% endif %}
             </p>
             {% endif %}
             {% if f.description %}

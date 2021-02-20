@@ -82,6 +82,18 @@
 </p>
 {% endif %}
 
+{% if sourcetext.sample_passage %}
+<h2 class="mt-4">Sample Passage</h2>
+<p>
+    This text has a sample passage, which is chosen to help compare the styles of different translations.
+    For this text, the sample passage is {{ sourcetext.sample_passage_spec }} and is derived from 
+    {{ sourcetext.sample_passage_source }}.
+<p>
+    {{ sourcetext.sample_passage|linebreaks }}
+</p>
+{% endif %}
+
+
 <h2 class="mt-4">Translations</h2>
 <table class="table table-striped">
     <thead>

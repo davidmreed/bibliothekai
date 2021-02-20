@@ -39,7 +39,7 @@ class UserCreatedApprovalMixin(UserCreatedMixin):
     approved = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        if self.user.is_superuser:
+        if self.user and self.user.is_superuser:
             self.approved = True
 
         super().save(*args, **kwargs)
@@ -162,6 +162,9 @@ class SourceText(UserCreatedApprovalMixin):
     kind = models.TextField(choices=KIND_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+    sample_passage = models.TextField(blank=True)
+    sample_passage_spec = models.CharField(max_length=255, blank=True)
+    sample_passage_source = models.CharField(max_length=255, blank=True)
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
 
@@ -266,7 +269,10 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
@@ -310,6 +316,7 @@ class Feature(models.Model, AuthorNameMixin):
     partial = models.BooleanField()
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
+    sample_passage = models.TextField(blank=True)
 
     def display_title(self):
         if self.title:

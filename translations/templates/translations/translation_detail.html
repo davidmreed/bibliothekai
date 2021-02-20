@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load comma_lists %}
+
+{% block title %}
+{{ feature.source_text.title }}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-4">
+    Sample Passage: Translation of {{ feature.source_text.title }}
+</h1>
+
+<div class="card-deck">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                Original Text (<cite>{{ feature.source_text.title }}</cite> 
+                {{ feature.source_text.sample_passage_spec }})
+            </h5>
+            <p class="card-text">
+                {{ feature.source_text.sample_passage|linebreaks }}
+            </p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">{{ feature.source_text.sample_passage_source }}</small>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Translation</h5>
+            <p class="card-text">
+                {{ feature.sample_passage|linebreaks }}
+            </p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                <a href="{% url 'volume_detail' feature.volume.id %}">
+                    <cite>{{ feature.volume.title }}</cite>
+                </a>
+                ({{ feature.volume.publisher.name }}), 
+                trans.
+                {% commalist feature.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+                {% endcommalist %}
+            </small>
+        </div>
+    </div>
+</div>
+
+<hr>
+<a class="btn btn-block btn-outline-primary" href="{% url 'source_text_detail' feature.source_text.id %}">
+Compare more <cite>{{ feature.source_text.title }}</cite> translations
+</a>
+
+{% endblock %}
