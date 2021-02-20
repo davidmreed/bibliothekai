@@ -6,8 +6,8 @@ export default class FeatureEditor extends LightningElement {
     selectedText;
 
     translationExpanded = true;
-    introductionExpanded = true;
-    notesExpanded = true;
+    introductionExpanded = false;
+    notesExpanded = false;
 
     get showIntroduction() {
         return this.feature.hasIntroduction && this.introductionExpanded;
@@ -38,14 +38,18 @@ export default class FeatureEditor extends LightningElement {
         return this.feature.isValid;
     }
 
-    renderedCallback() {
+    async renderedCallback() {
         if (!this.generalFeature && this.translationExpanded) {
+            // Not sure why these do not bind correctly. Order of operations?
             this.template.querySelector(
                 '.format-picklist'
             ).value = this.feature.proseOrVerse;
             this.template.querySelector(
                 '.coverage-picklist'
             ).value = this.partialValue;
+        }
+        if (this.feature.text) {
+            this.selectedText = await getRecord('texts', this.feature.text);
         }
     }
 
@@ -70,7 +74,6 @@ export default class FeatureEditor extends LightningElement {
         event.stopPropagation();
         this.dispatchUpdate('text', event.detail);
         this.selectedText = await getRecord('texts', event.detail);
-        console.log(`this.selectedText is ${this.selectedText}`);
     }
 
     changeLanguage(event) {
