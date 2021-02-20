@@ -1,8 +1,9 @@
 import { LightningElement, api } from 'lwc';
-
+import { getRecord } from 'bib/drf';
 export default class FeatureEditor extends LightningElement {
     @api feature;
     @api generalFeature = false;
+    selectedText;
 
     translationExpanded = true;
     introductionExpanded = true;
@@ -26,6 +27,10 @@ export default class FeatureEditor extends LightningElement {
 
     get partialValue() {
         return this.feature.partial.toString();
+    }
+
+    get hasSamplePassage() {
+        return this.selectedText && !!this.selectedText.sample_passage;
     }
 
     @api
@@ -61,9 +66,11 @@ export default class FeatureEditor extends LightningElement {
         this.dispatchEvent(new CustomEvent('change', { detail: newFeature }));
     }
 
-    changeText(event) {
+    async changeText(event) {
         event.stopPropagation();
         this.dispatchUpdate('text', event.detail);
+        this.selectedText = await getRecord('texts', event.detail);
+        console.log(`this.selectedText is ${this.selectedText}`);
     }
 
     changeLanguage(event) {
@@ -109,6 +116,8 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate('introDescription', event.target.value);
         } else if (field === 'notesDescription') {
             this.dispatchUpdate('notesDescription', event.target.value);
+        } else if (field === 'sample') {
+            this.dispatchUpdate('samplePassage', event.target.value);
         }
         if (this.isFormValid) {
             this.markFormValid();

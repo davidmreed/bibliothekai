@@ -80,15 +80,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <label for="description">Description</label>
-                            <input
-                                class="form-control"
-                                name="description"
-                                placeholder="Description"
-                                type="text"
-                                value={feature.description}
-                                onchange={handleChange}
-                            />
                             <label for="title">Title</label>
                             <input
                                 class="form-control"
@@ -98,7 +89,31 @@
                                 value={feature.title}
                                 onchange={handleChange}
                             />
-
+                            <hr />
+                            <label for="description">Description</label>
+                            <textarea
+                                class="form-control"
+                                name="description"
+                                placeholder="Description"
+                                type="text"
+                                value={feature.description}
+                                onchange={handleChange}
+                            ></textarea>
+                            <template if:true={hasSamplePassage}>
+                                <label for="sample">Sample Passage</label>
+                                <textarea
+                                    class="form-control"
+                                    name="sample"
+                                    value={feature.samplePassage}
+                                    onchange={handleChange}
+                                ></textarea>
+                                <small class="text-muted"
+                                    >The sample passage for {selectedText.title}
+                                    is
+                                    {selectedText.sample_passage_spec}.</small
+                                >
+                            </template>
+                            <hr />
                             <label for="authors">Authors</label>
                             <bib-dualing-listbox
                                 class="persons-listbox"

@@ -34,7 +34,7 @@ export async function getRecord(entityName, recordId) {
         await getRecordsFromApi(entityName);
     }
 
-    return individualRecordCache.get(`${entityName}/${recordId}`);
+    return individualRecordCache.get(cacheKey);
 }
 
 export class getRecords {
@@ -120,14 +120,15 @@ async function getRecordsFromApi(entityName) {
         let data = await result.json();
 
         // Populate the list-based record cache
-        let recordData = data.map((elem) => {
-            return { id: elem.id, name: elem[nameFields[entityName]] };
+        data.forEach((elem) => {
+            elem.name = elem[nameFields[entityName]];
         });
-        recordCache.set(entityName, recordData);
+        recordCache.set(entityName, data);
 
         // And the individual record cache
-        data.forEach((r) => {
-            individualRecordCache.set(`${entityName}/${r.id}`, r);
+        data.forEach((elem) => {
+            let cacheKey = `${entityName}/${elem.id}`;
+            individualRecordCache.set(cacheKey, elem);
         });
     } else {
         throw new Error(`The API returned an error: ${result.status}.`);

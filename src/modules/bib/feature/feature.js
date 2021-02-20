@@ -17,6 +17,7 @@ export class Feature {
     title = '';
     description = '';
     expanded = true;
+    samplePassage = '';
     id;
 
     constructor(id) {
@@ -67,6 +68,7 @@ export class Feature {
         newFeature.authors = [...this.authors];
         newFeature.introAuthors = [...this.introAuthors];
         newFeature.notesAuthors = [...this.notesAuthors];
+        newFeature.samplePassage = this.samplePassage;
         return newFeature;
     }
 
@@ -89,6 +91,9 @@ export class Feature {
             }
             if (this.description) {
                 translation.description = this.description;
+            }
+            if (this.samplePassage) {
+                translation.sample_passage = this.samplePassage;
             }
 
             features.push(translation);
