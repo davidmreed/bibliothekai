@@ -42,7 +42,7 @@ export default class DualingListbox extends LightningElement {
     }
 
     set value(val) {
-        this._value = val;
+        this._value = val || [];
         if (this.entities) {
             this.update();
         }
@@ -85,7 +85,7 @@ export default class DualingListbox extends LightningElement {
     moveRight() {
         this.dispatchEvent(
             new CustomEvent('change', {
-                detail: this._value.concat(
+                detail: this.value.concat(
                     Array.from(
                         this.template.querySelector('.entities').selectedOptions
                     ).map((f) => Number(f.value))
@@ -101,7 +101,7 @@ export default class DualingListbox extends LightningElement {
 
         this.dispatchEvent(
             new CustomEvent('change', {
-                detail: this._value.filter((f) => !itemsUnselect.includes(f))
+                detail: this.value.filter((f) => !itemsUnselect.includes(f))
             })
         );
     }
