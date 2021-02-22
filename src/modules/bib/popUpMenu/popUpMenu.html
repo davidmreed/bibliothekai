@@ -25,6 +25,9 @@
             </select>
             <div class="invalid-feedback">{error}</div>
         </div>
+        <div class="spinner-grow spinner-grow-sm mt-2" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
         <template if:true={shouldAllowAdd}>
             <div class="col-2">
                 <button
@@ -35,8 +38,5 @@
                 </button>
             </div>
         </template>
-    </div>
-    <div class="spinner-grow spinner-grow-sm ml-1" role="status">
-        Loading...
     </div>
 </template>
