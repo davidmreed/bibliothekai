@@ -11,8 +11,10 @@ export default class AddVolume extends LightningElement {
     oclc_number = '';
     description = '';
     primaryLanguage = '';
+    link = '';
     addingPerson = false;
     addingPublisher = false;
+    addingSeries = false;
     editingFeature = false;
     @track features = [];
     generalFeatures = new Feature(-1);
@@ -25,7 +27,12 @@ export default class AddVolume extends LightningElement {
     // -------
 
     get showingModal() {
-        return this.addingPerson || this.addingPublisher || this.editingFeature;
+        return (
+            this.addingPerson ||
+            this.addingPublisher ||
+            this.addingSeries ||
+            this.editingFeature
+        );
     }
 
     get showingTranslationModal() {
@@ -37,6 +44,10 @@ export default class AddVolume extends LightningElement {
 
     handlePublisherChange(event) {
         this.publisher = event.detail;
+    }
+
+    handleSeriesChange(event) {
+        this.series = event.detail;
     }
 
     handlePrimaryLanguageChange(event) {
@@ -76,6 +87,8 @@ export default class AddVolume extends LightningElement {
             this.oclc_number = event.target.value;
         } else if (field === 'description') {
             this.description = event.target.value;
+        } else if (field === 'link') {
+            this.link = event.target.value;
         }
     }
 
@@ -112,6 +125,16 @@ export default class AddVolume extends LightningElement {
 
         try {
             let result = await createRecord('volumes', record);
+
+            if (this.link) {
+                let link = {
+                    content_object: getRecordApiUrl('volumes', result.id),
+                    link: this.link,
+                    source: 'Publisher',
+                    resource_type: 'Website'
+                };
+                await createRecord('links', link);
+            }
 
             await Promise.all(
                 this.features
@@ -160,9 +183,18 @@ export default class AddVolume extends LightningElement {
         this.addingPublisher = !this.addingPublisher;
     }
 
+    toggleAddingSeries() {
+        this.addingSeries = !this.addingSeries;
+    }
+
     publisherAdded(event) {
         this.publisher = event.detail;
         this.toggleAddingPublisher();
+    }
+
+    seriesAdded(event) {
+        this.series = event.detail;
+        this.toggleAddingSeries();
     }
 
     toggleDetails(event) {

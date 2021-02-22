@@ -7,7 +7,8 @@ const nameFields = {
     persons: 'sort_name',
     volumes: 'title',
     texts: 'title',
-    languages: 'name'
+    languages: 'name',
+    series: 'name'
 };
 
 function getEndpoint() {

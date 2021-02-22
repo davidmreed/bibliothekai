@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="col-6">
+                                <div class="col">
                                     <bib-pop-up-menu
                                         label-text="Publisher"
                                         class="publisher-popup"
@@ -68,6 +68,20 @@
                                         Please select or create a publisher.
                                     </div>
                                 </div>
+                                <div class="col">
+                                    <bib-pop-up-menu
+                                        label-text="Series"
+                                        class="series-popup"
+                                        entity-name="series"
+                                        allow-add="true"
+                                        onchange={handleSeriesChange}
+                                        onadd={toggleAddingSeries}
+                                        value={series}
+                                    >
+                                    </bib-pop-up-menu>
+                                </div>
+                            </div>
+                            <div class="form-row">
                                 <div class="col">
                                     <label for="date">Publication Date</label>
                                     <input
@@ -107,6 +121,15 @@
                                 value={description}
                                 onchange={handleChange}
                             ></textarea>
+                            <label for="link">Website</label>
+                            <input
+                                class="form-control"
+                                name="link"
+                                placeholder="Optional: link to book on publisher's website"
+                                type="url"
+                                value={link}
+                                onchange={handleChange}
+                            />
                         </div>
                         <button
                             type="submit"
@@ -217,6 +240,18 @@
             Adding New Publisher
         </h4>
         <bib-add-publisher onsave={publisherAdded}></bib-add-publisher>
+    </template>
+    <template if:true={addingSeries}>
+        <h4>
+            <button
+                class="btn btn-outline-secondary mr-3"
+                onclick={toggleAddingSeries}
+            >
+                &lt; Back
+            </button>
+            Adding New Series
+        </h4>
+        <bib-add-series onsave={seriesAdded}> </bib-add-series>
     </template>
     <template if:true={addingPerson}>
         <h4>

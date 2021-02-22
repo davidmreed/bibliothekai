@@ -11,16 +11,7 @@
                 onchange={handleChange}
                 required
             />
-            <div class="invalid-feedback">The publisher name is required.</div>
-            <label for="link">Website</label>
-            <input
-                class="form-control"
-                name="link"
-                placeholder="Optional: link to publisher's website"
-                type="url"
-                value={link}
-                onchange={handleChange}
-            />
+            <div class="invalid-feedback">The series name is required.</div>
             <div class="text-danger">{error}</div>
             <button class="btn btn-primary mt-3" type="submit" onclick={create}>
                 Create
