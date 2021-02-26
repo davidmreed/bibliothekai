@@ -6,7 +6,7 @@ const nameFields = {
     publishers: 'name',
     persons: 'sort_name',
     volumes: 'title',
-    texts: 'title',
+    texts: 'display_name',
     languages: 'name',
     series: 'name'
 };

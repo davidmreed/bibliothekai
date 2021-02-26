@@ -168,8 +168,11 @@ class SourceText(UserCreatedApprovalMixin):
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
 
-    def __str__(self):
+    def display_name(self):
         return f"{self.title} ({self.author})"
+
+    def __str__(self):
+        return self.display_name()
 
     def get_absolute_url(self):
         return reverse("source_text_detail", args=[str(self.id)])
@@ -269,10 +272,7 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 
