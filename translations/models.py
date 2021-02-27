@@ -365,6 +365,8 @@ class Review(UserCreatedMixin):
     content = models.TextField()
     volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
 
+    parent_relationship = "volume"
+
     def readability_rating_string(self):
         return self.get_readability_rating_display() or _("Not Set")
 
