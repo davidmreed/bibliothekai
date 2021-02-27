@@ -51,7 +51,9 @@ class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
 
 
-class PublishedReviewLWCView(LoginRequiredMixin, generic.TemplateView):
+class PublishedReviewLWCView(
+    ApprovalFilteredQuerysetMixin, LoginRequiredMixin, generic.TemplateView
+):
     template_name = "lwc/add_published_review.html"
 
 
@@ -98,7 +100,7 @@ class SourceTextIndexView(generic.ListView):
         )
 
 
-class VolumeDetailView(generic.DetailView):
+class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = Volume
     template_name = "translations/volume_detail.html"
 
@@ -129,9 +131,7 @@ class TranslationDetailView(generic.DetailView):
 
     def get_queryset(self):
         return filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(feature="TR"),
-            self.request.user,
+            Feature, Feature.objects.filter(feature="TR"), self.request.user,
         )
 
 
@@ -159,9 +159,7 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     @approval_filtered_queryset
-    def get_queryset(
-        self,
-    ):
+    def get_queryset(self):
         return Person.objects.filter(
             Q(features__feature__exact="TR") & Q(features__volume__approved=True)
         ).distinct()
@@ -221,10 +219,40 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["translations"] = self.get_translations()
+        context["sourcetexts"] = self.get_sourcetexts()
+        context["publishedreviews"] = self.get_publishedreviews()
+        return context
+
+    def get_translations(self):
+        return filter_queryset_parent_approval(
+            Feature, self.get_object().features.filter(feature="TR"), self.request.user
+        )
+
+    @approval_filtered_queryset
+    def get_publishedreviews(self):
+        return self.get_object().publishedreview_set.all()
+
+    @approval_filtered_queryset
+    def get_sourcetexts(self):
+        return self.get_object().sourcetext_set.all()
+
 
 class UserDetailView(generic.DetailView):
     model = User
     template_name = "translations/user_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reviews"] = self.get_reviews()
+        return context
+
+    def get_reviews(self):
+        return filter_queryset_parent_approval(
+            Review, self.get_object().review_set.all(), self.request.user
+        )
 
 
 class UserReviewDetailView(generic.DetailView):
@@ -277,9 +305,7 @@ class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
         return qs.filter(user=self.request.user)
 
 
-class ReviewDeleteView(
-    LoginRequiredMixin, generic.edit.DeleteView
-):  # TODO: Is this safe? Where is the ownership being checked?
+class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     model = Review
     success_url = reverse_lazy("index")
 
@@ -442,9 +468,13 @@ class FeatureViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
-    queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsOwnerEditOrReadOnly]
+
+    def get_queryset(self):
+        return filter_queryset_parent_approval(
+            Review, Review.objects.all(), self.request.user
+        )
 
 
 class PublishedReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):

@@ -27,10 +27,10 @@
 {% endif %}
 </p>
 {% endif %}
-{% if person.sourcetext_set.count %}
+{% if sourcetexts.count %}
 
 <h2 class="mt-4">Texts</h2>
-{% for s in person.sourcetext_set.all %}
+{% for s in sourcetexts %}
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
@@ -52,10 +52,9 @@
 {% endfor %}
 {% endif %}
 
-{% if person.features.count %}
+{% if translations %}
 <h2 class="mt-4">Translations</h2>
-{% for f in person.features.all %}
-{% if f.source_text and f.feature == 'TR' %}
+{% for f in translations %}
 <div class="card mb-3">
     <div class="card-body">
         <h5 class="card-title">
@@ -72,13 +71,12 @@
         </div>
     </div>
 </div>
-{% endif %}
 {% endfor %}
 {% endif %}
 
-{% if person.publishedreview_set.count %}
+{% if publishedreviews %}
 <h2 class="mt-4">Published Reviews</h2>
-{% for r in person.publishedreview_set.all %}
+{% for r in publishedreviews %}
 {% include "components/published_review.html" with review=r include_volume=True %}
 {% endfor %}
 {% endif %}
