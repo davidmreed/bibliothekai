@@ -277,7 +277,9 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
 
     def form_valid(self, form):
         pk = self.kwargs["vol"]
-        volume = filter_queryset_approval(Volume.objects.filter(id=pk)).first()
+        volume = filter_queryset_approval(
+            Volume.objects.filter(id=pk), self.request.user
+        ).first()
         if volume:
             form.instance.volume_id = volume.id
             form.instance.user = self.request.user
