@@ -1,0 +1,20 @@
+<template>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <template for:each={columns} for:item="col">
+                    <th scope="col" data-col={col.id} onclick={handleColumnClick}>{col.name}</th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={records} for:item="rec">
+                <tr>
+                    <template for:each={columns} for:item="col">
+                        <td>{rec[col.id]}</td>
+                    </template>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>

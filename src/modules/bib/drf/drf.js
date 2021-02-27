@@ -166,8 +166,12 @@ export async function createRecord(entity, record) {
 }
 
 export function sortRecordsByName(a, b) {
-    let nameA = a.name.toUpperCase();
-    let nameB = b.name.toUpperCase();
+    return sortRecordsByProperty(a, b, "name");
+}
+
+export function sortRecordsByProperty(a, b, prop) {
+    let nameA = a[prop].toUpperCase();
+    let nameB = b[prop].toUpperCase();
     if (nameA < nameB) {
         return -1;
     }
@@ -175,4 +179,5 @@ export function sortRecordsByName(a, b) {
         return 1;
     }
     return 0;
+
 }
