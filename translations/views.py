@@ -386,10 +386,13 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
     fields = ["submission"]
     template_name = "translations/user_submission_create.html"
 
+    def get_success_url(self):
+        return reverse_lazy("index")
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         super().form_valid(form)
-        return HttpResponseRedirect(reverse_lazy("index"))
+        return HttpResponseRedirect(self.get_success_url())
 
 
 # API views
