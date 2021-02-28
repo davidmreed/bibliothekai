@@ -114,12 +114,15 @@ class Person(UserCreatedApprovalMixin):
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
 
-    def save(self, *args, **kwargs):
-        self.sort_name = (
+    def generate_sort_name(self):
+        return (
             self.sole_name
             if self.sole_name
             else f"{self.last_name}, {self.first_name} {self.middle_name}".strip()
         )
+
+    def save(self, *args, **kwargs):
+        self.sort_name = self.generate_sort_name()
         super().save(*args, **kwargs)
 
     def clean(self):
@@ -143,7 +146,7 @@ class Person(UserCreatedApprovalMixin):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return self.sort_name
+        return self.generate_sort_name()
 
     def translation_count(self):
         return self.features.filter(feature="TR").count()
@@ -272,7 +275,10 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
