@@ -22,6 +22,7 @@ router.register(
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
+    path("about/", views.AboutView.as_view(), name="about"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
     path("translators/", views.TranslatorIndexView.as_view(), name="translator_index"),
@@ -58,11 +59,7 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path(
-        "volumes/add/",
-        views.VolumeLWCView.as_view(),
-        name="volume_add",
-    ),
+    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

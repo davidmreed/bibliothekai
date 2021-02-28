@@ -51,9 +51,11 @@ class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
 
 
-class PublishedReviewLWCView(
-    ApprovalFilteredQuerysetMixin, LoginRequiredMixin, generic.TemplateView
-):
+class AboutView(generic.TemplateView):
+    template_name = "translations/about.html"
+
+
+class PublishedReviewLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_published_review.html"
 
 
