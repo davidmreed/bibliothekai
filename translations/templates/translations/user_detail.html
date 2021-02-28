@@ -25,7 +25,7 @@
     Reviews
 </h2>
 
-{% for r in user.review_set.all %}
+{% for r in reviews %}
 {% include "components/user_review.html" with review=r abbreviate=True include_volume=True %}
 {% empty %}
 <p>This user hasn't written any reviews yet.</p>
