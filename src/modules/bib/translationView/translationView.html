@@ -1,0 +1,11 @@
+<template>
+    <bib-translation-filter onchange={handleFilterChange}>
+    </bib-translation-filter>
+    <bib-data-table
+        columns={columns}
+        records={records}
+        filter-criteria={filterCriteria}
+        allows-selection={true}
+    >
+    </bib-data-table>
+</template>

@@ -1,0 +1,44 @@
+<template>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                Original Text (<cite>{sourceText.title}</cite>
+                { sourceText.sample_passage_spec })
+            </h5>
+            <p class="card-text">{ sourceText.sample_passage }</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted"
+                >{ sourceText.sample_passage_source }</small
+            >
+        </div>
+    </div>
+    <button
+        class="btn btn-small btn-outline-secondary"
+        onclick={handlePrevious}
+    >
+        Previous
+    </button>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Translation</h5>
+            <p class="card-text">{ translation.sample_passage }</p>
+        </div>
+        <div class="card-footer">
+            <small class="text-muted">
+                <a href="{% url 'volume_detail' feature.volume.id %}">
+                    <cite>{ translation.volume.title }</cite>
+                </a>
+                ({ translation.volume.publisher.name }), trans. {% commalist
+                feature.persons.all %}
+                <a href="{% url 'person_detail' item.id %}">{{
+                    item.full_name
+                }}</a>
+                {% endcommalist %}
+            </small>
+        </div>
+    </div>
+    <button class="btn btn-small btn-outline-secondary" onclick={handleNext}>
+        Next
+    </button>
+</template>
