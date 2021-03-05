@@ -1,7 +1,9 @@
 from django.db.models import Prefetch, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect, Http404
+from django.http.response import HttpResponse
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from rest_framework import viewsets
@@ -67,7 +69,7 @@ class SourceTextDetailView(generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
 
-    def get_translations(self):
+    def get_translations(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Feature,
             Feature.objects.filter(source_text=self.get_object())
@@ -76,7 +78,7 @@ class SourceTextDetailView(generic.DetailView):
             self.request.user,
         )
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["translations"] = self.get_translations()
         return context
@@ -87,7 +89,7 @@ class SourceTextIndexView(generic.ListView):
     paginate_by = 20
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return (
             Person.objects.prefetch_related(
                 Prefetch(
@@ -107,19 +109,19 @@ class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     template_name = "translations/volume_detail.html"
 
     # No filter necessary (approval is at volume level)
-    def get_features(self):
+    def get_features(self) -> QuerySet:
         return self.get_object().features.order_by("source_text", "feature")
 
     # No filter necessary (user reviews are not approved)
-    def get_reviews(self):
+    def get_reviews(self) -> QuerySet:
         return self.get_object().review_set.order_by("-date_created").all()[:5]
 
-    def get_published_reviews(self):
+    def get_published_reviews(self) -> QuerySet:
         return filter_queryset_approval(
             self.get_object().publishedreview_set.all(), self.request.user
         )[:5]
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["features"] = self.get_features()
         context["reviews"] = self.get_reviews()
@@ -131,7 +133,7 @@ class TranslationDetailView(generic.DetailView):
     model = Feature
     template_name = "translations/translation_detail.html"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Feature, Feature.objects.filter(feature="TR"), self.request.user,
         )
@@ -141,7 +143,7 @@ class VolumeIndexView(generic.ListView):
     template_name = "translations/volume_index.html"
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Volume.objects.order_by("published_date")
 
 
@@ -150,7 +152,7 @@ class AuthorIndexView(generic.ListView):
     paginate_by = 50
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Person.objects.filter(
             Q(sourcetext__title__isnull=False) & Q(sourcetext__approved=True)
         ).distinct()
@@ -161,7 +163,7 @@ class TranslatorIndexView(generic.ListView):
     paginate_by = 50
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Person.objects.filter(
             Q(features__feature__exact="TR") & Q(features__volume__approved=True)
         ).distinct()
@@ -172,7 +174,7 @@ class ReviewIndexView(generic.ListView):
     template_name = "translations/review_list.html"
     paginate_by = 10
 
-    def get_volume(self):
+    def get_volume(self) -> Volume:
         volume_id = self.kwargs["vol"]
         volume = filter_queryset_approval(
             Volume.objects.filter(id=volume_id), self.request.user
@@ -182,13 +184,13 @@ class ReviewIndexView(generic.ListView):
 
         return volume
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["volume"] = self.get_volume()
         return context
 
     # No filter necessary (user reviews are not approved)
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Review.objects.filter(volume=self.get_volume())
 
 
@@ -197,7 +199,7 @@ class PublishedReviewIndexView(generic.ListView):
     template_name = "translations/publishedreview_list.html"
     paginate_by = 10
 
-    def get_volume(self):
+    def get_volume(self) -> Volume:
         volume_id = self.kwargs["vol"]
         volume = filter_queryset_approval(
             Volume.objects.filter(id=volume_id), self.request.user
@@ -207,13 +209,13 @@ class PublishedReviewIndexView(generic.ListView):
 
         return volume
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["volume"] = self.get_volume()
         return context
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return PublishedReview.objects.filter(volumes=self.get_volume())
 
 
@@ -221,24 +223,24 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = Person
     template_name = "translations/person_detail.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["translations"] = self.get_translations()
         context["sourcetexts"] = self.get_sourcetexts()
         context["publishedreviews"] = self.get_publishedreviews()
         return context
 
-    def get_translations(self):
+    def get_translations(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Feature, self.get_object().features.filter(feature="TR"), self.request.user
         )
 
     @approval_filtered_queryset
-    def get_publishedreviews(self):
+    def get_publishedreviews(self) -> QuerySet:
         return self.get_object().publishedreview_set.all()
 
     @approval_filtered_queryset
-    def get_sourcetexts(self):
+    def get_sourcetexts(self) -> QuerySet:
         return self.get_object().sourcetext_set.all()
 
 
@@ -246,12 +248,12 @@ class UserDetailView(generic.DetailView):
     model = User
     template_name = "translations/user_detail.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["reviews"] = self.get_reviews()
         return context
 
-    def get_reviews(self):
+    def get_reviews(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Review, self.get_object().review_set.all(), self.request.user
         )
@@ -277,7 +279,7 @@ class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
         "content",
     ]
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponse:
         pk = self.kwargs["vol"]
         volume = filter_queryset_approval(
             Volume.objects.filter(id=pk), self.request.user
@@ -304,7 +306,7 @@ class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     ]
     success_url = reverse_lazy("index")  # TODO: redirect back to the Volume
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
         return qs.filter(user=self.request.user)
 
@@ -313,7 +315,7 @@ class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
     model = Review
     success_url = reverse_lazy("index")
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         qs = super().get_queryset()
         return qs.filter(user=self.request.user)
 
@@ -321,7 +323,7 @@ class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
 class SearchView(generic.TemplateView):
     template_name = "translations/search.html"
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
 
         user_query = self.request.GET.get("query")
@@ -388,10 +390,10 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
     fields = ["submission"]
     template_name = "translations/user_submission_create.html"
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         return reverse_lazy("index")
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponse:
         form.instance.user = self.request.user
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
@@ -468,7 +470,7 @@ class FeatureViewSet(viewsets.ModelViewSet):
     ]
     queryset = Feature.objects.none()  # Required for DjangoModelPermissions
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Feature, Feature.objects.all(), self.request.user
         )
@@ -478,7 +480,7 @@ class ReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [IsOwnerEditOrReadOnly]
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return filter_queryset_parent_approval(
             Review, Review.objects.all(), self.request.user
         )
@@ -492,7 +494,7 @@ class PublishedReviewViewSet(AutofillUserFieldMixin, viewsets.ModelViewSet):
     queryset = PublishedReview.objects.none()  # Required for DjangoModelPermissions
 
     @approval_filtered_queryset
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return PublishedReview.objects.all()
 
 
@@ -506,7 +508,7 @@ class LinkViewSet(viewsets.ModelViewSet):
     def list(self, request):
         raise MethodNotAllowed("GET", "A record id is required for this path.")
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         # TODO: This doesn't filter by parent approval state,
         # because it's a generic relation.
         return Link.objects.all()
@@ -522,7 +524,7 @@ class AlternateNameViewSet(viewsets.ModelViewSet):
     def list(self, request):
         raise MethodNotAllowed("GET", "A record id is required for this path.")
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         # TODO: This doesn't filter by parent approval state,
         # because it's a generic relation.
 

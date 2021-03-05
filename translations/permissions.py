@@ -1,9 +1,11 @@
-from django.db.models import Q
+from typing import Callable
+from django.db.models import Q, QuerySet
 from rest_framework import permissions
+from users.models import User
 
 
 class CreateChildOfUnapprovedParent(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -23,7 +25,7 @@ class CreateChildOfUnapprovedParent(permissions.BasePermission):
 
 
 class IsAuthenticatedCreateOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
+    def has_permission(self, request, view) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -36,7 +38,7 @@ class IsAuthenticatedCreateOrReadOnly(permissions.BasePermission):
 class IsOwnerEditOrReadOnly(permissions.BasePermission):
     """Custom permission to only allow owners of an object to edit it."""
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj) -> bool:
         if request.method in permissions.SAFE_METHODS:
             return True
 
@@ -55,7 +57,7 @@ class IsOwnerEditOrReadOnly(permissions.BasePermission):
         return False
 
 
-def filter_queryset_approval(qs, user):
+def filter_queryset_approval(qs, user: User) -> bool:
     if user.is_superuser:
         return qs
 
@@ -65,7 +67,7 @@ def filter_queryset_approval(qs, user):
     return qs.filter(Q(approved=True))
 
 
-def filter_queryset_parent_approval(model, qs, user):
+def filter_queryset_parent_approval(model, qs: QuerySet, user: User) -> QuerySet:
     if user.is_superuser:
         return qs
 
@@ -80,7 +82,7 @@ def filter_queryset_parent_approval(model, qs, user):
         return qs.filter(Q(**{f"{parent_relationship}__approved": True}))
 
 
-def approval_filtered_queryset(f):
+def approval_filtered_queryset(f: Callable[[], QuerySet]) -> Callable:
     def filter_qs(self):
         request_user = self.request.user
         return filter_queryset_approval(f(self), request_user)
@@ -89,7 +91,7 @@ def approval_filtered_queryset(f):
 
 
 class ApprovalFilteredQuerysetMixin:
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         if hasattr(self, "model"):
             # View class
             return filter_queryset_approval(self.model.objects.all(), self.request.user)

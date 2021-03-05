@@ -16,7 +16,7 @@ class UserUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
     template_name = "translations/user_update.html"
     success_url = reverse_lazy("index")
 
-    def get_object(self):
+    def get_object(self) -> User:
         return User.objects.get(id=self.request.user.id)
 
 

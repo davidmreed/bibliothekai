@@ -1,3 +1,4 @@
+from typing import Any
 from rest_framework import serializers
 from generic_relations.relations import GenericRelatedField
 from translations.models import (
@@ -18,12 +19,12 @@ from translations.models import (
 
 
 class ChoiceField(serializers.ChoiceField):
-    def to_representation(self, obj):
+    def to_representation(self, obj: Any) -> str:
         if obj == "" and self.allow_blank:
             return obj
         return self._choices.get(obj, "")
 
-    def to_internal_value(self, data):
+    def to_internal_value(self, data: str) -> Any:
         # To support inserts with the value
         if data == "" and self.allow_blank:
             return ""

@@ -1,3 +1,4 @@
+from typing import Optional
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -12,7 +13,7 @@ KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
 
 class AuthorNameMixin:
-    def author_string(self):
+    def author_string(self) -> str:
         authors = list(self.persons.all())
         if len(authors) < 3:
             return " and ".join(str(a) for a in authors)
@@ -66,7 +67,7 @@ class Link(models.Model):
     source = models.CharField(max_length=255)
     resource_type = models.TextField(choices=RESOURCE_TYPE_CHOICES)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Link {self.link}"
 
 
@@ -87,7 +88,7 @@ class AlternateName(models.Model):
         max_length=2, choices=ALTERNATE_NAME_TYPE_CHOICES
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Alternate Name {self.name}"
 
 
@@ -97,7 +98,7 @@ class Language(models.Model):
 
     name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -133,7 +134,7 @@ class Person(UserCreatedApprovalMixin):
                 )
             )
 
-    def full_name(self):
+    def full_name(self) -> str:
         if self.sole_name:
             return self.sole_name
 
@@ -142,13 +143,13 @@ class Person(UserCreatedApprovalMixin):
 
         return f"{self.first_name} {self.last_name}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.sort_name
 
-    def translation_count(self):
+    def translation_count(self) -> int:
         return self.features.filter(feature="TR").count()
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("person_detail", args=[str(self.id)])
 
 
@@ -168,16 +169,16 @@ class SourceText(UserCreatedApprovalMixin):
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
 
-    def display_name(self):
+    def display_name(self) -> str:
         return f"{self.title} ({self.author})"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.display_name()
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("source_text_detail", args=[str(self.id)])
 
-    def get_original_language_title(self):
+    def get_original_language_title(self) -> Optional[str]:
         olt = self.alternate_names.filter(alternate_name_type="OR")
 
         if olt:
@@ -192,7 +193,7 @@ class Publisher(UserCreatedApprovalMixin):
     description = models.TextField(blank=True)
     links = GenericRelation(Link)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -203,7 +204,7 @@ class Series(UserCreatedApprovalMixin):
 
     name = models.CharField(max_length=255)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 
@@ -220,16 +221,16 @@ class Volume(UserCreatedApprovalMixin):
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         if self.published_date:
             return f"{self.title} ({self.publisher}, {self.published_date.year})"
 
         return self.title
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("volume_detail", args=[str(self.id)])
 
-    def oclc_link(self):
+    def oclc_link(self) -> Optional[str]:
         if self.oclc_number:
             return f"https://www.worldcat.org/oclc/{self.oclc_number}"
         elif self.isbn:
@@ -238,7 +239,7 @@ class Volume(UserCreatedApprovalMixin):
                 "&qt=advanced&dblist=638"
             )
 
-    def bookshop_link(self):
+    def bookshop_link(self) -> Optional[str]:
         if self.isbn:
             return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '').replace(' ', '')}"
 
@@ -318,7 +319,7 @@ class Feature(models.Model, AuthorNameMixin):
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
 
-    def display_title(self):
+    def display_title(self) -> str:
         if self.title:
             return self.title
         if self.source_text:
@@ -326,18 +327,18 @@ class Feature(models.Model, AuthorNameMixin):
 
         return self.get_feature_display()
 
-    def has_accompanying_feature(self, feature_type):
+    def has_accompanying_feature(self, feature_type) -> bool:
         return (
             Feature.objects.filter(volume=self.volume, feature=feature_type).count() > 0
         )
 
-    def has_accompanying_introduction(self):
+    def has_accompanying_introduction(self) -> bool:
         return self.has_accompanying_feature("IN")
 
-    def has_accompanying_notes(self):
+    def has_accompanying_notes(self) -> bool:
         return self.has_accompanying_feature("NT")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"{self.display_title()} ({self.get_feature_display().lower()} by "
             f"{self.author_string()})"
@@ -367,16 +368,16 @@ class Review(UserCreatedMixin):
 
     parent_relationship = "volume"
 
-    def readability_rating_string(self):
+    def readability_rating_string(self) -> str:
         return self.get_readability_rating_display() or _("Not Set")
 
-    def closeness_rating_string(self):
+    def closeness_rating_string(self) -> str:
         return self.get_closeness_rating_display() or _("Not Set")
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("user_review_detail", args=[str(self.id)])
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"User Review of {self.volume.title} by {self.user.display_name}"
 
 
@@ -391,13 +392,13 @@ class PublishedReview(AuthorNameMixin, UserCreatedApprovalMixin):
     published_date = models.DateField(null=True, blank=True)
     links = GenericRelation(Link)
 
-    def volume_string(self):
+    def volume_string(self) -> str:
         return ", ".join(v.title for v in self.volumes.all())
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Review of {self.volume_string()} by {self.author_string()}"
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("published_review_detail", args=[str(self.id)])
 
 
