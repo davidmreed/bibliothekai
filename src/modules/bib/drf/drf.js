@@ -166,18 +166,19 @@ export async function createRecord(entity, record) {
 }
 
 export function sortRecordsByName(a, b) {
-    return sortRecordsByProperty(a, b, "name");
+    return sortRecordsByProperty('name', true, a, b);
 }
 
-export function sortRecordsByProperty(a, b, prop) {
+export function sortRecordsByProperty(prop, ascending, a, b) {
     let nameA = a[prop].toUpperCase();
     let nameB = b[prop].toUpperCase();
+    const factor = ascending ? 1 : -1;
+
     if (nameA < nameB) {
-        return -1;
+        return -1 * factor;
     }
     if (nameA > nameB) {
-        return 1;
+        return 1 * factor;
     }
     return 0;
-
 }

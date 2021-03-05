@@ -61,6 +61,10 @@ class VolumeLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_volume.html"
 
 
+class TranslationsLWCView(generic.TemplateView):
+    template_name = "lwc/translation_view.html"
+
+
 class SourceTextDetailView(generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"

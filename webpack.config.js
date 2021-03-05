@@ -4,7 +4,8 @@ const webpack = require('webpack');
 module.exports = {
     entry: {
         addPublishedReview: './src/addPublishedReview.js',
-        addVolume: './src/addVolume.js'
+        addVolume: './src/addVolume.js',
+        translationView: './src/translationView.js'
     },
     output: {
         filename: '[name].js'

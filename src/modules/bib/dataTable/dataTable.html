@@ -2,16 +2,40 @@
     <table class="table table-striped">
         <thead>
             <tr>
+                <template if:true={allowsSelection}>
+                    <th scope="col"></th>
+                </template>
                 <template for:each={columns} for:item="col">
-                    <th scope="col" data-col={col.id} onclick={handleColumnClick}>{col.name}</th>
+                    <th
+                        scope="col"
+                        key={col.id}
+                        data-col={col.id}
+                        onclick={handleColumnClick}
+                    >
+                        {col.name}
+                        <template if:true={col.isSortedAscending}> ▲ </template>
+                        <template if:true={col.isSortedDescending}>
+                            ▼
+                        </template>
+                    </th>
                 </template>
             </tr>
         </thead>
         <tbody>
-            <template for:each={records} for:item="rec">
-                <tr>
-                    <template for:each={columns} for:item="col">
-                        <td>{rec[col.id]}</td>
+            <template for:each={_displayedRecords} for:item="rec">
+                <tr key={rec.record.id}>
+                    <template if:true={allowsSelection}>
+                        <td>
+                            <input
+                                type="checkbox"
+                                data-record={rec.id}
+                                onchange={handleSelectionChange}
+                                value={rec.selected}
+                            />
+                        </td>
+                    </template>
+                    <template for:each={rec.values} for:item="entry">
+                        <td key={entry.key}>{entry.value}</td>
                     </template>
                 </tr>
             </template>

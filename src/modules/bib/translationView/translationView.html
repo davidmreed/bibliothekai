@@ -1,11 +1,14 @@
 <template>
-    <bib-translation-filter onchange={handleFilterChange}>
-    </bib-translation-filter>
+    <!-- <bib-translation-filter onchange={handleFilterChange}> -->
+    <!-- </bib-translation-filter> -->
     <bib-data-table
         columns={columns}
-        records={records}
+        records={_records}
         filter-criteria={filterCriteria}
-        allows-selection={true}
+        allows-selection={allowsSelection}
+        selected-ids={selectedIds}
+        onsort={handleSort}
+        onselectionchange={handleSelectionChange}
     >
     </bib-data-table>
 </template>
