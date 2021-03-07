@@ -35,7 +35,31 @@
                         </td>
                     </template>
                     <template for:each={rec.values} for:item="entry">
-                        <td key={entry.key}>{entry.value}</td>
+                        <td key={entry.key}>
+                            <template if:true={entry.isStringType}>
+                                {entry.value}
+                            </template>
+                            <template if:true={entry.isHyperlinkType}>
+                                <a href={entry.href}>{entry.value}</a>
+                            </template>
+                            <template if:true={entry.isHyperlinkListType}>
+                                <bib-comma-link-list values={entry.value}>
+                                </bib-comma-link-list>
+                            </template>
+                            <template if:true={entry.isYearType}>
+                                {entry.value}
+                            </template>
+                            <template if:true={entry.isPillListType}>
+                                <template
+                                    for:each={entry.value}
+                                    for:item="pill"
+                                >
+                                    <span key={pill.id} class={pill.pillClass}
+                                        >{pill.value}</span
+                                    >
+                                </template>
+                            </template>
+                        </td>
                     </template>
                 </tr>
             </template>

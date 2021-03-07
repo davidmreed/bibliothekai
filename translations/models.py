@@ -220,6 +220,13 @@ class Volume(UserCreatedApprovalMixin):
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
 
+    # Additional features
+
+    feature_maps = models.BooleanField(default=False)
+    feature_index = models.BooleanField(default=False)
+    feature_bibliography = models.BooleanField(default=False)
+    feature_glossary = models.BooleanField(default=False)
+
     def __str__(self):
         if self.published_date:
             return f"{self.title} ({self.publisher}, {self.published_date.year})"
@@ -272,7 +279,10 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 

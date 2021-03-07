@@ -1,6 +1,83 @@
 <template>
-    <!-- <bib-translation-filter onchange={handleFilterChange}> -->
-    <!-- </bib-translation-filter> -->
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-introduction"
+            data-feature="introduction"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-introduction"
+            >Introduction</label
+        >
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-notes"
+            data-feature="notes"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-notes">Notes</label>
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-glossary"
+            data-feature="glossary"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-glossary"
+            >Glossary</label
+        >
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-index"
+            data-feature="index"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-index">Index</label>
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-bibliography"
+            data-feature="bibliography"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-bibliography"
+            >Bibliography</label
+        >
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-maps"
+            data-feature="maps"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-maps">Maps</label>
+    </div>
+    <div class="custom-control custom-switch">
+        <input
+            type="checkbox"
+            class="custom-control-input"
+            id="checkbox-facing-text"
+            data-feature="facingtext"
+            onchange={handleFilterChange}
+        />
+        <label class="custom-control-label" for="checkbox-facing-text"
+            >Facing Text</label
+        >
+    </div>
+
     <bib-data-table
         columns={columns}
         records={_records}

@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import { sortRecordsByProperty } from 'bib/drf';
+import { sortRecordsByProperty, getNestedProp, getRecordUiUrl } from 'bib/drf';
 
 export class FilterCriteria {
     constructor(filters, sortColumn, sortAscending) {
@@ -12,8 +12,68 @@ export class FilterCriteria {
     sortAscending;
 }
 
+export const COLUMN_STRING_TYPE = 'string';
+export const COLUMN_HYPERLINK_TYPE = 'link';
+export const COLUMN_HYPERLINK_LIST_TYPE = 'link-list';
+export const COLUMN_PILL_LIST_TYPE = 'pill-list';
+export const COLUMN_YEAR_TYPE = 'year';
+
 function sortRecords(sortColumn, sortAscending, a, b) {
     return sortRecordsByProperty(sortColumn, sortAscending, a.record, b.record);
+}
+
+function makeRecordValueEntry(c, record) {
+    let value;
+    let href;
+
+    switch (c.valueType) {
+        case COLUMN_HYPERLINK_LIST_TYPE:
+            // `value` is an array of objects, each of which has an `id`, a `href`, and a `name`.
+            value = getNestedProp(record, c.id).map((e) => ({
+                id: getNestedProp(e, c.targetEntityId),
+                href: getRecordUiUrl(
+                    c.targetEntity,
+                    getNestedProp(e, c.targetEntityId)
+                ),
+                name: getNestedProp(e, c.targetEntityName)
+            }));
+            break;
+        case COLUMN_PILL_LIST_TYPE:
+            // `value` is an array, whose items each have an `id`, `pillClass` and a `value`.
+            // `c`, the column, must have a mapping between string values in the record
+            // and pill colors.
+            // The inbound property value is an array of strings.
+            value = getNestedProp(record, c.id).map((i) => ({
+                id: i,
+                value: i,
+                pillClass: `badge badge-pill badge-${c.pills[i]} mr-1 mb-1`
+            }));
+            break;
+        case COLUMN_YEAR_TYPE:
+            // `value` is a year derived from an ISO8601 date.
+            value = getNestedProp(record, c.id).substring(0, 4);
+            break;
+        case COLUMN_HYPERLINK_TYPE:
+            href = getRecordUiUrl(
+                c.targetEntity,
+                getNestedProp(record, c.targetEntityId)
+            );
+        // fall through
+        default:
+            value = getNestedProp(record, c.id);
+            break;
+    }
+
+    return {
+        key: c.id,
+        value: value,
+        href: href,
+        isStringType: c.valueType === COLUMN_STRING_TYPE,
+        isYearType: c.valueType === COLUMN_YEAR_TYPE,
+        isHyperlinkType: c.valueType === COLUMN_HYPERLINK_TYPE,
+        isHyperlinkListType: c.valueType === COLUMN_HYPERLINK_LIST_TYPE,
+        isPillListType: c.valueType === COLUMN_PILL_LIST_TYPE
+    };
 }
 
 export default class DataTable extends LightningElement {
@@ -33,22 +93,25 @@ export default class DataTable extends LightningElement {
     set columns(value) {
         let that = this;
 
-        this._columns = value.map((c) => ({
-            get isSortedAscending() {
-                return (
-                    that.filterCriteria.sortColumn === this.id &&
-                    that.filterCriteria.sortAscending
-                );
-            },
-            get isSortedDescending() {
-                return (
-                    that.filterCriteria.sortColumn === this.id &&
-                    !that.filterCriteria.sortAscending
-                );
-            },
-            id: c.id,
-            name: c.name
-        }));
+        this._columns = value.map((c) =>
+            Object.assign(
+                {
+                    get isSortedAscending() {
+                        return (
+                            that.filterCriteria.sortColumn === this.id &&
+                            that.filterCriteria.sortAscending
+                        );
+                    },
+                    get isSortedDescending() {
+                        return (
+                            that.filterCriteria.sortColumn === this.id &&
+                            !that.filterCriteria.sortAscending
+                        );
+                    }
+                },
+                c
+            )
+        );
     }
 
     @api
@@ -61,16 +124,14 @@ export default class DataTable extends LightningElement {
         if (value) {
             this._records = value.map((r) => ({
                 get values() {
-                    return that.columns.map((c) => ({
-                        key: c.id,
-                        value: this.record[c.id]
-                    }));
+                    return that.columns.map((c) => makeRecordValueEntry(c, r));
                 },
                 get selected() {
                     return (that.selectedIds || []).includes(r.id);
                 },
                 record: r
             }));
+
             this.update();
         } else {
             this._records = [];
@@ -89,12 +150,18 @@ export default class DataTable extends LightningElement {
 
     update() {
         if (this.filterCriteria) {
-            this._displayedRecords = this.records.filter((f) =>
-                this.filterCriteria.filters.reduce(
-                    (prev, cur) => prev && f[cur.column] === cur.value,
-                    true
-                )
-            );
+            if (this.filterCriteria.filters) {
+                this._displayedRecords = this.records.filter((f) =>
+                    this.filterCriteria.filters.reduce(
+                        (prev, cur) =>
+                            prev &&
+                            getNestedProp(f.record, cur.column) === cur.value,
+                        true
+                    )
+                );
+            } else {
+                this._displayedRecords = [...this.records];
+            }
             this._displayedRecords.sort(
                 sortRecords.bind(
                     undefined,
@@ -122,16 +189,26 @@ export default class DataTable extends LightningElement {
 
     handleColumnClick(event) {
         let clickedColId = event.target.dataset.col;
-        this.dispatchEvent(
-            new CustomEvent('sort', {
-                detail: {
-                    sortColumn: clickedColId,
-                    sortAscending:
-                        this.filterCriteria.sortColumn === clickedColId
-                            ? !this.filterCriteria.sortAscending
-                            : true
-                }
-            })
-        );
+        let clickedColumn = this.columns.filter(
+            (c) => c.id === clickedColId
+        )[0];
+
+        if (
+            clickedColumn.valueType === COLUMN_STRING_TYPE ||
+            clickedColumn.valueType === COLUMN_HYPERLINK_TYPE ||
+            clickedColumn.valueType === COLUMN_YEAR_TYPE
+        ) {
+            this.dispatchEvent(
+                new CustomEvent('sort', {
+                    detail: {
+                        sortColumn: clickedColId,
+                        sortAscending:
+                            this.filterCriteria.sortColumn === clickedColId
+                                ? !this.filterCriteria.sortAscending
+                                : true
+                    }
+                })
+            );
+        }
     }
 }

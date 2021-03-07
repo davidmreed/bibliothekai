@@ -46,20 +46,24 @@ class LinkSerializer(serializers.ModelSerializer):
     content_object = GenericRelatedField(
         {
             Volume: serializers.HyperlinkedRelatedField(
-                queryset=Volume.objects.all(), view_name="volume-detail",
+                queryset=Volume.objects.all(),
+                view_name="volume-detail",
             ),
             PublishedReview: serializers.HyperlinkedRelatedField(
                 queryset=PublishedReview.objects.all(),
                 view_name="published-review-detail",
             ),
             Person: serializers.HyperlinkedRelatedField(
-                queryset=Person.objects.all(), view_name="person-detail",
+                queryset=Person.objects.all(),
+                view_name="person-detail",
             ),
             SourceText: serializers.HyperlinkedRelatedField(
-                queryset=SourceText.objects.all(), view_name="text-detail",
+                queryset=SourceText.objects.all(),
+                view_name="text-detail",
             ),
             Publisher: serializers.HyperlinkedRelatedField(
-                queryset=Publisher.objects.all(), view_name="publisher-detail",
+                queryset=Publisher.objects.all(),
+                view_name="publisher-detail",
             ),
         }
     )
@@ -74,10 +78,12 @@ class AlternateNameSerializer(serializers.ModelSerializer):
     content_object = GenericRelatedField(
         {
             Person: serializers.HyperlinkedRelatedField(
-                queryset=Person.objects.all(), view_name="person-detail",
+                queryset=Person.objects.all(),
+                view_name="person-detail",
             ),
             SourceText: serializers.HyperlinkedRelatedField(
-                queryset=SourceText.objects.all(), view_name="text-detail",
+                queryset=SourceText.objects.all(),
+                view_name="text-detail",
             ),
         }
     )
@@ -89,12 +95,19 @@ class AlternateNameSerializer(serializers.ModelSerializer):
 
 class PersonSerializer(serializers.ModelSerializer):
     links = serializers.HyperlinkedRelatedField(
-        many=True, required=False, read_only=True, view_name="link-detail",
+        many=True,
+        required=False,
+        read_only=True,
+        view_name="link-detail",
     )
     alternate_names = serializers.HyperlinkedRelatedField(
-        many=True, required=False, read_only=True, view_name="alternate-name-detail",
+        many=True,
+        required=False,
+        read_only=True,
+        view_name="alternate-name-detail",
     )
     sort_name = serializers.ReadOnlyField()
+    full_name = serializers.ReadOnlyField()
 
     class Meta:
         model = Person
@@ -105,6 +118,7 @@ class PersonSerializer(serializers.ModelSerializer):
             "middle_name",
             "sole_name",
             "sort_name",
+            "full_name",
             "description",
             "links",
             "alternate_names",
@@ -123,13 +137,18 @@ class SourceTextSerializer(serializers.ModelSerializer):
         many=True, read_only=True, required=False, view_name="link-detail"
     )
     alternate_names = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, required=False, view_name="alternate-name-detail",
+        many=True,
+        read_only=True,
+        required=False,
+        view_name="alternate-name-detail",
     )
     author = serializers.HyperlinkedRelatedField(
-        queryset=Person.objects.all(), view_name="person-detail",
+        queryset=Person.objects.all(),
+        view_name="person-detail",
     )
     language = serializers.HyperlinkedRelatedField(
-        queryset=Language.objects.all(), view_name="language-detail",
+        queryset=Language.objects.all(),
+        view_name="language-detail",
     )
 
     display_name = serializers.CharField(read_only=True)
@@ -236,6 +255,56 @@ class VolumeSerializer(serializers.ModelSerializer):
             "description",
             "features",
             "links",
+            "feature_maps",
+            "feature_index",
+            "feature_bibliography",
+            "feature_glossary",
+        ]
+
+
+class TranslationSerializer(serializers.ModelSerializer):
+    """A special kind of read-only FeatureSerializer that includes data about the parent volume"""
+
+    kind = ChoiceField(choices=KIND_CHOICES, default="Prose", required=False)
+    feature = ChoiceField(choices=Feature.FEATURE_CHOICES)
+    persons = PersonSerializer(read_only=True, many=True)
+    volume = VolumeSerializer(read_only=True)
+    text = serializers.HyperlinkedRelatedField(
+        source="source_text",
+        queryset=SourceText.objects.all(),
+        view_name="text-detail",
+        required=False,
+    )
+
+    language = serializers.HyperlinkedRelatedField(
+        queryset=Language.objects.all(), view_name="language-detail"
+    )
+    partial = serializers.BooleanField(default=False)
+    description = serializers.CharField(required=False)
+    title = serializers.CharField(required=False, max_length=255)
+    has_facing_text = serializers.BooleanField(default=False)
+    feature_introduction = serializers.BooleanField(
+        source="has_accompanying_introduction"
+    )
+    feature_notes = serializers.BooleanField(source="has_accompanying_notes")
+
+    class Meta:
+        model = Feature
+        fields = [
+            "id",
+            "volume",
+            "text",
+            "feature",
+            "persons",
+            "language",
+            "title",
+            "kind",
+            "partial",
+            "description",
+            "has_facing_text",
+            "sample_passage",
+            "feature_introduction",
+            "feature_notes",
         ]
 
 
