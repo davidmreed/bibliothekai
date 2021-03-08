@@ -59,7 +59,7 @@ export default class TranslationView extends LightningElement {
         { id: 'publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
         { id: 'volume.published_date', name: 'Date', valueType: 'year' },
         { id: 'language.name', name: 'Language', valueType: 'string' },
-        { id: 'kind', name: 'Type', valueType: 'string' },
+        { id: 'kind', name: 'Format', valueType: 'string' },
         {
             id: 'featureNames',
             name: 'Features',
@@ -78,6 +78,8 @@ export default class TranslationView extends LightningElement {
     selectedIds = [];
     allowsSelection = false;
     showingFilters = false;
+    selectedFilterFormat = '';
+    selectedFilterLanguage = '';
     records = [];
     error;
 
@@ -91,10 +93,11 @@ export default class TranslationView extends LightningElement {
         if (error) {
             this.error = error;
         }
+        this.template.querySelector('.spinner-grow').classList.add('d-none');
     }
 
     @track
-    filterCriteria = new FilterCriteria([], 'volume.title', true);
+    filterCriteria = new FilterCriteria([], 'volume.published_date', false);
 
     get hasSelection() {
         return !!this.selectedIds.length;
@@ -102,6 +105,20 @@ export default class TranslationView extends LightningElement {
 
     get filterTitle() {
         return this.showingFilters ? 'Hide Filters' : 'Show Filters';
+    }
+
+    get availableLanguages() {
+        let seen = new Set();
+        let languages = [];
+
+        this.records.forEach(r => {
+            if (!seen.has(r.language.id)) {
+                languages.push(r.language);
+                seen.add(r.language.id);
+            }
+        });
+
+        return languages;
     }
 
     renderedCallback() {
@@ -131,8 +148,22 @@ export default class TranslationView extends LightningElement {
     }
 
     handleFilterChange(event) {
-        let feature = `feature_${event.target.dataset.feature}`;
-        let required = event.target.checked;
+        let feature;
+        let required;
+
+        if (event.target.dataset.feature) {
+            // This is a feature checkbox
+            feature = `feature_${event.target.dataset.feature}`;
+            required = event.target.checked;
+        } else if (event.target.name === "format") {
+            feature = "kind";
+            required = this.selectedFilterFormat = event.target.value;
+        } else if (event.target.name === "language") {
+            feature = "language.id";
+            this.selectedFilterLanguage = event.target.value;
+            required = Number(this.selectedFilterLanguage);
+            console.log(`Language feature: ${required}`);
+        }
 
         this.filterCriteria = new FilterCriteria(
             this.filterCriteria.filters
