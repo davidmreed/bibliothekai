@@ -42,7 +42,7 @@ export default class AddVolume extends LightningElement {
     // Lifecycle Handlers
     // ------------------
 
-    connectedCallback() {
+    async connectedCallback() {
         // Start async loads of data from DRF to improve responsiveness.
         getRecordsFromApi("persons");
         getRecordsFromApi("texts");
