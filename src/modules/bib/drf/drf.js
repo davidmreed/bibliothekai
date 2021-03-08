@@ -115,7 +115,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-async function getRecordsFromApi(entityName) {
+export async function getRecordsFromApi(entityName) {
     let result = await fetch(new Request(`${getApiEndpoint()}/${entityName}/`));
     if (result.ok) {
         let data = await result.json();
