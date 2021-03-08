@@ -1,7 +1,7 @@
 <template>
     <template iterator:it={values}>
         <span key={it.value.id}>
-            <span if:true={it.last}> and </span>
+            <span if:true={it.last}><span if:false={it.first}> and </span></span>
             <a href={it.value.href}>{it.value.name}</a>
             <span if:false={it.last}>
                 <span if:true={useComma}>, </span>
