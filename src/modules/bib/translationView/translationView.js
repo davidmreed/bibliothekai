@@ -80,6 +80,7 @@ export default class TranslationView extends LightningElement {
     showingFilters = false;
     selectedFilterFormat = '';
     selectedFilterLanguage = '';
+    selectedFilterCoverage = '';
     records = [];
     error;
 
@@ -162,12 +163,18 @@ export default class TranslationView extends LightningElement {
             feature = "language.id";
             this.selectedFilterLanguage = event.target.value;
             required = Number(this.selectedFilterLanguage);
+        } else if (event.target.name === "coverage") {
+            feature = "partial"
+            this.selectedFilterCoverage = event.target.value;
+            if (this.selectedFilterCoverage) {
+                required = this.selectedFilterCoverage === "Partial";
+            }
         }
 
         this.filterCriteria = new FilterCriteria(
             this.filterCriteria.filters
                 .filter((f) => f.column !== feature)
-                .concat(required ? [{ column: feature, value: required }] : []),
+                .concat((required || typeof required === "boolean") ? [{ column: feature, value: required }] : []),
             this.filterCriteria.sortColumn,
             this.filterCriteria.sortAscending
         );

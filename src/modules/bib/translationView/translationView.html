@@ -1,20 +1,11 @@
 <template>
     <h2 class="mt-4">
         Translations
-        <div
-            class="float-right btn-group btn-group-sm"
-            role="group"
-            aria-label="Translation actions"
-        >
-            <button
-                class="btn btn-outline-secondary"
-                onclick={handleToggleFilters}
-            >
+        <div class="float-right btn-group btn-group-sm" role="group" aria-label="Translation actions">
+            <button class="btn btn-outline-secondary" onclick={handleToggleFilters}>
                 {filterTitle}
             </button>
-            <a class="btn btn-outline-primary" href="/volumes/add"
-                >Add Translation</a
-            >
+            <a class="btn btn-outline-primary" href="/volumes/add">Add Translation</a>
         </div>
     </h2>
 
@@ -27,125 +18,58 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-introduction"
-                            data-feature="introduction"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-introduction"
-                            >Introduction</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-introduction"
+                            data-feature="introduction" onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-introduction">Introduction</label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-notes"
-                            data-feature="notes"
-                            onchange={handleFilterChange}
-                        />
-                        <label class="custom-control-label" for="checkbox-notes"
-                            >Notes</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-notes" data-feature="notes"
+                            onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-notes">Notes</label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-glossary"
-                            data-feature="glossary"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-glossary"
-                            >Glossary</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-glossary"
+                            data-feature="glossary" onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-glossary">Glossary</label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-index"
-                            data-feature="index"
-                            onchange={handleFilterChange}
-                        />
-                        <label class="custom-control-label" for="checkbox-index"
-                            >Index</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-index" data-feature="index"
+                            onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-index">Index</label>
                     </div>
                 </div>
                 <div class="form-group col-md-6">
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-bibliography"
-                            data-feature="bibliography"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-bibliography"
-                            >Bibliography</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-bibliography"
+                            data-feature="bibliography" onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-bibliography">Bibliography</label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-maps"
-                            data-feature="maps"
-                            onchange={handleFilterChange}
-                        />
-                        <label class="custom-control-label" for="checkbox-maps"
-                            >Maps</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-maps" data-feature="maps"
+                            onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-maps">Maps</label>
                     </div>
                     <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-facing-text"
-                            data-feature="facingtext"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-facing-text"
-                            >Facing Text</label
-                        >
+                        <input type="checkbox" class="custom-control-input" id="checkbox-facing-text"
+                            data-feature="facingtext" onchange={handleFilterChange} />
+                        <label class="custom-control-label" for="checkbox-facing-text">Facing Text</label>
                     </div>
                 </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-4">
                     <label for="kind">Format</label>
-                    <select
-                        class="form-control form-control-sm format-picklist"
-                        name="format"
-                        size="1"
-                        onchange={handleFilterChange}
-                        value={selectedFilterFormat}
-                    >
+                    <select class="form-control form-control-sm format-picklist" name="format" size="1"
+                        onchange={handleFilterChange} value={selectedFilterFormat}>
                         <option value="">-- All formats --</option>
                         <option value="Verse">Verse</option>
                         <option value="Prose">Prose</option>
                     </select>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="kind">Language</label>
-                    <select
-                        class="form-control form-control-sm language-picklist"
-                        name="language"
-                        size="1"
-                        onchange={handleFilterChange}
-                        value={selectedFilterLanguage}
-                    >
+                <div class="form-group col-md-4">
+                    <label for="language">Language</label>
+                    <select class="form-control form-control-sm language-picklist" name="language" size="1"
+                        onchange={handleFilterChange} value={selectedFilterLanguage}>
                         <option value="">-- All languages --</option>
                         <template for:each={availableLanguages} for:item="item">
                             <option key={item.id} value={item.id}>
@@ -154,18 +78,22 @@
                         </template>
                     </select>
                 </div>
+                <div class="form-group col-md-4">
+                    <label for="coverage">Coverage</label>
+                    <select class="form-control form-control-sm coverage-picklist" name="coverage" size="1"
+                        onchange={handleFilterChange} value={selectedFilterCoverage}>
+                        <option value="">-- All coverage --</option>
+                        <option value="Complete">Complete</option>
+                        <option value="Partial">Partial</option>
+                    </select>
+                </div>
+
             </div>
         </form>
     </template>
-    <bib-data-table
-        columns={columns}
-        records={records}
-        filter-criteria={filterCriteria}
-        allows-selection={allowsSelection}
-        selected-ids={selectedIds}
-        onsort={handleSort}
-        onselectionchange={handleSelectionChange}
-    >
+    <bib-data-table columns={columns} records={records} filter-criteria={filterCriteria}
+        allows-selection={allowsSelection} selected-ids={selectedIds} onsort={handleSort}
+        onselectionchange={handleSelectionChange}>
     </bib-data-table>
     <div class="spinner-grow spinner-grow-sm mt-2" role="status">
         <span class="sr-only">Loading...</span>
