@@ -2,7 +2,7 @@
     <template iterator:it={values}>
         <span key={it.value.id}>
             <span if:true={it.last}> and </span>
-            <a href={it.value.href}> {it.value.name} </a>
+            <a href={it.value.href}>{it.value.name}</a>
             <span if:false={it.last}>
                 <span if:true={useComma}>, </span>
             </span>

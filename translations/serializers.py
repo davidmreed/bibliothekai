@@ -263,7 +263,8 @@ class VolumeSerializer(serializers.ModelSerializer):
 
 
 class TranslationSerializer(serializers.ModelSerializer):
-    """A special kind of read-only FeatureSerializer that includes data about the parent volume"""
+    """A special kind of read-only FeatureSerializer that includes data about the parent volume and other related objects.
+    This is to save server round trips traversing the data model."""
 
     kind = ChoiceField(choices=KIND_CHOICES, default="Prose", required=False)
     feature = ChoiceField(choices=Feature.FEATURE_CHOICES)
@@ -276,9 +277,8 @@ class TranslationSerializer(serializers.ModelSerializer):
         required=False,
     )
 
-    language = serializers.HyperlinkedRelatedField(
-        queryset=Language.objects.all(), view_name="language-detail"
-    )
+    publisher = PublisherSerializer(read_only=True, source="volume.publisher")
+    language = LanguageSerializer(read_only=True)
     partial = serializers.BooleanField(default=False)
     description = serializers.CharField(required=False)
     title = serializers.CharField(required=False, max_length=255)
@@ -305,6 +305,7 @@ class TranslationSerializer(serializers.ModelSerializer):
             "sample_passage",
             "feature_introduction",
             "feature_notes",
+            "publisher",
         ]
 
 

@@ -148,6 +148,14 @@ export default class DataTable extends LightningElement {
         this.update();
     }
 
+    get recordsShown() {
+        return this._displayedRecords.length;
+    }
+
+    get recordCount() {
+        return this.records.length;
+    }
+
     update() {
         if (this.filterCriteria) {
             if (this.filterCriteria.filters) {

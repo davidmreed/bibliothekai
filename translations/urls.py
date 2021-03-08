@@ -91,5 +91,4 @@ urlpatterns = [
         views.TranslationList.as_view(),
         name="text_translation_list",
     ),
-    path("trans/", views.TranslationsLWCView.as_view(), name="translation_lwc"),
 ]

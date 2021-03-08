@@ -56,9 +56,9 @@ export default class TranslationView extends LightningElement {
             targetEntityName: 'full_name',
             valueType: 'link-list'
         },
-        //{ id: 'volume.publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
+        { id: 'publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
         { id: 'volume.published_date', name: 'Date', valueType: 'year' },
-        //{ id: 'volume.language.name', name: 'Language', valueType: 'string' },
+        { id: 'language.name', name: 'Language', valueType: 'string' },
         { id: 'kind', name: 'Type', valueType: 'string' },
         {
             id: 'featureNames',
@@ -76,22 +76,47 @@ export default class TranslationView extends LightningElement {
         }
     ];
     selectedIds = [];
-    allowsSelection = true;
-    _records = [];
-    _error;
+    allowsSelection = false;
+    showingFilters = false;
+    records = [];
+    error;
 
-    @wire(getRecords, { entityName: 'texts/1/translations' })
+    translationPath;
+
+    @wire(getRecords, { entityName: '$translationPath' })
     provision({ data, error }) {
         if (data) {
-            this._records = data.map((r) => normalizeFeatures(r));
+            this.records = data.map((r) => normalizeFeatures(r));
         }
         if (error) {
-            this._error = error;
+            this.error = error;
         }
     }
 
     @track
     filterCriteria = new FilterCriteria([], 'volume.title', true);
+
+    get hasSelection() {
+        return !!this.selectedIds.length;
+    }
+
+    get filterTitle() {
+        return this.showingFilters ? 'Hide Filters' : 'Show Filters';
+    }
+
+    renderedCallback() {
+        // If we're being displayed within a text's path,
+        // load translations for that text.
+        const regex = /texts\/([0-9]+)\//;
+        const loc = document.location.pathname;
+        const textIdMatch = loc.match(regex);
+
+        if (textIdMatch && textIdMatch.length === 2) {
+            this.translationPath = `texts/${textIdMatch[1]}/translations`;
+        } else {
+            this._error = "No text found";
+        }
+    }
 
     handleSort(event) {
         this.filterCriteria = new FilterCriteria(
@@ -109,20 +134,16 @@ export default class TranslationView extends LightningElement {
         let feature = `feature_${event.target.dataset.feature}`;
         let required = event.target.checked;
 
-        if (required) {
-            this.filterCriteria = new FilterCriteria(
-                this.filterCriteria.filters
-                    .filter((f) => f.column !== feature)
-                    .concat([{ column: feature, value: required }]),
-                this.filterCriteria.sortColumn,
-                this.filterCriteria.sortAscending
-            );
-        } else {
-            this.filterCriteria = new FilterCriteria(
-                this.filterCriteria.filters.filter((f) => f.column !== feature),
-                this.filterCriteria.sortColumn,
-                this.filterCriteria.sortAscending
-            );
-        }
+        this.filterCriteria = new FilterCriteria(
+            this.filterCriteria.filters
+                .filter((f) => f.column !== feature)
+                .concat(required ? [{ column: feature, value: required }] : []),
+            this.filterCriteria.sortColumn,
+            this.filterCriteria.sortAscending
+        );
+    }
+
+    handleToggleFilters() {
+        this.showingFilters = !this.showingFilters;
     }
 }

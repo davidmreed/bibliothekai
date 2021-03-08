@@ -6,16 +6,11 @@
                     <th scope="col"></th>
                 </template>
                 <template for:each={columns} for:item="col">
-                    <th
-                        scope="col"
-                        key={col.id}
-                        data-col={col.id}
-                        onclick={handleColumnClick}
-                    >
+                    <th scope="col" key={col.id} data-col={col.id} onclick={handleColumnClick}>
                         {col.name}
-                        <template if:true={col.isSortedAscending}> ▲ </template>
+                        <template if:true={col.isSortedAscending}><small class="ml-1">▲</small></template>
                         <template if:true={col.isSortedDescending}>
-                            ▼
+                            <small class="ml-1">▼</small>
                         </template>
                     </th>
                 </template>
@@ -26,12 +21,8 @@
                 <tr key={rec.record.id}>
                     <template if:true={allowsSelection}>
                         <td>
-                            <input
-                                type="checkbox"
-                                data-record={rec.id}
-                                onchange={handleSelectionChange}
-                                value={rec.selected}
-                            />
+                            <input type="checkbox" data-record={rec.id} onchange={handleSelectionChange}
+                                value={rec.selected} />
                         </td>
                     </template>
                     <template for:each={rec.values} for:item="entry">
@@ -50,13 +41,8 @@
                                 {entry.value}
                             </template>
                             <template if:true={entry.isPillListType}>
-                                <template
-                                    for:each={entry.value}
-                                    for:item="pill"
-                                >
-                                    <span key={pill.id} class={pill.pillClass}
-                                        >{pill.value}</span
-                                    >
+                                <template for:each={entry.value} for:item="pill">
+                                    <span key={pill.id} class={pill.pillClass}>{pill.value}</span>
                                 </template>
                             </template>
                         </td>
@@ -65,4 +51,6 @@
             </template>
         </tbody>
     </table>
+    <hr>
+    <small class="text-muted">Showing {recordsShown} of {recordCount}.</small>
 </template>
