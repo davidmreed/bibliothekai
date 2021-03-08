@@ -83,4 +83,9 @@ urlpatterns = [
     path("search/", views.SearchView.as_view(), name="search"),
     path("submit/", views.UserSubmissionCreateView.as_view(), name="submit"),
     path("api/", include(router.urls)),
+    path(
+        "api/texts/<int:pk>/translations/",
+        views.TranslationList.as_view(),
+        name="text_translation_list",
+    ),
 ]

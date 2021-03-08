@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load comma_lists %}
+{% load manifest %}
 
 {% block title %}
 {{ sourcetext.title }}
@@ -94,41 +95,9 @@
 {% endif %}
 
 
-<h2 class="mt-4">Translations</h2>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Translator</th>
-            <th scope="col">Publisher</th>
-            <th scope="col">Date</th>
-            <th scope="col">Language</th>
-            <th scope="col">Type</th>
-            <th scope="col">Introduction</th>
-            <th scope="col">Notes</th>
-            <th scope="col">Facing Text</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for t in translations.all %}
-        <tr>
-            <td><a href="{% url 'volume_detail' t.volume.id %}">{{ t.volume.title }}</a></td>
-            <td>
-                {% commalist t.persons.all %}
-                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
-                {% endcommalist %}
-            </td>
-            <td>{{ t.volume.publisher }}</td>
-            <td>{% if t.volume.published_date %}{{ t.volume.published_date.year }}{% endif %}</td>
-            <td>{{ t.language }}</td>
-            <td>{{ t.get_kind_display }}</td>
-            <td>{% if t.has_accompanying_introduction %}Yes{% else %}No{%endif%}</td>
-            <td>{% if t.has_accompanying_notes %}Yes{% else %}No{%endif%}</td>
-            <td>{% if t.has_facing_text %}Yes{% else %}No{%endif%}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div id="lwc"></div>
+
+{% manifest_match '*translationView*.js' '<script src="{match}"></script>' %}
 
 {% include "components/links_component.html" with links=sourcetext.links.all %}
 
