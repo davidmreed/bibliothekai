@@ -104,7 +104,7 @@ export default class TranslationView extends LightningElement {
     }
 
     get filterTitle() {
-        return this.showingFilters ? 'Hide Filters' : 'Show Filters';
+        return this.showingFilters ? 'Clear Filters' : 'Show Filters';
     }
 
     get availableLanguages() {
@@ -176,5 +176,13 @@ export default class TranslationView extends LightningElement {
 
     handleToggleFilters() {
         this.showingFilters = !this.showingFilters;
+
+        if (!this.showingFilters) {
+            this.filterCriteria = new FilterCriteria(
+                [],
+                this.filterCriteria.sortColumn,
+                this.filterCriteria.sortAscending
+            );
+        }
     }
 }
