@@ -162,7 +162,6 @@ export default class TranslationView extends LightningElement {
             feature = "language.id";
             this.selectedFilterLanguage = event.target.value;
             required = Number(this.selectedFilterLanguage);
-            console.log(`Language feature: ${required}`);
         }
 
         this.filterCriteria = new FilterCriteria(

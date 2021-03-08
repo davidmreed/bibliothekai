@@ -1,5 +1,5 @@
 import { LightningElement, track } from 'lwc';
-import { createRecord, getRecordUiUrl, getRecordApiUrl } from 'bib/drf';
+import { createRecord, getRecordUiUrl, getRecordApiUrl, getRecordsFromApi } from 'bib/drf';
 import { Feature } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
@@ -37,6 +37,15 @@ export default class AddVolume extends LightningElement {
 
     get showingTranslationModal() {
         return this.editingFeature && !this.addingPerson;
+    }
+
+    // Lifecycle Handlers
+    // ------------------
+
+    connectedCallback() {
+        // Start async loads of data from DRF to improve responsiveness.
+        getRecordsFromApi("persons");
+        getRecordsFromApi("texts");
     }
 
     // Change Handlers
