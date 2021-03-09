@@ -174,7 +174,7 @@ export default class TranslationView extends LightningElement {
         this.filterCriteria = new FilterCriteria(
             this.filterCriteria.filters
                 .filter((f) => f.column !== feature)
-                .concat((required || feature === "partial") ? [{ column: feature, value: required }] : []),
+                .concat((required || (feature === "partial" && this.selectedFilterCoverage)) ? [{ column: feature, value: required }] : []),
             this.filterCriteria.sortColumn,
             this.filterCriteria.sortAscending
         );
