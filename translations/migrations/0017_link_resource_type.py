@@ -6,14 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0016_auto_20201009_2214'),
+        ("translations", "0016_auto_20201009_2214"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='link',
-            name='resource_type',
-            field=models.TextField(choices=[('FT', 'Full Text'), ('WS', 'Website'), ('BO', 'Bio'), ('RS', 'Resources')], default='WS'),
+            model_name="link",
+            name="resource_type",
+            field=models.TextField(
+                choices=[
+                    ("FT", "Full Text"),
+                    ("WS", "Website"),
+                    ("BO", "Bio"),
+                    ("RS", "Resources"),
+                ],
+                default="WS",
+            ),
             preserve_default=False,
         ),
     ]

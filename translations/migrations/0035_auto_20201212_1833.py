@@ -6,16 +6,23 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0034_person_sort_name'),
+        ("translations", "0034_person_sort_name"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='feature',
-            options={'ordering': ['volume', 'source_text__author__sort_name', 'source_text', 'feature']},
+            name="feature",
+            options={
+                "ordering": [
+                    "volume",
+                    "source_text__author__sort_name",
+                    "source_text",
+                    "feature",
+                ]
+            },
         ),
         migrations.AlterModelOptions(
-            name='person',
-            options={'ordering': ['sort_name']},
+            name="person",
+            options={"ordering": ["sort_name"]},
         ),
     ]

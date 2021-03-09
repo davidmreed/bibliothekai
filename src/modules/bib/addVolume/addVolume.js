@@ -1,5 +1,10 @@
 import { LightningElement, track } from 'lwc';
-import { createRecord, getRecordUiUrl, getRecordApiUrl, getRecordsFromApi } from 'bib/drf';
+import {
+    createRecord,
+    getRecordUiUrl,
+    getRecordApiUrl,
+    getRecordsFromApi
+} from 'bib/drf';
 import { Feature } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
@@ -44,8 +49,8 @@ export default class AddVolume extends LightningElement {
 
     async connectedCallback() {
         // Start async loads of data from DRF to improve responsiveness.
-        await getRecordsFromApi("persons");
-        await getRecordsFromApi("texts");
+        await getRecordsFromApi('persons');
+        await getRecordsFromApi('texts');
     }
 
     // Change Handlers

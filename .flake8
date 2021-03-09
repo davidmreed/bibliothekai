@@ -6,4 +6,5 @@ exclude =
     old,
     build,
     dist
+    venv
 max-line-length = 200

@@ -14,3 +14,6 @@ venv
 node_modules
 translations/static
 package-lock.json
+.pytest_cache
+.vscode
+commaLinkList.html
