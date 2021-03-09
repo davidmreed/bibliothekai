@@ -6,14 +6,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0038_auto_20210109_2212'),
+        ("translations", "0038_auto_20210109_2212"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='alternatename',
-            name='alternate_name_type',
-            field=models.CharField(choices=[('OR', 'Original Language Name'), ('TL', 'Transliterated Original Language Name'), ('TR', 'Alternate Name Translation')], default='OR', max_length=2),
+            model_name="alternatename",
+            name="alternate_name_type",
+            field=models.CharField(
+                choices=[
+                    ("OR", "Original Language Name"),
+                    ("TL", "Transliterated Original Language Name"),
+                    ("TR", "Alternate Name Translation"),
+                ],
+                default="OR",
+                max_length=2,
+            ),
             preserve_default=False,
         ),
     ]

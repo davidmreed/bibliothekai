@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0040_auto_20210109_2250'),
+        ("translations", "0040_auto_20210109_2250"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sourcetext',
-            name='original_language_title',
+            model_name="sourcetext",
+            name="original_language_title",
         ),
         migrations.AlterField(
-            model_name='alternatename',
-            name='alternate_name_type',
-            field=models.CharField(choices=[('OR', 'Original Language Name'), ('TL', 'Transliterated Original Language Name'), ('TR', 'Alternate Name Translation'), ('NM', 'Alternate Name')], max_length=2),
+            model_name="alternatename",
+            name="alternate_name_type",
+            field=models.CharField(
+                choices=[
+                    ("OR", "Original Language Name"),
+                    ("TL", "Transliterated Original Language Name"),
+                    ("TR", "Alternate Name Translation"),
+                    ("NM", "Alternate Name"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

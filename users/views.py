@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import generic
 from django.urls import reverse_lazy
+from django.views import generic
 from rest_framework import viewsets
 
 from .models import User

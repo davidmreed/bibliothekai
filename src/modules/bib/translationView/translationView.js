@@ -112,7 +112,7 @@ export default class TranslationView extends LightningElement {
         let seen = new Set();
         let languages = [];
 
-        this.records.forEach(r => {
+        this.records.forEach((r) => {
             if (!seen.has(r.language.id)) {
                 languages.push(r.language);
                 seen.add(r.language.id);
@@ -132,7 +132,7 @@ export default class TranslationView extends LightningElement {
         if (textIdMatch && textIdMatch.length === 2) {
             this.translationPath = `texts/${textIdMatch[1]}/translations`;
         } else {
-            this._error = "No text found";
+            this._error = 'No text found';
         }
     }
 
@@ -156,25 +156,30 @@ export default class TranslationView extends LightningElement {
             // This is a feature checkbox
             feature = `feature_${event.target.dataset.feature}`;
             required = event.target.checked;
-        } else if (event.target.name === "format") {
-            feature = "kind";
+        } else if (event.target.name === 'format') {
+            feature = 'kind';
             required = this.selectedFilterFormat = event.target.value;
-        } else if (event.target.name === "language") {
-            feature = "language.id";
+        } else if (event.target.name === 'language') {
+            feature = 'language.id';
             this.selectedFilterLanguage = event.target.value;
             required = Number(this.selectedFilterLanguage);
-        } else if (event.target.name === "coverage") {
-            feature = "partial"
+        } else if (event.target.name === 'coverage') {
+            feature = 'partial';
             this.selectedFilterCoverage = event.target.value;
             if (this.selectedFilterCoverage) {
-                required = this.selectedFilterCoverage === "Partial";
+                required = this.selectedFilterCoverage === 'Partial';
             }
         }
 
         this.filterCriteria = new FilterCriteria(
             this.filterCriteria.filters
                 .filter((f) => f.column !== feature)
-                .concat((required || (feature === "partial" && this.selectedFilterCoverage)) ? [{ column: feature, value: required }] : []),
+                .concat(
+                    required ||
+                        (feature === 'partial' && this.selectedFilterCoverage)
+                        ? [{ column: feature, value: required }]
+                        : []
+                ),
             this.filterCriteria.sortColumn,
             this.filterCriteria.sortAscending
         );

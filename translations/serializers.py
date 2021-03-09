@@ -1,19 +1,20 @@
-from rest_framework import serializers
 from generic_relations.relations import GenericRelatedField
+from rest_framework import serializers
+
 from translations.models import (
-    Person,
-    Language,
-    SourceText,
-    Publisher,
-    Series,
-    Volume,
-    Feature,
-    Review,
-    Rating,
-    PublishedReview,
-    Link,
-    AlternateName,
     KIND_CHOICES,
+    AlternateName,
+    Feature,
+    Language,
+    Link,
+    Person,
+    PublishedReview,
+    Publisher,
+    Rating,
+    Review,
+    Series,
+    SourceText,
+    Volume,
 )
 
 

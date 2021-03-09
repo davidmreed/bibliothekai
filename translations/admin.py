@@ -1,18 +1,19 @@
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
+
 from .models import (
-    Language,
-    Volume,
-    Person,
+    AlternateName,
     Feature,
-    SourceText,
+    Language,
+    Link,
+    Person,
+    PublishedReview,
     Publisher,
     Review,
-    PublishedReview,
     Series,
-    Link,
-    AlternateName,
+    SourceText,
     UserSubmission,
+    Volume,
 )
 
 for model in [Language, Review, Series, UserSubmission]:

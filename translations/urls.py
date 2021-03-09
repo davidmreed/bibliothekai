@@ -1,5 +1,6 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
+
 from . import views
 
 router = DefaultRouter()
@@ -59,7 +60,11 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
+    path(
+        "volumes/add/",
+        views.VolumeLWCView.as_view(),
+        name="volume_add",
+    ),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),
