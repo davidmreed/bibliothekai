@@ -162,9 +162,16 @@ class SourceText(UserCreatedApprovalMixin):
     kind = models.TextField(choices=KIND_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
+
+    # Sample passage data
     sample_passage = models.TextField(blank=True)
     sample_passage_spec = models.CharField(max_length=255, blank=True)
     sample_passage_source = models.CharField(max_length=255, blank=True)
+    sample_passage_source_link = models.URLField(blank=True, null=True)
+    sample_passage_license = models.CharField(max_length=255, blank=True)
+    sample_passage_license_link = models.URLField(blank=True, null=True)
+
+    # Generic relations
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
 

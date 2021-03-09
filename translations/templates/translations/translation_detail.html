@@ -23,7 +23,24 @@
             </p>
         </div>
         <div class="card-footer">
-            <small class="text-muted">{{ feature.source_text.sample_passage_source }}</small>
+            <small class="text-muted">
+                {% if feature.source_text.sample_passage_source_link %}
+                <a href="{{ feature.source_text.sample_passage_source_link }}">
+                    {{ feature.source_text.sample_passage_source }}
+                </a>
+                {% else %}
+                {{ feature.source_text.sample_passage_source }}
+                {% endif %}
+                {% if feature.source_text.sample_passage_license %}
+                {% if feature.source_text.sample_passage_license_link %}
+                <a href="{{ feature.source_text.sample_passage_license_link }}">
+                    ({{ feature.source_text.sample_passage_license }})
+                </a>
+                {% else %}
+                ({{ feature.source_text.sample_passage_license }})
+                {% endif %}
+                {% endif %}
+            </small>
         </div>
     </div>
     <div class="card">
