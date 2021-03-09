@@ -75,7 +75,7 @@ export default class TranslationView extends LightningElement {
                 Bibliography: 'dark',
                 Maps: 'success',
                 'Facing Text': 'danger',
-                'Sample Passage': 'light'
+                'Sample Passage': 'info'
             }
         }
     ];
