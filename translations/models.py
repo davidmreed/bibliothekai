@@ -354,6 +354,10 @@ class Feature(models.Model, AuthorNameMixin):
     def has_accompanying_notes(self):
         return self.has_accompanying_feature("NT")
 
+    @property
+    def feature_sample_passage(self):
+        return bool(self.sample_passage)
+
     def __str__(self):
         return (
             f"{self.display_title()} ({self.get_feature_display().lower()} by "

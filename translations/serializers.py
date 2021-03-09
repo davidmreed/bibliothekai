@@ -287,6 +287,7 @@ class TranslationSerializer(serializers.ModelSerializer):
         source="has_accompanying_introduction"
     )
     feature_notes = serializers.BooleanField(source="has_accompanying_notes")
+    feature_sample_passage = serializers.BooleanField()
 
     class Meta:
         model = Feature
@@ -305,6 +306,7 @@ class TranslationSerializer(serializers.ModelSerializer):
             "sample_passage",
             "feature_introduction",
             "feature_notes",
+            "feature_sample_passage",
             "publisher",
         ]
 
