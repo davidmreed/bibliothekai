@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block content %}
+{% if user.is_superuser %}
+<div class="float-right">
+    <small>
+        <a href="{% url 'admin:translations_person_change' person.id %}">View on Admin</a>
+    </small>
+</div>
+{% endif %}
 <h1 class="mt-4">{{ person.full_name }}</h1>
 <p>
     {{ person.description }}

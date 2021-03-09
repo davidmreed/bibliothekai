@@ -7,6 +7,13 @@
 {% endblock %}
 
 {% block content %}
+{% if user.is_superuser %}
+<div class="float-right">
+    <small>
+        <a href="{% url 'admin:translations_sourcetext_change' sourcetext.id %}">View on Admin</a>
+    </small>
+</div>
+{% endif %}
 
 <h1 class="mt-4">
     {{ sourcetext.title }}

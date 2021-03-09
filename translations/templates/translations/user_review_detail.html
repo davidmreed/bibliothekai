@@ -5,6 +5,14 @@
 {% endblock %}
 
 {% block content %}
+{% if user.is_superuser %}
+<div class="float-right">
+    <small>
+        <a href="{% url 'admin:translations_review_change' review.id %}">View on Admin</a>
+    </small>
+</div>
+{% endif %}
+
 <h1>User Review</h1>
 {% include "components/user_review.html" with review=review abbreviate=False include_volume=True %}
 {% endblock %}
