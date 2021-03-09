@@ -4,7 +4,7 @@
     "tabWidth": 4,
     "overrides": [
         {
-            "files": "**/*.html",
+            "files": "src/**/*.html",
             "options": { "parser": "lwc" }
         }
     ]
