@@ -29,6 +29,7 @@
                     size="5"
                     multiple
                     onchange={handleChange}
+                    ondblclick={moveRight}
                 >
                     <template if:true={filteredEntities.length}>
                         <template for:each={filteredEntities} for:item="entity">
@@ -88,6 +89,7 @@
                     size="5"
                     multiple
                     onchange={handleChange}
+                    ondblclick={moveLeft}
                 >
                     <template if:true={filteredSelectedEntities.length}>
                         <template
