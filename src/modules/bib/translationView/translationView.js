@@ -65,7 +65,7 @@ export default class TranslationView extends LightningElement {
         { id: 'kind', name: 'Format', valueType: 'string' },
         {
             id: 'featureNames',
-            name: 'Features',
+            name: 'Resources',
             valueType: 'pill-list',
             pills: {
                 Introduction: 'primary',

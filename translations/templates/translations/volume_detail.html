@@ -16,7 +16,7 @@
 <h1 class="mt-4 mb-4">{{ volume.title }}</h1>
 
 <div class="row">
-    <div class="col-2">
+    <div class="col-sm-2">
         <h5>Catalog Details</h5>
     </div>
     <div class="col">
@@ -34,7 +34,7 @@
 
 {% if volume.description %}
 <div class="row">
-    <div class="col-2">
+    <div class="col-sm-2">
         <h5>Description</h5>
     </div>
     <div class="col">
@@ -47,8 +47,8 @@
 
 {% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps %}
 <div class="row">
-    <div class="col-2">
-        <h5>Features</h5>
+    <div class="col-sm-2">
+        <h5>Resources</h5>
     </div>
     <div class="col">
         {% if volume.get_general_features.count %}
