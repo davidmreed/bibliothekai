@@ -12,7 +12,7 @@
     </small>
 </div>
 {% endif %}
-<h1 class="mt-4">{{ person.full_name }}</h1>
+<h1 class="mt-4 mb-4">{{ person.full_name }}</h1>
 <p>
     {{ person.description }}
 </p>
@@ -45,15 +45,9 @@
             {% if s.get_original_language_title and s.title != s.get_original_language_title %}
             ({{ s.get_original_language_title }})
             {% endif %}
-            <div class="ml-3 float-right btn-group btn-group-sm" role="group" aria-label="Actions for this text">
-                <a class="btn btn-outline-primary" href="{% url 'source_text_detail' s.id %}">
-                    View translations
-                </a>
-                <a class="btn btn-outline-primary" href="{% url 'volume_add' %}">
-                    Add translation
-                </a>
-
-            </div>
+            <a class="float-right btn btn-sm btn-outline-primary" href="{% url 'source_text_detail' s.id %}">
+                View translations
+            </a>
         </h5>
         <div class="card-text">
             <p>{{ s.language }} {{ s.get_kind_display|lower }}. {{ s.date }}</p>

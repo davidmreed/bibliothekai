@@ -13,7 +13,7 @@
 </div>
 {% endif %}
 
-<h1 class="mt-4">{{ volume.title }}</h1>
+<h1 class="mt-4 mb-4">{{ volume.title }}</h1>
 
 <div class="row">
     <div class="col-2">
@@ -139,12 +139,12 @@
                 {% endcommalist %}
             </h5>
             {% with f=feature_set.list|first %}
-            <p class="card-text">
+            <h6 class="card-subtitle mb-2 text-muted">
                 by
                 {% commalist f.persons.all %}
                 <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
                 {% endcommalist %}
-            </p>
+            </h6>
             {% endwith %}
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}

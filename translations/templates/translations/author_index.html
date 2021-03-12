@@ -6,20 +6,22 @@ Authors
 
 {% block content %}
 
-<h1 class="mt-4">
+<h1 class="mt-4 mb-4">
     Authors
 </h1>
 {% for a in object_list %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">{{ a.full_name }}</h5>
-        <div class="card-text">
-            Author of {{ a.sourcetext_set.count }} text{% if a.sourcetext_set.count != 1 %}s{% endif %}.
+        <h5 class="card-title">
+            {{ a.full_name }}
             <div class="float-right">
                 <a class="ml-3 btn btn-primary btn-sm" href="{% url 'person_detail' a.id %}">
                     View works
                 </a>
             </div>
+        </h5>
+        <div class="card-text">
+            Author of {{ a.sourcetext_set.count }} text{% if a.sourcetext_set.count != 1 %}s{% endif %}.
         </div>
     </div>
 </div>
