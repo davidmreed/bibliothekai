@@ -240,6 +240,9 @@ class Volume(UserCreatedApprovalMixin):
 
         return self.title
 
+    def get_general_features(self):
+        return Feature.objects.filter(volume=self, source_text=None)
+
     def get_absolute_url(self):
         return reverse("volume_detail", args=[str(self.id)])
 
@@ -286,10 +289,7 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 

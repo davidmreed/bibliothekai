@@ -11,10 +11,10 @@ def pill(title, content):
 @register.tag(name="commalist")
 def do_comma_list(parser, token):
     try:
-        tag_name, item_list = token.split_contents()
+        _, item_list = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError(
-            f"{tag_name} tag requires exactly one argument"
+            "commalist tag requires exactly one argument"
         )
     item_template = parser.parse(("endcommalist",))
     item_list = parser.compile_filter(item_list)

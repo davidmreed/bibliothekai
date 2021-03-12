@@ -14,76 +14,107 @@
 {% endif %}
 
 <h1 class="mt-4">{{ volume.title }}</h1>
-<p>
-    {% pill "Publisher" volume.publisher %}
-    {% pill "Date" volume.published_date.year %}
-    {% if volume.series %}
-    {% pill "Series" volume.series %}
-    {% endif %}
-    {% if volume.isbn %}
-    {% pill "ISBN" volume.isbn %}
-    {% endif %}
-</p>
-<p>
-    {{ volume.description|linebreaks }}
-</p>
 
-<h2 class="mt-4">Contents</h2>
+<div class="row">
+    <div class="col-2">
+        <h5>Catalog Details</h5>
+    </div>
+    <div class="col">
+        {% pill "Publisher" volume.publisher %}
+        {% pill "Date" volume.published_date.year %}
+        {% if volume.series %}
+        {% pill "Series" volume.series %}
+        {% endif %}
+        {% if volume.isbn %}
+        {% pill "ISBN" volume.isbn %}
+        {% endif %}
+    </div>
+</div>
+<hr>
+
+{% if volume.description %}
+<div class="row">
+    <div class="col-2">
+        <h5>Description</h5>
+    </div>
+    <div class="col">
+        {{ volume.description|linebreaks }}
+    </div>
+</div>
+<hr>
+
+{% endif %}
+
+{% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps %}
+<div class="row">
+    <div class="col-2">
+        <h5>Features</h5>
+    </div>
+    <div class="col">
+        {% if volume.get_general_features.count %}
+        {% for f in volume.get_general_features %}
+        {% if f.feature == "IN" %}
+        <span class="badge badge-pill badge-primary">
+            {{ f.get_feature_display }}
+        </span>
+        {% endif %}
+        {% if f.feature == "ED" %}
+        <span class="badge badge-pill badge-danger">
+            {{ f.get_feature_display }}
+        </span>
+        {% endif %}
+        {% if f.feature == "NT" %}
+        <span class="badge badge-pill badge-warning">
+            {{ f.get_feature_display }}
+        </span>
+        {% endif %}
+        {% if f.feature == "CM" %}
+        <span class="badge badge-pill badge-success">
+            {{ f.get_feature_display }}
+        </span>
+        {% endif %}
+        by
+        {% commalist f.persons.all %}
+        <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+        {% endcommalist %}
+        <br>
+        {% endfor %}
+        {% endif %}
+        {% if volume.feature_glossary %}
+        <span class="badge badge-pill badge-info">Glossary</span>
+        {% endif %}
+        {% if volume.feature_index %}
+        <span class="badge badge-pill badge-secondary">Index</span>
+        {% endif %}
+        {% if volume.feature_bibliography %}
+        <span class="badge badge-pill badge-dark">Bibliography</span>
+        {% endif %}
+        {% if volume.feature_maps %}
+        <span class="badge badge-pill badge-success">Maps</span>
+        {% endif %}
+    </div>
+</div>
+<hr>
+{% endif %}
+
+
 {% regroup features by source_text as texts %}
 
-{% for t in texts %}
-{% if not t.grouper.id %}
-{% regroup t.list by author_string as grouped_features %}
-<div class="card-deck">
-    {% for feature_set in grouped_features %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">
-                {% commalist feature_set.list %}
-                {{ item.get_feature_display }}
-                {% endcommalist %}
-            </h5>
-            <p class="card-text">
-                {% with f=feature_set.list|first %}
-                by
-                {% commalist f.persons.all %}
-                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
-                {% endcommalist %}
-                {% endwith %}
-            </p>
-            {% for f in feature_set.list %}
-            {% if f.description %}
-            <p class="card-text">
-                {{ f.description|linebreaks }}
-            </p>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-{% endfor %}
-
+<h2>Translations</h2>
 {% for t in texts %}
 {% if t.grouper.id %}
 {% regroup t.list by author_string as grouped_features %}
-<h3 class="mt-4">
-    {{ t.grouper.title }}
-</h3>
 <div class="card-deck">
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                Original
-            </h5>
-            <p class="card-text">{{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
+                {{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
                 <a href="{% url 'source_text_detail' t.grouper.id %}" class="float-right btn btn-outline-secondary btn-sm">
                     More translations
                 </a>
-            </p>
-            <p class="card-text">
+            </h5>
+            <p class="card-text mt-4">
                 {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}.
                 {% if t.grouper.date %}
@@ -140,6 +171,7 @@
     {% endfor %}
 </div>
 {% endif %}
+<hr>
 {% endfor %}
 
 {% include "components/links_component.html" with links=volume.links.all %}
