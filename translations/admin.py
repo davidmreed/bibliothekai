@@ -37,7 +37,7 @@ class FeatureInline(admin.TabularInline):
         "source_text",
         "feature",
         "language",
-        "kind",
+        "format",
         "partial",
         "has_facing_text",
         "title",

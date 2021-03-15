@@ -1,0 +1,206 @@
+<template>
+    <template if:false={addingPerson}>
+        <template if:false={generalFeature}>
+            <div>
+                <small
+                    class="form-text text-muted validity is-invalid form-control mb-2 d-none"
+                >
+                </small>
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h5 class="card-title">Text Selection</h5>
+                    </div>
+                    <div class="card-body">
+                        <bib-pop-up-menu
+                            entity-name="texts"
+                            allow-add="false"
+                            onchange={changeText}
+                            value={features.text}
+                        >
+                        </bib-pop-up-menu>
+                        <div class="row">
+                            <div class="col">
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        id="checkbox-facing-text"
+                                        data-feature="facingtext"
+                                        onchange={handleFeatureSwitchChange}
+                                        checked={features.translation.has_facing_text}
+                                    />
+                                    <label
+                                        class="custom-control-label"
+                                        for="checkbox-facing-text"
+                                    >
+                                        Has Facing Text
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        id="checkbox-introduction"
+                                        data-feature="facingtext"
+                                        onchange={handleFeatureSwitchChange}
+                                        checked={features.hasIntroduction}
+                                    />
+                                    <label
+                                        class="custom-control-label"
+                                        for="checkbox-introduction"
+                                    >
+                                        Has Introduction
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="custom-control custom-switch">
+                                    <input
+                                        type="checkbox"
+                                        class="custom-control-input"
+                                        id="checkbox-notes"
+                                        data-feature="facingtext"
+                                        onchange={handleFeatureSwitchChange}
+                                        checked={features.hasNotes}
+                                    />
+                                    <label
+                                        class="custom-control-label"
+                                        for="checkbox-notes"
+                                    >
+                                        Has Notes
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-2">
+                <div class="card-header">
+                    <h5 class="card-title">
+                        Translation
+                        <template if:false={translationExpanded}>
+                            <button
+                                class="float-right btn btn-sm btn-outline-primary"
+                                onclick={toggleTranslationExpanded}
+                            >
+                                Edit
+                            </button>
+                        </template>
+                    </h5>
+                </div>
+                <template if:true={translationExpanded}>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col">
+                                    <bib-pop-up-menu
+                                        label-text="Language"
+                                        entity-name="languages"
+                                        allow-add="false"
+                                        onchange={changeLanguage}
+                                        value={feature.language}
+                                    >
+                                    </bib-pop-up-menu>
+                                </div>
+                                <div class="col">
+                                    <label for="format">Format</label>
+                                    <select
+                                        class="form-control format-picklist"
+                                        name="format"
+                                        size="1"
+                                        onchange={handleChange}
+                                        value={feature.format}
+                                    >
+                                        <option value="Prose">Prose</option>
+                                        <option value="Verse">Verse</option>
+                                    </select>
+                                </div>
+                                <div class="col">
+                                    <label for="partial">Coverage</label>
+                                    <select
+                                        class="form-control coverage-picklist"
+                                        name="partial"
+                                        size="1"
+                                        onchange={handleChange}
+                                        value={partialValue}
+                                    >
+                                        <option value="false">
+                                            Complete translation
+                                        </option>
+                                        <option value="true">
+                                            Partial translation
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <label for="title">Title</label>
+                            <input
+                                class="form-control"
+                                name="title"
+                                placeholder="Title, if different from text"
+                                type="text"
+                                value={feature.title}
+                                onchange={handleChange}
+                            />
+                            <hr />
+                            <label for="description">Description</label>
+                            <textarea
+                                class="form-control"
+                                name="description"
+                                placeholder="Description"
+                                type="text"
+                                value={feature.description}
+                                onchange={handleChange}
+                            ></textarea>
+                            <template if:true={hasSamplePassage}>
+                                <label for="sample">Sample Passage</label>
+                                <textarea
+                                    class="form-control"
+                                    name="sample"
+                                    value={feature.samplePassage}
+                                    onchange={handleChange}
+                                ></textarea>
+                                <small class="text-muted">
+                                    The sample passage for {selectedText.title}
+                                    is {selectedText.sample_passage_spec}.
+                                </small>
+                            </template>
+                            <hr />
+                            <label for="authors">Translators</label>
+                            <bib-dualing-listbox
+                                class="persons-listbox"
+                                entity-name="persons"
+                                allow-add="true"
+                                onadd={handleAddPerson}
+                                value={feature.authors}
+                                onchange={changePersons}
+                            >
+                            </bib-dualing-listbox>
+
+                            <button
+                                class="btn btn-sm btn-outline-primary btn-block mt-3"
+                                onclick={toggleTranslationExpanded}
+                            >
+                                Done
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template for:each={features.features} for:item="f">
+            <bib-single-feature-editor
+                key={f.feature}
+                feature={f}
+                onchange={handleSingleFeatureChange}
+            ></bib-single-feature-editor>
+        </template>
+        <hr />
+        <button class="btn btn-primary btn-block mb-3" onclick={save}>
+            Done with Translation
+        </button>
+    </template>
+</template>

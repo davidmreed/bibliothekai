@@ -8,7 +8,7 @@ import requests
 
 from biblia import settings
 
-KIND_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
+FORMAT_CHOICES = [("PR", "Prose"), ("VR", "Verse")]
 
 
 class AuthorNameMixin:
@@ -159,7 +159,7 @@ class SourceText(UserCreatedApprovalMixin):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(Person, on_delete=models.PROTECT)
     language = models.ForeignKey(Language, on_delete=models.PROTECT)
-    kind = models.TextField(choices=KIND_CHOICES)
+    format = models.TextField(choices=FORMAT_CHOICES, db_column="kind")
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
 
@@ -329,7 +329,7 @@ class Feature(models.Model, AuthorNameMixin):
     persons = models.ManyToManyField(Person, related_name="features")
     language = models.ForeignKey(Language, on_delete=models.PROTECT)
     title = models.CharField(max_length=255, blank=True)
-    kind = models.TextField(choices=KIND_CHOICES, blank=True)
+    format = models.TextField(choices=FORMAT_CHOICES, blank=True, db_column="kind")
     partial = models.BooleanField()
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()

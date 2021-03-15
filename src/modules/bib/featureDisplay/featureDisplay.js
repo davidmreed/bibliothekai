@@ -22,6 +22,9 @@ export default class FeatureDisplay extends LightningElement {
         if (this.feature.hasNotes) {
             features.push('notes');
         }
+        if (this.feature.hasCommentary) {
+            features.push('commentary');
+        }
 
         return `Includes ${features.join(', ')}.`;
     }

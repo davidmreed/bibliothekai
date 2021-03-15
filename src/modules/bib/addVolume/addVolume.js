@@ -1,8 +1,14 @@
 import { LightningElement, track } from 'lwc';
-import { createRecord, getRecordUiUrl, getRecordApiUrl, getRecordsFromApi } from 'bib/drf';
-import { Feature } from 'bib/feature';
+import {
+    createRecord,
+    getRecordUiUrl,
+    getRecordApiUrl,
+    getRecordsFromApi
+} from 'bib/drf';
+import { Features } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
+    // Data fields
     title = '';
     published_date = '';
     publisher = '';
@@ -12,16 +18,24 @@ export default class AddVolume extends LightningElement {
     description = '';
     primaryLanguage = '';
     link = '';
+    feature_glossary = false;
+    feature_index = false;
+    feature_bibliography = false;
+    feature_maps = false;
+
+    // UI state
     addingPerson = false;
     addingPublisher = false;
     addingSeries = false;
     editingFeature = false;
-    @track features = [];
-    generalFeatures = new Feature(-1);
-    featureToEdit;
-    error;
-
     detailsExpanded = true;
+
+    // Feature storage
+    @track features = [];
+    generalFeatures = new Features(-1);
+    featureToEdit;
+
+    error;
 
     // Getters
     // -------
@@ -44,20 +58,12 @@ export default class AddVolume extends LightningElement {
 
     async connectedCallback() {
         // Start async loads of data from DRF to improve responsiveness.
-        await getRecordsFromApi("persons");
-        await getRecordsFromApi("texts");
+        await getRecordsFromApi('persons');
+        await getRecordsFromApi('texts');
     }
 
     // Change Handlers
     // ---------------
-
-    handlePublisherChange(event) {
-        this.publisher = event.detail;
-    }
-
-    handleSeriesChange(event) {
-        this.series = event.detail;
-    }
 
     handlePrimaryLanguageChange(event) {
         this.primaryLanguage = event.detail;
@@ -72,8 +78,16 @@ export default class AddVolume extends LightningElement {
         }
     }
 
-    handleGeneralFeatureChange(event) {
-        this.generalFeatures = event.detail;
+    handleSingleFeatureChange(event) {
+        let newFeature = event.detail;
+        let index = this.generalFeatures.features.findIndex(
+            (f) => f.feature === newFeature.feature
+        );
+
+        let newGeneralFeatures = this.generalFeatures.clone();
+        newGeneralFeatures.features.splice(index, 1, newFeature);
+
+        this.generalFeatures = newGeneralFeatures;
     }
 
     handleFeatureRemove(event) {
@@ -86,19 +100,38 @@ export default class AddVolume extends LightningElement {
     handleChange(event) {
         const field = event.target.name;
 
-        if (field === 'title') {
-            this.title = event.target.value;
-        } else if (field === 'date') {
-            this.published_date = event.target.value;
-        } else if (field === 'isbn') {
-            this.isbn = event.target.value;
-        } else if (field === 'oclc') {
-            this.oclc_number = event.target.value;
-        } else if (field === 'description') {
-            this.description = event.target.value;
-        } else if (field === 'link') {
-            this.link = event.target.value;
+        //if (Object.prototype.hasOwnProperty.call(this, field)) {
+        this[field] = event.target.value;
+        //}
+    }
+
+    handleChangeDetail(event) {
+        const field = event.target.dataset.name;
+
+        //if (Object.prototype.hasOwnProperty.call(this.prototype, field)) {
+        this[field] = `${event.detail}`;
+        //}
+    }
+
+    handleChangeBoolean(event) {
+        const field = event.target.name;
+
+        //if (Object.prototype.hasOwnProperty.call(this, field)) {
+        this[field] = event.target.value === 'true';
+        //}
+    }
+
+    handleFeatureSwitchChange(event) {
+        let desiredFeature = event.target.name;
+        let newFeatures = this.generalFeatures.clone();
+
+        if (this.generalFeatures.hasFeature(desiredFeature)) {
+            newFeatures.removeFeature(desiredFeature);
+        } else {
+            newFeatures.addFeature(event.target.name, true);
         }
+
+        this.generalFeatures = newFeatures;
     }
 
     // Actions
@@ -119,17 +152,10 @@ export default class AddVolume extends LightningElement {
             published_date: this.published_date,
             publisher: getRecordApiUrl('publishers', this.publisher)
         };
-        if (this.isbn) {
-            record.isbn = this.isbn;
-        }
-        if (this.oclc_number) {
-            record.oclc_number = this.oclc_number;
-        }
-        if (this.description) {
-            record.description = this.description;
-        }
-        if (this.series) {
-            record.series = this.series;
+        for (let prop of ['isbn', 'oclc_number', 'description', 'series']) {
+            if (this[prop]) {
+                record[prop] = this[prop];
+            }
         }
 
         try {
@@ -162,10 +188,10 @@ export default class AddVolume extends LightningElement {
     // Section Visibility
     // ------------------
 
-    addFeature() {
-        let newFeature = new Feature(this.features.length + 1);
+    addTranslation() {
+        let newFeature = new Features(this.features.length + 1);
         if (this.primaryLanguage) {
-            newFeature.language = newFeature.introLanguage = newFeature.notesLanguage = this.primaryLanguage;
+            newFeature.defaultLanguage = this.primaryLanguage;
         }
         this.features.push(newFeature);
         this.featureToEdit = newFeature;
@@ -251,11 +277,8 @@ export default class AddVolume extends LightningElement {
     checkValidity() {
         let totalValid =
             this.validateDetails() &&
-            this.generalFeatures.isNotesValid &&
-            this.generalFeatures.isIntroValid &&
-            this.features
-                .map((f) => f.isValid)
-                .reduce((cur, next) => cur && next, true);
+            this.generalFeatures.isValid &&
+            this.features.isValid;
 
         if (!totalValid) {
             this.error =

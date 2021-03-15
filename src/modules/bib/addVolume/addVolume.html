@@ -59,9 +59,10 @@
                                         class="publisher-popup"
                                         entity-name="publishers"
                                         allow-add="true"
-                                        onchange={handlePublisherChange}
+                                        onchange={handleChangeDetail}
                                         onadd={toggleAddingPublisher}
                                         value={publisher}
+                                        data-name="publisher"
                                     >
                                     </bib-pop-up-menu>
                                     <div class="invalid-feedback">
@@ -74,9 +75,10 @@
                                         class="series-popup"
                                         entity-name="series"
                                         allow-add="true"
-                                        onchange={handleSeriesChange}
+                                        onchange={handleChangeDetail}
                                         onadd={toggleAddingSeries}
                                         value={series}
+                                        data-name="series"
                                     >
                                     </bib-pop-up-menu>
                                 </div>
@@ -86,7 +88,7 @@
                                     <label for="date">Publication Date</label>
                                     <input
                                         class="form-control"
-                                        name="date"
+                                        name="published_date"
                                         type="date"
                                         value={published_date}
                                         onchange={handleChange}
@@ -154,7 +156,7 @@
                 <div class="float-right">
                     <button
                         class="btn btn-outline-primary"
-                        onclick={addFeature}
+                        onclick={addTranslation}
                     >
                         Add
                     </button>
@@ -179,23 +181,137 @@
                     </div>
                 </template>
             </div>
-            <h3 class="mt-3">General Features</h3>
+            <h3 class="mt-3">Resources</h3>
             <small class="form-text text-muted mb-2">
                 Add features of the volume as a whole, like general
                 introductions and notes that aren't associated with a specific
                 translation. Introductions to specific texts should be part of
                 the translation.
             </small>
-            <div class="volume-features">
-                <bib-feature-editor
-                    feature={generalFeatures}
-                    general-feature="true"
-                    onchange={handleGeneralFeatureChange}
-                    onaddperson={toggleAddingPerson}
-                >
-                </bib-feature-editor>
+            <div class="volume-feature-switches">
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h5 class="card-title">Volume Resources</h5>
+                    </div>
+                    <div class="card-body">
+                        <small class="text-muted mb-2">
+                            Select resources offered in this volume.
+                        </small>
+                        <form novalidate>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-general-introduction"
+                                            data-feature="introduction"
+                                            onchange={handleFeatureSwitchChange}
+                                            value={features.hasIntroduction}
+                                            name="Introduction"
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-general-introduction"
+                                        >
+                                            General Introduction
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-glossary"
+                                            onchange={handleChangeBoolean}
+                                            value={feature_glossary}
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-glossary"
+                                        >
+                                            Glossary
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-index"
+                                            onchange={handleChangeBoolean}
+                                            checked={feature_index}
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-index"
+                                        >
+                                            Index
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-general-notes"
+                                            data-feature="notes"
+                                            onchange={handleFeatureSwitchChange}
+                                            value={features.hasNotes}
+                                            name="Notes"
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-general-notes"
+                                        >
+                                            General Notes
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-bibliography"
+                                            onchange={handleChangeBoolean}
+                                            checked={feature_bibliography}
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-bibliography"
+                                        >
+                                            Bibliography
+                                        </label>
+                                    </div>
+                                    <div class="custom-control custom-switch">
+                                        <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id="checkbox-maps"
+                                            onchange={handleChangeBoolean}
+                                            value={feature_maps}
+                                        />
+                                        <label
+                                            class="custom-control-label"
+                                            for="checkbox-maps"
+                                        >
+                                            Maps
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-
+            <div class="volume-features">
+                <template for:each={generalFeatures.features} for:item="f">
+                    <bib-single-feature-editor
+                        key={f.feature}
+                        feature={f}
+                        data-feature={f.feature}
+                        onchange={handleSingleFeatureChange}
+                    ></bib-single-feature-editor>
+                </template>
+            </div>
             <hr />
             <small class="text-danger form-validity mb-2">{error}</small>
             <div class="status text-center mb-2 d-none">
@@ -220,14 +336,14 @@
             </button>
             Editing Translation
         </h4>
-        <bib-feature-editor
+        <bib-translation-editor
             class="feature-editor"
-            feature={featureToEdit}
+            features={featureToEdit}
             onchange={handleFeatureChange}
             onsave={toggleEditingFeature}
             onaddperson={toggleAddingPerson}
         >
-        </bib-feature-editor>
+        </bib-translation-editor>
     </template>
     <template if:true={addingPublisher}>
         <h4>

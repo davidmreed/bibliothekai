@@ -62,7 +62,7 @@ export default class TranslationView extends LightningElement {
         { id: 'publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
         { id: 'volume.published_date', name: 'Date', valueType: 'year' },
         { id: 'language.name', name: 'Language', valueType: 'string' },
-        { id: 'kind', name: 'Format', valueType: 'string' },
+        { id: 'format', name: 'Format', valueType: 'string' },
         {
             id: 'featureNames',
             name: 'Resources',
@@ -161,7 +161,7 @@ export default class TranslationView extends LightningElement {
             feature = `feature_${event.target.dataset.feature}`;
             required = event.target.checked;
         } else if (event.target.name === 'format') {
-            feature = 'kind';
+            feature = 'format';
             required = this.selectedFilterFormat = event.target.value;
         } else if (event.target.name === 'language') {
             feature = 'language.id';

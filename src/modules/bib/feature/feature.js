@@ -1,74 +1,132 @@
 import { getRecordApiUrl } from 'bib/drf';
 
 export class Feature {
-    text = '';
     authors = [];
-    partial = false;
     language = '';
-    notesLanguage = '';
-    introLanguage = '';
-    proseOrVerse = 'Prose';
-    hasIntroduction = false;
-    introAuthors = [];
-    introDescription = '';
-    hasNotes = false;
-    notesAuthors = [];
-    notesDescription = '';
-    title = '';
     description = '';
-    expanded = true;
+    feature = '';
+    uiExpanded;
+
+    constructor(ft, uiExpanded) {
+        this.feature = ft;
+        this.uiExpanded = uiExpanded;
+    }
+
+    get isValid() {
+        return !!this.authors.length && !!this.language;
+    }
+
+    clone() {
+        let newFeature = Object.assign(new Feature(), this);
+        newFeature.authors = [...this.authors];
+
+        return newFeature;
+    }
+}
+
+export class TranslationFeature extends Feature {
+    partial = false;
+    format = 'Prose';
     samplePassage = '';
+    title = '';
+
+    constructor(uiExpanded) {
+        super('TR', uiExpanded);
+    }
+
+    get isValid() {
+        return super.isValid && !!this.text;
+    }
+}
+
+export class Features {
     id;
+    features = [];
+    defaultLanguage = '';
+    text = '';
 
     constructor(id) {
         this.id = id;
     }
 
-    get isIntroValid() {
-        return (
-            !this.hasIntroduction ||
-            (!!this.introAuthors.length && !!this.introLanguage)
-        );
+    get hasIntroduction() {
+        return this.hasFeature('Introduction');
     }
 
-    get isNotesValid() {
-        return (
-            !this.hasNotes ||
-            (!!this.notesAuthors.length && !!this.notesLanguage)
-        );
+    get introduction() {
+        return this.getFeature('Introduction');
+    }
+
+    get hasNotes() {
+        return this.hasFeature('Notes');
+    }
+
+    get notes() {
+        return this.getFeature('Notes');
+    }
+
+    get hasEdited() {
+        return this.hasFeature('Edited');
+    }
+
+    get edited() {
+        return this.getFeature('Edited');
+    }
+
+    get hasCommentary() {
+        return this.hasFeature('Commentary');
+    }
+
+    get commentary() {
+        return this.getFeature('Commentary');
+    }
+
+    get hasTranslation() {
+        return this.hasFeature('Translation');
+    }
+
+    get translation() {
+        return this.getFeature('Translation');
     }
 
     get isValid() {
-        let valid = !!this.authors.length && !!this.language;
-        if (this.hasIntroduction) {
-            valid = valid && this.isIntroValid;
-        }
-        if (this.hasNotes) {
-            valid = valid && this.isNotesValid;
+        return this.features.reduce((prev, cur) => prev && cur.isValid, true);
+    }
+
+    hasFeature(ft) {
+        return this.features.filter((f) => f.feature === ft).length > 0;
+    }
+
+    getFeature(ft) {
+        let candidates = this.features.filter((f) => f.feature === ft);
+        if (candidates.length) {
+            return candidates[0];
         }
 
-        return valid;
+        return undefined;
+    }
+
+    addFeature(ft, uiExpanded) {
+        let newFeature =
+            ft === 'TR'
+                ? new TranslationFeature(uiExpanded)
+                : new Feature(ft, uiExpanded);
+
+        if (this.defaultLanguage) {
+            newFeature.language = this.defaultLanguage;
+        }
+
+        this.features.push(newFeature);
+    }
+
+    removeFeature(ft) {
+        this.features = this.features.filter((f) => f.feature !== ft);
     }
 
     clone() {
-        let newFeature = new Feature(this.id);
-        newFeature.text = this.text;
-        newFeature.partial = this.partial;
-        newFeature.language = this.language;
-        newFeature.introLanguage = this.introLanguage;
-        newFeature.notesLanguage = this.notesLanguage;
-        newFeature.proseOrVerse = this.proseOrVerse;
-        newFeature.hasIntroduction = this.hasIntroduction;
-        newFeature.introDescription = this.introDescription;
-        newFeature.hasNotes = this.hasNotes;
-        newFeature.notesDescription = this.notesDescription;
-        newFeature.title = this.title;
-        newFeature.description = this.description;
-        newFeature.expanded = this.expanded;
-        newFeature.authors = [...this.authors];
-        newFeature.introAuthors = [...this.introAuthors];
-        newFeature.notesAuthors = [...this.notesAuthors];
-        newFeature.samplePassage = this.samplePassage;
+        let newFeature = Object.assign(new Features(this.id), this);
+        newFeature.features = this.features.map((f) => f.clone());
+
         return newFeature;
     }
 
@@ -82,7 +140,7 @@ export class Feature {
                 language: getRecordApiUrl('languages', this.language),
                 text: getRecordApiUrl('texts', this.text),
                 partial: this.partial,
-                kind: this.proseOrVerse,
+                format: this.format,
                 feature: 'Translation'
             };
 

@@ -1,0 +1,50 @@
+<template>
+    <div class="card mb-2">
+        <div class="card-header">
+            <h5 class="card-title">
+                {feature.feature}
+                <button
+                    class="float-right btn btn-sm btn-outline-secondary"
+                    onclick={handleChangeValueInvert}
+                    name="uiExpanded"
+                    value={feature.uiExpanded}
+                >
+                    {buttonTitle}
+                </button>
+            </h5>
+        </div>
+        <template if:true={isVisible}>
+            <div class="card-body">
+                <div>
+                    <small>A language and authors are required.</small>
+                </div>
+                <bib-pop-up-menu
+                    label-text="Language"
+                    entity-name="languages"
+                    allow-add="false"
+                    onchange={handleChangeDetail}
+                    value={feature.language}
+                    data-name="persons"
+                >
+                </bib-pop-up-menu>
+                <label for="authors">Authors</label>
+                <bib-dualing-listbox
+                    entity-name="persons"
+                    value={feature.persons}
+                    onchange={handleChangeDetail}
+                    allow-add="true"
+                    onadd={handleAddPerson}
+                    data-name="persons"
+                ></bib-dualing-listbox>
+                <button
+                    class="btn btn-sm btn-outline-primary btn-block mb-3"
+                    onclick={handleChangeValueInvert}
+                    value={feature.uiExpanded}
+                    name="uiExpanded"
+                >
+                    Done with Resource
+                </button>
+            </div>
+        </template>
+    </div>
+</template>

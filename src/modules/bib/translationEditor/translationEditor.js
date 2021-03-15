@@ -1,32 +1,12 @@
 import { LightningElement, api } from 'lwc';
 import { getRecord } from 'bib/drf';
-export default class FeatureEditor extends LightningElement {
-    @api feature;
-    @api generalFeature = false;
+
+export default class TranslationEditor extends LightningElement {
+    @api features;
     selectedText;
 
-    translationExpanded = true;
-    introductionExpanded = false;
-    notesExpanded = false;
-
-    get showIntroduction() {
-        return this.feature.hasIntroduction && this.introductionExpanded;
-    }
-
-    get showIntroError() {
-        return !this.introductionExpanded && !this.feature.isIntroValid;
-    }
-
-    get showNotes() {
-        return this.feature.hasNotes && this.notesExpanded;
-    }
-
-    get showNotesError() {
-        return !this.notesExpanded && !this.feature.isNotesValid;
-    }
-
     get partialValue() {
-        return this.feature.partial.toString();
+        return this.features.translation.partial.toString();
     }
 
     get hasSamplePassage() {
@@ -35,7 +15,7 @@ export default class FeatureEditor extends LightningElement {
 
     @api
     get isValid() {
-        return this.feature.isValid;
+        return this.features.isValid;
     }
 
     async renderedCallback() {
@@ -43,13 +23,13 @@ export default class FeatureEditor extends LightningElement {
             // Not sure why these do not bind correctly. Order of operations?
             this.template.querySelector(
                 '.format-picklist'
-            ).value = this.feature.proseOrVerse;
+            ).value = this.features.translation.format;
             this.template.querySelector(
                 '.coverage-picklist'
             ).value = this.partialValue;
         }
-        if (this.feature.text) {
-            this.selectedText = await getRecord('texts', this.feature.text);
+        if (this.features.text) {
+            this.selectedText = await getRecord('texts', this.features.text);
         }
     }
 
@@ -60,7 +40,7 @@ export default class FeatureEditor extends LightningElement {
     }
 
     dispatchUpdates(updates) {
-        let newFeature = this.feature.clone();
+        let newFeature = this.features.clone();
         for (const key in updates) {
             if (Object.prototype.hasOwnProperty.call(updates, key)) {
                 newFeature[key] = updates[key];
@@ -111,23 +91,23 @@ export default class FeatureEditor extends LightningElement {
             this.dispatchUpdate('title', event.target.value);
         } else if (field === 'description') {
             this.dispatchUpdate('description', event.target.value);
-        } else if (field === 'kind') {
-            this.dispatchUpdate('proseOrVerse', event.target.value);
+        } else if (field === 'format') {
+            this.dispatchUpdate('format', event.target.value);
         } else if (field === 'partial') {
             this.dispatchUpdate('partial', event.target.value === 'true');
-        } else if (field === 'introDescription') {
-            this.dispatchUpdate('introDescription', event.target.value);
-        } else if (field === 'notesDescription') {
-            this.dispatchUpdate('notesDescription', event.target.value);
         } else if (field === 'sample') {
             this.dispatchUpdate('samplePassage', event.target.value);
         }
-        if (this.isFormValid) {
-            this.markFormValid();
-        }
+    }
+
+    handleSingleFeatureChange() {
+        // FIXME: implement
     }
 
     handleAddPerson() {
+        // TODO: pass a detail in the event to denote the context.
+        // Have addVolume add the newly-added person to the appropriate lists
+        // when a save event is received.
         this.dispatchEvent(new CustomEvent('addperson'));
     }
 
@@ -135,35 +115,7 @@ export default class FeatureEditor extends LightningElement {
         this.dispatchEvent(new CustomEvent('save', { detail: this.feature }));
     }
 
-    toggleIntroduction() {
-        this.dispatchUpdates({
-            hasIntroduction: !this.feature.hasIntroduction,
-            introLanguage: this.feature.introLanguage || this.feature.language,
-            introDescription: '',
-            introAuthors: []
-        });
-        this.introductionExpanded = !this.feature.hasIntroduction;
-    }
-
     toggleTranslationExpanded() {
         this.translationExpanded = !this.translationExpanded;
-    }
-
-    toggleIntroductionExpanded() {
-        this.introductionExpanded = !this.introductionExpanded;
-    }
-
-    toggleNotes() {
-        this.dispatchUpdates({
-            hasNotes: !this.feature.hasNotes,
-            notesLanguage: this.feature.notesLanguage || this.feature.language,
-            notesDescription: '',
-            notesAuthors: []
-        });
-        this.notesExpanded = !this.feature.hasNotes;
-    }
-
-    toggleNotesExpanded() {
-        this.notesExpanded = !this.notesExpanded;
     }
 }
