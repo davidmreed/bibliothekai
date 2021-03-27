@@ -4,6 +4,7 @@ import { getRecord } from 'bib/drf';
 export default class TranslationEditor extends LightningElement {
     @api features;
     selectedText;
+    translationExpanded = true;
 
     get partialValue() {
         return this.features.translation.partial.toString();
@@ -19,7 +20,7 @@ export default class TranslationEditor extends LightningElement {
     }
 
     async renderedCallback() {
-        if (!this.generalFeature && this.translationExpanded) {
+        if (this.translationExpanded) {
             // Not sure why these do not bind correctly. Order of operations?
             this.template.querySelector(
                 '.format-picklist'
@@ -33,21 +34,10 @@ export default class TranslationEditor extends LightningElement {
         }
     }
 
-    dispatchUpdate(field, newValue) {
-        let updates = {};
-        updates[field] = newValue;
-        this.dispatchUpdates(updates);
-    }
-
-    dispatchUpdates(updates) {
-        let newFeature = this.features.clone();
-        for (const key in updates) {
-            if (Object.prototype.hasOwnProperty.call(updates, key)) {
-                newFeature[key] = updates[key];
-            }
-        }
-
-        this.dispatchEvent(new CustomEvent('change', { detail: newFeature }));
+    dispatchUpdate(prop, value) {
+        let update = {};
+        update[prop] = value;
+        this.dispatchEvent(new CustomEvent('update', { detail: update }));
     }
 
     async changeText(event) {
@@ -56,52 +46,46 @@ export default class TranslationEditor extends LightningElement {
         this.selectedText = await getRecord('texts', event.detail);
     }
 
-    changeLanguage(event) {
-        event.stopPropagation();
-        this.dispatchUpdate('language', event.detail);
-    }
-
-    changeNotesLanguage(event) {
-        event.stopPropagation();
-        this.dispatchUpdate('notesLanguage', event.detail);
-    }
-
-    changeIntroLanguage(event) {
-        event.stopPropagation();
-        this.dispatchUpdate('introLanguage', event.detail);
-    }
-
-    changePersons(event) {
-        this.dispatchUpdate('authors', event.detail);
-    }
-
-    changeIntroPersons(event) {
-        this.dispatchUpdate('introAuthors', event.detail);
-    }
-
-    changeNotesPersons(event) {
-        this.dispatchUpdate('notesAuthors', event.detail);
-    }
-
     handleChange(event) {
-        const field = event.target.name;
         event.stopPropagation();
-
-        if (field === 'title') {
-            this.dispatchUpdate('title', event.target.value);
-        } else if (field === 'description') {
-            this.dispatchUpdate('description', event.target.value);
-        } else if (field === 'format') {
-            this.dispatchUpdate('format', event.target.value);
-        } else if (field === 'partial') {
-            this.dispatchUpdate('partial', event.target.value === 'true');
-        } else if (field === 'sample') {
-            this.dispatchUpdate('samplePassage', event.target.value);
-        }
+        this.dispatchUpdate(event.target.name, event.target.value);
     }
 
-    handleSingleFeatureChange() {
-        // FIXME: implement
+    handleChangeBoolean(event) {
+        event.stopPropagation();
+        this.dispatchUpdate(event.target.name, event.target.value === 'true');
+    }
+
+    handleChangeDetail(event) {
+        event.stopPropagation();
+        this.dispatchUpdate(event.target.dataset.name, event.detail);
+    }
+
+    handleFeatureSwitchChange(event) {
+        // TODO: figure out a new way to do this, probably different custom events.
+
+        event.stopPropagation();
+
+        let desiredFeature = event.target.name;
+        let newFeatures = this.features.clone();
+
+        if (newFeatures.hasFeature(desiredFeature)) {
+            newFeatures.removeFeature(desiredFeature);
+        } else {
+            newFeatures.addFeature(event.target.name, true);
+        }
+
+        this.dispatchEvent(new CustomEvent('change', { detail: newFeatures }));
+    }
+
+    handleSingleFeatureChange(event) {
+        event.stopPropagation();
+
+        let detail = event.detail;
+        detail.path = (detail.path || []);
+        detail.path.push(event.target.dataset.path);
+
+        this.dispatchEvent('update', { detail: detail });
     }
 
     handleAddPerson() {

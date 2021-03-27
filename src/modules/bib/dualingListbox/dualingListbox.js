@@ -59,6 +59,7 @@ export default class DualingListbox extends LightningElement {
     }
 
     update() {
+        debugger;
         this.availableEntities = this.entities.filter(
             (f) => !this.value.includes(f.id)
         );

@@ -16,6 +16,10 @@ export class Feature {
         return !!this.authors.length && !!this.language;
     }
 
+    get isTranslation() {
+        return this.feature === 'Translation';
+    }
+
     clone() {
         let newFeature = Object.assign(new Feature(), this);
         newFeature.authors = [...this.authors];
@@ -31,7 +35,7 @@ export class TranslationFeature extends Feature {
     title = '';
 
     constructor(uiExpanded) {
-        super('TR', uiExpanded);
+        super('Translation', uiExpanded);
     }
 
     get isValid() {
@@ -108,7 +112,7 @@ export class Features {
 
     addFeature(ft, uiExpanded) {
         let newFeature =
-            ft === 'TR'
+            ft === 'Translation'
                 ? new TranslationFeature(uiExpanded)
                 : new Feature(ft, uiExpanded);
 

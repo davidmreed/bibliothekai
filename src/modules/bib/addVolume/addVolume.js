@@ -70,24 +70,29 @@ export default class AddVolume extends LightningElement {
         this.generalFeatures.language = event.detail;
     }
 
-    handleFeatureChange(event) {
-        let newFeature = event.detail;
-        this.features[newFeature.id - 1] = newFeature;
-        if (this.editingFeature) {
-            this.featureToEdit = newFeature;
+    handleNestedPropertyChange(context, detail) {
+        for (let prop of detail) {
+            let elements = context.split('.').concat(prop.split('.'));
+            let cur = this[elements.shift()];
+
+            // eslint-disable-next-line no-constant-condition
+            while (true) {
+                if (elements.length > 1) {
+                    cur = cur[elements.shift()];
+                } else {
+                    cur[elements.shift()] = detail[prop];
+                    break;
+                }
+            }
         }
     }
 
+    handleFeatureChange(event) {
+        this.handleNestedPropertyChange("featureToEdit", event.detail);
+    }
+
     handleSingleFeatureChange(event) {
-        let newFeature = event.detail;
-        let index = this.generalFeatures.features.findIndex(
-            (f) => f.feature === newFeature.feature
-        );
-
-        let newGeneralFeatures = this.generalFeatures.clone();
-        newGeneralFeatures.features.splice(index, 1, newFeature);
-
-        this.generalFeatures = newGeneralFeatures;
+        this.handleNestedPropertyChange(`generalFeatures.${event.target.dataset.path}`, event.detail);
     }
 
     handleFeatureRemove(event) {
@@ -98,27 +103,15 @@ export default class AddVolume extends LightningElement {
     }
 
     handleChange(event) {
-        const field = event.target.name;
-
-        //if (Object.prototype.hasOwnProperty.call(this, field)) {
-        this[field] = event.target.value;
-        //}
+        this[event.target.name] = event.target.value;
     }
 
     handleChangeDetail(event) {
-        const field = event.target.dataset.name;
-
-        //if (Object.prototype.hasOwnProperty.call(this.prototype, field)) {
-        this[field] = `${event.detail}`;
-        //}
+        this[event.target.dataset.name] = `${event.detail}`; // FIXME: this is wrong except for integer relationship fields.
     }
 
     handleChangeBoolean(event) {
-        const field = event.target.name;
-
-        //if (Object.prototype.hasOwnProperty.call(this, field)) {
-        this[field] = event.target.value === 'true';
-        //}
+        this[event.target.name] = event.target.value === 'true';
     }
 
     handleFeatureSwitchChange(event) {
@@ -193,6 +186,8 @@ export default class AddVolume extends LightningElement {
         if (this.primaryLanguage) {
             newFeature.defaultLanguage = this.primaryLanguage;
         }
+        newFeature.addFeature("Translation");
+
         this.features.push(newFeature);
         this.featureToEdit = newFeature;
         this.editingFeature = true;

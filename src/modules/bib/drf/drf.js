@@ -193,9 +193,6 @@ export function sortRecordsByGetter(getter, ascending, a, b) {
 }
 
 export function getNestedProp(record, prop) {
-    if (!prop) {
-        console.log(`Got undefined prop with record ${JSON.stringify(record)}`);
-    }
     let elements = prop.split('.');
     let cur = record;
 

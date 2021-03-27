@@ -16,12 +16,9 @@ export default class SingleFeatureEditor extends LightningElement {
     }
 
     postUpdate(prop, value) {
-        //if (Object.prototype.hasOwnProperty.call(this.feature, prop)) {
-        let newFeature = this.feature.clone();
-
-        newFeature[prop] = value;
-        this.dispatchEvent(new CustomEvent('change', { detail: newFeature }));
-        //}
+        let update = {};
+        update[prop] = value;
+        this.dispatchEvent(new CustomEvent('update', { detail: update }));
     }
 
     handleChangeValueInvert(event) {

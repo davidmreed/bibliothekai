@@ -307,8 +307,8 @@
                     <bib-single-feature-editor
                         key={f.feature}
                         feature={f}
-                        data-feature={f.feature}
-                        onchange={handleSingleFeatureChange}
+                        data-path={f.feature}
+                        onupdate={handleSingleFeatureChange}
                     ></bib-single-feature-editor>
                 </template>
             </div>
@@ -339,7 +339,7 @@
         <bib-translation-editor
             class="feature-editor"
             features={featureToEdit}
-            onchange={handleFeatureChange}
+            onupdate={handleFeatureChange}
             onsave={toggleEditingFeature}
             onaddperson={toggleAddingPerson}
         >
