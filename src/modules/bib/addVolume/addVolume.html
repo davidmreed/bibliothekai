@@ -4,10 +4,7 @@
             <h2>
                 Publication Details
                 <template if:false={detailsExpanded}>
-                    <button
-                        class="float-right btn btn-outline-primary"
-                        onclick={toggleDetails}
-                    >
+                    <button class="float-right btn btn-outline-primary" onclick={toggleDetails}>
                         Edit
                     </button>
                 </template>
@@ -24,27 +21,16 @@
                             <div class="form-row">
                                 <div class="col-6">
                                     <label for="title">Title</label>
-                                    <input
-                                        class="form-control"
-                                        name="title"
-                                        placeholder="Title"
-                                        type="text"
-                                        value={title}
-                                        onchange={handleChange}
-                                        required
-                                    />
+                                    <input class="form-control" name="title" placeholder="Title" type="text"
+                                        value={title} onchange={handleChange} required />
                                     <div class="invalid-feedback">
                                         Please enter a title.
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <bib-pop-up-menu
-                                        label-text="Primary Language"
-                                        entity-name="languages"
-                                        allow-add="false"
-                                        onchange={handlePrimaryLanguageChange}
-                                        value={primaryLanguage}
-                                    >
+                                    <bib-pop-up-menu label-text="Primary Language" entity-name="languages"
+                                        allow-add="false" onchange={handlePrimaryLanguageChange}
+                                        value={primaryLanguage}>
                                     </bib-pop-up-menu>
                                     <small class="text-muted">
                                         Language of the majority of this volume.
@@ -54,46 +40,26 @@
                             </div>
                             <div class="form-row">
                                 <div class="col">
-                                    <bib-pop-up-menu
-                                        label-text="Publisher"
-                                        class="publisher-popup"
-                                        entity-name="publishers"
-                                        allow-add="true"
-                                        onchange={handleChangeDetail}
-                                        onadd={toggleAddingPublisher}
-                                        value={publisher}
-                                        data-name="publisher"
-                                    >
+                                    <bib-pop-up-menu label-text="Publisher" class="publisher-popup"
+                                        entity-name="publishers" allow-add="true" onchange={handleChangeDetail}
+                                        onadd={toggleAddingPublisher} value={publisher} data-name="publisher">
                                     </bib-pop-up-menu>
                                     <div class="invalid-feedback">
                                         Please select or create a publisher.
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <bib-pop-up-menu
-                                        label-text="Series"
-                                        class="series-popup"
-                                        entity-name="series"
-                                        allow-add="true"
-                                        onchange={handleChangeDetail}
-                                        onadd={toggleAddingSeries}
-                                        value={series}
-                                        data-name="series"
-                                    >
+                                    <bib-pop-up-menu label-text="Series" class="series-popup" entity-name="series"
+                                        allow-add="true" onchange={handleChangeDetail} onadd={toggleAddingSeries}
+                                        value={series} data-name="series">
                                     </bib-pop-up-menu>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col">
                                     <label for="date">Publication Date</label>
-                                    <input
-                                        class="form-control"
-                                        name="published_date"
-                                        type="date"
-                                        value={published_date}
-                                        onchange={handleChange}
-                                        required
-                                    />
+                                    <input class="form-control" name="published_date" type="date" value={published_date}
+                                        onchange={handleChange} required />
                                     <small class="text-muted">
                                         If only a year is present, use January
                                         1.
@@ -104,40 +70,20 @@
                                 </div>
                                 <div class="col">
                                     <label for="isbn">ISBN</label>
-                                    <input
-                                        class="form-control"
-                                        name="isbn"
-                                        placeholder="Optional: ISBN, if present"
-                                        type="text"
-                                        value={isbn}
-                                        onchange={handleChange}
-                                    />
+                                    <input class="form-control" name="isbn" placeholder="Optional: ISBN, if present"
+                                        type="text" value={isbn} onchange={handleChange} />
                                 </div>
                             </div>
                             <label for="description">Description</label>
-                            <textarea
-                                class="form-control"
-                                name="description"
+                            <textarea class="form-control" name="description"
                                 placeholder="Optional: describe unique features of this volume, such as maps, indices, and other supporting material. Record translations, introductions, and notes below."
-                                type="text"
-                                value={description}
-                                onchange={handleChange}
-                            ></textarea>
+                                type="text" value={description} onchange={handleChange}></textarea>
                             <label for="link">Website</label>
-                            <input
-                                class="form-control"
-                                name="link"
-                                placeholder="Optional: link to book on publisher's website"
-                                type="url"
-                                value={link}
-                                onchange={handleChange}
-                            />
+                            <input class="form-control" name="link"
+                                placeholder="Optional: link to book on publisher's website" type="url" value={link}
+                                onchange={handleChange} />
                         </div>
-                        <button
-                            type="submit"
-                            class="btn btn-outline-primary btn-block mb-3"
-                            onclick={toggleDetails}
-                        >
+                        <button type="submit" class="btn btn-outline-primary btn-block mb-3" onclick={toggleDetails}>
                             Done with Details
                         </button>
                     </form>
@@ -154,10 +100,7 @@
             <h3 class="mt-3">
                 Translations
                 <div class="float-right">
-                    <button
-                        class="btn btn-outline-primary"
-                        onclick={addTranslation}
-                    >
+                    <button class="btn btn-outline-primary" onclick={addTranslation}>
                         Add
                     </button>
                 </div>
@@ -170,13 +113,8 @@
             <div class="translations">
                 <template for:each={features} for:item="item">
                     <div class="mb-2" key={item.id}>
-                        <bib-feature-display
-                            class="feature-display"
-                            feature={item}
-                            data-item={item.id}
-                            onedit={handleFeatureEdit}
-                            onremove={handleFeatureRemove}
-                        >
+                        <bib-feature-display class="feature-display" feature={item} data-item={item.id}
+                            onedit={handleFeatureEdit} onremove={handleFeatureRemove}>
                         </bib-feature-display>
                     </div>
                 </template>
@@ -201,98 +139,49 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-general-introduction"
-                                            data-feature="introduction"
-                                            onchange={handleFeatureSwitchChange}
-                                            value={features.hasIntroduction}
-                                            name="Introduction"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-general-introduction"
-                                        >
+                                        <input type="checkbox" class="custom-control-input"
+                                            id="checkbox-general-introduction" data-feature="introduction"
+                                            onchange={handleFeatureSwitchChange} value={features.hasIntroduction}
+                                            name="Introduction" />
+                                        <label class="custom-control-label" for="checkbox-general-introduction">
                                             General Introduction
                                         </label>
                                     </div>
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-glossary"
-                                            onchange={handleChangeBoolean}
-                                            value={feature_glossary}
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-glossary"
-                                        >
+                                        <input type="checkbox" class="custom-control-input" id="checkbox-glossary"
+                                            onchange={handleChangeBoolean} value={feature_glossary} />
+                                        <label class="custom-control-label" for="checkbox-glossary">
                                             Glossary
                                         </label>
                                     </div>
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-index"
-                                            onchange={handleChangeBoolean}
-                                            checked={feature_index}
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-index"
-                                        >
+                                        <input type="checkbox" class="custom-control-input" id="checkbox-index"
+                                            onchange={handleChangeBoolean} checked={feature_index} />
+                                        <label class="custom-control-label" for="checkbox-index">
                                             Index
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-general-notes"
-                                            data-feature="notes"
-                                            onchange={handleFeatureSwitchChange}
-                                            value={features.hasNotes}
-                                            name="Notes"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-general-notes"
-                                        >
+                                        <input type="checkbox" class="custom-control-input" id="checkbox-general-notes"
+                                            data-feature="notes" onchange={handleFeatureSwitchChange}
+                                            value={features.hasNotes} name="Notes" />
+                                        <label class="custom-control-label" for="checkbox-general-notes">
                                             General Notes
                                         </label>
                                     </div>
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-bibliography"
-                                            onchange={handleChangeBoolean}
-                                            checked={feature_bibliography}
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-bibliography"
-                                        >
+                                        <input type="checkbox" class="custom-control-input" id="checkbox-bibliography"
+                                            onchange={handleChangeBoolean} checked={feature_bibliography} />
+                                        <label class="custom-control-label" for="checkbox-bibliography">
                                             Bibliography
                                         </label>
                                     </div>
                                     <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-maps"
-                                            onchange={handleChangeBoolean}
-                                            value={feature_maps}
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-maps"
-                                        >
+                                        <input type="checkbox" class="custom-control-input" id="checkbox-maps"
+                                            onchange={handleChangeBoolean} value={feature_maps} />
+                                        <label class="custom-control-label" for="checkbox-maps">
                                             Maps
                                         </label>
                                     </div>
@@ -304,21 +193,14 @@
             </div>
             <div class="volume-features">
                 <template for:each={generalFeatures.features} for:item="f">
-                    <bib-single-feature-editor
-                        key={f.feature}
-                        feature={f}
-                        data-path={f.feature}
-                        onupdate={handleSingleFeatureChange}
-                    ></bib-single-feature-editor>
+                    <bib-single-feature-editor key={f.feature} feature={f} onupdate={handleSingleFeatureChange}>
+                    </bib-single-feature-editor>
                 </template>
             </div>
             <hr />
             <small class="text-danger form-validity mb-2">{error}</small>
             <div class="status text-center mb-2 d-none">
-                <div
-                    class="spinner-grow spinner-grow-sm mr-2"
-                    role="status"
-                ></div>
+                <div class="spinner-grow spinner-grow-sm mr-2" role="status"></div>
                 Creating records...
             </div>
             <button class="btn btn-primary btn-block mb-3" onclick={create}>
@@ -328,29 +210,18 @@
     </template>
     <template if:true={showingTranslationModal}>
         <h4>
-            <button
-                class="btn btn-outline-secondary mr-3"
-                onclick={toggleEditingFeature}
-            >
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleEditingFeature}>
                 &lt; Back
             </button>
             Editing Translation
         </h4>
-        <bib-translation-editor
-            class="feature-editor"
-            features={featureToEdit}
-            onupdate={handleFeatureChange}
-            onsave={toggleEditingFeature}
-            onaddperson={toggleAddingPerson}
-        >
+        <bib-translation-editor class="feature-editor" features={featureToEdit} onupdate={handleFeatureChange}
+            onsave={toggleEditingFeature} onaddperson={toggleAddingPerson}>
         </bib-translation-editor>
     </template>
     <template if:true={addingPublisher}>
         <h4>
-            <button
-                class="btn btn-outline-secondary mr-3"
-                onclick={toggleAddingPublisher}
-            >
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleAddingPublisher}>
                 &lt; Back
             </button>
             Adding New Publisher
@@ -359,10 +230,7 @@
     </template>
     <template if:true={addingSeries}>
         <h4>
-            <button
-                class="btn btn-outline-secondary mr-3"
-                onclick={toggleAddingSeries}
-            >
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleAddingSeries}>
                 &lt; Back
             </button>
             Adding New Series
@@ -371,10 +239,7 @@
     </template>
     <template if:true={addingPerson}>
         <h4>
-            <button
-                class="btn btn-outline-secondary mr-3"
-                onclick={toggleAddingPerson}
-            >
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleAddingPerson}>
                 &lt; Back
             </button>
             Adding New Person

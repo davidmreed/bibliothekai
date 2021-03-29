@@ -5,7 +5,7 @@ export default class AddPublishedReview extends LightningElement {
     title = '';
     location = '';
     source = '';
-    published_date = '';
+    date = '';
     link = '';
     addingPerson = false;
     persons = [];
@@ -29,26 +29,7 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     handleChange(event) {
-        const field = event.target.name;
-        if (field === 'title') {
-            this.title = event.target.value;
-        } else if (field === 'location') {
-            this.location = event.target.value;
-        } else if (field === 'date') {
-            this.published_date = event.target.value;
-        } else if (field === 'link') {
-            this.link = event.target.value;
-        } else if (field === 'source') {
-            this.source = event.target.value;
-        }
-    }
-
-    handleChangeVolumes(event) {
-        this.volumes = event.detail;
-    }
-
-    handleChangePersons(event) {
-        this.persons = event.detail;
+        this[event.target.name] = event.target.value;
     }
 
     checkValidity() {
@@ -82,7 +63,7 @@ export default class AddPublishedReview extends LightningElement {
         let record = {
             volumes: this.volumes.map((v) => getRecordApiUrl('volumes', v)),
             persons: this.persons.map((p) => getRecordApiUrl('persons', p)),
-            published_date: this.published_date,
+            published_date: this.date,
             title: this.title,
             location: `${this.source}, ${this.location}`
         };

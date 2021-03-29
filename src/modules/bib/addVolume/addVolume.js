@@ -6,6 +6,7 @@ import {
     getRecordsFromApi
 } from 'bib/drf';
 import { Features } from 'bib/feature';
+import { setNestedProperty } from 'bib/utils';
 
 export default class AddVolume extends LightningElement {
     // Data fields
@@ -31,8 +32,11 @@ export default class AddVolume extends LightningElement {
     detailsExpanded = true;
 
     // Feature storage
-    @track features = [];
+    @track
+    features = [];
+    @track
     generalFeatures = new Features(-1);
+    @track
     featureToEdit;
 
     error;
@@ -70,29 +74,19 @@ export default class AddVolume extends LightningElement {
         this.generalFeatures.language = event.detail;
     }
 
-    handleNestedPropertyChange(context, detail) {
-        for (let prop of detail) {
-            let elements = context.split('.').concat(prop.split('.'));
-            let cur = this[elements.shift()];
-
-            // eslint-disable-next-line no-constant-condition
-            while (true) {
-                if (elements.length > 1) {
-                    cur = cur[elements.shift()];
-                } else {
-                    cur[elements.shift()] = detail[prop];
-                    break;
-                }
-            }
-        }
-    }
-
     handleFeatureChange(event) {
-        this.handleNestedPropertyChange("featureToEdit", event.detail);
+        let feature = event.target.features;
+
+        this.features.splice(
+            this.features.findIndex((f) => f.id === feature.id),
+            1,
+            feature
+        );
+        this.features = [...this.features];
     }
 
     handleSingleFeatureChange(event) {
-        this.handleNestedPropertyChange(`generalFeatures.${event.target.dataset.path}`, event.detail);
+        this.generalFeatures.replaceFeature(event.target.feature);
     }
 
     handleFeatureRemove(event) {

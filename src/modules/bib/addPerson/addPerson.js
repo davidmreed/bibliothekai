@@ -8,16 +8,7 @@ export default class AddPerson extends LightningElement {
     description = '';
 
     handleChange(event) {
-        const field = event.target.name;
-        if (field === 'first_name') {
-            this.firstName = event.target.value;
-        } else if (field === 'middle_name') {
-            this.middleName = event.target.value;
-        } else if (field === 'last_name') {
-            this.lastName = event.target.value;
-        } else if (field === 'description') {
-            this.description = event.target.value;
-        }
+        this[event.target.name] = event.target.value;
     }
 
     checkValidity() {

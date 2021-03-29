@@ -127,6 +127,10 @@ export class Features {
         this.features = this.features.filter((f) => f.feature !== ft);
     }
 
+    replaceFeature(ft) {
+        this.features.splice(this.features.findIndex(f => f.feature === ft.feature), 1, ft);
+    }
+
     clone() {
         let newFeature = Object.assign(new Features(this.id), this);
         newFeature.features = this.features.map((f) => f.clone());

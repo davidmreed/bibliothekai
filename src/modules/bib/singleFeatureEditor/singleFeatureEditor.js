@@ -1,7 +1,16 @@
 import { LightningElement, api } from 'lwc';
 
 export default class SingleFeatureEditor extends LightningElement {
-    @api feature;
+    _feature;
+
+    @api
+    set feature(f) {
+        this._feature = f.clone();
+    }
+
+    get feature() {
+        return this._feature;
+    }
 
     get isValid() {
         return this.feature.isValid;
@@ -16,9 +25,8 @@ export default class SingleFeatureEditor extends LightningElement {
     }
 
     postUpdate(prop, value) {
-        let update = {};
-        update[prop] = value;
-        this.dispatchEvent(new CustomEvent('update', { detail: update }));
+        this._feature[prop] = value;
+        this.dispatchEvent(new CustomEvent('update'));
     }
 
     handleChangeValueInvert(event) {

@@ -1,10 +1,21 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 import { getRecord } from 'bib/drf';
+import { setNestedProperty } from 'bib/utils';
 
 export default class TranslationEditor extends LightningElement {
-    @api features;
+    @track _features;
+
     selectedText;
     translationExpanded = true;
+
+    @api
+    set features(f) {
+        this._features = f;
+    }
+
+    get features() {
+        return this._features;
+    }
 
     get partialValue() {
         return this.features.translation.partial.toString();
@@ -35,9 +46,8 @@ export default class TranslationEditor extends LightningElement {
     }
 
     dispatchUpdate(prop, value) {
-        let update = {};
-        update[prop] = value;
-        this.dispatchEvent(new CustomEvent('update', { detail: update }));
+        setNestedProperty(this._features, prop, value);
+        this.dispatchEvent(new CustomEvent('update'));
     }
 
     async changeText(event) {
@@ -62,30 +72,25 @@ export default class TranslationEditor extends LightningElement {
     }
 
     handleFeatureSwitchChange(event) {
-        // TODO: figure out a new way to do this, probably different custom events.
-
         event.stopPropagation();
 
         let desiredFeature = event.target.name;
-        let newFeatures = this.features.clone();
 
-        if (newFeatures.hasFeature(desiredFeature)) {
-            newFeatures.removeFeature(desiredFeature);
+        if (this._features.hasFeature(desiredFeature)) {
+            this._features.removeFeature(desiredFeature);
         } else {
-            newFeatures.addFeature(event.target.name, true);
+            this._features.addFeature(desiredFeature, true);
         }
 
-        this.dispatchEvent(new CustomEvent('change', { detail: newFeatures }));
+        this.dispatchEvent(new CustomEvent('update'));
     }
 
     handleSingleFeatureChange(event) {
         event.stopPropagation();
 
-        let detail = event.detail;
-        detail.path = (detail.path || []);
-        detail.path.push(event.target.dataset.path);
-
-        this.dispatchEvent('update', { detail: detail });
+        let f = event.target.feature;
+        this._features.replaceFeature(f);
+        this.dispatchEvent('update');
     }
 
     handleAddPerson() {

@@ -11,25 +11,35 @@ export default class PopUpMenu extends LightningElement {
             this.setErrorStatus(error);
         }
         // Handle race condition between setting value and loading entities.
-        this.template.querySelector('.entities').value = this.value;
+        this.selectElement.value = this.value;
         this.template.querySelector('.spinner-grow').classList.add('d-none');
     }
     entities = [];
     @api entityName;
     @api allowAdd;
     @api labelText;
-    @api value;
+
     error;
+    _value;
+
+    @api
+    set value(v) {
+        this._value = v;
+    }
+
+    get value() {
+        return this._value;
+    }
 
     get selectedId() {
-        return Array.from(
-            this.template.querySelector('.entities').selectedOptions
-        ).map((f) => (f === '' ? '' : Number(f.value)))[0];
+        return Array
+            .from(this.selectElement.selectedOptions)
+            .map((f) => (f === '' ? '' : Number(f.value)))[0];
     }
 
     renderedCallback() {
         // Handle race condition between setting value and loading entities.
-        this.template.querySelector('.entities').value = this.value;
+        this.selectElement.value = this.value;
     }
 
     get shouldAllowAdd() {
@@ -43,11 +53,8 @@ export default class PopUpMenu extends LightningElement {
         this.dispatchEvent(new CustomEvent('add'));
     }
 
-    handleChange(event) {
-        event.stopPropagation();
-        this.dispatchEvent(
-            new CustomEvent('change', { detail: this.selectedId })
-        );
+    handleChange() {
+        this._value = this.selectedId;
     }
 
     setErrorStatus(message) {

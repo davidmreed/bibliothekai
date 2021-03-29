@@ -59,7 +59,6 @@ export default class DualingListbox extends LightningElement {
     }
 
     update() {
-        debugger;
         this.availableEntities = this.entities.filter(
             (f) => !this.value.includes(f.id)
         );
@@ -84,27 +83,22 @@ export default class DualingListbox extends LightningElement {
     }
 
     moveRight() {
-        this.dispatchEvent(
-            new CustomEvent('change', {
-                detail: this.value.concat(
-                    Array.from(
-                        this.template.querySelector('.entities').selectedOptions
-                    ).map((f) => Number(f.value))
-                )
-            })
-        );
+        this._value = this._value.concat(
+            Array.from(
+                this.template.querySelector('.entities').selectedOptions
+            ).map((f) => Number(f.value))
+        )
+        this.update();
+        this.dispatchEvent(new CustomEvent('change'));
     }
 
     moveLeft() {
         let itemsUnselect = Array.from(
             this.template.querySelector('.selectedEntities').selectedOptions
         ).map((f) => Number(f.value));
-
-        this.dispatchEvent(
-            new CustomEvent('change', {
-                detail: this.value.filter((f) => !itemsUnselect.includes(f))
-            })
-        );
+        this._value = this.value.filter((f) => !itemsUnselect.includes(f))
+        this.update();
+        this.dispatchEvent(new CustomEvent('change'));
     }
 
     add() {

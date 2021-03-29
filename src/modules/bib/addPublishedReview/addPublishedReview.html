@@ -8,89 +8,45 @@
         <form novalidate>
             <div class="form-group">
                 <label for="title">Title</label>
-                <input
-                    class="form-control"
-                    name="title"
-                    placeholder="Title of the review, if any"
-                    type="text"
-                    value={title}
-                    onchange={handleChange}
-                />
+                <input class="form-control" data-name="title" placeholder="Title of the review, if any" type="text"
+                    value={title} onchange={handleChange} />
                 <label for="date">Date</label>
-                <input
-                    class="form-control"
-                    name="date"
-                    type="date"
-                    value={published_date}
-                    onchange={handleChange}
-                    required
-                />
+                <input class="form-control" data-name="date" type="date" value={published_date} onchange={handleChange}
+                    required />
                 <div class="invalid-feedback">
                     Please enter a publication date.
                 </div>
 
                 <label for="location">Publication</label>
-                <input
-                    class="form-control"
-                    name="source"
-                    placeholder="Where was this review published?"
-                    type="text"
-                    value={source}
-                    onchange={handleChange}
-                    required
-                />
+                <input class="form-control" data-name="source" placeholder="Where was this review published?"
+                    type="text" value={source} onchange={handleChange} required />
                 <div class="invalid-feedback">
                     Please enter the source of this review.
                 </div>
 
                 <label for="location">Volume, Issue or Pages</label>
-                <input
-                    class="form-control"
-                    name="location"
-                    placeholder="What volume or issue?"
-                    type="text"
-                    value={location}
-                    onchange={handleChange}
-                    required
-                />
+                <input class="form-control" data-name="location" placeholder="What volume or issue?" type="text"
+                    value={location} onchange={handleChange} required />
                 <div class="invalid-feedback">
                     Please enter the details of the publication.
                 </div>
                 <label for="link">Link</label>
-                <input
-                    class="form-control"
-                    name="link"
-                    type="url"
-                    value={link}
-                    onchange={handleChange}
-                    placeholder="Link, if the review is available online"
-                />
+                <input class="form-control" data-name="link" type="url" value={link} onchange={handleChange}
+                    placeholder="Link, if the review is available online" />
             </div>
         </form>
         <h2>Authors</h2>
         <small class="text-muted">
             Select one or more authors of this review.
         </small>
-        <bib-dualing-listbox
-            class="persons-listbox"
-            entity-name="persons"
-            allow-add="true"
-            onadd={toggleAddingPerson}
-            value={persons}
-            onchange={handleChangePersons}
-        >
+        <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true" onadd={toggleAddingPerson}
+            value={persons} onchange={handleChange} data-name="persons">
         </bib-dualing-listbox>
 
         <h2>Volumes</h2>
-        <small class="text-muted"
-            >Select one or more volumes evaluated in this review.</small
-        >
-        <bib-dualing-listbox
-            class="volumes-listbox"
-            entity-name="volumes"
-            value={volumes}
-            onchange={handleChangeVolumes}
-        >
+        <small class="text-muted">Select one or more volumes evaluated in this review.</small>
+        <bib-dualing-listbox class="volumes-listbox" entity-name="volumes" value={volumes} onchange={handleChange}
+            data-name="volumes">
         </bib-dualing-listbox>
         <hr />
         <small class="text-danger form-validity mb-2">{error}</small>
@@ -100,12 +56,8 @@
     </template>
     <template if:true={addingPerson}>
         <h4>
-            <button
-                class="btn btn-outline-secondary mr-3"
-                onclick={toggleAddingPerson}
-            >
-                &lt; Back</button
-            >Adding New Author
+            <button class="btn btn-outline-secondary mr-3" onclick={toggleAddingPerson}>
+                &lt; Back</button>Adding New Author
         </h4>
         <bib-add-person onsave={personAdded}></bib-add-person>
     </template>
