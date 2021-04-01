@@ -8,7 +8,7 @@ export default class AddPerson extends LightningElement {
     description = '';
 
     handleChange(event) {
-        this[event.target.name] = event.target.value;
+        this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
     checkValidity() {

@@ -29,21 +29,21 @@ export default class SingleFeatureEditor extends LightningElement {
         this.dispatchEvent(new CustomEvent('update'));
     }
 
+    handleChange(event) {
+        event.stopPropagation();
+        this.postUpdate(
+            event.currentTarget.dataset.name,
+            event.currentTarget.value
+        );
+    }
+
     handleChangeValueInvert(event) {
         event.stopPropagation();
 
-        this.postUpdate(event.target.name, !this.feature[event.target.name]);
-    }
-
-    handleChangeDetail(event) {
-        event.stopPropagation();
-
-        this.postUpdate(event.target.dataset.name, event.detail);
-    }
-
-    handleChangeValue(event) {
-        event.stopPropagation();
-        this.postUpdate(event.target.name, event.target.value);
+        this.postUpdate(
+            event.currentTarget.dataset.name,
+            !this._feature[event.currentTarget.dataset.name]
+        );
     }
 
     handleAddPerson() {

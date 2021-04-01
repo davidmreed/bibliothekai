@@ -6,7 +6,7 @@
                 <button
                     class="float-right btn btn-sm btn-outline-secondary"
                     onclick={handleChangeValueInvert}
-                    name="uiExpanded"
+                    data-name="uiExpanded"
                     value={feature.uiExpanded}
                 >
                     {buttonTitle}
@@ -22,7 +22,7 @@
                     label-text="Language"
                     entity-name="languages"
                     allow-add="false"
-                    onchange={handleChangeDetail}
+                    onchange={handleChange}
                     value={feature.language}
                     data-name="language"
                 >
@@ -31,7 +31,7 @@
                 <bib-dualing-listbox
                     entity-name="persons"
                     value={feature.persons}
-                    onchange={handleChangeDetail}
+                    onchange={handleChange}
                     allow-add="true"
                     onadd={handleAddPerson}
                     data-name="persons"
@@ -40,7 +40,7 @@
                     class="btn btn-sm btn-outline-primary btn-block mb-3"
                     onclick={handleChangeValueInvert}
                     value={feature.uiExpanded}
-                    name="uiExpanded"
+                    data-name="uiExpanded"
                 >
                     Done with Resource
                 </button>

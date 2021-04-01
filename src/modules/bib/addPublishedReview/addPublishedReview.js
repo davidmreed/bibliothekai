@@ -29,7 +29,7 @@ export default class AddPublishedReview extends LightningElement {
     }
 
     handleChange(event) {
-        this[event.target.name] = event.target.value;
+        this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
     checkValidity() {

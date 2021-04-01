@@ -6,7 +6,6 @@ import {
     getRecordsFromApi
 } from 'bib/drf';
 import { Features } from 'bib/feature';
-import { setNestedProperty } from 'bib/utils';
 
 export default class AddVolume extends LightningElement {
     // Data fields
@@ -70,12 +69,12 @@ export default class AddVolume extends LightningElement {
     // ---------------
 
     handlePrimaryLanguageChange(event) {
-        this.primaryLanguage = event.detail;
+        this.primaryLanguage = event.target.value;
         this.generalFeatures.language = event.detail;
     }
 
     handleFeatureChange(event) {
-        let feature = event.target.features;
+        let feature = event.currentTarget.features;
 
         this.features.splice(
             this.features.findIndex((f) => f.id === feature.id),
@@ -86,7 +85,7 @@ export default class AddVolume extends LightningElement {
     }
 
     handleSingleFeatureChange(event) {
-        this.generalFeatures.replaceFeature(event.target.feature);
+        this.generalFeatures.replaceFeature(event.currentTarget.feature);
     }
 
     handleFeatureRemove(event) {
@@ -97,15 +96,12 @@ export default class AddVolume extends LightningElement {
     }
 
     handleChange(event) {
-        this[event.target.name] = event.target.value;
-    }
-
-    handleChangeDetail(event) {
-        this[event.target.dataset.name] = `${event.detail}`; // FIXME: this is wrong except for integer relationship fields.
+        // FIXME: Events are not being correctly retargeted outside the shadow DOM.
+        this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
     handleChangeBoolean(event) {
-        this[event.target.name] = event.target.value === 'true';
+        this[event.currentTarget.name] = event.currentTarget.value === 'true';
     }
 
     handleFeatureSwitchChange(event) {
@@ -180,7 +176,7 @@ export default class AddVolume extends LightningElement {
         if (this.primaryLanguage) {
             newFeature.defaultLanguage = this.primaryLanguage;
         }
-        newFeature.addFeature("Translation");
+        newFeature.addFeature('Translation');
 
         this.features.push(newFeature);
         this.featureToEdit = newFeature;
@@ -232,7 +228,7 @@ export default class AddVolume extends LightningElement {
     // Validation
     // ----------
 
-    validateDetails() {
+    get detailsValid() {
         if (this.detailsExpanded) {
             let form = this.template.querySelector('form');
             let status = form.checkValidity();
@@ -265,7 +261,7 @@ export default class AddVolume extends LightningElement {
 
     checkValidity() {
         let totalValid =
-            this.validateDetails() &&
+            this.detailsValid &&
             this.generalFeatures.isValid &&
             this.features.isValid;
 

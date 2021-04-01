@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import { getRecord } from 'bib/drf';
-import { setNestedProperty } from 'bib/utils';
+import setNestedProperty from 'bib/utils';
 
 export default class TranslationEditor extends LightningElement {
     @track _features;
@@ -52,23 +52,24 @@ export default class TranslationEditor extends LightningElement {
 
     async changeText(event) {
         event.stopPropagation();
-        this.dispatchUpdate('text', event.detail);
-        this.selectedText = await getRecord('texts', event.detail);
+        this.dispatchUpdate('text', event.currentTarget.value);
+        this.selectedText = await getRecord('texts', event.currentTarget.value);
     }
 
     handleChange(event) {
         event.stopPropagation();
-        this.dispatchUpdate(event.target.name, event.target.value);
+        this.dispatchUpdate(
+            event.currentTarget.dataset.name,
+            event.currentTarget.value
+        );
     }
 
     handleChangeBoolean(event) {
         event.stopPropagation();
-        this.dispatchUpdate(event.target.name, event.target.value === 'true');
-    }
-
-    handleChangeDetail(event) {
-        event.stopPropagation();
-        this.dispatchUpdate(event.target.dataset.name, event.detail);
+        this.dispatchUpdate(
+            event.target.dataset.name,
+            event.target.value === 'true'
+        );
     }
 
     handleFeatureSwitchChange(event) {

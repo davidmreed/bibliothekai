@@ -6,11 +6,7 @@ export default class AddSeries extends LightningElement {
     error = '';
 
     handleChange(event) {
-        const field = event.target.name;
-
-        if (field === 'name') {
-            this.name = event.target.value;
-        }
+        this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
     checkValidity() {

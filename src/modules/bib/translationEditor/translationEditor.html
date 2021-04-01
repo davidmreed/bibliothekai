@@ -1,41 +1,74 @@
 <template>
     <template if:false={addingPerson}>
         <div>
-            <small class="form-text text-muted validity is-invalid form-control mb-2 d-none">
+            <small
+                class="form-text text-muted validity is-invalid form-control mb-2 d-none"
+            >
             </small>
             <div class="card mb-2">
                 <div class="card-header">
                     <h5 class="card-title">Text Selection</h5>
                 </div>
                 <div class="card-body">
-                    <bib-pop-up-menu entity-name="texts" allow-add="false" onchange={changeText} value={features.text}>
+                    <bib-pop-up-menu
+                        entity-name="texts"
+                        allow-add="false"
+                        onchange={changeText}
+                        value={features.text}
+                        data-name="text"
+                    >
                     </bib-pop-up-menu>
                     <div class="row">
                         <div class="col">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="checkbox-facing-text"
-                                    data-feature="facingtext" onchange={handleChange}
-                                    value={features.translation.has_facing_text} name="translation.has_facing_text" />
-                                <label class="custom-control-label" for="checkbox-facing-text">
+                                <input
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    id="checkbox-facing-text"
+                                    onchange={handleChange}
+                                    value={features.translation.has_facing_text}
+                                    data-name="translation.has_facing_text"
+                                />
+                                <label
+                                    class="custom-control-label"
+                                    for="checkbox-facing-text"
+                                >
                                     Has Facing Text
                                 </label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="checkbox-introduction"
-                                    onchange={handleFeatureSwitchChange} value={features.hasIntroduction}
-                                    name="Introduction" />
-                                <label class="custom-control-label" for="checkbox-introduction">
+                                <input
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    id="checkbox-introduction"
+                                    onchange={handleFeatureSwitchChange}
+                                    value={features.hasIntroduction}
+                                    name="Introduction"
+                                />
+                                <label
+                                    class="custom-control-label"
+                                    for="checkbox-introduction"
+                                >
                                     Has Introduction
                                 </label>
                             </div>
                         </div>
                         <div class="col">
                             <div class="custom-control custom-switch">
-                                <input type="checkbox" class="custom-control-input" id="checkbox-notes"
-                                    onchange={handleFeatureSwitchChange} value={features.hasNotes} name="Notes" />
-                                <label class="custom-control-label" for="checkbox-notes">
+                                <input
+                                    type="checkbox"
+                                    class="custom-control-input"
+                                    id="checkbox-notes"
+                                    onchange={handleFeatureSwitchChange}
+                                    value={features.hasNotes}
+                                    name="Notes"
+                                />
+                                <label
+                                    class="custom-control-label"
+                                    for="checkbox-notes"
+                                >
                                     Has Notes
                                 </label>
                             </div>
@@ -49,7 +82,10 @@
                 <h5 class="card-title">
                     Translation
                     <template if:false={translationExpanded}>
-                        <button class="float-right btn btn-sm btn-outline-primary" onclick={toggleTranslationExpanded}>
+                        <button
+                            class="float-right btn btn-sm btn-outline-primary"
+                            onclick={toggleTranslationExpanded}
+                        >
                             Edit
                         </button>
                     </template>
@@ -60,23 +96,38 @@
                     <div class="form-group">
                         <div class="form-row">
                             <div class="col">
-                                <bib-pop-up-menu label-text="Language" entity-name="languages" allow-add="false"
-                                    onchange={handleChangeDetail} value={features.translation.language}
-                                    data-name="translation.language">
+                                <bib-pop-up-menu
+                                    label-text="Language"
+                                    entity-name="languages"
+                                    allow-add="false"
+                                    onchange={handleChange}
+                                    value={features.translation.language}
+                                    data-name="translation.language"
+                                >
                                 </bib-pop-up-menu>
                             </div>
                             <div class="col">
                                 <label for="format">Format</label>
-                                <select class="form-control format-picklist" name="translation.format" size="1"
-                                    onchange={handleChange} value={features.translation.format}>
+                                <select
+                                    class="form-control format-picklist"
+                                    data-name="translation.format"
+                                    size="1"
+                                    onchange={handleChange}
+                                    value={features.translation.format}
+                                >
                                     <option value="Prose">Prose</option>
                                     <option value="Verse">Verse</option>
                                 </select>
                             </div>
                             <div class="col">
                                 <label for="partial">Coverage</label>
-                                <select class="form-control coverage-picklist" name="translation.partial" size="1"
-                                    onchange={handleChangeBoolean} value={partialValue}>
+                                <select
+                                    class="form-control coverage-picklist"
+                                    data-name="translation.partial"
+                                    size="1"
+                                    onchange={handleChangeBoolean}
+                                    value={partialValue}
+                                >
                                     <option value="false">
                                         Complete translation
                                     </option>
@@ -87,30 +138,54 @@
                             </div>
                         </div>
                         <label for="title">Title</label>
-                        <input class="form-control" name="translation.title" placeholder="Title, if different from text"
-                            type="text" value={features.translation.title} onchange={handleChange} />
+                        <input
+                            class="form-control"
+                            data-name="translation.title"
+                            placeholder="Title, if different from text"
+                            type="text"
+                            value={features.translation.title}
+                            onchange={handleChange}
+                        />
                         <hr />
                         <label for="description">Description</label>
-                        <textarea class="form-control" name="translation.description" placeholder="Description"
-                            type="text" value={features.translation.description} onchange={handleChange}></textarea>
+                        <textarea
+                            class="form-control"
+                            data-name="translation.description"
+                            placeholder="Description"
+                            type="text"
+                            value={features.translation.description}
+                            onchange={handleChange}
+                        ></textarea>
                         <template if:true={hasSamplePassage}>
                             <label for="sample">Sample Passage</label>
-                            <textarea class="form-control" name="translation.samplePassage"
-                                value={features.translation.samplePassage} onchange={handleChange}></textarea>
+                            <textarea
+                                class="form-control"
+                                data-name="translation.samplePassage"
+                                value={features.translation.samplePassage}
+                                onchange={handleChange}
+                            ></textarea>
                             <small class="text-muted">
-                                The sample passage for {selectedText.title}
-                                is {selectedText.sample_passage_spec}.
+                                The sample passage for {selectedText.title} is
+                                {selectedText.sample_passage_spec}.
                             </small>
                         </template>
                         <hr />
                         <label for="authors">Translators</label>
-                        <bib-dualing-listbox class="persons-listbox" entity-name="persons" allow-add="true"
-                            onadd={handleAddPerson} value={features.translation.authors} onchange={handleChangeDetail}
-                            data-name="translation.authors">
+                        <bib-dualing-listbox
+                            class="persons-listbox"
+                            entity-name="persons"
+                            allow-add="true"
+                            onadd={handleAddPerson}
+                            value={features.translation.authors}
+                            onchange={handleChange}
+                            data-name="translation.authors"
+                        >
                         </bib-dualing-listbox>
 
-                        <button class="btn btn-sm btn-outline-primary btn-block mt-3"
-                            onclick={toggleTranslationExpanded}>
+                        <button
+                            class="btn btn-sm btn-outline-primary btn-block mt-3"
+                            onclick={toggleTranslationExpanded}
+                        >
                             Done
                         </button>
                     </div>
@@ -119,7 +194,11 @@
         </div>
         <template for:each={features.features} for:item="f">
             <template if:false={f.isTranslation}>
-                <bib-single-feature-editor key={f.feature} feature={f} onupdate={handleSingleFeatureChange}>
+                <bib-single-feature-editor
+                    key={f.feature}
+                    feature={f}
+                    onupdate={handleSingleFeatureChange}
+                >
                 </bib-single-feature-editor>
             </template>
         </template>
