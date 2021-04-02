@@ -60,7 +60,7 @@
                                         class="publisher-popup"
                                         entity-name="publishers"
                                         allow-add="true"
-                                        onchange={handleChangeDataName}
+                                        onchange={handleChange}
                                         onadd={toggleAddingPublisher}
                                         value={publisher}
                                         data-name="publisher"
@@ -212,7 +212,7 @@
                                             id="checkbox-general-introduction"
                                             data-feature="introduction"
                                             onchange={handleFeatureSwitchChange}
-                                            value={features.hasIntroduction}
+                                            checked={generalFeatures.hasIntroduction}
                                             name="Introduction"
                                         />
                                         <label
@@ -227,8 +227,9 @@
                                             type="checkbox"
                                             class="custom-control-input"
                                             id="checkbox-glossary"
-                                            onchange={handleChangeBoolean}
-                                            value={feature_glossary}
+                                            onchange={handleChangeCheckbox}
+                                            checked={feature_glossary}
+                                            data-name="feature_glossary"
                                         />
                                         <label
                                             class="custom-control-label"
@@ -242,8 +243,9 @@
                                             type="checkbox"
                                             class="custom-control-input"
                                             id="checkbox-index"
-                                            onchange={handleChangeBoolean}
+                                            onchange={handleChangeCheckbox}
                                             checked={feature_index}
+                                            data-name="feature_index"
                                         />
                                         <label
                                             class="custom-control-label"
@@ -261,7 +263,7 @@
                                             id="checkbox-general-notes"
                                             data-feature="notes"
                                             onchange={handleFeatureSwitchChange}
-                                            value={features.hasNotes}
+                                            checked={generalFeatures.hasNotes}
                                             name="Notes"
                                         />
                                         <label
@@ -276,8 +278,9 @@
                                             type="checkbox"
                                             class="custom-control-input"
                                             id="checkbox-bibliography"
-                                            onchange={handleChangeBoolean}
+                                            onchange={handleChangeCheckbox}
                                             checked={feature_bibliography}
+                                            data-name="feature_bibliography"
                                         />
                                         <label
                                             class="custom-control-label"
@@ -291,8 +294,9 @@
                                             type="checkbox"
                                             class="custom-control-input"
                                             id="checkbox-maps"
-                                            onchange={handleChangeBoolean}
-                                            value={feature_maps}
+                                            onchange={handleChangeCheckbox}
+                                            checked={feature_maps}
+                                            data-name="feature_maps"
                                         />
                                         <label
                                             class="custom-control-label"

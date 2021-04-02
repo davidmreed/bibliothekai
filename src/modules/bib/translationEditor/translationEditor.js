@@ -67,8 +67,16 @@ export default class TranslationEditor extends LightningElement {
     handleChangeBoolean(event) {
         event.stopPropagation();
         this.dispatchUpdate(
-            event.target.dataset.name,
-            event.target.value === 'true'
+            event.currentTarget.dataset.name,
+            event.currentTarget.value === 'true'
+        );
+    }
+
+    handleChangeCheckbox(event) {
+        event.stopPropagation();
+        this.dispatchUpdate(
+            event.currentTarget.dataset.name,
+            event.currentTarget.checked
         );
     }
 
@@ -91,7 +99,7 @@ export default class TranslationEditor extends LightningElement {
 
         let f = event.target.feature;
         this._features.replaceFeature(f);
-        this.dispatchEvent('update');
+        this.dispatchEvent(new CustomEvent('update'));
     }
 
     handleAddPerson() {

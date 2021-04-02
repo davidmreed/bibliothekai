@@ -1,7 +1,7 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, track } from 'lwc';
 
 export default class SingleFeatureEditor extends LightningElement {
-    _feature;
+    @track _feature;
 
     @api
     set feature(f) {

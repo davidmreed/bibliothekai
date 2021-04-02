@@ -25,8 +25,8 @@
                                     type="checkbox"
                                     class="custom-control-input"
                                     id="checkbox-facing-text"
-                                    onchange={handleChange}
-                                    value={features.translation.has_facing_text}
+                                    onchange={handleChangeCheckbox}
+                                    checked={features.translation.has_facing_text}
                                     data-name="translation.has_facing_text"
                                 />
                                 <label
@@ -44,7 +44,7 @@
                                     class="custom-control-input"
                                     id="checkbox-introduction"
                                     onchange={handleFeatureSwitchChange}
-                                    value={features.hasIntroduction}
+                                    checked={features.hasIntroduction}
                                     name="Introduction"
                                 />
                                 <label
@@ -62,7 +62,7 @@
                                     class="custom-control-input"
                                     id="checkbox-notes"
                                     onchange={handleFeatureSwitchChange}
-                                    value={features.hasNotes}
+                                    checked={features.hasNotes}
                                     name="Notes"
                                 />
                                 <label

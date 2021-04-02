@@ -85,7 +85,10 @@ export default class AddVolume extends LightningElement {
     }
 
     handleSingleFeatureChange(event) {
-        this.generalFeatures.replaceFeature(event.currentTarget.feature);
+        let newFeatures = this.generalFeatures.clone();
+
+        newFeatures.replaceFeature(event.currentTarget.feature);
+        this.generalFeatures = newFeatures;
     }
 
     handleFeatureRemove(event) {
@@ -100,8 +103,8 @@ export default class AddVolume extends LightningElement {
         this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
-    handleChangeBoolean(event) {
-        this[event.currentTarget.name] = event.currentTarget.value === 'true';
+    handleChangeCheckbox(event) {
+        this[event.currentTarget.dataset.name] = event.currentTarget.checked;
     }
 
     handleFeatureSwitchChange(event) {
@@ -220,7 +223,7 @@ export default class AddVolume extends LightningElement {
     toggleDetails(event) {
         event.preventDefault();
 
-        if (this.validateDetails()) {
+        if (this.detailsValid) {
             this.detailsExpanded = !this.detailsExpanded;
         }
     }
