@@ -69,8 +69,8 @@ export default class AddVolume extends LightningElement {
     // ---------------
 
     handlePrimaryLanguageChange(event) {
-        this.primaryLanguage = event.target.value;
-        this.generalFeatures.language = event.detail;
+        this.primaryLanguage = event.currentTarget.value;
+        this.generalFeatures.language = event.currentTarget.value;
     }
 
     handleFeatureChange(event) {
@@ -138,7 +138,10 @@ export default class AddVolume extends LightningElement {
             published_date: this.published_date,
             publisher: getRecordApiUrl('publishers', this.publisher)
         };
-        for (let prop of ['isbn', 'oclc_number', 'description', 'series']) {
+        if (this.series) {
+            record.series = getRecordApiUrl('series', this.series);
+        }
+        for (let prop of ['isbn', 'oclc_number', 'description']) {
             if (this[prop]) {
                 record[prop] = this[prop];
             }
@@ -266,7 +269,9 @@ export default class AddVolume extends LightningElement {
         let totalValid =
             this.detailsValid &&
             this.generalFeatures.isValid &&
-            this.features.isValid;
+            this.features
+                .map((f) => f.isValid && !!f.text)
+                .reduce((prev, cur) => prev && cur, true);
 
         if (!totalValid) {
             this.error =

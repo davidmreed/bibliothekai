@@ -84,12 +84,14 @@ export default class TranslationEditor extends LightningElement {
         event.stopPropagation();
 
         let desiredFeature = event.target.name;
+        let newFeatures = this._features.clone();
 
-        if (this._features.hasFeature(desiredFeature)) {
-            this._features.removeFeature(desiredFeature);
+        if (newFeatures.hasFeature(desiredFeature)) {
+            newFeatures.removeFeature(desiredFeature);
         } else {
-            this._features.addFeature(desiredFeature, true);
+            newFeatures.addFeature(desiredFeature, true);
         }
+        this._features = newFeatures;
 
         this.dispatchEvent(new CustomEvent('update'));
     }
@@ -98,7 +100,11 @@ export default class TranslationEditor extends LightningElement {
         event.stopPropagation();
 
         let f = event.target.feature;
-        this._features.replaceFeature(f);
+        let newFeatures = this._features.clone();
+
+        newFeatures.replaceFeature(f);
+        this._features = newFeatures;
+
         this.dispatchEvent(new CustomEvent('update'));
     }
 
