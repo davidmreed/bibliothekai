@@ -45,7 +45,7 @@
 
 {% endif %}
 
-{% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps %}
+{% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps or volume.get_general_features.count %}
 <div class="row">
     <div class="col-sm-2">
         <h5>Resources</h5>
@@ -116,7 +116,7 @@
             </h5>
             <p class="card-text mt-4">
                 {{ t.grouper.author.full_name }},
-                {{ t.grouper.language }} {{ t.grouper.get_kind_display | lower }}.
+                {{ t.grouper.language }} {{ t.grouper.get_format_display | lower }}.
                 {% if t.grouper.date %}
                     {{ t.grouper.date }}
                 {% endif %}
@@ -149,7 +149,7 @@
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
             <p class="card-text">
-                Translated into {{ f.language }} {{f.get_kind_display | lower}}.
+                Translated into {{ f.language }} {{f.get_format_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}

@@ -136,7 +136,11 @@ export default class AddVolume extends LightningElement {
         let record = {
             title: this.title,
             published_date: this.published_date,
-            publisher: getRecordApiUrl('publishers', this.publisher)
+            publisher: getRecordApiUrl('publishers', this.publisher),
+            feature_bibliography: this.feature_bibliography,
+            feature_index: this.feature_index,
+            feature_maps: this.feature_maps,
+            feature_glossary: this.feature_glossary
         };
         if (this.series) {
             record.series = getRecordApiUrl('series', this.series);

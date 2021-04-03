@@ -50,7 +50,7 @@
             </a>
         </h5>
         <div class="card-text">
-            <p>{{ s.language }} {{ s.get_kind_display|lower }}. {{ s.date }}</p>
+            <p>{{ s.language }} {{ s.get_format_display|lower }}. {{ s.date }}</p>
         </div>
     </div>
 </div>
@@ -68,7 +68,7 @@
         </h5>
         <div class="card-text">
             <p>
-                Translation into {{ f.language }} {{ f.get_kind_display|lower }}.
+                Translation into {{ f.language }} {{ f.get_format_display|lower }}.
             </p>
             <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
                 ({{f.volume.publisher }}, {{ f.volume.published_date.year }})

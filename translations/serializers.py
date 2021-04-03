@@ -224,6 +224,9 @@ class VolumeSerializer(serializers.ModelSerializer):
     publisher = serializers.HyperlinkedRelatedField(
         queryset=Publisher.objects.all(), view_name="publisher-detail"
     )
+    series = serializers.HyperlinkedRelatedField(
+        queryset=Series.objects.all(), view_name="series-detail"
+    )
 
     class Meta:
         model = Volume
@@ -271,6 +274,8 @@ class TranslationSerializer(serializers.ModelSerializer):
     )
     feature_notes = serializers.BooleanField(source="has_accompanying_notes")
     feature_sample_passage = serializers.BooleanField()
+
+    # FIXME: How are the volume-level features being exposed here?
 
     class Meta:
         model = Feature
