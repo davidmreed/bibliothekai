@@ -7,6 +7,15 @@
             Click New to add a new record.
         </template>
     </small>
+    <input
+        class="form-control mb-2"
+        name="search"
+        type="search"
+        placeholder="Filter"
+        aria-label="Filter"
+        oninput={handleSearch}
+        onchange={handleChange}
+    />
     <small
         class="form-text text-muted validity is-invalid form-control mb-2 d-none"
     >
@@ -14,19 +23,10 @@
     <div class="card-group">
         <div class="card">
             <div class="card-body form-group">
-                <input
-                    class="form-control mb-2"
-                    name="search"
-                    type="search"
-                    placeholder="Filter"
-                    aria-label="Filter"
-                    oninput={handleSearch}
-                    onchange={handleChange}
-                />
                 <select
                     class="entities form-control"
                     name="entities"
-                    size="3"
+                    size="4"
                     multiple
                     onchange={handleChange}
                     ondblclick={moveRight}
@@ -86,7 +86,7 @@
                 <select
                     class="selectedEntities form-control"
                     name="selectedEntities"
-                    size="3"
+                    size="4"
                     multiple
                     onchange={handleChange}
                     ondblclick={moveLeft}
