@@ -1,6 +1,7 @@
 import { LightningElement, track } from 'lwc';
 import {
     createRecord,
+    getRecord,
     getRecordUiUrl,
     getRecordApiUrl,
     getRecordsFromApi
@@ -70,7 +71,7 @@ export default class AddVolume extends LightningElement {
 
     handlePrimaryLanguageChange(event) {
         this.primaryLanguage = event.currentTarget.value;
-        this.generalFeatures.language = event.currentTarget.value;
+        this.generalFeatures.defaultLanguage = event.currentTarget.value;
     }
 
     handleFeatureChange(event) {
@@ -186,7 +187,7 @@ export default class AddVolume extends LightningElement {
         if (this.primaryLanguage) {
             newFeature.defaultLanguage = this.primaryLanguage;
         }
-        newFeature.addFeature('Translation');
+        newFeature.addFeature('Translation', true);
 
         this.features.push(newFeature);
         this.featureToEdit = newFeature;

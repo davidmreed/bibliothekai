@@ -53,6 +53,13 @@ export class TranslationFeature extends Feature {
         super('Translation', uiExpanded);
     }
 
+    clone() {
+        let newFeature = Object.assign(new TranslationFeature(this.uiExpanded), this);
+        newFeature.persons = [...this.persons];
+
+        return newFeature;
+    }
+
     json() {
         let js = super.json();
 
