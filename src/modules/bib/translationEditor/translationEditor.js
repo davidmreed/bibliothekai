@@ -11,7 +11,7 @@ export default class TranslationEditor extends LightningElement {
 
     @api
     set features(f) {
-        this._features = f;
+        this._features = f.clone();
     }
 
     get features() {
