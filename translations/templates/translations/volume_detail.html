@@ -109,8 +109,7 @@ volume.get_general_features.count %}
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ t.grouper.title }} {% if t.grouper.get_original_language_title and
-                t.grouper.get_original_language_title != t.grouper.title %}
+                {{ t.grouper.title }} {% if t.grouper.get_original_language_title and t.grouper.get_original_language_title != t.grouper.title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
                 <a href="{% url 'source_text_detail' t.grouper.id %}"
                     class="float-right btn btn-outline-secondary btn-sm">
