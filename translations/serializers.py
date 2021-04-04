@@ -292,8 +292,6 @@ class TranslationSerializer(serializers.ModelSerializer):
     feature_notes = serializers.BooleanField(source="has_accompanying_notes")
     feature_sample_passage = serializers.BooleanField()
 
-    # FIXME: How are the volume-level features being exposed here?
-
     class Meta:
         model = Feature
         fields = [
