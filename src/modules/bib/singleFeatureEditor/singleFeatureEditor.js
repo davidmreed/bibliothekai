@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class SingleFeatureEditor extends LightningElement {
     @track _feature;
+    @api hasTranslation = false;
 
     @api
     set feature(f) {
@@ -10,6 +11,10 @@ export default class SingleFeatureEditor extends LightningElement {
 
     get feature() {
         return this._feature;
+    }
+
+    get showDetails() {
+        return !(this.hasTranslation && this._feature.sameAsTranslation);
     }
 
     get isValid() {
@@ -34,6 +39,14 @@ export default class SingleFeatureEditor extends LightningElement {
         this.postUpdate(
             event.currentTarget.dataset.name,
             event.currentTarget.value
+        );
+    }
+
+    handleChangeCheckbox(event) {
+        event.stopPropagation();
+        this.postUpdate(
+            event.currentTarget.dataset.name,
+            event.currentTarget.checked
         );
     }
 

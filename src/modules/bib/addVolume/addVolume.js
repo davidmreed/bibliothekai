@@ -1,7 +1,6 @@
 import { LightningElement, track } from 'lwc';
 import {
     createRecord,
-    getRecord,
     getRecordUiUrl,
     getRecordApiUrl,
     getRecordsFromApi
@@ -23,6 +22,9 @@ export default class AddVolume extends LightningElement {
     feature_index = false;
     feature_bibliography = false;
     feature_maps = false;
+
+    // Binding for singleFeatureEditor
+    hasTranslation = false;
 
     // UI state
     addingPerson = false;

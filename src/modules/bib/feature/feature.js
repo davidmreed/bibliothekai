@@ -5,6 +5,7 @@ export class Feature {
     language = '';
     description = '';
     feature = '';
+    sameAsTranslation = false;
     uiExpanded;
 
     constructor(ft, uiExpanded) {
@@ -13,7 +14,9 @@ export class Feature {
     }
 
     get isValid() {
-        return !!this.persons.length && !!this.language;
+        return (
+            (!!this.persons.length && !!this.language) || this.sameAsTranslation
+        );
     }
 
     get isTranslation() {
@@ -27,10 +30,21 @@ export class Feature {
         return newFeature;
     }
 
-    json() {
+    json(translation) {
+        let persons;
+        let language;
+
+        if (!!translation && this.sameAsTranslation) {
+            persons = translation.persons;
+            language = translation.language;
+        } else {
+            persons = this.persons;
+            language = this.language;
+        }
+
         let js = {
-            persons: this.persons.map((a) => getRecordApiUrl('persons', a)),
-            language: getRecordApiUrl('languages', this.language),
+            persons: persons.map((a) => getRecordApiUrl('persons', a)),
+            language: getRecordApiUrl('languages', language),
             feature: this.feature
         };
 
@@ -54,7 +68,10 @@ export class TranslationFeature extends Feature {
     }
 
     clone() {
-        let newFeature = Object.assign(new TranslationFeature(this.uiExpanded), this);
+        let newFeature = Object.assign(
+            new TranslationFeature(this.uiExpanded),
+            this
+        );
         newFeature.persons = [...this.persons];
 
         return newFeature;
@@ -177,7 +194,7 @@ export class Features {
     }
 
     getFeatures(volumeId) {
-        let features = this.features.map((f) => f.json());
+        let features = this.features.map((f) => f.json(this.translation));
         let volumeUrl = getRecordApiUrl('volumes', volumeId);
         let textUrl;
 

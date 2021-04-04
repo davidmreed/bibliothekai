@@ -7,6 +7,7 @@ export default class TranslationEditor extends LightningElement {
 
     selectedText;
     translationExpanded = true;
+    hasTranslation = true; // For binding to singleFeatureEditor
 
     @api
     set features(f) {

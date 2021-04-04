@@ -3,47 +3,70 @@
         <div class="card-header">
             <h5 class="card-title">
                 {feature.feature}
-                <button
-                    class="float-right btn btn-sm btn-outline-secondary"
-                    onclick={handleChangeValueInvert}
-                    data-name="uiExpanded"
-                    value={uiExpanded}
-                >
-                    {buttonTitle}
-                </button>
+                <template if:true={showDetails}>
+                    <button
+                        class="float-right btn btn-sm btn-outline-secondary"
+                        onclick={handleChangeValueInvert}
+                        data-name="uiExpanded"
+                        value={uiExpanded}
+                    >
+                        {buttonTitle}
+                    </button>
+                </template>
             </h5>
         </div>
         <template if:true={isVisible}>
             <div class="card-body">
-                <div>
-                    <small>A language and authors are required.</small>
-                </div>
-                <bib-pop-up-menu
-                    label-text="Language"
-                    entity-name="languages"
-                    allow-add="false"
-                    onchange={handleChange}
-                    value={feature.language}
-                    data-name="language"
-                >
-                </bib-pop-up-menu>
-                <label for="authors">Authors</label>
-                <bib-dualing-listbox
-                    entity-name="persons"
-                    value={feature.persons}
-                    onchange={handleChange}
-                    allow-add="true"
-                    onadd={handleAddPerson}
-                    data-name="persons"
-                ></bib-dualing-listbox>
-                <button
-                    class="btn btn-sm btn-outline-primary btn-block mb-2 mt-3"
-                    onclick={handleChangeValueInvert}
-                    value={uiExpanded}
-                    data-name="uiExpanded"
-                >
-                    Done with Resource
-                </button>
+                <template if:true={hasTranslation}>
+                    <div class="custom-control custom-switch">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="checkbox-same-as-translation"
+                            onchange={handleChangeCheckbox}
+                            checked={feature.sameAsTranslation}
+                            data-name="sameAsTranslation"
+                        />
+                        <label
+                            class="custom-control-label"
+                            for="checkbox-same-as-translation"
+                        >
+                            Same details as translation
+                        </label>
+                    </div>
+                </template>
+                <template if:true={showDetails}>
+                    <div>
+                        <small>A language and authors are required.</small>
+                    </div>
+
+                    <bib-pop-up-menu
+                        label-text="Language"
+                        entity-name="languages"
+                        allow-add="false"
+                        onchange={handleChange}
+                        value={feature.language}
+                        data-name="language"
+                    >
+                    </bib-pop-up-menu>
+                    <label for="authors">Authors</label>
+                    <bib-dualing-listbox
+                        entity-name="persons"
+                        value={feature.persons}
+                        onchange={handleChange}
+                        allow-add="true"
+                        onadd={handleAddPerson}
+                        data-name="persons"
+                    ></bib-dualing-listbox>
+                    <button
+                        class="btn btn-sm btn-outline-primary btn-block mb-2 mt-3"
+                        onclick={handleChangeValueInvert}
+                        value={uiExpanded}
+                        data-name="uiExpanded"
+                    >
+                        Done with Resource
+                    </button>
+                </template>
             </div>
         </template>
     </div>
