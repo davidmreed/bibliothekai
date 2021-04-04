@@ -21,7 +21,6 @@ export default class DualingListbox extends LightningElement {
     @track availableEntities = [];
     @track selectedEntities = [];
     @track filteredEntities = [];
-    @track filteredSelectedEntities = [];
     @track searchKey = null;
 
     get shouldAllowAdd() {
@@ -67,19 +66,19 @@ export default class DualingListbox extends LightningElement {
         );
 
         if (this.searchKey) {
+            let splitSearchKey = this.searchKey.toLowerCase().split(/\W+/);
+
             this.filteredEntities = this.availableEntities.filter((f) =>
-                f.name.toLowerCase().includes(this.searchKey.toLowerCase())
-            );
-            this.filteredSelectedEntities = this.selectedEntities.filter((f) =>
-                f.name.toLowerCase().includes(this.searchKey.toLowerCase())
+                splitSearchKey
+                    .map((s) => f.name.toLowerCase().includes(s))
+                    .reduce((prev, cur) => prev && cur, true)
             );
         } else {
             this.filteredEntities = this.availableEntities;
-            this.filteredSelectedEntities = this.selectedEntities;
         }
 
         this.filteredEntities.sort(sortRecordsByName);
-        this.filteredSelectedEntities.sort(sortRecordsByName);
+        this.selectedEntities.sort(sortRecordsByName);
     }
 
     moveRight() {
@@ -87,7 +86,7 @@ export default class DualingListbox extends LightningElement {
             Array.from(
                 this.template.querySelector('.entities').selectedOptions
             ).map((f) => Number(f.value))
-        )
+        );
         this.update();
         this.dispatchEvent(new CustomEvent('change'));
     }
@@ -96,7 +95,7 @@ export default class DualingListbox extends LightningElement {
         let itemsUnselect = Array.from(
             this.template.querySelector('.selectedEntities').selectedOptions
         ).map((f) => Number(f.value));
-        this._value = this.value.filter((f) => !itemsUnselect.includes(f))
+        this._value = this.value.filter((f) => !itemsUnselect.includes(f));
         this.update();
         this.dispatchEvent(new CustomEvent('change'));
     }
@@ -117,10 +116,6 @@ export default class DualingListbox extends LightningElement {
 
     get selectedCount() {
         return this.selectedEntities.length;
-    }
-
-    get filteredSelectedCount() {
-        return this.filteredSelectedEntities.length;
     }
 
     get entityCount() {

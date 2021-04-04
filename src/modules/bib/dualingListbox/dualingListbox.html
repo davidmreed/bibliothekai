@@ -7,15 +7,6 @@
             Click New to add a new record.
         </template>
     </small>
-    <input
-        class="form-control mb-2"
-        name="search"
-        type="search"
-        placeholder="Filter"
-        aria-label="Filter"
-        oninput={handleSearch}
-        onchange={handleChange}
-    />
     <small
         class="form-text text-muted validity is-invalid form-control mb-2 d-none"
     >
@@ -23,10 +14,19 @@
     <div class="card-group">
         <div class="card">
             <div class="card-body form-group">
+                <input
+                    class="form-control mb-2"
+                    name="search"
+                    type="search"
+                    placeholder="Filter"
+                    aria-label="Filter"
+                    oninput={handleSearch}
+                    onchange={handleChange}
+                />
                 <select
                     class="entities form-control"
                     name="entities"
-                    size="5"
+                    size="3"
                     multiple
                     onchange={handleChange}
                     ondblclick={moveRight}
@@ -86,22 +86,19 @@
                 <select
                     class="selectedEntities form-control"
                     name="selectedEntities"
-                    size="5"
+                    size="3"
                     multiple
                     onchange={handleChange}
                     ondblclick={moveLeft}
                 >
-                    <template if:true={filteredSelectedEntities.length}>
-                        <template
-                            for:each={filteredSelectedEntities}
-                            for:item="entity"
-                        >
+                    <template if:true={selectedEntities.length}>
+                        <template for:each={selectedEntities} for:item="entity">
                             <option key={entity.id} value={entity.id}>
                                 {entity.name}
                             </option>
                         </template>
                     </template>
-                    <template if:false={filteredSelectedEntities.length}>
+                    <template if:false={selectedEntities.length}>
                         <option disabled>-- No items --</option>
                     </template>
                 </select>
@@ -114,7 +111,7 @@
                     &laquo; Unselect
                 </button>
                 <small class="text-muted float-right">
-                    Showing {filteredSelectedCount} of {selectedCount} selected
+                    Showing {selectedCount} selected
                 </small>
             </div>
         </div>
