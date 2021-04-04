@@ -225,7 +225,7 @@ class VolumeSerializer(serializers.ModelSerializer):
         queryset=Publisher.objects.all(), view_name="publisher-detail"
     )
     series = serializers.HyperlinkedRelatedField(
-        queryset=Series.objects.all(), view_name="series-detail"
+        queryset=Series.objects.all(), view_name="series-detail", required=False
     )
 
     class Meta:
