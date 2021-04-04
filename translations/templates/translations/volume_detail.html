@@ -45,7 +45,8 @@
 
 {% endif %}
 
-{% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps or volume.get_general_features.count %}
+{% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps or
+volume.get_general_features.count %}
 <div class="row">
     <div class="col-sm-2">
         <h5>Resources</h5>
@@ -108,9 +109,11 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">
-                {{ t.grouper.title }} {% if t.grouper.get_original_language_title %}
+                {{ t.grouper.title }} {% if t.grouper.get_original_language_title and
+                t.grouper.get_original_language_title != t.grouper.title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
-                <a href="{% url 'source_text_detail' t.grouper.id %}" class="float-right btn btn-outline-secondary btn-sm">
+                <a href="{% url 'source_text_detail' t.grouper.id %}"
+                    class="float-right btn btn-outline-secondary btn-sm">
                     More translations
                 </a>
             </h5>
@@ -118,11 +121,12 @@
                 {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_format_display | lower }}.
                 {% if t.grouper.date %}
-                    {{ t.grouper.date }}
+                {{ t.grouper.date }}
                 {% endif %}
-                <a href="{% url 'person_detail' t.grouper.author.id %}" class="float-right btn btn-outline-secondary btn-sm">
-                More {{ t.grouper.author.full_name }}
-            </a>
+                <a href="{% url 'person_detail' t.grouper.author.id %}"
+                    class="float-right btn btn-outline-secondary btn-sm">
+                    More {{ t.grouper.author.full_name }}
+                </a>
 
             </p>
         </div>
@@ -154,7 +158,8 @@
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
                 {% if f.sample_passage %}
-                <a class="float-right btn btn-sm btn-outline-secondary" href="{% url 'translation_detail' volume.id f.id %}">
+                <a class="float-right btn btn-sm btn-outline-secondary"
+                    href="{% url 'translation_detail' volume.id f.id %}">
                     View Sample
                 </a>
                 {% endif %}
@@ -180,14 +185,14 @@
     Published Reviews
     <div class="float-right">
         <div class="btn-group btn-group-sm" role="group" aria-label="Published review actions">
-        <a class="btn btn-secondary" href="{% url 'publishedreview_list' volume.id %}">
-            View all
-        </a>
-        {% if user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'publishedreview_add' volume.id %}">
-            Add
-        </a>
-        {% endif %}
+            <a class="btn btn-secondary" href="{% url 'publishedreview_list' volume.id %}">
+                View all
+            </a>
+            {% if user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'publishedreview_add' volume.id %}">
+                Add
+            </a>
+            {% endif %}
         </div>
     </div>
 </h2>
@@ -201,14 +206,14 @@
 <h2 class="mt-4">
     User Reviews
     <div class="float-right">
-    <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">
-        <a class="btn btn-secondary" href="{% url 'review_list' volume.id %}">
-            View all</a>
-        {% if user.is_authenticated %}
-        <a class="btn btn-primary" href="{% url 'review_create' volume.id %}">
-            Add
-        </a>
-        {% endif %}
+        <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">
+            <a class="btn btn-secondary" href="{% url 'review_list' volume.id %}">
+                View all</a>
+            {% if user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'review_create' volume.id %}">
+                Add
+            </a>
+            {% endif %}
         </div>
     </div>
 

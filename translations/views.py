@@ -65,7 +65,7 @@ class VolumeLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_volume.html"
 
 
-class SourceTextDetailView(generic.DetailView):
+class SourceTextDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
 
