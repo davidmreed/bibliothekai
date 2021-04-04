@@ -85,6 +85,9 @@ export default class AddVolume extends LightningElement {
             feature
         );
         this.features = [...this.features];
+        this.featureToEdit = this.features.filter(
+            (f) => f.id === feature.id
+        )[0];
     }
 
     handleSingleFeatureChange(event) {
