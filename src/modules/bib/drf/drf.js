@@ -150,13 +150,16 @@ export async function createRecord(entity, record) {
 
     if (response.ok) {
         let result = await response.json();
+        let cacheKey = `${entity}/${result.id}`;
+
+        result.name = result[nameFields[entity]];
+
+        individualRecordCache.set(cacheKey, result);
         if (recordCache.has(entity)) {
-            recordCache.delete(entity);
+            recordCache.get(entity).push(result);
         }
+
         if (getRecordsStore.has(entity) && getRecordsStore.get(entity).size) {
-            // Make exactly one API call to refresh the cache.
-            // TODO: fetch only the new record.
-            await getRecordsFromApi(entity);
             getRecordsStore.get(entity).forEach((r) => r._refresh());
         }
         return result;

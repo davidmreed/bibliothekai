@@ -317,6 +317,7 @@
                         key={f.feature}
                         feature={f}
                         onupdate={handleSingleFeatureChange}
+                        onaddperson={doAddPerson}
                         has-translation={hasTranslation}
                     >
                     </bib-single-feature-editor>
@@ -351,7 +352,7 @@
             features={featureToEdit}
             onupdate={handleFeatureChange}
             onsave={toggleEditingFeature}
-            onaddperson={toggleAddingPerson}
+            onaddperson={doAddPerson}
         >
         </bib-translation-editor>
     </template>
@@ -389,6 +390,6 @@
             </button>
             Adding New Person
         </h4>
-        <bib-add-person onsave={toggleAddingPerson}> </bib-add-person>
+        <bib-add-person onsave={savePerson}> </bib-add-person>
     </template>
 </template>

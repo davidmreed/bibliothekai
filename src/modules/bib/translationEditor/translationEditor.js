@@ -110,10 +110,9 @@ export default class TranslationEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        // TODO: pass a detail in the event to denote the context.
-        // Have addVolume add the newly-added person to the appropriate lists
-        // when a save event is received.
-        this.dispatchEvent(new CustomEvent('addperson'));
+        this.dispatchEvent(new CustomEvent('addperson'), {
+            detail: `${this.features.id}.translation.persons`
+        });
     }
 
     save() {

@@ -6,6 +6,7 @@ import {
     getRecordsFromApi
 } from 'bib/drf';
 import { Features } from 'bib/feature';
+import setNestedProperty from '../utils/utils';
 
 export default class AddVolume extends LightningElement {
     // Data fields
@@ -213,6 +214,18 @@ export default class AddVolume extends LightningElement {
 
     toggleAddingPerson() {
         this.addingPerson = !this.addingPerson;
+    }
+
+    doAddPerson(event) {
+        this.addingPerson = true;
+        this.addPersonContext = event.detail;
+    }
+
+    savePerson(event) {
+        this.addingPerson = false;
+
+        setNestedProperty(this.features, this.addPersonContext, event.detail);
+        this.addPersonContext = null;
     }
 
     toggleAddingPublisher() {
