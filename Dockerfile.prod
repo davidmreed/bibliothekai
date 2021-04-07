@@ -11,8 +11,14 @@ FROM python:3.8-slim-buster
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
-COPY --from=node-build /app/dist ./translations/static
-COPY /requirements.txt .
+COPY --from=node-build /app/dist /app/translations/static
+COPY requirements.txt /
+COPY entrypoint.sh /app
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
+COPY biblia /app/biblia
+COPY translations /app/translations
+COPY users /app/users
+COPY manage.py /app
+WORKDIR /app
+RUN python manage.py collectstatic
 ENTRYPOINT ["/app/entrypoint.sh"]

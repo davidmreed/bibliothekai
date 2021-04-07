@@ -1,14 +1,17 @@
-version: 3.9
+version: '3.9'
+
 services:
     web:
-        build: .
-        ports: 8000:8000
-        command: gunicorn biblia.wsgi
+        build: ./
+        command: python manage.py runserver 0.0.0.0:8000
+        entrypoint: ./entrypoint.sh
+        volumes:
+            - ./:/app
+        ports:
+            - 8000:8000
         env_file:
-            - ./.env.dev
-        depends_on:
-            - postgres
-    postgres:
+            - ./.env
+    db:
         image: postgres:12.0-alpine
         volumes:
             - postgres_data:/var/lib/postgresql/data/
