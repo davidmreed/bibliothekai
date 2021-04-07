@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -248,16 +250,19 @@ class Volume(UserCreatedApprovalMixin):
 
     def oclc_link(self):
         if self.oclc_number:
-            return f"https://www.worldcat.org/oclc/{self.oclc_number}"
+            escaped = urllib.parse.quote(self.oclc_number)
+            return f"https://www.worldcat.org/oclc/{escaped}"
         elif self.isbn:
+            escaped = urllib.parse.quote(self.isbn)
             return (
-                f"https://www.worldcat.org/search?q=bn%3A{self.isbn}"
+                f"https://www.worldcat.org/search?q=bn%3A{escaped}"
                 "&qt=advanced&dblist=638"
             )
 
     def bookshop_link(self):
         if self.isbn:
-            return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '').replace(' ', '')}"
+            escaped = urllib.parse.quote(self.isbn)
+            return f"https://bookshop.org/a/15029/{escaped}"
 
     def update_automatic_links(self):
         links = self.links.all()[:]
@@ -289,11 +294,18 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
     def save(self, *args, **kwargs):
+        if self.isbn:
+            self.isbn = "".join(c for c in self.isbn if c.isdigit())
+        if self.oclc_number:
+            self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
         super().save(*args, **kwargs)
         self.update_automatic_links()
 
