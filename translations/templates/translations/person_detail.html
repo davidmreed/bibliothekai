@@ -71,7 +71,7 @@
                 Translation into {{ f.language }} {{ f.get_format_display|lower }}.
             </p>
             <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
-                ({{f.volume.publisher }}, {{ f.volume.published_date.year }})
+                ({{f.volume.publisher }}{% if vol.published_date %}, {{ f.volume.published_date.year }}{% endif%})
             </p>
         </div>
     </div>

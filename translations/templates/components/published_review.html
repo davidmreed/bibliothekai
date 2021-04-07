@@ -11,7 +11,7 @@
             <ul>
                 {% for vol in review.volumes.all %}
                 <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
-                    {{vol.publisher}} ({{vol.published_date.year}})</li>
+                    {{vol.publisher}} {% if vol.published_date %}({{vol.published_date.year}}){% endif %}</li>
                 {% endfor %}
             </ul>
         </div>

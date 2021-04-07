@@ -15,7 +15,7 @@ from .models import (
     UserSubmission,
 )
 
-for model in [Language, Review, Series, UserSubmission]:
+for model in [Language, Review, UserSubmission]:
     admin.site.register(model)
 
 
@@ -32,6 +32,7 @@ class AlternateNameInline(GenericTabularInline):
 class FeatureInline(admin.TabularInline):
     model = Feature
     extra = 1
+    show_change_link = True
     fields = [
         "persons",
         "source_text",
@@ -41,36 +42,64 @@ class FeatureInline(admin.TabularInline):
         "partial",
         "has_facing_text",
         "title",
-        "description",
-        "sample_passage",
     ]
+
+
+@admin.register(Feature)
+class FeatureAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": [
+                    "volume",
+                    "source_text",
+                    "title",
+                    "persons",
+                    "feature",
+                    "language",
+                    "format",
+                    "partial",
+                    "has_facing_text",
+                ]
+            },
+        ),
+        ("Details", {"fields": ["description", "sample_passage"]}),
+    )
 
 
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
-    date_hierarchy = "published_date"
     inlines = [FeatureInline, LinkInline]
-    list_filter = ["publisher", "series"]
+    list_filter = ["approved", "publisher", "series"]
 
 
 @admin.register(Publisher)
 class PublisherAdmin(admin.ModelAdmin):
     inlines = [LinkInline]
+    list_filter = ["approved"]
 
 
 @admin.register(PublishedReview)
 class PublishedReviewAdmin(admin.ModelAdmin):
     filter_horizontal = ["volumes", "persons"]
     inlines = [LinkInline]
+    list_filter = ["approved"]
 
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
     inlines = [AlternateNameInline, LinkInline]
     exclude = ["sort_name"]
+    list_filter = ["approved"]
 
 
 @admin.register(SourceText)
 class SourceTextAdmin(admin.ModelAdmin):
     inlines = [AlternateNameInline, LinkInline]
-    list_filter = ["author", "language"]
+    list_filter = ["approved", "author", "language"]
+
+
+@admin.register(Series)
+class SeriesAdmin(admin.ModelAdmin):
+    list_filter = ["approved"]

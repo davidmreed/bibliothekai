@@ -15,7 +15,7 @@
         {% if include_volume %}
         <div class="card-text mb-3">
             Review of <a href="{% url 'volume_detail' review.volume.id %}">{{ review.volume.title }}</a>,
-            {{review.volume.publisher}} ({{review.volume.published_date.year}})
+            {{review.volume.publisher}} {% if vol.published_date %}({{review.volume.published_date.year}}){% endif%}
         </div>
         {% endif %}
         <div class="card-text mb-3">

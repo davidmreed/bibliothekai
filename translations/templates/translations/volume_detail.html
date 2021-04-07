@@ -21,7 +21,9 @@
     </div>
     <div class="col">
         {% pill "Publisher" volume.publisher %}
+        {% if volume.published_date %}
         {% pill "Date" volume.published_date.year %}
+        {% endif %}
         {% if volume.series %}
         {% pill "Series" volume.series %}
         {% endif %}

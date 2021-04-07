@@ -240,7 +240,7 @@ class Volume(UserCreatedApprovalMixin):
         if self.published_date:
             return f"{self.title} ({self.publisher}, {self.published_date.year})"
 
-        return self.title
+        return f"{self.title} ({self.publisher})"
 
     def get_general_features(self):
         return Feature.objects.filter(volume=self, source_text=None)
