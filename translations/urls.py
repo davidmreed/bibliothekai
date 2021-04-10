@@ -1,4 +1,5 @@
 from django.urls import path, include
+from graphene_django.views import GraphQLView
 from rest_framework.routers import DefaultRouter
 from . import views
 
@@ -22,6 +23,7 @@ router.register(
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
+    path("graphql", GraphQLView.as_view(graphiql=True)),
     path("about/", views.AboutView.as_view(), name="about"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
@@ -59,7 +61,11 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
+    path(
+        "volumes/add/",
+        views.VolumeLWCView.as_view(),
+        name="volume_add",
+    ),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

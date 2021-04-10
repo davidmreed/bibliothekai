@@ -1,0 +1,62 @@
+<template>
+    <h1>Comparing Translations of { sourceText.title }</h1>
+
+    <div class="card-deck">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    Original Text (<cite>{ sourceText.title }</cite>
+                    { sourceText.sample_passage_spec }}
+                </h5>
+                <p class="card-text">{ sourceText.sample_passage }</p>
+            </div>
+            <div class="card-footer">
+                <small class="text-muted">
+                    <template if:true={sourceText.sample_passage_source_link}>
+                        <a href="{ sourceText.sample_passage_source_link }">
+                            { sourceText.sample_passage_source }
+                        </a>
+                    </template>
+                    <template if:false={sourceText.sample_passage_source_link}>
+                        { sourceText.sample_passage_source }
+                    </template>
+                    <template if:true={sourceText.sample_passage_license}>
+                        <template
+                            if:true={sourceText.sample_passage_license_link}
+                        >
+                            <a
+                                href="{ sourceText.sample_passage_license_link }"
+                            >
+                                ({ sourceText.sample_passage_license })
+                            </a>
+                        </template>
+                        <template
+                            if:false={sourceText.sample_passage_license_link}
+                        >
+                            ({ sourceText.sample_passage_license })
+                        </template>
+                    </template>
+                </small>
+            </div>
+        </div>
+        <template for:each={translations} for:item={translation}>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Translation</h5>
+                    <p class="card-text">{ translation.sample_passage }</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">
+                        <a href="{ translation.volumeUrl }">
+                            <cite>{ feature.volume.title }</cite>
+                        </a>
+                        ({ feature.volume.publisher.name }), trans.
+                        <bib-comma-link-list
+                            values={translation.personsLinks}
+                        ></bib-comma-link-list>
+                    </small>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

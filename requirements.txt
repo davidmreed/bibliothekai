@@ -13,3 +13,4 @@ requests==2.25.0
 rest-framework-generic-relations==2.0.0
 sqlparse==0.3.1
 whitenoise==5.1.0
+graphene-django==2.15.0

@@ -234,7 +234,9 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     def get_translations(self):
         return filter_queryset_parent_approval(
-            Feature, self.get_object().features.filter(feature="TR"), self.request.user
+            Feature,
+            self.get_object().features.filter(feature="TR"),
+            self.request.user,
         )
 
     @approval_filtered_queryset
