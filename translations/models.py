@@ -294,10 +294,7 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 
@@ -365,6 +362,9 @@ class Feature(models.Model, AuthorNameMixin):
 
     def has_accompanying_notes(self):
         return self.has_accompanying_feature("NT")
+
+    def has_accompanying_commentary(self):
+        return self.has_accompanying_feature("CM")
 
     @property
     def feature_sample_passage(self):
