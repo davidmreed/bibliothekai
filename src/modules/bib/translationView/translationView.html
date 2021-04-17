@@ -60,6 +60,21 @@
                         <input
                             type="checkbox"
                             class="custom-control-input"
+                            id="checkbox-commentary"
+                            data-feature="commentary"
+                            onchange={handleFilterChange}
+                        />
+                        <label
+                            class="custom-control-label"
+                            for="checkbox-commentary"
+                        >
+                            Commentary
+                        </label>
+                    </div>
+                    <div class="custom-control custom-switch">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
                             id="checkbox-glossary"
                             data-feature="glossary"
                             onchange={handleFilterChange}
