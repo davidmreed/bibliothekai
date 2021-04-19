@@ -6,34 +6,28 @@
             <div class="card-body">
                 <h5 class="card-title">
                     Original Text (<cite>{ sourceText.title }</cite>
-                    { sourceText.sample_passage_spec }}
+                    { sourceText.samplePassageSpec }}
                 </h5>
-                <p class="card-text">{ sourceText.sample_passage }</p>
+                <p class="card-text">{ sourceText.samplePassage }</p>
             </div>
             <div class="card-footer">
                 <small class="text-muted">
-                    <template if:true={sourceText.sample_passage_source_link}>
-                        <a href="{ sourceText.sample_passage_source_link }">
-                            { sourceText.sample_passage_source }
+                    <template if:true={sourceText.samplePassageSourceLink}>
+                        <a href="{ sourceText.samplePassageSourceLink }">
+                            { sourceText.samplePassageSource }
                         </a>
                     </template>
-                    <template if:false={sourceText.sample_passage_source_link}>
-                        { sourceText.sample_passage_source }
+                    <template if:false={sourceText.samplePassageSourceLink}>
+                        { sourceText.samplePassageSource }
                     </template>
-                    <template if:true={sourceText.sample_passage_license}>
-                        <template
-                            if:true={sourceText.sample_passage_license_link}
-                        >
-                            <a
-                                href="{ sourceText.sample_passage_license_link }"
-                            >
-                                ({ sourceText.sample_passage_license })
+                    <template if:true={sourceText.samplePassageLicense}>
+                        <template if:true={sourceText.samplePassageLicenseLink}>
+                            <a href="{ sourceText.samplePassageLicenseLink }">
+                                ({ sourceText.samplePassageLicense })
                             </a>
                         </template>
-                        <template
-                            if:false={sourceText.sample_passage_license_link}
-                        >
-                            ({ sourceText.sample_passage_license })
+                        <template if:false={sourceText.samplePassageLicenseLink}>
+                            ({ sourceText.samplePassageLicense })
                         </template>
                     </template>
                 </small>
@@ -43,7 +37,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Translation</h5>
-                    <p class="card-text">{ translation.sample_passage }</p>
+                    <p class="card-text">{ translation.samplePassage }</p>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">
@@ -51,9 +45,7 @@
                             <cite>{ feature.volume.title }</cite>
                         </a>
                         ({ feature.volume.publisher.name }), trans.
-                        <bib-comma-link-list
-                            values={translation.personsLinks}
-                        ></bib-comma-link-list>
+                        <bib-comma-link-list values={translation.personsLinks}></bib-comma-link-list>
                     </small>
                 </div>
             </div>

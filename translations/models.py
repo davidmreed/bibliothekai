@@ -159,8 +159,12 @@ class SourceText(UserCreatedApprovalMixin):
         ordering = ["title"]
 
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(Person, on_delete=models.PROTECT)
-    language = models.ForeignKey(Language, on_delete=models.PROTECT)
+    author = models.ForeignKey(
+        Person, related_name="source_texts", on_delete=models.PROTECT
+    )
+    language = models.ForeignKey(
+        Language, related_name="source_texts", on_delete=models.PROTECT
+    )
     format = models.TextField(choices=FORMAT_CHOICES, db_column="kind")
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -222,8 +226,12 @@ class Volume(UserCreatedApprovalMixin):
 
     title = models.CharField(max_length=255)
     published_date = models.DateField(blank=True)
-    publisher = models.ForeignKey(Publisher, on_delete=models.PROTECT)
-    series = models.ForeignKey(Series, on_delete=models.PROTECT, null=True, blank=True)
+    publisher = models.ForeignKey(
+        Publisher, related_name="volumes", on_delete=models.PROTECT
+    )
+    series = models.ForeignKey(
+        Series, related_name="volumes", on_delete=models.PROTECT, null=True, blank=True
+    )
     isbn = models.CharField(max_length=32, blank=True)
     oclc_number = models.CharField(max_length=32, blank=True)
     links = GenericRelation(Link)
@@ -335,11 +343,17 @@ class Feature(models.Model, AuthorNameMixin):
         Volume, related_name="features", on_delete=models.CASCADE
     )
     source_text = models.ForeignKey(
-        SourceText, blank=True, null=True, on_delete=models.PROTECT
+        SourceText,
+        related_name="features",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
     )
     feature = models.CharField(max_length=2, choices=FEATURE_CHOICES)
     persons = models.ManyToManyField(Person, related_name="features")
-    language = models.ForeignKey(Language, on_delete=models.PROTECT)
+    language = models.ForeignKey(
+        Language, related_name="features", on_delete=models.PROTECT
+    )
     title = models.CharField(max_length=255, blank=True)
     format = models.TextField(choices=FORMAT_CHOICES, blank=True, db_column="kind")
     partial = models.BooleanField()
@@ -396,7 +410,7 @@ class Review(UserCreatedMixin):
     )
     recommended = models.BooleanField()
     content = models.TextField()
-    volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    volume = models.ForeignKey(Volume, related_name="reviews", on_delete=models.CASCADE)
 
     parent_relationship = "volume"
 
@@ -417,8 +431,8 @@ class PublishedReview(AuthorNameMixin, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
-    volumes = models.ManyToManyField(Volume)
-    persons = models.ManyToManyField(Person)
+    volumes = models.ManyToManyField(Volume, related_name="published_reviews")
+    persons = models.ManyToManyField(Person, related_name="published_reviews")
     title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
     published_date = models.DateField(null=True, blank=True)

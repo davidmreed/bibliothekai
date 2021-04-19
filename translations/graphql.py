@@ -5,74 +5,148 @@ from translations.permissions import (
 import graphene
 from graphene_django import DjangoObjectType
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 from . import models
 
 
-class VolumeResourceType(DjangoObjectType):
+class VolumeResource(DjangoObjectType):
     class Meta:
         model = models.Feature
 
 
-class VolumeType(DjangoObjectType):
+class Volume(DjangoObjectType):
     class Meta:
         model = models.Volume
 
+    def resolve_published_reviews(root, info):
+        return filter_queryset_approval(
+            models.PublishedReview.objects.filter(volumes=root),
+            info.context.user,
+        )
 
-class PersonType(DjangoObjectType):
+
+class Person(DjangoObjectType):
     class Meta:
         model = models.Person
 
+    def resolve_features(root, info):
+        return filter_queryset_parent_approval(
+            models.Feature,
+            models.Feature.objects.filter(persons=root),
+            info.context.user,
+        )
 
-class PublisherType(DjangoObjectType):
+    def resolve_source_texts(root, info):
+        return filter_queryset_approval(
+            models.SourceText.objects.filter(author=root),
+            info.context.user,
+        )
+
+    def resolve_published_reviews(root, info):
+        return filter_queryset_approval(
+            models.PublishedReview.objects.filter(persons=root),
+            info.context.user,
+        )
+
+
+class Publisher(DjangoObjectType):
     class Meta:
         model = models.Publisher
 
+    def resolve_volumes(root, info):
+        return filter_queryset_approval(
+            models.Volume.objects.filter(publisher=root),
+            info.context.user,
+        )
 
-class SeriesType(DjangoObjectType):
+
+class Series(DjangoObjectType):
     class Meta:
         model = models.Series
 
+    def resolve_volumes(root, info):
+        return filter_queryset_approval(
+            models.Volume.objects.filter(series=root),
+            info.context.user,
+        )
 
-class LanguageType(DjangoObjectType):
+
+class Language(DjangoObjectType):
     class Meta:
         model = models.Language
+        exclude_fields = ["features"]
+
+    def resolve_source_texts(root, info):
+        return filter_queryset_approval(
+            models.SourceText.objects.filter(language=root),
+            info.context.user,
+        )
 
 
-class TextType(DjangoObjectType):
+class Text(DjangoObjectType):
     class Meta:
         model = models.SourceText
+        fields = [
+            "id",
+            "title",
+            "author",
+            "language",
+            "format",
+            "date",
+            "description",
+            "sample_passage",
+            "sample_passage_spec",
+            "sample_passage_source",
+            "sample_passage_source_link",
+            "sample_passage_license",
+            "sample_passage_license_link",
+        ]
+
+    translations = graphene.List(VolumeResource)
+
+    def resolve_translations(root, info, **kwargs):
+        return filter_queryset_parent_approval(
+            models.Feature,
+            models.Feature.objects.filter(source_text=root)
+            .filter(feature="TR")
+            .order_by("-volume__published_date"),
+            info.context.user,
+        )
 
 
-class LinkType(DjangoObjectType):
+class Link(DjangoObjectType):
     class Meta:
         model = models.Link
 
 
-class AlternateNameType(DjangoObjectType):
+class AlternateName(DjangoObjectType):
     class Meta:
         model = models.AlternateName
 
 
-class ReviewType(DjangoObjectType):
+class Review(DjangoObjectType):
     class Meta:
         model = models.Review
 
 
-class PublishedReviewType(DjangoObjectType):
+class PublishedReview(DjangoObjectType):
     class Meta:
         model = models.PublishedReview
 
 
 class Query(graphene.ObjectType):
-    volumes = graphene.List(VolumeType)
-    volume_resources = graphene.List(VolumeResourceType)
-    texts = graphene.List(TextType)
-    persons = graphene.List(PersonType)
-    publishers = graphene.List(PublisherType)
-    series = graphene.List(SeriesType)
-    languages = graphene.List(LanguageType)
-    reviews = graphene.List(ReviewType)
-    published_reviews = graphene.List(PublishedReviewType)
+    volumes = graphene.List(Volume)
+    volume_resources = graphene.List(VolumeResource)
+    texts = graphene.List(Text)
+    persons = graphene.List(Person)
+    publishers = graphene.List(Publisher)
+    series = graphene.List(Series)
+    languages = graphene.List(Language)
+    reviews = graphene.List(Review)
+    published_reviews = graphene.List(PublishedReview)
 
     def resolve_volumes(root, info):
         return filter_queryset_approval(models.Volume.objects.all(), info.context.user)
@@ -106,7 +180,9 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_reviews(root, info):
-        return models.Review.objects.all()
+        return filter_queryset_parent_approval(
+            models.Review, models.Review.objects.all(), info.context.user
+        )
 
     def resolve_published_reviews(root, info):
         return filter_queryset_approval(models.PublishedReview.objects.all(), info.user)

@@ -16,6 +16,33 @@ export default class CompareTranslations extends LightningElement {
         // TODO: error handling.
 
         try {
+            let result = ```
+            query {
+                text(id: $textId) {
+                  title
+                  samplePassage
+                  samplePassageSource
+                  samplePassageSourceLink
+                  samplePassageLicense
+                  samplePassageLicenseLink    
+                }
+                feature(id: $featureId) {
+                  samplePassage
+                  volume {
+                    title
+                          publisher {
+                      name
+                    }
+                  }
+                  persons {
+                          id
+                    firstName
+                    middleName
+                    lastName
+                  }
+                }
+              }
+            ```;
             this.sourceText = await getRecord('texts', this.recordId);
             this.translations = this.translationIds.map(async (id) =>
                 getRecord('translations', id)

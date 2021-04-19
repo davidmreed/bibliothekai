@@ -93,7 +93,7 @@ class SourceTextIndexView(generic.ListView):
         return (
             Person.objects.prefetch_related(
                 Prefetch(
-                    "sourcetext_set",
+                    "source_texts",
                     queryset=filter_queryset_approval(
                         SourceText.objects.all(), self.request.user
                     ),
@@ -114,11 +114,11 @@ class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     # No filter necessary (user reviews are not approved)
     def get_reviews(self):
-        return self.get_object().review_set.order_by("-date_created").all()[:5]
+        return self.get_object().reviews.order_by("-date_created").all()[:5]
 
     def get_published_reviews(self):
         return filter_queryset_approval(
-            self.get_object().publishedreview_set.all(), self.request.user
+            self.get_object().published_reviews.all(), self.request.user
         )[:5]
 
     def get_context_data(self, **kwargs):
@@ -241,11 +241,11 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     @approval_filtered_queryset
     def get_publishedreviews(self):
-        return self.get_object().publishedreview_set.all()
+        return self.get_object().published_reviews.all()
 
     @approval_filtered_queryset
     def get_sourcetexts(self):
-        return self.get_object().sourcetext_set.all()
+        return self.get_object().source_texts.all()
 
 
 class UserDetailView(generic.DetailView):
@@ -259,7 +259,7 @@ class UserDetailView(generic.DetailView):
 
     def get_reviews(self):
         return filter_queryset_parent_approval(
-            Review, self.get_object().review_set.all(), self.request.user
+            Review, self.get_object().reviews.all(), self.request.user
         )
 
 
