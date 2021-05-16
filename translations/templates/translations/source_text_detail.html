@@ -86,9 +86,17 @@
 {% if sourcetext.description %}
 <h2 class="mt-4">Description</h2>
 <p>
-    {{ sourcetext.description }}
+    {{ sourcetext.description|linebreaks }}
 </p>
 {% endif %}
+
+{% if sourcetext.coverage %}
+<h2 class="mt-4">Coverage</h2>
+<p>
+    {{ sourcetext.coverage|linebreaks }}
+</p>
+{% endif %}
+
 
 <div id="lwc"></div>
 

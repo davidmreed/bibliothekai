@@ -177,6 +177,10 @@ class SourceText(UserCreatedApprovalMixin):
     sample_passage_license = models.CharField(max_length=255, blank=True)
     sample_passage_license_link = models.URLField(blank=True, null=True)
 
+    # Coverage tracking
+    coverage = models.TextField(blank=True)
+    coverage_date = models.DateField(blank=True, null=True)
+
     # Generic relations
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
@@ -379,6 +383,9 @@ class Feature(models.Model, AuthorNameMixin):
 
     def has_accompanying_notes(self):
         return self.has_accompanying_feature("NT")
+
+    def has_accompanying_commentary(self):
+        return self.has_accompanying_feature("CM")
 
     @property
     def feature_sample_passage(self):

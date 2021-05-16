@@ -20,6 +20,9 @@ function normalizeFeatures(record) {
     if (record.feature_notes) {
         record.featureNames.push('Notes');
     }
+    if (record.feature_commentary) {
+        record.featureNames.push('Commentary');
+    }
     if (record.feature_glossary) {
         record.featureNames.push('Glossary');
     }
@@ -70,6 +73,7 @@ export default class TranslationView extends LightningElement {
             pills: {
                 Introduction: 'primary',
                 Notes: 'warning',
+                Commentary: 'danger',
                 Glossary: 'info',
                 Index: 'secondary',
                 Bibliography: 'dark',
