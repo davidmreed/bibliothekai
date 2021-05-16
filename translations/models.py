@@ -173,6 +173,10 @@ class SourceText(UserCreatedApprovalMixin):
     sample_passage_license = models.CharField(max_length=255, blank=True)
     sample_passage_license_link = models.URLField(blank=True, null=True)
 
+    # Coverage tracking
+    coverage = models.TextField(blank=True)
+    coverage_date = models.DateField(blank=True, null=True)
+
     # Generic relations
     links = GenericRelation(Link)
     alternate_names = GenericRelation(AlternateName)
@@ -294,7 +298,10 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
