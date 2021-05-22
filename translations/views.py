@@ -65,6 +65,10 @@ class VolumeLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_volume.html"
 
 
+class TranslationComparisonsView(generic.TemplateView):
+    template_name = "lwc/compare_translations.html"
+
+
 class SourceTextDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
@@ -99,7 +103,7 @@ class SourceTextIndexView(generic.ListView):
                     ),
                 )
             )
-            .filter(sourcetext__title__isnull=False)
+            .filter(source_texts__title__isnull=False)
             .distinct()
         )
 
@@ -135,9 +139,7 @@ class TranslationDetailView(generic.DetailView):
 
     def get_queryset(self):
         return filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(feature="TR"),
-            self.request.user,
+            Feature, Feature.objects.filter(feature="TR"), self.request.user,
         )
 
 
@@ -234,9 +236,7 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     def get_translations(self):
         return filter_queryset_parent_approval(
-            Feature,
-            self.get_object().features.filter(feature="TR"),
-            self.request.user,
+            Feature, self.get_object().features.filter(feature="TR"), self.request.user,
         )
 
     @approval_filtered_queryset

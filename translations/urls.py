@@ -24,6 +24,7 @@ router.register(
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
     path("graphql", GraphQLView.as_view(graphiql=True)),
+    path("api/graphql", GraphQLView.as_view(graphiql=False)),
     path("about/", views.AboutView.as_view(), name="about"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
@@ -32,6 +33,11 @@ urlpatterns = [
         "texts/<int:pk>/",
         views.SourceTextDetailView.as_view(),
         name="source_text_detail",
+    ),
+    path(
+        "texts/<int:pk>/translations",
+        views.TranslationComparisonsView.as_view(),
+        name="translation_compare",
     ),
     path("persons/<int:pk>/", views.PersonDetailView.as_view(), name="person_detail"),
     path("users/<int:pk>/", views.UserDetailView.as_view(), name="user_detail"),
@@ -61,11 +67,7 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path(
-        "volumes/add/",
-        views.VolumeLWCView.as_view(),
-        name="volume_add",
-    ),
+    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

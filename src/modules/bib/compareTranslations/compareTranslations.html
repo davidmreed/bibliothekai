@@ -1,54 +1,65 @@
 <template>
-    <h1>Comparing Translations of { sourceText.title }</h1>
+    <template if:true={error}> I have an error: {error}. </template>
+    <template if:true={data}>
+        <h1>Comparing Translations of {data.text.title}</h1>
 
-    <div class="card-deck">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
-                    Original Text (<cite>{ sourceText.title }</cite>
-                    { sourceText.samplePassageSpec }}
-                </h5>
-                <p class="card-text">{ sourceText.samplePassage }</p>
-            </div>
-            <div class="card-footer">
-                <small class="text-muted">
-                    <template if:true={sourceText.samplePassageSourceLink}>
-                        <a href="{ sourceText.samplePassageSourceLink }">
-                            { sourceText.samplePassageSource }
-                        </a>
-                    </template>
-                    <template if:false={sourceText.samplePassageSourceLink}>
-                        { sourceText.samplePassageSource }
-                    </template>
-                    <template if:true={sourceText.samplePassageLicense}>
-                        <template if:true={sourceText.samplePassageLicenseLink}>
-                            <a href="{ sourceText.samplePassageLicenseLink }">
-                                ({ sourceText.samplePassageLicense })
-                            </a>
-                        </template>
-                        <template if:false={sourceText.samplePassageLicenseLink}>
-                            ({ sourceText.samplePassageLicense })
-                        </template>
-                    </template>
-                </small>
-            </div>
-        </div>
-        <template for:each={translations} for:item={translation}>
+        <div class="card-deck">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Translation</h5>
-                    <p class="card-text">{ translation.samplePassage }</p>
+                    <h5 class="card-title">
+                        Original Text (<cite>{data.text.title}</cite>
+                        {data.text.samplePassageSpec})
+                    </h5>
+                    <p class="card-text">{data.text.samplePassage}</p>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">
-                        <a href="{ translation.volumeUrl }">
-                            <cite>{ feature.volume.title }</cite>
-                        </a>
-                        ({ feature.volume.publisher.name }), trans.
-                        <bib-comma-link-list values={translation.personsLinks}></bib-comma-link-list>
+                        <template if:true={data.text.samplePassageSourceLink}>
+                            <a href={data.text.samplePassageSourceLink}>
+                                {data.text.samplePassageSource}
+                            </a>
+                        </template>
+                        <template if:false={data.text.samplePassageSourceLink}>
+                            {data.text.samplePassageSource}
+                        </template>
+                        <template if:true={data.text.samplePassageLicense}>
+                            <template
+                                if:true={data.text.samplePassageLicenseLink}
+                            >
+                                <a href={data.text.samplePassageLicenseLink}>
+                                    ({data.text.samplePassageLicense})
+                                </a>
+                            </template>
+                            <template
+                                if:false={data.text.samplePassageLicenseLink}
+                            >
+                                ({data.text.samplePassageLicense})
+                            </template>
+                        </template>
                     </small>
                 </div>
             </div>
-        </template>
-    </div>
+            <template for:each={data.text.translations} for:item="translation">
+                <div class="card" key={translation.id}>
+                    <div class="card-body">
+                        <h5 class="card-title">{translation.volume.title}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            trans.
+                            <bib-comma-link-list
+                                values={translation.personsLinks}
+                            ></bib-comma-link-list>
+                        </h6>
+                        <p class="card-text">{translation.samplePassage}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            <a href={translation.volume.url}> Details </a>
+                            {translation.volume.publisher.name},
+                            {translation.volume.publishedDate}.
+                        </small>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
 </template>

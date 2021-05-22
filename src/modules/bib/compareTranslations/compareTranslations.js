@@ -1,54 +1,64 @@
-import { getRecord } from 'bib/drf';
+import { runGraphQLQuery, getRecordUiUrl } from 'bib/drf';
 import { LightningElement } from 'lwc';
 
 export default class CompareTranslations extends LightningElement {
     recordId;
-    translationIds;
-    sourceText;
-    translations;
+    data;
     error;
 
     async connectedCallback() {
-        const urlParams = new URLSearchParams(document.location.search);
+        const regex = /texts\/([0-9]+)\//;
+        const loc = document.location.pathname;
+        const textIdMatch = loc.match(regex);
 
-        this.recordId = urlParams.get('text');
-        this.translationIds = urlParams.getAll('translation');
+        if (textIdMatch && textIdMatch.length === 2) {
+            this.recordId = [Number(textIdMatch[1])];
+        }
         // TODO: error handling.
 
         try {
-            let result = ```
-            query {
-                text(id: $textId) {
-                  title
-                  samplePassage
-                  samplePassageSource
-                  samplePassageSourceLink
-                  samplePassageLicense
-                  samplePassageLicenseLink    
-                }
-                feature(id: $featureId) {
-                  samplePassage
-                  volume {
+            let query = `
+            {
+                text(id: ${this.recordId}) {
                     title
-                          publisher {
-                      name
+                    samplePassage
+                    samplePassageSource
+                    samplePassageSourceLink
+                    samplePassageLicense
+                    samplePassageLicenseLink    
+                    translations {
+                        id
+                        samplePassage
+                        volume {
+                            id
+                            title
+                            publisher {
+                                name
+                            }
+                            publishedDate
+                        }
+                        persons {
+                            id
+                            fullName
+                        }
                     }
-                  }
-                  persons {
-                          id
-                    firstName
-                    middleName
-                    lastName
-                  }
                 }
-              }
-            ```;
-            this.sourceText = await getRecord('texts', this.recordId);
-            this.translations = this.translationIds.map(async (id) =>
-                getRecord('translations', id)
-            );
+            }
+            `; // FIXME: graphQL variables.
+            let result = await runGraphQLQuery(query);
+            this.data = result.data;
+
+            // Add links for the Volume and all Persons.
+            for (let trans of this.data.text.translations) {
+                trans.volume.url = getRecordUiUrl('volumes', trans.volume.id);
+                trans.personsLinks = trans.persons.map((p) => ({
+                    name: p.fullName,
+                    href: getRecordUiUrl('persons', p.id),
+                    id: p.id
+                }));
+            }
         } catch (e) {
-            this.error = `The API returned an error: ${e}.`;
+            this.error = e;
         }
     }
 }

@@ -154,6 +154,24 @@ export async function getRecordsFromApi(entityName) {
     }
 }
 
+export async function runGraphQLQuery(query) {
+    let endpoint = getApiEndpoint();
+
+    let result = await fetch(`${endpoint}/graphql`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ query: query })
+    });
+
+    if (result.ok) {
+        return result.json();
+    }
+    throw new Error(`The API returned an error: ${result.status}.`);
+}
+
 export async function createRecord(entityName, record) {
     let endpoint = getApiEndpoint();
 
