@@ -139,7 +139,9 @@ class TranslationDetailView(generic.DetailView):
 
     def get_queryset(self):
         return filter_queryset_parent_approval(
-            Feature, Feature.objects.filter(feature="TR"), self.request.user,
+            Feature,
+            Feature.objects.filter(feature="TR"),
+            self.request.user,
         )
 
 
@@ -158,7 +160,7 @@ class AuthorIndexView(generic.ListView):
     @approval_filtered_queryset
     def get_queryset(self):
         return Person.objects.filter(
-            Q(sourcetext__title__isnull=False) & Q(sourcetext__approved=True)
+            Q(source_texts__title__isnull=False) & Q(source_texts__approved=True)
         ).distinct()
 
 
@@ -236,7 +238,9 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     def get_translations(self):
         return filter_queryset_parent_approval(
-            Feature, self.get_object().features.filter(feature="TR"), self.request.user,
+            Feature,
+            self.get_object().features.filter(feature="TR"),
+            self.request.user,
         )
 
     @approval_filtered_queryset
