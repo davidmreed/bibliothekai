@@ -12,7 +12,7 @@ Authors
 {% for a in object_list %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title clearfix">
             {{ a.full_name }}
             <div class="float-right">
                 <a class="ml-3 btn btn-primary btn-sm" href="{% url 'person_detail' a.id %}">

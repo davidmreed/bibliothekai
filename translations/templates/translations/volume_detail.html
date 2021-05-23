@@ -109,7 +109,7 @@
 <div class="card-deck">
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title">
+            <h5 class="card-title clearfix">
                 {{ t.grouper.title }} {% if t.grouper.get_original_language_title and t.grouper.get_original_language_title != t.grouper.title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
                 <a href="{% url 'source_text_detail' t.grouper.id %}"
@@ -117,7 +117,7 @@
                     More translations
                 </a>
             </h5>
-            <p class="card-text mt-4">
+            <p class="card-text mt-4 clearfix">
                 {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_format_display | lower }}.
                 {% if t.grouper.date %}
@@ -152,7 +152,7 @@
             {% endwith %}
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
-            <p class="card-text">
+            <p class="card-text clearfix">
                 Translated into {{ f.language }} {{f.get_format_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
@@ -181,7 +181,7 @@
 
 {% include "components/links_component.html" with links=volume.links.all %}
 
-<h2 class="mt-4">
+<h2 class="mt-4 clearfix">
     Published Reviews
     <div class="float-right">
         <div class="btn-group btn-group-sm" role="group" aria-label="Published review actions">
@@ -203,7 +203,7 @@
 <p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 
-<h2 class="mt-4">
+<h2 class="mt-4 clearfix">
     User Reviews
     <div class="float-right">
         <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">

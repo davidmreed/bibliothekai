@@ -40,7 +40,7 @@
 {% for s in sourcetexts %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title clearfix">
             {{ s.title }}
             {% if s.get_original_language_title and s.title != s.get_original_language_title %}
             ({{ s.get_original_language_title }})
