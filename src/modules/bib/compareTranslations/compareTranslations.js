@@ -149,9 +149,9 @@ export default class CompareTranslations extends LightningElement {
             }
         }
 
-        window.history.pushState(
-            {},
-            '',
+        window.history.replaceState(
+            null,
+            null,
             `/texts/${this.recordId}/translations${idString}`
         );
     }

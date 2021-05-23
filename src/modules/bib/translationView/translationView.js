@@ -130,7 +130,11 @@ export default class TranslationView extends LightningElement {
         return languages;
     }
 
-    renderedCallback() {
+    get translationCompareUrl() {
+        return `/${this.translationPath}`;
+    }
+
+    connectedCallback() {
         // If we're being displayed within a text's path,
         // load translations for that text.
         const regex = /texts\/([0-9]+)\//;
