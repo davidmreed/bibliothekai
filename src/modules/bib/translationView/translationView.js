@@ -130,6 +130,13 @@ export default class TranslationView extends LightningElement {
         return languages;
     }
 
+    get allowComparisons() {
+        return this.records.reduce(
+            (acc, cur) => acc || cur.feature_sample_passage,
+            false
+        );
+    }
+
     get translationCompareUrl() {
         return `/${this.translationPath}`;
     }

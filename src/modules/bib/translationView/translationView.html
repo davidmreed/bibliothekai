@@ -15,9 +15,11 @@
             <a class="btn btn-outline-primary" href="/volumes/add">
                 Add Translation
             </a>
-            <a class="btn btn-outline-primary" href={translationCompareUrl}>
-                Compare Translations
-            </a>
+            <template if:true={allowComparisons}>
+                <a class="btn btn-outline-primary" href={translationCompareUrl}>
+                    Compare Translations
+                </a>
+            </template>
         </div>
     </h2>
 
