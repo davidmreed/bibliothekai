@@ -1,15 +1,14 @@
 import { runGraphQLQuery, getRecordUiUrl } from 'bib/drf';
-import { LightningElement } from 'lwc';
+import { LightningElement, track } from 'lwc';
 import { oxfordCommaList } from 'bib/utils';
+
 export default class CompareTranslations extends LightningElement {
     recordId;
     data;
     error;
 
-    firstTranslation;
-    secondTranslation;
-    firstTranslationId = '';
-    secondTranslationId = '';
+    @track
+    translations = [];
 
     async connectedCallback() {
         const regex = /texts\/([0-9]+)\/translations(?:\/?([0-9,]+)?)/;
@@ -19,15 +18,6 @@ export default class CompareTranslations extends LightningElement {
         if (textIdMatch) {
             if (textIdMatch.length >= 2) {
                 this.recordId = [Number(textIdMatch[1])];
-            }
-            if (textIdMatch.length >= 3 && textIdMatch[2]) {
-                let translationIds = textIdMatch[2].split(',');
-                if (translationIds.length >= 1) {
-                    this.firstTranslationId = translationIds[0];
-                }
-                if (translationIds.length >= 2) {
-                    this.secondTranslationId = translationIds[1];
-                }
             }
         } else {
             this.error = 'The URL is not valid';
@@ -93,30 +83,19 @@ export default class CompareTranslations extends LightningElement {
 
                 trans.displayName = `${trans.volume.title} (${trans.volume.publisher.name}${dateString}), trans. ${transString}`;
             }
-            // If we have prepopulated Ids, set the current translation values.
-            if (this.firstTranslationId) {
-                this.firstTranslation = this.translationById(
-                    this.firstTranslationId
-                );
-            }
-            if (this.secondTranslationId) {
-                this.secondTranslation = this.translationById(
-                    this.secondTranslationId
-                );
+
+            const urlQuery = new URLSearchParams(document.location.search);
+
+            this.translations = urlQuery
+                .getAll('trans')
+                .map((t) => this.translationById(t))
+                .filter((t) => !!t);
+            if (!this.translations.length) {
+                this.addTranslation();
             }
         } catch (e) {
             this.error = e;
         }
-    }
-
-    renderedCallback() {
-        // Deal with race conditions.
-        this.template.querySelector(
-            "select[name='firstTranslation']"
-        ).value = this.firstTranslationId;
-        this.template.querySelector(
-            "select[name='secondTranslation']"
-        ).value = this.secondTranslationId;
     }
 
     translationById(id) {
@@ -127,32 +106,20 @@ export default class CompareTranslations extends LightningElement {
         let selectedTranslation = this.translationById(
             event.currentTarget.selectedOptions[0].value
         );
+        let desiredIndex = event.currentTarget.name;
 
-        if (event.currentTarget.name === 'firstTranslation') {
-            this.firstTranslation = selectedTranslation;
-            this.firstTranslationId = selectedTranslation.id;
-        } else {
-            this.secondTranslation = selectedTranslation;
-            this.secondTranslationId = selectedTranslation.id;
-        }
+        this.translations[desiredIndex] = selectedTranslation;
 
-        let idString = '';
-
-        if (this.firstTranslationId) {
-            idString = `/${this.firstTranslationId}`;
-            if (this.secondTranslationId) {
-                idString += `,${this.secondTranslationId}`;
-            }
-        } else {
-            if (this.secondTranslationId) {
-                idString = `/,${this.secondTranslationId}`;
-            }
-        }
-
+        let idString =
+            '?' + this.translations.map((t) => `trans=${t.id}`).join('&');
         window.history.replaceState(
             null,
             null,
             `/texts/${this.recordId}/translations${idString}`
         );
+    }
+
+    addTranslation() {
+        this.translations.push({ id: '' });
     }
 }
