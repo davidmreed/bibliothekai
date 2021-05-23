@@ -100,7 +100,7 @@
 {% endif %}
 
 
-{% regroup features by source_text.id as texts %}
+{% regroup features by source_text as texts %}
 
 <h2>Translations</h2>
 {% for t in texts %}
