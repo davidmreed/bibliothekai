@@ -35,7 +35,7 @@ urlpatterns = [
         name="source_text_detail",
     ),
     path(
-        "texts/<int:pk>/translations",
+        "texts/<int:pk>/translations<path:path>",
         views.TranslationComparisonsView.as_view(),
         name="translation_compare",
     ),
@@ -67,7 +67,11 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
+    path(
+        "volumes/add/",
+        views.VolumeLWCView.as_view(),
+        name="volume_add",
+    ),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

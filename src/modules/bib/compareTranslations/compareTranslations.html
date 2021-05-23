@@ -1,16 +1,36 @@
 <template>
-    <template if:true={error}> I have an error: {error}. </template>
-    <template if:true={data}>
-        <h1>Comparing Translations of {data.text.title}</h1>
+    <template if:true={error}>
+        <h1 class="mb-4">Comparing Translations</h1>
 
+        An error occurred while loading data: {error}.
+    </template>
+    <template if:true={data}>
         <div class="card-deck">
             <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Original Text</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title">
-                        Original Text (<cite>{data.text.title}</cite>
-                        {data.text.samplePassageSpec})
+                    <h5 class="card-title clearfix">
+                        <cite>{data.text.title}</cite>
+                        {data.text.samplePassageSpec}
+                        <div class="float-right">
+                            <a
+                                class="btn btn-sm btn-outline-secondary"
+                                href={data.text.url}
+                            >
+                                Details
+                            </a>
+                        </div>
                     </h5>
-                    <p class="card-text">{data.text.samplePassage}</p>
+                    <p class="card-text">
+                        <template if:true={data.text.samplePassage}>
+                            {data.text.samplePassage}
+                        </template>
+                        <template if:false={data.text.samplePassage}>
+                            This text does not have a sample passage.
+                        </template>
+                    </p>
                 </div>
                 <div class="card-footer">
                     <small class="text-muted">
@@ -39,27 +59,155 @@
                     </small>
                 </div>
             </div>
-            <template for:each={data.text.translations} for:item="translation">
-                <div class="card" key={translation.id}>
+            <!-- First compared translation -->
+            <div class="card">
+                <div class="card-header">
+                    <select
+                        class="form-control"
+                        size="1"
+                        onchange={handleChange}
+                        value={firstTranslationId}
+                        name="firstTranslation"
+                    >
+                        <template if:false={firstTranslationId}>
+                            <option value="" disabled selected hidden>
+                                -- Select a translation --
+                            </option>
+                        </template>
+                        <template if:true={data.text.translations.length}>
+                            <template
+                                for:each={data.text.translations}
+                                for:item="translation"
+                            >
+                                <option
+                                    key={translation.id}
+                                    value={translation.id}
+                                >
+                                    {translation.displayName}
+                                </option>
+                            </template>
+                        </template>
+                        <template if:false={data.text.translations.length}>
+                            <option disabled>-- No items --</option>
+                        </template>
+                    </select>
+                </div>
+                <template if:true={firstTranslation}>
                     <div class="card-body">
-                        <h5 class="card-title">{translation.volume.title}</h5>
+                        <h5 class="card-title clearfix">
+                            {firstTranslation.title}
+                            <div class="float-right">
+                                <a
+                                    class="btn btn-sm btn-outline-secondary"
+                                    href={firstTranslation.volume.url}
+                                >
+                                    Details
+                                </a>
+                            </div>
+                        </h5>
                         <h6 class="card-subtitle mb-2 text-muted">
-                            trans.
+                            trans.&nbsp;
                             <bib-comma-link-list
-                                values={translation.personsLinks}
+                                values={firstTranslation.personsLinks}
                             ></bib-comma-link-list>
                         </h6>
-                        <p class="card-text">{translation.samplePassage}</p>
+                        <p class="card-text">
+                            <template if:true={firstTranslation.samplePassage}>
+                                {firstTranslation.samplePassage}
+                            </template>
+                            <template if:false={firstTranslation.samplePassage}>
+                                This translation does not have a sample passage.
+                            </template>
+                        </p>
                     </div>
                     <div class="card-footer">
                         <small class="text-muted">
-                            <a href={translation.volume.url}> Details </a>
-                            {translation.volume.publisher.name},
-                            {translation.volume.publishedDate}.
+                            {firstTranslation.volume.publisher.name}
+                            <template
+                                if:true={firstTranslation.volume.publishedYear}
+                            >
+                                , {firstTranslation.volume.publishedYear}.
+                            </template>
                         </small>
                     </div>
+                </template>
+            </div>
+
+            <!-- Second compared translation -->
+            <div class="card">
+                <div class="card-header">
+                    <select
+                        class="form-control"
+                        size="1"
+                        onchange={handleChange}
+                        value={secondTranslationId}
+                        name="secondTranslation"
+                    >
+                        <template if:false={secondTranslationId}>
+                            <option value="" disabled selected hidden>
+                                -- Select a translation --
+                            </option>
+                        </template>
+                        <template if:true={data.text.translations.length}>
+                            <template
+                                for:each={data.text.translations}
+                                for:item="translation"
+                            >
+                                <option
+                                    key={translation.id}
+                                    value={translation.id}
+                                >
+                                    {translation.displayName}
+                                </option>
+                            </template>
+                        </template>
+                        <template if:false={data.text.translations.length}>
+                            <option disabled>-- No items --</option>
+                        </template>
+                    </select>
                 </div>
-            </template>
+                <template if:true={secondTranslation}>
+                    <div class="card-body">
+                        <h5 class="card-title clearfix">
+                            {secondTranslation.title}
+                            <div class="float-right">
+                                <a
+                                    class="btn btn-sm btn-outline-secondary"
+                                    href={secondTranslation.volume.url}
+                                >
+                                    Details
+                                </a>
+                            </div>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">
+                            trans.&nbsp;
+                            <bib-comma-link-list
+                                values={secondTranslation.personsLinks}
+                            ></bib-comma-link-list>
+                        </h6>
+                        <p class="card-text">
+                            <template if:true={secondTranslation.samplePassage}>
+                                {secondTranslation.samplePassage}
+                            </template>
+                            <template
+                                if:false={secondTranslation.samplePassage}
+                            >
+                                This translation does not have a sample passage.
+                            </template>
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <small class="text-muted">
+                            {secondTranslation.volume.publisher.name}
+                            <template
+                                if:true={secondTranslation.volume.publishedYear}
+                            >
+                                , {secondTranslation.volume.publishedYear}.
+                            </template>
+                        </small>
+                    </div>
+                </template>
+            </div>
         </div>
     </template>
 </template>
