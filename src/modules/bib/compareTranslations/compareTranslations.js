@@ -90,7 +90,8 @@ export default class CompareTranslations extends LightningElement {
                 .getAll('trans')
                 .map((t) => this.translationById(t))
                 .filter((t) => !!t);
-            if (!this.translations.length) {
+
+            if (this.availableTranslations.length) {
                 this.addTranslation();
             }
         } catch (e) {
@@ -98,11 +99,19 @@ export default class CompareTranslations extends LightningElement {
         }
     }
 
+    get availableTranslations() {
+        let claimedIds = this.translations.map((t) => t.id);
+        return this.data.text.translations.filter(
+            (t) => !!t.samplePassage && !claimedIds.includes(t.id)
+        );
+    }
+
     translationById(id) {
         return this.data.text.translations.filter((f) => f.id === id)[0];
     }
 
     handleChange(event) {
+        console.log(`I have ${JSON.stringify(this.translations)}`);
         let selectedTranslation = this.translationById(
             event.currentTarget.selectedOptions[0].value
         );
@@ -112,11 +121,16 @@ export default class CompareTranslations extends LightningElement {
 
         let idString =
             '?' + this.translations.map((t) => `trans=${t.id}`).join('&');
+
         window.history.replaceState(
             null,
             null,
             `/texts/${this.recordId}/translations${idString}`
         );
+
+        if (!this.translations.map((t) => t.id).includes('')) {
+            this.addTranslation();
+        }
     }
 
     addTranslation() {

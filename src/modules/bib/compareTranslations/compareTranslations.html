@@ -8,7 +8,7 @@
         <h1 class="mb-4">Comparing Translations of {data.text.title}</h1>
         <div class="row row-cols-1 row-cols-lg-2">
             <div class="col mb-4">
-                <div class="card">
+                <div class="card h-100">
                     <div class="card-header">
                         <h5 class="card-title">Original Text</h5>
                     </div>
@@ -74,38 +74,43 @@
                 for:index="index"
             >
                 <div class="col mb-4" key={translation.id}>
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
-                            <select
-                                class="form-control"
-                                size="1"
-                                onchange={handleChange}
-                                value={translation.id}
-                                name={index}
-                            >
-                                <template if:false={translation.id}>
-                                    <option value="" disabled selected hidden>
+                            <template if:false={translation.id}>
+                                <select
+                                    class="form-control"
+                                    size="1"
+                                    onchange={handleChange}
+                                    name={index}
+                                >
+                                    <option value="null" disabled selected>
                                         -- Select a translation --
                                     </option>
-                                </template>
-                                <template
-                                    if:true={data.text.translations.length}
-                                >
                                     <template
-                                        for:each={data.text.translations}
-                                        for:item="trans"
+                                        if:true={availableTranslations.length}
                                     >
-                                        <option key={trans.id} value={trans.id}>
-                                            {trans.displayName}
-                                        </option>
+                                        <template
+                                            for:each={availableTranslations}
+                                            for:item="trans"
+                                        >
+                                            <option
+                                                key={trans.id}
+                                                value={trans.id}
+                                            >
+                                                {trans.displayName}
+                                            </option>
+                                        </template>
                                     </template>
-                                </template>
-                                <template
-                                    if:false={data.text.translations.length}
-                                >
-                                    <option disabled>-- No items --</option>
-                                </template>
-                            </select>
+                                    <template
+                                        if:false={availableTranslations.length}
+                                    >
+                                        <option disabled>-- No items --</option>
+                                    </template>
+                                </select>
+                            </template>
+                            <template if:true={translation.id}>
+                                <h5 class="card-title">Translation</h5>
+                            </template>
                         </div>
                         <template if:true={translation.id}>
                             <div class="card-body">
@@ -154,27 +159,15 @@
                                 </small>
                             </div>
                         </template>
+                        <template if:false={translation.id}>
+                            <div class="card-body">
+                                Add a translation to the comparison by selecting
+                                it above.
+                            </div>
+                        </template>
                     </div>
                 </div>
             </template>
-            <div class="col mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title"></h5>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title clearfix">Add Translation</h5>
-                        <p class="card-text">
-                            <button
-                                class="btn btn-outline-primary"
-                                onclick={addTranslation}
-                            >
-                                Add
-                            </button>
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
     </template>
 </template>
