@@ -6,12 +6,13 @@ export default class CompareTranslations extends LightningElement {
     recordId;
     data;
     error;
+    showOriginal = true;
 
     @track
     translations = [];
 
     async connectedCallback() {
-        const regex = /texts\/([0-9]+)\/translations(?:\/?([0-9,]+)?)/;
+        const regex = /texts\/([0-9]+)\/translations/;
         const loc = document.location.pathname;
         const textIdMatch = loc.match(regex);
 
@@ -94,6 +95,10 @@ export default class CompareTranslations extends LightningElement {
             if (this.availableTranslations.length) {
                 this.addTranslation();
             }
+
+            if (urlQuery.has('hideOriginal')) {
+                this.showOriginal = false;
+            }
         } catch (e) {
             this.error = e;
         }
@@ -111,29 +116,61 @@ export default class CompareTranslations extends LightningElement {
     }
 
     handleChange(event) {
-        console.log(`I have ${JSON.stringify(this.translations)}`);
         let selectedTranslation = this.translationById(
             event.currentTarget.selectedOptions[0].value
         );
         let desiredIndex = event.currentTarget.name;
 
         this.translations[desiredIndex] = selectedTranslation;
+        this.updateHistoryState();
 
+        if (
+            this.availableTranslations.length &&
+            !this.translations.map((t) => t.id).includes('')
+        ) {
+            this.addTranslation();
+        }
+    }
+
+    handleShowHideOriginal() {
+        this.showOriginal = !this.showOriginal;
+        this.updateHistoryState();
+    }
+
+    addTranslation() {
+        this.translations.push({ id: '' });
+    }
+
+    handleRemoveTranslation(event) {
+        let id = event.currentTarget.dataset.id;
+
+        this.translations = this.translations.filter((t) => t.id !== id);
+        this.updateHistoryState();
+
+        if (
+            this.availableTranslations.length &&
+            !this.translations.map((t) => t.id).includes('')
+        ) {
+            this.addTranslation();
+        }
+    }
+
+    updateHistoryState() {
         let idString =
-            '?' + this.translations.map((t) => `trans=${t.id}`).join('&');
+            '?' +
+            this.translations
+                .filter((t) => !!t.id)
+                .map((t) => `trans=${t.id}`)
+                .join('&');
+
+        if (!this.showOriginal) {
+            idString += '&hideOriginal=true';
+        }
 
         window.history.replaceState(
             null,
             null,
             `/texts/${this.recordId}/translations${idString}`
         );
-
-        if (!this.translations.map((t) => t.id).includes('')) {
-            this.addTranslation();
-        }
-    }
-
-    addTranslation() {
-        this.translations.push({ id: '' });
     }
 }

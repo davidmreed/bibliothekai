@@ -7,67 +7,81 @@
     <template if:true={data}>
         <h1 class="mb-4">Comparing Translations of {data.text.title}</h1>
         <div class="row row-cols-1 row-cols-lg-2">
-            <div class="col mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
-                        <h5 class="card-title">Original Text</h5>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title clearfix">
-                            <cite>{data.text.title}</cite>
-                            {data.text.samplePassageSpec}
-                            <div class="float-right">
-                                <a
-                                    class="btn btn-sm btn-outline-secondary"
-                                    href={data.text.url}
-                                >
-                                    Details
-                                </a>
-                            </div>
-                        </h5>
-                        <p class="card-text" style="white-space: pre-wrap">
-                            <template if:true={data.text.samplePassage}>
-                                {data.text.samplePassage}
-                            </template>
-                            <template if:false={data.text.samplePassage}>
-                                This text does not have a sample passage.
-                            </template>
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <small class="text-muted">
-                            <template
-                                if:true={data.text.samplePassageSourceLink}
-                            >
-                                <a href={data.text.samplePassageSourceLink}>
-                                    {data.text.samplePassageSource}
-                                </a>
-                            </template>
-                            <template
-                                if:false={data.text.samplePassageSourceLink}
-                            >
-                                {data.text.samplePassageSource}
-                            </template>
-                            <template if:true={data.text.samplePassageLicense}>
-                                <template
-                                    if:true={data.text.samplePassageLicenseLink}
-                                >
-                                    <a
-                                        href={data.text.samplePassageLicenseLink}
+            <template if:true={showOriginal}>
+                <div class="col mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="card-title clearfix">
+                                Original Text
+                                <div class="float-right">
+                                    <button
+                                        class="btn btn-sm btn-outline-secondary"
+                                        onclick={handleShowHideOriginal}
                                     >
-                                        ({data.text.samplePassageLicense})
+                                        Hide
+                                    </button>
+                                </div>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title clearfix">
+                                <cite>{data.text.title}</cite>
+                                {data.text.samplePassageSpec}
+                                <div class="float-right">
+                                    <a
+                                        class="btn btn-sm btn-outline-secondary"
+                                        href={data.text.url}
+                                    >
+                                        Details
+                                    </a>
+                                </div>
+                            </h5>
+                            <p class="card-text" style="white-space: pre-wrap">
+                                <template if:true={data.text.samplePassage}>
+                                    {data.text.samplePassage}
+                                </template>
+                                <template if:false={data.text.samplePassage}>
+                                    This text does not have a sample passage.
+                                </template>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">
+                                <template
+                                    if:true={data.text.samplePassageSourceLink}
+                                >
+                                    <a href={data.text.samplePassageSourceLink}>
+                                        {data.text.samplePassageSource}
                                     </a>
                                 </template>
                                 <template
-                                    if:false={data.text.samplePassageLicenseLink}
+                                    if:false={data.text.samplePassageSourceLink}
                                 >
-                                    ({data.text.samplePassageLicense})
+                                    {data.text.samplePassageSource}
                                 </template>
-                            </template>
-                        </small>
+                                <template
+                                    if:true={data.text.samplePassageLicense}
+                                >
+                                    <template
+                                        if:true={data.text.samplePassageLicenseLink}
+                                    >
+                                        <a
+                                            href={data.text.samplePassageLicenseLink}
+                                        >
+                                            ({data.text.samplePassageLicense})
+                                        </a>
+                                    </template>
+                                    <template
+                                        if:false={data.text.samplePassageLicenseLink}
+                                    >
+                                        ({data.text.samplePassageLicense})
+                                    </template>
+                                </template>
+                            </small>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </template>
             <template
                 for:each={translations}
                 for:item="translation"
@@ -83,12 +97,12 @@
                                     onchange={handleChange}
                                     name={index}
                                 >
-                                    <option value="null" disabled selected>
-                                        -- Select a translation --
-                                    </option>
                                     <template
                                         if:true={availableTranslations.length}
                                     >
+                                        <option value="" selected>
+                                            -- Select a translation --
+                                        </option>
                                         <template
                                             for:each={availableTranslations}
                                             for:item="trans"
@@ -104,12 +118,23 @@
                                     <template
                                         if:false={availableTranslations.length}
                                     >
-                                        <option disabled>-- No items --</option>
+                                        <option selected>-- No items --</option>
                                     </template>
                                 </select>
                             </template>
                             <template if:true={translation.id}>
-                                <h5 class="card-title">Translation</h5>
+                                <h5 class="card-title clearfix">
+                                    Translation
+                                    <div class="float-right">
+                                        <button
+                                            class="btn btn-sm btn-outline-secondary"
+                                            onclick={handleRemoveTranslation}
+                                            data-id={translation.id}
+                                        >
+                                            Hide
+                                        </button>
+                                    </div>
+                                </h5>
                             </template>
                         </div>
                         <template if:true={translation.id}>
