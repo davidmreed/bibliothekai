@@ -2,10 +2,10 @@
     <template if:true={error}>
         <h1 class="mb-4">Comparing Translations</h1>
 
-        An error occurred while loading data: {error}.
+        An error occurred while loading data: {error}
     </template>
     <template if:true={data}>
-        <h1 class="mb-4">Comparing Translations of {data.text.title}</h1>
+        <h1 class="mt-4 mb-4">Comparing Translations of {data.text.title}</h1>
         <div class="row row-cols-1 row-cols-lg-2">
             <template if:true={showOriginal}>
                 <div class="col mb-4">
