@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from rest_framework.routers import DefaultRouter
 from . import views
@@ -24,7 +25,7 @@ router.register(
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
     path("graphql", GraphQLView.as_view(graphiql=True)),
-    path("api/graphql", GraphQLView.as_view(graphiql=False)),
+    path("api/graphql", csrf_exempt(GraphQLView.as_view(graphiql=False))),
     path("about/", views.AboutView.as_view(), name="about"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
