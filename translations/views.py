@@ -263,7 +263,7 @@ class UserDetailView(generic.DetailView):
 
     def get_reviews(self):
         return filter_queryset_parent_approval(
-            Review, self.get_object().reviews.all(), self.request.user
+            Review, self.get_object().review_set.all(), self.request.user
         )
 
 
