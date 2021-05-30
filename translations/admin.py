@@ -59,6 +59,7 @@ class FeatureAdmin(admin.ModelAdmin):
                     "feature",
                     "language",
                     "format",
+                    "original_publication_date",
                     "partial",
                     "has_facing_text",
                 ]

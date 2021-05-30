@@ -146,6 +146,17 @@
                             value={features.translation.title}
                             onchange={handleChange}
                         />
+                        <label for="original-publication-date">
+                            Original Publication Date
+                        </label>
+                        <input
+                            class="form-control"
+                            data-name="translation.originalPublicationDate"
+                            placeholder="If this is a republication"
+                            type="date"
+                            value={features.translation.originalPublicationDate}
+                            onchange={handleChange}
+                        />
                         <hr />
                         <label for="description">Description</label>
                         <textarea

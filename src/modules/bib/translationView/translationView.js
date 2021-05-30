@@ -62,8 +62,11 @@ export default class TranslationView extends LightningElement {
             targetEntityName: 'full_name',
             valueType: 'link-list'
         },
-        { id: 'publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
-        { id: 'volume.published_date', name: 'Date', valueType: 'year' },
+        {
+            id: 'original_publication_date',
+            name: 'First Published',
+            valueType: 'year'
+        },
         { id: 'language.name', name: 'Language', valueType: 'string' },
         { id: 'format', name: 'Format', valueType: 'string' },
         {

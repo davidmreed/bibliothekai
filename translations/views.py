@@ -133,18 +133,6 @@ class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
         return context
 
 
-class TranslationDetailView(generic.DetailView):
-    model = Feature
-    template_name = "translations/translation_detail.html"
-
-    def get_queryset(self):
-        return filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(feature="TR"),
-            self.request.user,
-        )
-
-
 class VolumeIndexView(generic.ListView):
     template_name = "translations/volume_index.html"
 

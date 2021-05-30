@@ -159,7 +159,7 @@
                 {% endif %}
                 {% if f.sample_passage %}
                 <a class="float-right btn btn-sm btn-outline-secondary"
-                    href="{% url 'translation_detail' volume.id f.id %}">
+                    href="{% url 'translation_compare' f.source_text.id %}?trans={{ f.id }}">
                     View Sample
                 </a>
                 {% endif %}

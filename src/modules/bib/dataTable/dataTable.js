@@ -51,7 +51,7 @@ function makeRecordValueEntry(c, record) {
             break;
         case COLUMN_YEAR_TYPE:
             // `value` is a year derived from an ISO8601 date.
-            value = getNestedProp(record, c.id).substring(0, 4);
+            value = (getNestedProp(record, c.id) || '').substring(0, 4);
             break;
         case COLUMN_HYPERLINK_TYPE:
             href = getRecordUiUrl(

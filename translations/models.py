@@ -364,6 +364,17 @@ class Feature(models.Model, AuthorNameMixin):
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
+    original_publication_date = models.DateField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if (
+            self.feature == "TR"
+            and not self.original_publication_date
+            and self.volume.published_date
+        ):
+            self.original_publication_date = self.volume.published_date
+
+        super().save(*args, **kwargs)
 
     def display_title(self):
         if self.title:
