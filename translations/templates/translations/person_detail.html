@@ -14,7 +14,7 @@
 {% endif %}
 <h1 class="mt-4 mb-4">{{ person.full_name }}</h1>
 <p>
-    {{ person.description }}
+    {{ person.description|linebreaks }}
 </p>
 {% if person.alternate_names.count %}
 <p>
@@ -40,7 +40,7 @@
 {% for s in sourcetexts %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title clearfix">
             {{ s.title }}
             {% if s.get_original_language_title and s.title != s.get_original_language_title %}
             ({{ s.get_original_language_title }})
@@ -71,7 +71,7 @@
                 Translation into {{ f.language }} {{ f.get_format_display|lower }}.
             </p>
             <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
-                ({{f.volume.publisher }}, {{ f.volume.published_date.year }})
+                ({{f.volume.publisher }}{% if vol.published_date %}, {{ f.volume.published_date.year }}{% endif%})
             </p>
         </div>
     </div>

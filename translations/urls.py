@@ -1,4 +1,6 @@
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
+from graphene_django.views import GraphQLView
 from rest_framework.routers import DefaultRouter
 from . import views
 
@@ -22,6 +24,8 @@ router.register(
 
 urlpatterns = [
     path("", views.IndexView.as_view(), name="index"),
+    path("graphql", GraphQLView.as_view(graphiql=True)),
+    path("api/graphql", csrf_exempt(GraphQLView.as_view(graphiql=False))),
     path("about/", views.AboutView.as_view(), name="about"),
     path("texts/", views.SourceTextIndexView.as_view(), name="source_text_index"),
     path("authors/", views.AuthorIndexView.as_view(), name="author_index"),
@@ -31,6 +35,11 @@ urlpatterns = [
         views.SourceTextDetailView.as_view(),
         name="source_text_detail",
     ),
+    path(
+        "texts/<int:pk>/translations/",
+        views.TranslationComparisonsView.as_view(),
+        name="translation_compare",
+    ),
     path("persons/<int:pk>/", views.PersonDetailView.as_view(), name="person_detail"),
     path("users/<int:pk>/", views.UserDetailView.as_view(), name="user_detail"),
     path(
@@ -39,11 +48,6 @@ urlpatterns = [
         name="published_review_detail",
     ),
     path("volumes/<int:pk>/", views.VolumeDetailView.as_view(), name="volume_detail"),
-    path(
-        "volumes/<int:vol>/translation/<int:pk>",
-        views.TranslationDetailView.as_view(),
-        name="translation_detail",
-    ),
     path(
         "volumes/<int:vol>/reviews/",
         views.ReviewIndexView.as_view(),
@@ -59,7 +63,11 @@ urlpatterns = [
         views.PublishedReviewLWCView.as_view(),
         name="publishedreview_add",
     ),
-    path("volumes/add/", views.VolumeLWCView.as_view(), name="volume_add",),
+    path(
+        "volumes/add/",
+        views.VolumeLWCView.as_view(),
+        name="volume_add",
+    ),
     path(
         "volumes/<int:vol>/review/",
         views.ReviewCreateView.as_view(),

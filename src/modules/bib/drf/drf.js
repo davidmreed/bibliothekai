@@ -1,6 +1,7 @@
 const getRecordsStore = new Map();
 const recordCache = new Map();
 const individualRecordCache = new Map();
+const refreshesInProgress = new Map();
 
 const nameFields = {
     publishers: 'name',
@@ -20,6 +21,10 @@ function getApiEndpoint() {
     return `${getEndpoint()}/api`;
 }
 
+function getCacheKey(entityName, recordId) {
+    return `${entityName}/${recordId}`;
+}
+
 export function getRecordApiUrl(entityName, id) {
     return `${getApiEndpoint()}/${entityName}/${id}/`;
 }
@@ -30,7 +35,8 @@ export function getRecordUiUrl(entityName, id) {
 
 export async function getRecord(entityName, recordId) {
     // TODO: Optimize further. Make it fetch exactly one record.
-    let cacheKey = `${entityName}/${recordId}`;
+    let cacheKey = getCacheKey(entityName, recordId);
+
     if (!individualRecordCache.has(cacheKey)) {
         await getRecordsFromApi(entityName);
     }
@@ -47,7 +53,7 @@ export class getRecords {
 
     connect() {
         this._register();
-        this._refresh();
+        this.refresh();
     }
 
     _register() {
@@ -74,15 +80,27 @@ export class getRecords {
             this._unregister();
             this.entityName = config.entityName;
             this._register();
-            this._refresh();
+            this.refresh();
         }
     }
 
-    async _refresh() {
+    async refresh() {
         if (this.entityName) {
             try {
                 if (!recordCache.has(this.entityName)) {
-                    await getRecordsFromApi(this.entityName);
+                    if (!refreshesInProgress.has(this.entityName)) {
+                        refreshesInProgress.set(
+                            this.entityName,
+                            getRecordsFromApi(this.entityName)
+                        );
+                    }
+
+                    await refreshesInProgress.get(this.entityName);
+
+                    if (refreshesInProgress.has(this.entityName)) {
+                        // We're the first to process this refresh.
+                        refreshesInProgress.delete(this.entityName);
+                    }
                 }
                 this.dataCallback({
                     data: recordCache.get(this.entityName),
@@ -128,7 +146,7 @@ export async function getRecordsFromApi(entityName) {
 
         // And the individual record cache
         data.forEach((elem) => {
-            let cacheKey = `${entityName}/${elem.id}`;
+            let cacheKey = getCacheKey(entityName, elem.id);
             individualRecordCache.set(cacheKey, elem);
         });
     } else {
@@ -136,10 +154,28 @@ export async function getRecordsFromApi(entityName) {
     }
 }
 
-export async function createRecord(entity, record) {
+export async function runGraphQLQuery(query) {
     let endpoint = getApiEndpoint();
 
-    let response = await fetch(`${endpoint}/${entity}/`, {
+    let result = await fetch(`${endpoint}/graphql`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ query: query })
+    });
+
+    if (result.ok) {
+        return result.json();
+    }
+    throw new Error(`The API returned an error: ${result.status}.`);
+}
+
+export async function createRecord(entityName, record) {
+    let endpoint = getApiEndpoint();
+
+    let response = await fetch(`${endpoint}/${entityName}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
@@ -150,17 +186,20 @@ export async function createRecord(entity, record) {
 
     if (response.ok) {
         let result = await response.json();
-        let cacheKey = `${entity}/${result.id}`;
+        result.name = result[nameFields[entityName]];
 
-        result.name = result[nameFields[entity]];
-
-        individualRecordCache.set(cacheKey, result);
-        if (recordCache.has(entity)) {
-            recordCache.get(entity).push(result);
+        if (recordCache.has(entityName)) {
+            recordCache.get(entityName).push(result);
         }
 
-        if (getRecordsStore.has(entity) && getRecordsStore.get(entity).size) {
-            getRecordsStore.get(entity).forEach((r) => r._refresh());
+        let cacheKey = getCacheKey(entityName, result.id);
+        individualRecordCache.set(cacheKey, result);
+
+        if (
+            getRecordsStore.has(entityName) &&
+            getRecordsStore.get(entityName).size
+        ) {
+            getRecordsStore.get(entityName).forEach((r) => r.refresh());
         }
         return result;
     }

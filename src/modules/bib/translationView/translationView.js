@@ -20,6 +20,9 @@ function normalizeFeatures(record) {
     if (record.feature_notes) {
         record.featureNames.push('Notes');
     }
+    if (record.feature_commentary) {
+        record.featureNames.push('Commentary');
+    }
     if (record.feature_glossary) {
         record.featureNames.push('Glossary');
     }
@@ -59,8 +62,21 @@ export default class TranslationView extends LightningElement {
             targetEntityName: 'full_name',
             valueType: 'link-list'
         },
-        { id: 'publisher.name', name: 'Publisher', valueType: 'string' }, // TODO: constant-ize
-        { id: 'volume.published_date', name: 'Date', valueType: 'year' },
+        {
+            id: 'publisher.name',
+            name: 'Publisher',
+            valueType: 'year'
+        },
+        {
+            id: 'volume.published_date',
+            name: 'Published',
+            valueType: 'year'
+        },
+        {
+            id: 'original_publication_date',
+            name: 'First Published',
+            valueType: 'year'
+        },
         { id: 'language.name', name: 'Language', valueType: 'string' },
         { id: 'format', name: 'Format', valueType: 'string' },
         {
@@ -70,6 +86,7 @@ export default class TranslationView extends LightningElement {
             pills: {
                 Introduction: 'primary',
                 Notes: 'warning',
+                Commentary: 'danger',
                 Glossary: 'info',
                 Index: 'secondary',
                 Bibliography: 'dark',
@@ -102,7 +119,7 @@ export default class TranslationView extends LightningElement {
     }
 
     @track
-    filterCriteria = new FilterCriteria([], 'volume.published_date', false);
+    filterCriteria = new FilterCriteria([], 'original_publication_date', false);
 
     get hasSelection() {
         return !!this.selectedIds.length;
@@ -126,7 +143,18 @@ export default class TranslationView extends LightningElement {
         return languages;
     }
 
-    renderedCallback() {
+    get allowComparisons() {
+        return this.records.reduce(
+            (acc, cur) => acc || cur.feature_sample_passage,
+            false
+        );
+    }
+
+    get translationCompareUrl() {
+        return `/${this.translationPath}`;
+    }
+
+    connectedCallback() {
         // If we're being displayed within a text's path,
         // load translations for that text.
         const regex = /texts\/([0-9]+)\//;

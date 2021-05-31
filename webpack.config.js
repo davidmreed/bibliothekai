@@ -5,7 +5,8 @@ module.exports = {
     entry: {
         addPublishedReview: './src/addPublishedReview.js',
         addVolume: './src/addVolume.js',
-        translationView: './src/translationView.js'
+        translationView: './src/translationView.js',
+        compareTranslations: './src/compareTranslations.js'
     },
     output: {
         filename: '[name].js'
