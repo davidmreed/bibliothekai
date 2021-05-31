@@ -110,9 +110,23 @@ export default class TranslationEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        this.dispatchEvent(new CustomEvent('addperson'), {
-            detail: `${this.features.id}.translation.persons`
-        });
+        this.dispatchEvent(
+            new CustomEvent('addperson', {
+                detail: {
+                    callback: (p) =>
+                        this.dispatchUpdate(
+                            'translation.persons',
+                            this.features.translation.persons.concat([p])
+                        )
+                }
+            })
+        );
+    }
+
+    handleSingleFeatureAddPerson(event) {
+        this.dispatchEvent(
+            new CustomEvent('addperson', { detail: event.detail })
+        );
     }
 
     save() {
