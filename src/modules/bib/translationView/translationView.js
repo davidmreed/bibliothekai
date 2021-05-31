@@ -65,7 +65,7 @@ export default class TranslationView extends LightningElement {
         {
             id: 'publisher.name',
             name: 'Publisher',
-            valueType: 'year'
+            valueType: 'string'
         },
         {
             id: 'volume.published_date',
