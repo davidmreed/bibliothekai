@@ -40,6 +40,9 @@ export default class TranslationEditor extends LightningElement {
             this.template.querySelector(
                 '.coverage-picklist'
             ).value = this.partialValue;
+            this.template.querySelector(
+                '.description-field'
+            ).value = this.features.translation.description;
         }
         if (this.features.text) {
             this.selectedText = await getRecord('texts', this.features.text);
