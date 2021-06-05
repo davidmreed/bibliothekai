@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load manifest %}
+
+{% block title %}
+Compare Translations
+{% endblock %}
+
+{% block content %}
+
+<div id="lwc"></div>
+
+{% manifest_match '*compareTranslations*.js' '<script src="{match}"></script>' %}
+
+{% endblock %}

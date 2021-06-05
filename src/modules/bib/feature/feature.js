@@ -62,6 +62,7 @@ export class TranslationFeature extends Feature {
     samplePassage = '';
     title = '';
     hasFacingText = false;
+    originalPublicationDate = null;
 
     constructor(uiExpanded) {
         super('Translation', uiExpanded);
@@ -83,6 +84,7 @@ export class TranslationFeature extends Feature {
         js.partial = this.partial;
         js.format = this.format;
         js.has_facing_text = this.hasFacingText;
+        js.original_publication_date = this.originalPublicationDate;
         if (this.samplePassage) {
             js.sample_passage = this.samplePassage;
         }

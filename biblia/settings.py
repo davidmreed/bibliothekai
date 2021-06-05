@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "manifest_loader",
     "generic_relations",
+    "graphene_django",
 ]
 
 MIDDLEWARE = [
@@ -173,3 +174,5 @@ ANYMAIL = {
 EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
 DEFAULT_FROM_EMAIL = "bibliothekai@ktema.org"
 SERVER_EMAIL = "bibliothekai@ktema.org"
+
+GRAPHENE = {"SCHEMA": "translations.graphql.schema"}

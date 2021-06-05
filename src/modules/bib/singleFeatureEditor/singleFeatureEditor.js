@@ -60,6 +60,16 @@ export default class SingleFeatureEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        // FIXME: implement
+        this.dispatchEvent(
+            new CustomEvent('addperson', {
+                detail: {
+                    callback: (p) =>
+                        this.postUpdate(
+                            'persons',
+                            this.feature.persons.concat([p])
+                        )
+                }
+            })
+        );
     }
 }

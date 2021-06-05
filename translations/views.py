@@ -65,6 +65,10 @@ class VolumeLWCView(LoginRequiredMixin, generic.TemplateView):
     template_name = "lwc/add_volume.html"
 
 
+class TranslationComparisonsView(generic.TemplateView):
+    template_name = "lwc/compare_translations.html"
+
+
 class SourceTextDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
     model = SourceText
     template_name = "translations/source_text_detail.html"
@@ -93,13 +97,13 @@ class SourceTextIndexView(generic.ListView):
         return (
             Person.objects.prefetch_related(
                 Prefetch(
-                    "sourcetext_set",
+                    "source_texts",
                     queryset=filter_queryset_approval(
                         SourceText.objects.all(), self.request.user
                     ),
                 )
             )
-            .filter(sourcetext__title__isnull=False)
+            .filter(source_texts__title__isnull=False)
             .distinct()
         )
 
@@ -114,11 +118,11 @@ class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     # No filter necessary (user reviews are not approved)
     def get_reviews(self):
-        return self.get_object().review_set.order_by("-date_created").all()[:5]
+        return self.get_object().reviews.order_by("-date_created").all()[:5]
 
     def get_published_reviews(self):
         return filter_queryset_approval(
-            self.get_object().publishedreview_set.all(), self.request.user
+            self.get_object().published_reviews.all(), self.request.user
         )[:5]
 
     def get_context_data(self, **kwargs):
@@ -127,18 +131,6 @@ class VolumeDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
         context["reviews"] = self.get_reviews()
         context["publishedreviews"] = self.get_published_reviews()
         return context
-
-
-class TranslationDetailView(generic.DetailView):
-    model = Feature
-    template_name = "translations/translation_detail.html"
-
-    def get_queryset(self):
-        return filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(feature="TR"),
-            self.request.user,
-        )
 
 
 class VolumeIndexView(generic.ListView):
@@ -156,7 +148,7 @@ class AuthorIndexView(generic.ListView):
     @approval_filtered_queryset
     def get_queryset(self):
         return Person.objects.filter(
-            Q(sourcetext__title__isnull=False) & Q(sourcetext__approved=True)
+            Q(source_texts__title__isnull=False) & Q(source_texts__approved=True)
         ).distinct()
 
 
@@ -234,16 +226,18 @@ class PersonDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
 
     def get_translations(self):
         return filter_queryset_parent_approval(
-            Feature, self.get_object().features.filter(feature="TR"), self.request.user
+            Feature,
+            self.get_object().features.filter(feature="TR"),
+            self.request.user,
         )
 
     @approval_filtered_queryset
     def get_publishedreviews(self):
-        return self.get_object().publishedreview_set.all()
+        return self.get_object().published_reviews.all()
 
     @approval_filtered_queryset
     def get_sourcetexts(self):
-        return self.get_object().sourcetext_set.all()
+        return self.get_object().source_texts.all()
 
 
 class UserDetailView(generic.DetailView):

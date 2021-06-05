@@ -12,9 +12,14 @@
             >
                 {filterTitle}
             </button>
-            <a class="btn btn-outline-primary" href="/volumes/add"
-                >Add Translation</a
-            >
+            <a class="btn btn-outline-primary" href="/volumes/add">
+                Add Translation
+            </a>
+            <template if:true={allowComparisons}>
+                <a class="btn btn-outline-primary" href={translationCompareUrl}>
+                    Compare Translations
+                </a>
+            </template>
         </div>
     </h2>
 
@@ -54,6 +59,21 @@
                             for="checkbox-notes"
                         >
                             Notes
+                        </label>
+                    </div>
+                    <div class="custom-control custom-switch">
+                        <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            id="checkbox-commentary"
+                            data-feature="commentary"
+                            onchange={handleFilterChange}
+                        />
+                        <label
+                            class="custom-control-label"
+                            for="checkbox-commentary"
+                        >
+                            Commentary
                         </label>
                     </div>
                     <div class="custom-control custom-switch">

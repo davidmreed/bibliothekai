@@ -228,6 +228,7 @@ class FeatureSerializer(serializers.ModelSerializer):
             "description",
             "has_facing_text",
             "sample_passage",
+            "original_publication_date",
         ]
 
 
@@ -290,6 +291,7 @@ class TranslationSerializer(serializers.ModelSerializer):
         source="has_accompanying_introduction"
     )
     feature_notes = serializers.BooleanField(source="has_accompanying_notes")
+    feature_commentary = serializers.BooleanField(source="has_accompanying_commentary")
     feature_sample_passage = serializers.BooleanField()
 
     class Meta:
@@ -309,8 +311,10 @@ class TranslationSerializer(serializers.ModelSerializer):
             "sample_passage",
             "feature_introduction",
             "feature_notes",
+            "feature_commentary",
             "feature_sample_passage",
             "publisher",
+            "original_publication_date",
         ]
 
 

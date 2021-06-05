@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -157,8 +159,12 @@ class SourceText(UserCreatedApprovalMixin):
         ordering = ["title"]
 
     title = models.CharField(max_length=255)
-    author = models.ForeignKey(Person, on_delete=models.PROTECT)
-    language = models.ForeignKey(Language, on_delete=models.PROTECT)
+    author = models.ForeignKey(
+        Person, related_name="source_texts", on_delete=models.PROTECT
+    )
+    language = models.ForeignKey(
+        Language, related_name="source_texts", on_delete=models.PROTECT
+    )
     format = models.TextField(choices=FORMAT_CHOICES, db_column="kind")
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
@@ -170,6 +176,10 @@ class SourceText(UserCreatedApprovalMixin):
     sample_passage_source_link = models.URLField(blank=True, null=True)
     sample_passage_license = models.CharField(max_length=255, blank=True)
     sample_passage_license_link = models.URLField(blank=True, null=True)
+
+    # Coverage tracking
+    coverage = models.TextField(blank=True)
+    coverage_date = models.DateField(blank=True, null=True)
 
     # Generic relations
     links = GenericRelation(Link)
@@ -220,8 +230,12 @@ class Volume(UserCreatedApprovalMixin):
 
     title = models.CharField(max_length=255)
     published_date = models.DateField(blank=True)
-    publisher = models.ForeignKey(Publisher, on_delete=models.PROTECT)
-    series = models.ForeignKey(Series, on_delete=models.PROTECT, null=True, blank=True)
+    publisher = models.ForeignKey(
+        Publisher, related_name="volumes", on_delete=models.PROTECT
+    )
+    series = models.ForeignKey(
+        Series, related_name="volumes", on_delete=models.PROTECT, null=True, blank=True
+    )
     isbn = models.CharField(max_length=32, blank=True)
     oclc_number = models.CharField(max_length=32, blank=True)
     links = GenericRelation(Link)
@@ -238,7 +252,7 @@ class Volume(UserCreatedApprovalMixin):
         if self.published_date:
             return f"{self.title} ({self.publisher}, {self.published_date.year})"
 
-        return self.title
+        return f"{self.title} ({self.publisher})"
 
     def get_general_features(self):
         return Feature.objects.filter(volume=self, source_text=None)
@@ -248,16 +262,19 @@ class Volume(UserCreatedApprovalMixin):
 
     def oclc_link(self):
         if self.oclc_number:
-            return f"https://www.worldcat.org/oclc/{self.oclc_number}"
+            escaped = urllib.parse.quote(self.oclc_number)
+            return f"https://www.worldcat.org/oclc/{escaped}"
         elif self.isbn:
+            escaped = urllib.parse.quote(self.isbn)
             return (
-                f"https://www.worldcat.org/search?q=bn%3A{self.isbn}"
+                f"https://www.worldcat.org/search?q=bn%3A{escaped}"
                 "&qt=advanced&dblist=638"
             )
 
     def bookshop_link(self):
         if self.isbn:
-            return f"https://bookshop.org/a/15029/{self.isbn.replace('-', '').replace(' ', '')}"
+            escaped = urllib.parse.quote(self.isbn)
+            return f"https://bookshop.org/a/15029/{escaped}"
 
     def update_automatic_links(self):
         links = self.links.all()[:]
@@ -289,11 +306,18 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code != 404
         ):
             bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
+                content_object=self,
+                link=url,
+                source="Bookshop",
+                resource_type="CO",
             )
             bookshop.save()
 
     def save(self, *args, **kwargs):
+        if self.isbn:
+            self.isbn = "".join(c for c in self.isbn if c.isdigit())
+        if self.oclc_number:
+            self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
         super().save(*args, **kwargs)
         self.update_automatic_links()
 
@@ -323,17 +347,34 @@ class Feature(models.Model, AuthorNameMixin):
         Volume, related_name="features", on_delete=models.CASCADE
     )
     source_text = models.ForeignKey(
-        SourceText, blank=True, null=True, on_delete=models.PROTECT
+        SourceText,
+        related_name="features",
+        blank=True,
+        null=True,
+        on_delete=models.PROTECT,
     )
     feature = models.CharField(max_length=2, choices=FEATURE_CHOICES)
     persons = models.ManyToManyField(Person, related_name="features")
-    language = models.ForeignKey(Language, on_delete=models.PROTECT)
+    language = models.ForeignKey(
+        Language, related_name="features", on_delete=models.PROTECT
+    )
     title = models.CharField(max_length=255, blank=True)
     format = models.TextField(choices=FORMAT_CHOICES, blank=True, db_column="kind")
     partial = models.BooleanField()
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
+    original_publication_date = models.DateField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if (
+            self.feature == "TR"
+            and not self.original_publication_date
+            and self.volume.published_date
+        ):
+            self.original_publication_date = self.volume.published_date
+
+        super().save(*args, **kwargs)
 
     def display_title(self):
         if self.title:
@@ -353,6 +394,9 @@ class Feature(models.Model, AuthorNameMixin):
 
     def has_accompanying_notes(self):
         return self.has_accompanying_feature("NT")
+
+    def has_accompanying_commentary(self):
+        return self.has_accompanying_feature("CM")
 
     @property
     def feature_sample_passage(self):
@@ -384,7 +428,7 @@ class Review(UserCreatedMixin):
     )
     recommended = models.BooleanField()
     content = models.TextField()
-    volume = models.ForeignKey(Volume, on_delete=models.CASCADE)
+    volume = models.ForeignKey(Volume, related_name="reviews", on_delete=models.CASCADE)
 
     parent_relationship = "volume"
 
@@ -405,8 +449,8 @@ class PublishedReview(AuthorNameMixin, UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
-    volumes = models.ManyToManyField(Volume)
-    persons = models.ManyToManyField(Person)
+    volumes = models.ManyToManyField(Volume, related_name="published_reviews")
+    persons = models.ManyToManyField(Person, related_name="published_reviews")
     title = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255)
     published_date = models.DateField(null=True, blank=True)

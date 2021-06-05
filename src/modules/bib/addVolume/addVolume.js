@@ -215,6 +215,18 @@ export default class AddVolume extends LightningElement {
         this.addingPerson = !this.addingPerson;
     }
 
+    doAddPerson(event) {
+        this.addingPerson = true;
+        this.addPersonContext = event.detail.callback;
+    }
+
+    savePerson(event) {
+        this.addingPerson = false;
+
+        this.addPersonContext(event.detail);
+        this.addPersonContext = null;
+    }
+
     toggleAddingPublisher() {
         this.addingPublisher = !this.addingPublisher;
     }

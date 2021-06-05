@@ -18,3 +18,19 @@ export default function setNestedProperty(target, prop, value) {
         }
     }
 }
+
+export function oxfordCommaList(ls) {
+    return ls.reduce((acc, cur, index, array) => {
+        let joiner;
+        if (array.length === 1 || index === 0) {
+            joiner = '';
+        } else if (array.length === 2) {
+            joiner = ' and ';
+        } else if (array.length >= 3 && index < array.length - 1) {
+            joiner = ', ';
+        } else {
+            joiner = ', and ';
+        }
+        return acc + joiner + cur;
+    }, '');
+}

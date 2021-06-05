@@ -40,6 +40,9 @@ export default class TranslationEditor extends LightningElement {
             this.template.querySelector(
                 '.coverage-picklist'
             ).value = this.partialValue;
+            this.template.querySelector(
+                '.description-field'
+            ).value = this.features.translation.description;
         }
         if (this.features.text) {
             this.selectedText = await getRecord('texts', this.features.text);
@@ -110,10 +113,23 @@ export default class TranslationEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        // TODO: pass a detail in the event to denote the context.
-        // Have addVolume add the newly-added person to the appropriate lists
-        // when a save event is received.
-        this.dispatchEvent(new CustomEvent('addperson'));
+        this.dispatchEvent(
+            new CustomEvent('addperson', {
+                detail: {
+                    callback: (p) =>
+                        this.dispatchUpdate(
+                            'translation.persons',
+                            this.features.translation.persons.concat([p])
+                        )
+                }
+            })
+        );
+    }
+
+    handleSingleFeatureAddPerson(event) {
+        this.dispatchEvent(
+            new CustomEvent('addperson', { detail: event.detail })
+        );
     }
 
     save() {
