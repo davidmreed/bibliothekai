@@ -28,7 +28,6 @@ from .serializers import (
     LanguageSerializer,
     PublisherSerializer,
     SeriesSerializer,
-    TranslationSerializer,
     VolumeSerializer,
     FeatureSerializer,
     ReviewSerializer,
@@ -525,25 +524,3 @@ class AlternateNameViewSet(viewsets.ModelViewSet):
         # because it's a generic relation.
 
         return AlternateName.objects.all()
-
-
-class TranslationList(rest_framework.views.APIView):
-    def get_object(self, pk, request):
-        try:
-            return filter_queryset_approval(
-                SourceText.objects.filter(id=pk), request.user
-            )[0]
-        except IndexError:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        qs = filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(source_text=self.get_object(pk, request))
-            .filter(feature="TR")
-            .order_by("-volume__published_date"),
-            self.request.user,
-        )
-
-        serializer = TranslationSerializer(qs, many=True, context={"request": request})
-        return rest_framework.response.Response(serializer.data)

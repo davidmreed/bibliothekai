@@ -235,12 +235,5 @@ export function sortRecordsByGetter(getter, ascending, a, b) {
 }
 
 export function getNestedProp(record, prop) {
-    let elements = prop.split('.');
-    let cur = record;
-
-    for (let e of elements) {
-        cur = cur[e];
-    }
-
-    return cur;
+    return prop.split('.').reduce((cur, acc) => acc[cur], record);
 }
