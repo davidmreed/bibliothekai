@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { createRecord, getRecordApiUrl, getRecordUiUrl } from 'bib/drf';
+import { createRecord, getRecordApiUrl, getRecordUiUrl } from 'bib/api';
 
 export default class AddPublishedReview extends LightningElement {
     title = '';

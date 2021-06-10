@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { createRecord } from 'bib/drf';
+import { createRecord } from 'bib/api';
 
 export default class AddPerson extends LightningElement {
     firstName = '';

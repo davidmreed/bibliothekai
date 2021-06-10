@@ -1,49 +1,90 @@
 import { LightningElement, wire, track } from 'lwc';
-import { getRecords } from 'bib/drf';
+import { graphQL } from 'bib/api';
 import { FilterCriteria } from 'bib/dataTable';
 
-function normalizeFeatures(record) {
+
+function normalize(record, enumValues) {
     // Some features are flags on the Feature, some on the Volume.
     // We also need a flat list for the pill view.
 
-    record.feature_maps = record.volume.feature_maps;
-    record.feature_index = record.volume.feature_index;
-    record.feature_bibliography = record.volume.feature_bibliography;
-    record.feature_glossary = record.volume.feature_glossary;
-    record.feature_facingtext = record.has_facing_text;
-
     record.featureNames = [];
+    record.format = enumValues.get(record.format);
 
-    if (record.feature_introduction) {
+    if (record.featureAccompanyingIntroduction) {
         record.featureNames.push('Introduction');
     }
-    if (record.feature_notes) {
+    if (record.featureAccompanyingNotes) {
         record.featureNames.push('Notes');
     }
-    if (record.feature_commentary) {
+    if (record.featureAccompanyingCommentary) {
         record.featureNames.push('Commentary');
     }
-    if (record.feature_glossary) {
+    if (record.volume.featureGlossary) {
         record.featureNames.push('Glossary');
     }
-    if (record.feature_index) {
+    if (record.volume.featureIndex) {
         record.featureNames.push('Index');
     }
-    if (record.feature_bibliography) {
+    if (record.volume.featureIndex) {
         record.featureNames.push('Bibliography');
     }
-    if (record.feature_maps) {
+    if (record.volume.featureMaps) {
         record.featureNames.push('Maps');
     }
-    if (record.feature_facingtext) {
+    if (record.featureFacingText) {
         record.featureNames.push('Facing Text');
     }
-    if (record.feature_sample_passage) {
+    if (record.featureSamplePassage) {
         record.featureNames.push('Sample Passage');
     }
 
     return record;
 }
+
+const TRANSLATION_GRAPHQL_QUERY = `
+query getTranslations($textId: Int) {
+        __type(name: "FeatureFormat") {
+            enumValues {
+                name
+                description
+            }
+        }
+        text(id: $textId) {
+          translations {
+            id
+            originalPublicationDate
+            format
+            partial
+            featureSamplePassage
+            featureAccompanyingNotes
+            featureAccompanyingCommentary
+            featureAccompanyingIntroduction
+            featureFacingText
+            language {
+                name
+            }
+            volume {
+                id
+                title
+                publishedDate
+                featureMaps
+                featureBibliography
+                featureMaps
+                featureIndex
+                publisher {
+                    name
+                }
+            }
+            persons {
+                id
+                fullName
+                sortName
+            }
+
+        }
+    }
+}
+`;
 
 export default class TranslationView extends LightningElement {
     columns = [
@@ -59,21 +100,21 @@ export default class TranslationView extends LightningElement {
             name: 'Translator',
             targetEntity: 'persons',
             targetEntityId: 'id',
-            targetEntityName: 'full_name',
+            targetEntityName: 'fullName',
             valueType: 'link-list'
         },
         {
-            id: 'publisher.name',
+            id: 'volume.publisher.name',
             name: 'Publisher',
             valueType: 'string'
         },
         {
-            id: 'volume.published_date',
+            id: 'volume.publishedDate',
             name: 'Published',
             valueType: 'year'
         },
         {
-            id: 'original_publication_date',
+            id: 'originalPublicationDate',
             name: 'First Published',
             valueType: 'year'
         },
@@ -105,12 +146,21 @@ export default class TranslationView extends LightningElement {
     records = [];
     error;
 
+    parameters;
+
     translationPath;
 
-    @wire(getRecords, { entityName: '$translationPath' })
+    @wire(
+        graphQL,
+        {
+            query: TRANSLATION_GRAPHQL_QUERY,
+            variables: '$parameters'
+        }
+    )
     provision({ data, error }) {
         if (data) {
-            this.records = data.map((r) => normalizeFeatures(r));
+            let enumValues = new Map(data.data.__type.enumValues.map((o) => [o.name, o.description]));
+            this.records = data.data.text.translations.map((r) => normalize(r, enumValues));
         }
         if (error) {
             this.error = error;
@@ -119,7 +169,7 @@ export default class TranslationView extends LightningElement {
     }
 
     @track
-    filterCriteria = new FilterCriteria([], 'original_publication_date', false);
+    filterCriteria = new FilterCriteria([], 'originalPublicationDate', false);
 
     get hasSelection() {
         return !!this.selectedIds.length;
@@ -145,7 +195,7 @@ export default class TranslationView extends LightningElement {
 
     get allowComparisons() {
         return this.records.reduce(
-            (acc, cur) => acc || cur.feature_sample_passage,
+            (acc, cur) => acc || cur.featureSamplePassage,
             false
         );
     }
@@ -166,6 +216,8 @@ export default class TranslationView extends LightningElement {
         } else {
             this._error = 'No text found';
         }
+
+        this.parameters = { 'textId': Number(textIdMatch[1]) };
     }
 
     handleSort(event) {

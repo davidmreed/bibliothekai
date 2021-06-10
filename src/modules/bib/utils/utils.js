@@ -1,4 +1,48 @@
-export default function setNestedProperty(target, prop, value) {
+export function sortRecordsByName(a, b) {
+    return sortRecordsByProperty('name', true, a, b);
+}
+
+export function sortRecordsByProperty(property, ascending, a, b) {
+    return sortRecordsByGetter(
+        (r) => getNestedProp(r, property),
+        ascending,
+        a,
+        b
+    );
+}
+
+export function sortRecordsByGetter(getter, ascending, a, b) {
+    let nameA = getter(a).toUpperCase();
+    let nameB = getter(b).toUpperCase();
+    const factor = ascending ? 1 : -1;
+
+    if (nameA < nameB) {
+        return -1 * factor;
+    }
+    if (nameA > nameB) {
+        return 1 * factor;
+    }
+    return 0;
+}
+
+/*
+export function getNestedProp(record, prop) {
+    return prop.split('.').reduce((cur, acc) => acc[cur], record);
+}
+*/
+
+export function getNestedProp(record, prop) {
+    let elements = prop.split('.');
+    let cur = record;
+
+    for (let e of elements) {
+        cur = cur[e];
+    }
+
+    return cur;
+}
+
+export function setNestedProperty(target, prop, value) {
     let elements = prop.split('.');
     let cur;
 

@@ -1,5 +1,6 @@
 import { LightningElement, api } from 'lwc';
-import { sortRecordsByProperty, getNestedProp, getRecordUiUrl } from 'bib/drf';
+import { getRecordUiUrl } from 'bib/api';
+import { sortRecordsByProperty, getNestedProp } from 'bib/utils';
 
 export class FilterCriteria {
     constructor(filters, sortColumn, sortAscending) {
