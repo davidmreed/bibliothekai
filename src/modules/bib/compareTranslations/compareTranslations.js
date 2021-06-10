@@ -1,63 +1,55 @@
-import { runGraphQLQuery, getRecordUiUrl } from 'bib/api';
-import { LightningElement, track } from 'lwc';
+import { graphQL, getRecordUiUrl } from 'bib/api';
+import { LightningElement, track, wire } from 'lwc';
 import { oxfordCommaList } from 'bib/utils';
 
+const COMPARISON_GRAPHQL_QUERY = `
+query getTranslations($textId: Int) {
+    text(id: $textId) {
+        id
+        title
+        samplePassage
+        samplePassageSource
+        samplePassageSourceLink
+        samplePassageLicense
+        samplePassageLicenseLink    
+        translations {
+            id
+            title
+            samplePassage
+            volume {
+                id
+                title
+                publisher {
+                    name
+                }
+                publishedDate
+            }
+            persons {
+                id
+                fullName
+            }
+        }
+    }
+}
+`;
+
 export default class CompareTranslations extends LightningElement {
-    recordId;
     data;
     error;
+    parameters;
     showOriginal = true;
 
     @track
     translations = [];
+    translationIds;
 
-    async connectedCallback() {
-        const regex = /texts\/([0-9]+)\/translations/;
-        const loc = document.location.pathname;
-        const textIdMatch = loc.match(regex);
-
-        if (textIdMatch) {
-            if (textIdMatch.length >= 2) {
-                this.recordId = [Number(textIdMatch[1])];
-            }
-        } else {
-            this.error = 'The URL is not valid';
-            return;
-        }
-
-        try {
-            let query = `
-            {
-                text(id: ${this.recordId}) {
-                    id
-                    title
-                    samplePassage
-                    samplePassageSource
-                    samplePassageSourceLink
-                    samplePassageLicense
-                    samplePassageLicenseLink    
-                    translations {
-                        id
-                        title
-                        samplePassage
-                        volume {
-                            id
-                            title
-                            publisher {
-                                name
-                            }
-                            publishedDate
-                        }
-                        persons {
-                            id
-                            fullName
-                        }
-                    }
-                }
-            }
-            `; // FIXME: graphQL variables.
-            let result = await runGraphQLQuery(query);
-            this.data = result.data;
+    @wire(graphQL, {
+        query: COMPARISON_GRAPHQL_QUERY,
+        variables: '$parameters'
+    })
+    provision({ data, error }) {
+        if (data) {
+            this.data = data.data;
 
             this.data.text.url = getRecordUiUrl('texts', this.data.text.id);
 
@@ -85,22 +77,36 @@ export default class CompareTranslations extends LightningElement {
                 trans.displayName = `${trans.volume.title} (${trans.volume.publisher.name}${dateString}), trans. ${transString}`;
             }
 
-            const urlQuery = new URLSearchParams(document.location.search);
-
-            this.translations = urlQuery
-                .getAll('trans')
+            this.translations = this.translationIds
                 .map((t) => this.translationById(t))
                 .filter((t) => !!t);
 
             if (this.availableTranslations.length) {
                 this.addTranslation();
             }
+        }
+        if (error) {
+            this.error = error;
+        }
+    }
 
+    async connectedCallback() {
+        const regex = /texts\/([0-9]+)\/translations/;
+        const loc = document.location.pathname;
+        const textIdMatch = loc.match(regex);
+        const urlQuery = new URLSearchParams(document.location.search);
+
+        if (textIdMatch) {
+            if (textIdMatch.length >= 2) {
+                this.parameters = { textId: Number(textIdMatch[1]) };
+            }
+
+            this.translationIds = urlQuery.getAll('trans') || [];
             if (urlQuery.has('hideOriginal')) {
                 this.showOriginal = false;
             }
-        } catch (e) {
-            this.error = e;
+        } else {
+            this.error = 'The URL is not valid';
         }
     }
 
