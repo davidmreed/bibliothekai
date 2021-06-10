@@ -1,4 +1,4 @@
-import { runGraphQLQuery, getRecordUiUrl } from 'bib/drf';
+import { runGraphQLQuery, getRecordUiUrl } from 'bib/api';
 import { LightningElement, track } from 'lwc';
 import { oxfordCommaList } from 'bib/utils';
 

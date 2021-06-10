@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import { createRecord, getRecordApiUrl } from 'bib/drf';
+import { createRecord, getRecordApiUrl } from 'bib/api';
 
 export default class AddPublisher extends LightningElement {
     name = '';

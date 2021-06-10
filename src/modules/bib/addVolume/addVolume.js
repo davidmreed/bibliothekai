@@ -4,7 +4,7 @@ import {
     getRecordUiUrl,
     getRecordApiUrl,
     getRecordsFromApi
-} from 'bib/drf';
+} from 'bib/api';
 import { Features } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {

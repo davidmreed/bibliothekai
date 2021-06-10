@@ -1,13 +1,14 @@
 import { LightningElement, wire, track } from 'lwc';
-import { getRecords } from 'bib/drf';
+import { graphQL } from 'bib/api';
 import { FilterCriteria } from 'bib/dataTable';
-import { sortRecordsByProperty } from '../drf/drf';
 
-function normalizeFeatures(record) {
+
+function normalize(record, enumValues) {
     // Some features are flags on the Feature, some on the Volume.
     // We also need a flat list for the pill view.
 
     record.featureNames = [];
+    record.format = enumValues.get(record.format);
 
     if (record.featureAccompanyingIntroduction) {
         record.featureNames.push('Introduction');
@@ -40,10 +41,17 @@ function normalizeFeatures(record) {
     return record;
 }
 
-const TRANSLATION_GRAPHQL_QUERY = ```
+const TRANSLATION_GRAPHQL_QUERY = `
 query getTranslations($textId: Int) {
-    text(id: $textId) {
+        __type(name: "FeatureFormat") {
+            enumValues {
+                name
+                description
+            }
+        }
+        text(id: $textId) {
           translations {
+            id
             originalPublicationDate
             format
             partial
@@ -76,7 +84,7 @@ query getTranslations($textId: Int) {
         }
     }
 }
-```;
+`;
 
 export default class TranslationView extends LightningElement {
     columns = [
@@ -92,11 +100,11 @@ export default class TranslationView extends LightningElement {
             name: 'Translator',
             targetEntity: 'persons',
             targetEntityId: 'id',
-            targetEntityName: 'full_name',
+            targetEntityName: 'fullName',
             valueType: 'link-list'
         },
         {
-            id: 'publisher.name',
+            id: 'volume.publisher.name',
             name: 'Publisher',
             valueType: 'string'
         },
@@ -138,18 +146,21 @@ export default class TranslationView extends LightningElement {
     records = [];
     error;
 
+    parameters;
+
     translationPath;
 
     @wire(
         graphQL,
         {
             query: TRANSLATION_GRAPHQL_QUERY,
-            textId: '$textId'
+            variables: '$parameters'
         }
     )
-    provision({ result, error }) {
-        if (result) {
-            this.records = result.data.text.translations.map((r) => normalizeFeatures(r));
+    provision({ data, error }) {
+        if (data) {
+            let enumValues = new Map(data.data.__type.enumValues.map((o) => [o.name, o.description]));
+            this.records = data.data.text.translations.map((r) => normalize(r, enumValues));
         }
         if (error) {
             this.error = error;
@@ -179,7 +190,6 @@ export default class TranslationView extends LightningElement {
             }
         });
 
-        sortRecordsByProperty()
         return languages;
     }
 
@@ -206,6 +216,8 @@ export default class TranslationView extends LightningElement {
         } else {
             this._error = 'No text found';
         }
+
+        this.parameters = { 'textId': Number(textIdMatch[1]) };
     }
 
     handleSort(event) {

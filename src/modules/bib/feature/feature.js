@@ -1,4 +1,4 @@
-import { getRecordApiUrl } from 'bib/drf';
+import { getRecordApiUrl } from 'bib/api';
 
 export class Feature {
     persons = [];

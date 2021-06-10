@@ -1,5 +1,6 @@
 import { LightningElement, api, wire } from 'lwc';
-import { getRecords, sortRecordsByName } from 'bib/drf';
+import { getRecords } from 'bib/api';
+import { sortRecordsByName } from 'bib/utils';
 
 export default class PopUpMenu extends LightningElement {
     @wire(getRecords, { entityName: '$entityName' })
