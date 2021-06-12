@@ -30,13 +30,13 @@ class VolumeResource(FilteredDefaultQueryset, DjangoObjectType):
     feature_facing_text = graphene.Boolean()
 
     def resolve_feature_accompanying_introduction(root, info, **kwargs):
-        return root.has_accompanying_introduction
+        return root.has_accompanying_introduction()
 
     def resolve_feature_accompanying_notes(root, info, **kwargs):
-        return root.has_accompanying_notes
+        return root.has_accompanying_notes()
 
     def resolve_feature_accompanying_commentary(root, info, **kwargs):
-        return root.has_accompanying_commentary
+        return root.has_accompanying_commentary()
 
     def resolve_feature_sample_passage(root, info, **kwargs):
         return root.sample_passage and root.sample_passage != ""
