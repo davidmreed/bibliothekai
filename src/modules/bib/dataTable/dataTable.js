@@ -1,6 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { getRecordUiUrl } from 'bib/api';
-import { sortRecordsByProperty, getNestedProp } from 'bib/utils';
+import { sortRecordsByProperty, getNestedProperty } from 'bib/utils';
 
 export class FilterCriteria {
     constructor(filters, sortColumn, sortAscending) {
@@ -30,13 +30,13 @@ function makeRecordValueEntry(c, record) {
     switch (c.valueType) {
         case COLUMN_HYPERLINK_LIST_TYPE:
             // `value` is an array of objects, each of which has an `id`, a `href`, and a `name`.
-            value = getNestedProp(record, c.id).map((e) => ({
-                id: getNestedProp(e, c.targetEntityId),
+            value = getNestedProperty(record, c.id).map((e) => ({
+                id: getNestedProperty(e, c.targetEntityId),
                 href: getRecordUiUrl(
                     c.targetEntity,
-                    getNestedProp(e, c.targetEntityId)
+                    getNestedProperty(e, c.targetEntityId)
                 ),
-                name: getNestedProp(e, c.targetEntityName)
+                name: getNestedProperty(e, c.targetEntityName)
             }));
             break;
         case COLUMN_PILL_LIST_TYPE:
@@ -44,7 +44,7 @@ function makeRecordValueEntry(c, record) {
             // `c`, the column, must have a mapping between string values in the record
             // and pill colors.
             // The inbound property value is an array of strings.
-            value = getNestedProp(record, c.id).map((i) => ({
+            value = getNestedProperty(record, c.id).map((i) => ({
                 id: i,
                 value: i,
                 pillClass: `badge badge-pill badge-${c.pills[i]} mr-1 mb-1`
@@ -52,16 +52,16 @@ function makeRecordValueEntry(c, record) {
             break;
         case COLUMN_YEAR_TYPE:
             // `value` is a year derived from an ISO8601 date.
-            value = (getNestedProp(record, c.id) || '').substring(0, 4);
+            value = (getNestedProperty(record, c.id) || '').substring(0, 4);
             break;
         case COLUMN_HYPERLINK_TYPE:
             href = getRecordUiUrl(
                 c.targetEntity,
-                getNestedProp(record, c.targetEntityId)
+                getNestedProperty(record, c.targetEntityId)
             );
         // fall through
         default:
-            value = getNestedProp(record, c.id);
+            value = getNestedProperty(record, c.id);
             break;
     }
 
@@ -164,7 +164,8 @@ export default class DataTable extends LightningElement {
                     this.filterCriteria.filters.reduce(
                         (prev, cur) =>
                             prev &&
-                            getNestedProp(f.record, cur.column) === cur.value,
+                            getNestedProperty(f.record, cur.column) ===
+                                cur.value,
                         true
                     )
                 );

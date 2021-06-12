@@ -1,17 +1,17 @@
-export function sortRecordsByName(a, b) {
+function sortRecordsByName(a, b) {
     return sortRecordsByProperty('name', true, a, b);
 }
 
-export function sortRecordsByProperty(property, ascending, a, b) {
+function sortRecordsByProperty(property, ascending, a, b) {
     return sortRecordsByGetter(
-        (r) => getNestedProp(r, property),
+        (r) => getNestedProperty(r, property),
         ascending,
         a,
         b
     );
 }
 
-export function sortRecordsByGetter(getter, ascending, a, b) {
+function sortRecordsByGetter(getter, ascending, a, b) {
     let nameA = getter(a).toUpperCase();
     let nameB = getter(b).toUpperCase();
     const factor = ascending ? 1 : -1;
@@ -25,13 +25,7 @@ export function sortRecordsByGetter(getter, ascending, a, b) {
     return 0;
 }
 
-/*
-export function getNestedProp(record, prop) {
-    return prop.split('.').reduce((cur, acc) => acc[cur], record);
-}
-*/
-
-export function getNestedProp(record, prop) {
+function getNestedProperty(record, prop) {
     let elements = prop.split('.');
     let cur = record;
 
@@ -42,7 +36,7 @@ export function getNestedProp(record, prop) {
     return cur;
 }
 
-export function setNestedProperty(target, prop, value) {
+function setNestedProperty(target, prop, value) {
     let elements = prop.split('.');
     let cur;
 
@@ -63,7 +57,7 @@ export function setNestedProperty(target, prop, value) {
     }
 }
 
-export function oxfordCommaList(ls) {
+function oxfordCommaList(ls) {
     return ls.reduce((acc, cur, index, array) => {
         let joiner;
         if (array.length === 1 || index === 0) {
@@ -78,3 +72,12 @@ export function oxfordCommaList(ls) {
         return acc + joiner + cur;
     }, '');
 }
+
+export {
+    sortRecordsByName,
+    sortRecordsByProperty,
+    sortRecordsByGetter,
+    getNestedProperty,
+    setNestedProperty,
+    oxfordCommaList
+};

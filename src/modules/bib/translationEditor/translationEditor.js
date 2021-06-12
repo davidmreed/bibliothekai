@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import { getRecord } from 'bib/api';
-import setNestedProperty from 'bib/utils';
+import { setNestedProperty } from 'bib/utils';
 
 export default class TranslationEditor extends LightningElement {
     @track _features;
