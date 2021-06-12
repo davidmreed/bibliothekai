@@ -2,7 +2,6 @@ import { LightningElement, wire, track } from 'lwc';
 import { graphQL } from 'bib/api';
 import { FilterCriteria } from 'bib/dataTable';
 
-
 function normalize(record, enumValues) {
     // Some features are flags on the Feature, some on the Volume.
     // We also need a flat list for the pill view.
@@ -25,7 +24,7 @@ function normalize(record, enumValues) {
     if (record.volume.featureIndex) {
         record.featureNames.push('Index');
     }
-    if (record.volume.featureIndex) {
+    if (record.volume.featureBibliography) {
         record.featureNames.push('Bibliography');
     }
     if (record.volume.featureMaps) {
@@ -67,7 +66,7 @@ query getTranslations($textId: Int) {
                 id
                 title
                 publishedDate
-                featureMaps
+                featureGlossary
                 featureBibliography
                 featureMaps
                 featureIndex
@@ -150,17 +149,18 @@ export default class TranslationView extends LightningElement {
 
     translationPath;
 
-    @wire(
-        graphQL,
-        {
-            query: TRANSLATION_GRAPHQL_QUERY,
-            variables: '$parameters'
-        }
-    )
+    @wire(graphQL, {
+        query: TRANSLATION_GRAPHQL_QUERY,
+        variables: '$parameters'
+    })
     provision({ data, error }) {
         if (data) {
-            let enumValues = new Map(data.data.__type.enumValues.map((o) => [o.name, o.description]));
-            this.records = data.data.text.translations.map((r) => normalize(r, enumValues));
+            let enumValues = new Map(
+                data.data.__type.enumValues.map((o) => [o.name, o.description])
+            );
+            this.records = data.data.text.translations.map((r) =>
+                normalize(r, enumValues)
+            );
         }
         if (error) {
             this.error = error;
@@ -217,7 +217,7 @@ export default class TranslationView extends LightningElement {
             this._error = 'No text found';
         }
 
-        this.parameters = { 'textId': Number(textIdMatch[1]) };
+        this.parameters = { textId: Number(textIdMatch[1]) };
     }
 
     handleSort(event) {
