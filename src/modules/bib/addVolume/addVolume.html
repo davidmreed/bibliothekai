@@ -205,106 +205,44 @@
                         <form novalidate>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-general-introduction"
-                                            data-feature="introduction"
-                                            onchange={handleFeatureSwitchChange}
-                                            checked={generalFeatures.hasIntroduction}
-                                            name="Introduction"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-general-introduction"
-                                        >
-                                            General Introduction
-                                        </label>
-                                    </div>
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-glossary"
-                                            onchange={handleChangeCheckbox}
-                                            checked={feature_glossary}
-                                            data-name="feature_glossary"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-glossary"
-                                        >
-                                            Glossary
-                                        </label>
-                                    </div>
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-index"
-                                            onchange={handleChangeCheckbox}
-                                            checked={feature_index}
-                                            data-name="feature_index"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-index"
-                                        >
-                                            Index
-                                        </label>
-                                    </div>
+                                    <bib-switch
+                                        label="General Introduction"
+                                        value={generalFeatures.hasIntroduction}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Introduction"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Glossary"
+                                        value={feature_glossary}
+                                        onchange={handleChange}
+                                        data-name="feature_glossary"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Index"
+                                        value={feature_index}
+                                        onchange={handleChange}
+                                        data-name="feature_index"
+                                    ></bib-switch>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-general-notes"
-                                            data-feature="notes"
-                                            onchange={handleFeatureSwitchChange}
-                                            checked={generalFeatures.hasNotes}
-                                            name="Notes"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-general-notes"
-                                        >
-                                            General Notes
-                                        </label>
-                                    </div>
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-bibliography"
-                                            onchange={handleChangeCheckbox}
-                                            checked={feature_bibliography}
-                                            data-name="feature_bibliography"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-bibliography"
-                                        >
-                                            Bibliography
-                                        </label>
-                                    </div>
-                                    <div class="custom-control custom-switch">
-                                        <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id="checkbox-maps"
-                                            onchange={handleChangeCheckbox}
-                                            checked={feature_maps}
-                                            data-name="feature_maps"
-                                        />
-                                        <label
-                                            class="custom-control-label"
-                                            for="checkbox-maps"
-                                        >
-                                            Maps
-                                        </label>
-                                    </div>
+                                    <bib-switch
+                                        label="General Notes"
+                                        value={generalFeatures.hasNotes}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Notes"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Bibliography"
+                                        value={feature_bibliography}
+                                        onchange={handleChange}
+                                        data-name="feature_bibliography"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Maps"
+                                        value={feature_maps}
+                                        onchange={handleChange}
+                                        data-name="feature_maps"
+                                    ></bib-switch>
                                 </div>
                             </div>
                         </form>

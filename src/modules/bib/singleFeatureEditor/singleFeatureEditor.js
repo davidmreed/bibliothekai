@@ -42,14 +42,6 @@ export default class SingleFeatureEditor extends LightningElement {
         );
     }
 
-    handleChangeCheckbox(event) {
-        event.stopPropagation();
-        this.postUpdate(
-            event.currentTarget.dataset.name,
-            event.currentTarget.checked
-        );
-    }
-
     handleChangeValueInvert(event) {
         event.stopPropagation();
 

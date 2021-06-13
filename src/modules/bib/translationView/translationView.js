@@ -238,8 +238,8 @@ export default class TranslationView extends LightningElement {
 
         if (event.target.dataset.feature) {
             // This is a feature checkbox
-            feature = `feature_${event.target.dataset.feature}`;
-            required = event.target.checked;
+            feature = event.target.dataset.feature;
+            required = event.target.value;
         } else if (event.target.name === 'format') {
             feature = 'format';
             required = this.selectedFilterFormat = event.target.value;

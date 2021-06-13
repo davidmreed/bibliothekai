@@ -76,18 +76,10 @@ export default class TranslationEditor extends LightningElement {
         );
     }
 
-    handleChangeCheckbox(event) {
-        event.stopPropagation();
-        this.dispatchUpdate(
-            event.currentTarget.dataset.name,
-            event.currentTarget.checked
-        );
-    }
-
     handleFeatureSwitchChange(event) {
         event.stopPropagation();
 
-        let desiredFeature = event.target.name;
+        let desiredFeature = event.target.dataset.feature;
         let newFeatures = this._features.clone();
 
         if (newFeatures.hasFeature(desiredFeature)) {

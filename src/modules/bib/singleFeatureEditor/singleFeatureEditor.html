@@ -18,22 +18,12 @@
         <template if:true={isVisible}>
             <div class="card-body">
                 <template if:true={hasTranslation}>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-same-as-translation"
-                            onchange={handleChangeCheckbox}
-                            checked={feature.sameAsTranslation}
-                            data-name="sameAsTranslation"
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-same-as-translation"
-                        >
-                            Same language and authors as translation
-                        </label>
-                    </div>
+                    <bib-switch
+                        label="Same language and authors as translation"
+                        value={feature.sameAsTranslation}
+                        data-name="sameAsTranslation"
+                        onchange={handleChange}
+                    ></bib-switch>
                 </template>
                 <template if:true={showDetails}>
                     <div>
