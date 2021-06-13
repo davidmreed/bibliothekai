@@ -1,6 +1,6 @@
 import { LightningElement, api } from 'lwc';
 
-export default class PopUpMenu extends LightningElement {
+export default class Switch extends LightningElement {
     _value;
 
     @api label;
