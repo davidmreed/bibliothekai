@@ -37,7 +37,7 @@
                 Includes {% if volume.translations.count > 1 %} translations of
                 {% else %} translation of {% endif %}
                 {% commalist volume.translations.all %}
-                {{ item.source_text.title }}
+                <cite>{{ item.source_text.title }}</cite>
                 {% endcommalist %}.
             </p>
         </div>
