@@ -165,7 +165,7 @@ class SourceText(UserCreatedApprovalMixin):
     language = models.ForeignKey(
         Language, related_name="source_texts", on_delete=models.PROTECT
     )
-    format = models.TextField(choices=FORMAT_CHOICES, db_column="kind")
+    format = models.TextField(choices=FORMAT_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
 
@@ -359,7 +359,7 @@ class Feature(models.Model, AuthorNameMixin):
         Language, related_name="features", on_delete=models.PROTECT
     )
     title = models.CharField(max_length=255, blank=True)
-    format = models.TextField(choices=FORMAT_CHOICES, blank=True, db_column="kind")
+    format = models.TextField(choices=FORMAT_CHOICES, blank=True)
     partial = models.BooleanField()
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
