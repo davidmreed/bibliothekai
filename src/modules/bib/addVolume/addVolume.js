@@ -116,7 +116,7 @@ export default class AddVolume extends LightningElement {
         if (this.generalFeatures.hasFeature(desiredFeature)) {
             newFeatures.removeFeature(desiredFeature);
         } else {
-            newFeatures.addFeature(event.target.name, true);
+            newFeatures.addFeature(desiredFeature, true);
         }
 
         this.generalFeatures = newFeatures;

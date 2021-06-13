@@ -1,18 +1,27 @@
 import { LightningElement, api } from 'lwc';
 
 export default class Switch extends LightningElement {
-    _value;
+    _value = false;
 
     @api label;
 
     @api
     set value(v) {
         this._value = v;
-        this.template.querySelector('input').checked = this._value;
+
+        let cb = this.template.querySelector('.custom-control-input');
+        if (cb) {
+            cb.checked = this._value;
+        }
     }
 
     get value() {
         return this._value;
+    }
+
+    renderedCallback() {
+        let cb = this.template.querySelector('.custom-control-input');
+        cb.checked = this._value;
     }
 
     handleClick(event) {
