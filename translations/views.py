@@ -5,7 +5,6 @@ from django.http import HttpResponseRedirect, Http404
 from django.views import generic
 from django.urls import reverse, reverse_lazy
 from rest_framework import viewsets
-import rest_framework
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from .models import (
@@ -392,6 +391,16 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
         form.instance.user = self.request.user
         super().form_valid(form)
         return HttpResponseRedirect(self.get_success_url())
+
+
+class PublisherDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
+    model = Publisher
+    template_name = "translations/publisher_detail.html"
+
+
+class SeriesDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
+    model = Series
+    template_name = "translations/series_detail.html"
 
 
 # API views

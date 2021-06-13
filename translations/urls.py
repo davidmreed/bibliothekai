@@ -88,6 +88,12 @@ urlpatterns = [
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
+    path(
+        "publishers/<int:pk>/",
+        views.PublisherDetailView.as_view(),
+        name="publisher_detail",
+    ),
+    path("series/<int:pk>/", views.SeriesDetailView.as_view(), name="series_detail"),
     path("search/", views.SearchView.as_view(), name="search"),
     path("submit/", views.UserSubmissionCreateView.as_view(), name="submit"),
     path("api/", include(router.urls)),

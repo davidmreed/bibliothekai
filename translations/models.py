@@ -257,6 +257,9 @@ class Volume(UserCreatedApprovalMixin):
     def get_general_features(self):
         return Feature.objects.filter(volume=self, source_text=None)
 
+    def translations(self):
+        return self.features.filter(feature="TR")
+
     def get_absolute_url(self):
         return reverse("volume_detail", args=[str(self.id)])
 
