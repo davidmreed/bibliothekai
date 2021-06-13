@@ -13,6 +13,10 @@ export default class SingleFeatureEditor extends LightningElement {
         return this._feature;
     }
 
+    get isEdited() {
+        return this._feature === 'Edited';
+    }
+
     get showDetails() {
         return !(this.hasTranslation && this._feature.sameAsTranslation);
     }

@@ -14,6 +14,10 @@ export class Feature {
     }
 
     get isValid() {
+        if (this.feature === 'Edited') {
+            return !!this.persons.length;
+        }
+
         return (
             (!!this.persons.length && !!this.language) || this.sameAsTranslation
         );

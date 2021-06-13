@@ -26,20 +26,25 @@
                     ></bib-switch>
                 </template>
                 <template if:true={showDetails}>
-                    <div>
-                        <small>A language and authors are required.</small>
-                    </div>
+                    <template if:false={isEdited}>
+                        <div>
+                            <small>A language and authors are required.</small>
+                        </div>
 
-                    <bib-pop-up-menu
-                        label-text="Language"
-                        entity-name="languages"
-                        allow-add="false"
-                        onchange={handleChange}
-                        value={feature.language}
-                        data-name="language"
-                    >
-                    </bib-pop-up-menu>
-                    <label for="authors">Authors</label>
+                        <bib-pop-up-menu
+                            label-text="Language"
+                            entity-name="languages"
+                            allow-add="false"
+                            onchange={handleChange}
+                            value={feature.language}
+                            data-name="language"
+                        >
+                        </bib-pop-up-menu>
+                        <label for="authors">Authors</label>
+                    </template>
+                    <template if:true={isEdited}>
+                        <label for="authors">Editors</label>
+                    </template>
                     <bib-dualing-listbox
                         entity-name="persons"
                         value={feature.persons}

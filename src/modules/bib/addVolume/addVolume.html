@@ -199,17 +199,48 @@
                         <h5 class="card-title">Volume Resources</h5>
                     </div>
                     <div class="card-body">
-                        <small class="text-muted mb-2">
-                            Select resources offered in this volume.
-                        </small>
                         <form novalidate>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
+                                    <small class="text-muted mb-2">
+                                        Select authored resources offered in
+                                        this volume.
+                                    </small>
                                     <bib-switch
                                         label="General Introduction"
                                         value={generalFeatures.hasIntroduction}
                                         onchange={handleFeatureSwitchChange}
                                         data-feature="Introduction"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="General Notes"
+                                        value={generalFeatures.hasNotes}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Notes"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Editors"
+                                        value={generalFeatures.hasEdited}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Edited"
+                                    ></bib-switch>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <small class="text-muted mb-2">
+                                        Select additional resources offered in
+                                        this volume.
+                                    </small>
+                                    <bib-switch
+                                        label="Bibliography"
+                                        value={feature_bibliography}
+                                        onchange={handleChange}
+                                        data-name="feature_bibliography"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Maps"
+                                        value={feature_maps}
+                                        onchange={handleChange}
+                                        data-name="feature_maps"
                                     ></bib-switch>
                                     <bib-switch
                                         label="Glossary"
@@ -222,26 +253,6 @@
                                         value={feature_index}
                                         onchange={handleChange}
                                         data-name="feature_index"
-                                    ></bib-switch>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <bib-switch
-                                        label="General Notes"
-                                        value={generalFeatures.hasNotes}
-                                        onchange={handleFeatureSwitchChange}
-                                        data-feature="Notes"
-                                    ></bib-switch>
-                                    <bib-switch
-                                        label="Bibliography"
-                                        value={feature_bibliography}
-                                        onchange={handleChange}
-                                        data-name="feature_bibliography"
-                                    ></bib-switch>
-                                    <bib-switch
-                                        label="Maps"
-                                        value={feature_maps}
-                                        onchange={handleChange}
-                                        data-name="feature_maps"
                                     ></bib-switch>
                                 </div>
                             </div>
