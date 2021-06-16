@@ -1,0 +1,43 @@
+<template>
+    <template if:true={volume}>
+        <form novalidate>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input id="title" class="form-control" data-name="title" type="text" value={title}
+                    onchange={handleChange} />
+
+                <label for="closeness">Closeness</label>
+                <select class="form-control" id="closeness" size="1" onchange={handleChange} data-name="closeness"
+                    value={closeness}>
+                    <option value="1">Low</option>
+                    <option value="2">Average</option>
+                    <option value="3">Excellent</option>
+                </select>
+
+                <label for="readability">Readability</label>
+                <select class="form-control" id="readability" size="1" onchange={handleChange} data-name="readability"
+                    value={readability}>
+                    <option value="1">Low</option>
+                    <option value="2">Average</option>
+                    <option value="3">Excellent</option>
+                </select>
+
+                <bib-switch label="I recommend this translation" value={recommended} onchange={handleChange}
+                    data-name="recommended"></bib-switch>
+
+                <label for="review">Review</label>
+                <textarea id="review" class="form-control" data-name="content" type="text" value={content}
+                    onchange={handleChange} required>
+                </textarea>
+                <div class="invalid-feedback">Review text is required.</div>
+                <div class="text-danger">{error}</div>
+                <button class="btn btn-primary mt-3" type="submit" onclick={save}>
+                    Save
+                </button>
+            </div>
+        </form>
+    </template>
+    <template if:false={volume}>
+        No volume is present.
+    </template>
+</template>

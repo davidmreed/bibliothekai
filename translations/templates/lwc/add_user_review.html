@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load manifest %}
+
+{% block title %}
+Add Review
+{% endblock %}
+
+{% block content %}
+
+<h1 class="mt-4 mb-4">
+    Add Review
+</h1>
+<div id="lwc"></div>
+
+{% manifest_match '*addUserReview*.js' '<script src="{match}"></script>' %}
+
+{% endblock %}

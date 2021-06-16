@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.http import HttpResponseRedirect, Http404
 from django.views import generic
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
@@ -263,46 +263,12 @@ class PublishedReviewDetailView(ApprovalFilteredQuerysetMixin, generic.DetailVie
     template_name = "translations/published_review_detail.html"
 
 
-class ReviewCreateView(LoginRequiredMixin, generic.edit.CreateView):
-    model = Review
-    fields = [
-        "title",
-        "closeness_rating",
-        "readability_rating",
-        "recommended",
-        "content",
-    ]
-
-    def form_valid(self, form):
-        pk = self.kwargs["vol"]
-        volume = filter_queryset_approval(
-            Volume.objects.filter(id=pk), self.request.user
-        ).first()
-        if volume:
-            form.instance.volume_id = volume.id
-            form.instance.user = self.request.user
-            super().form_valid(form)
-            return HttpResponseRedirect(
-                reverse("volume_detail", kwargs={"pk": volume.id})
-            )
-        else:
-            raise Http404
+class ReviewCreateView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "lwc/add_user_review.html"
 
 
-class ReviewUpdateView(LoginRequiredMixin, generic.edit.UpdateView):
-    model = Review
-    fields = [
-        "title",
-        "closeness_rating",
-        "readability_rating",
-        "recommended",
-        "content",
-    ]
-    success_url = reverse_lazy("index")  # TODO: redirect back to the Volume
-
-    def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(user=self.request.user)
+class ReviewUpdateView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "lwc/add_user_review.html"
 
 
 class ReviewDeleteView(LoginRequiredMixin, generic.edit.DeleteView):
