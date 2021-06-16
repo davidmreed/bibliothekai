@@ -290,7 +290,7 @@ class Volume(UserCreatedApprovalMixin):
                 this_link.link.startswith("https://www.worldcat.org")
                 for this_link in links
             )
-            and requests.head(url).status_code != 404
+            and requests.head(url).status_code < 300
         ):
             oclc = Link(
                 content_object=self,
@@ -306,7 +306,7 @@ class Volume(UserCreatedApprovalMixin):
             and not any(
                 this_link.link.startswith("https://bookshop.org") for this_link in links
             )
-            and requests.head(url).status_code != 404
+            and requests.head(url).status_code < 300
         ):
             bookshop = Link(
                 content_object=self,
@@ -368,6 +368,7 @@ class Feature(models.Model, AuthorNameMixin):
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
+    order_key = models.IntegerField()
 
     def save(self, *args, **kwargs):
         if (
