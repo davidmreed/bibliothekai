@@ -1,13 +1,26 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import { getRecord } from 'bib/api';
 import { setNestedProperty } from 'bib/utils';
 
 export default class TranslationEditor extends LightningElement {
     @track _features;
 
+    textId;
     selectedText;
     translationExpanded = true;
     hasTranslation = true; // For binding to singleFeatureEditor
+
+    error;
+
+    @wire(getRecord, { entityName: 'texts', entityId: '$textId' })
+    provisionText({ data, error }) {
+        if (data) {
+            this.selectedText = data;
+        }
+        if (error) {
+            this.error = error;
+        }
+    }
 
     @api
     set features(f) {
@@ -45,7 +58,7 @@ export default class TranslationEditor extends LightningElement {
             ).value = this.features.translation.description;
         }
         if (this.features.text) {
-            this.selectedText = await getRecord('texts', this.features.text);
+            this.textId = this.features.text;
         }
     }
 
@@ -54,10 +67,10 @@ export default class TranslationEditor extends LightningElement {
         this.dispatchEvent(new CustomEvent('update'));
     }
 
-    async changeText(event) {
+    changeText(event) {
         event.stopPropagation();
         this.dispatchUpdate('text', event.currentTarget.value);
-        this.selectedText = await getRecord('texts', event.currentTarget.value);
+        this.textId = event.currentTarget.value;
     }
 
     handleChange(event) {

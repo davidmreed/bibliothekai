@@ -26,15 +26,73 @@ function getRecordUiUrl(entityName, id) {
     return `${getEndpoint()}/${entityName}/${id}`;
 }
 
-async function getRecord(entityName, recordId) {
-    // TODO: Optimize further. Make it fetch exactly one record.
-    let cacheKey = getCacheKey(entityName, recordId);
+function cacheRecord(entityName, id, data) {
+    let cacheKey = getCacheKey(entityName, id);
 
-    if (!individualRecordCache.has(cacheKey)) {
-        await getRecordsFromApi(entityName);
+    data.name = data[nameFields[entityName]];
+
+    individualRecordCache.set(cacheKey, data);
+    if (!recordCache.has(entityName)) {
+        recordCache.set(entityName, []);
+    }
+    recordCache.get(entityName).push(data);
+}
+
+class getRecord {
+    entityName;
+    entityId;
+
+    constructor(dataCallback) {
+        this.dataCallback = dataCallback;
     }
 
-    return individualRecordCache.get(cacheKey);
+    connect() {
+        this.refresh();
+    }
+
+    disconnect() {}
+
+    update(config) {
+        if (
+            this.entityName !== config.entityName ||
+            this.entityId !== config.entityId
+        ) {
+            this.entityName = config.entityName;
+            this.entityId = config.entityId;
+            this.refresh();
+        }
+    }
+
+    async refresh() {
+        if (this.entityName && this.entityId) {
+            try {
+                let cacheKey = getCacheKey(this.entityName, this.entityId);
+                if (individualRecordCache.has(cacheKey)) {
+                    this.dataCallback({
+                        data: individualRecordCache.get(cacheKey)
+                    });
+                } else {
+                    let result = await fetch(
+                        new Request(
+                            getRecordApiUrl(this.entityName, this.entityId)
+                        )
+                    );
+                    if (result.ok) {
+                        let data = await result.json();
+
+                        cacheRecord(this.entityName, this.entityId, data);
+                        this.dataCallback({ data: data });
+                    } else {
+                        throw new Error(
+                            `The API returned an error: ${result.status}.`
+                        );
+                    }
+                }
+            } catch (error) {
+                this.dataCallback({ data: null, error });
+            }
+        }
+    }
 }
 
 class getRecords {
@@ -111,44 +169,25 @@ async function getRecordsFromApi(entityName) {
     if (result.ok) {
         let data = await result.json();
 
-        // Populate the list-based record cache
-        data.forEach((elem) => {
-            elem.name = elem[nameFields[entityName]];
-        });
-        recordCache.set(entityName, data);
-
-        // And the individual record cache
-        data.forEach((elem) => {
-            let cacheKey = getCacheKey(entityName, elem.id);
-            individualRecordCache.set(cacheKey, elem);
-        });
+        data.forEach((elem) => cacheRecord(entityName, elem.id, elem));
     } else {
         throw new Error(`The API returned an error: ${result.status}.`);
     }
 }
 
-async function createRecord(entityName, record) {
-    let endpoint = getApiEndpoint();
-
-    let response = await fetch(`${endpoint}/${entityName}/`, {
-        method: 'POST',
+async function performDml(url, method, entityName, entityId, data) {
+    let response = await fetch(url, {
+        method: method,
         headers: {
             'Content-Type': 'application/json;charset=utf-8',
             'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify(record)
+        body: JSON.stringify(data)
     });
 
     if (response.ok) {
         let result = await response.json();
-        result.name = result[nameFields[entityName]];
-
-        if (recordCache.has(entityName)) {
-            recordCache.get(entityName).push(result);
-        }
-
-        let cacheKey = getCacheKey(entityName, result.id);
-        individualRecordCache.set(cacheKey, result);
+        cacheRecord(entityName, entityId, result);
 
         if (
             getRecordsStore.has(entityName) &&
@@ -162,4 +201,36 @@ async function createRecord(entityName, record) {
     throw new Error(`The API returned an error: ${response.status}.`);
 }
 
-export { createRecord, getRecord, getRecordsFromApi, getRecords, getRecordApiUrl, getRecordUiUrl };
+function createRecord(entityName, record) {
+    let endpoint = getApiEndpoint();
+
+    return performDml(
+        `${endpoint}/${entityName}/`,
+        'POST',
+        entityName,
+        null,
+        record
+    );
+}
+
+function updateRecord(entityName, id, data) {
+    let endpoint = getApiEndpoint();
+
+    return performDml(
+        `${endpoint}/${entityName}/${id}`,
+        'PATCH',
+        entityName,
+        id,
+        data
+    );
+}
+
+export {
+    createRecord,
+    updateRecord,
+    getRecord,
+    getRecords,
+    getRecordsFromApi,
+    getRecordApiUrl,
+    getRecordUiUrl
+};
