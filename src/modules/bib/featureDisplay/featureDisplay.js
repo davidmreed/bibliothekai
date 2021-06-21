@@ -1,16 +1,29 @@
-import { LightningElement, api } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'bib/api';
 
 export default class FeatureDisplay extends LightningElement {
-    @api feature;
-    textTitle;
+    _feature;
+    textId;
+    textTitle = '(No text selected)';
 
-    async renderedCallback() {
-        if (this.feature && this.feature.text) {
-            let record = await getRecord('texts', this.feature.text);
-            this.textTitle = record.title;
-        } else {
-            this.textTitle = '(No text selected)';
+    error;
+
+    @api set feature(value) {
+        this._feature = value;
+        this.textId = value.text;
+    }
+
+    get feature() {
+        return this._feature;
+    }
+
+    @wire(getRecord, { entityName: 'texts', entityId: '$textId' })
+    provisionText({ data, error }) {
+        if (data) {
+            this.textTitle = data.title;
+        }
+        if (error) {
+            this.error = error;
         }
     }
 
