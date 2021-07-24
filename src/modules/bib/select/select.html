@@ -1,0 +1,19 @@
+<template>
+    <label for="select">
+        <slot></slot>
+    </label>
+    <select
+        class="form-control"
+        id="select"
+        size="1"
+        onchange={handleChange}
+        value={selectedHtmlValue}
+    >
+        <option key={noSelectionKey} value={noSelectionKey}>
+            -- No Selection --
+        </option>
+        <template for:each={options} for:item="i">
+            <option key={i.htmlValue} value={i.htmlValue}>{i.name}</option>
+        </template>
+    </select>
+</template>

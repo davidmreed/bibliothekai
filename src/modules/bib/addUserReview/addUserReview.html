@@ -1,43 +1,63 @@
 <template>
-    <template if:true={volume}>
+    <template if:true={review}>
         <form novalidate>
             <div class="form-group">
                 <label for="title">Title</label>
-                <input id="title" class="form-control" data-name="title" type="text" value={title}
-                    onchange={handleChange} />
+                <input
+                    id="title"
+                    class="form-control"
+                    data-name="review.title"
+                    type="text"
+                    value={review.title}
+                    onchange={handleChange}
+                />
 
-                <label for="closeness">Closeness</label>
-                <select class="form-control" id="closeness" size="1" onchange={handleChange} data-name="closeness"
-                    value={closeness}>
-                    <option value="1">Low</option>
-                    <option value="2">Average</option>
-                    <option value="3">Excellent</option>
-                </select>
+                <bib-select
+                    onchange={handleChange}
+                    data-name="review.closeness_rating"
+                    value={review.closeness_rating}
+                    options={ratingOptions}
+                >
+                    Closeness
+                </bib-select>
 
-                <label for="readability">Readability</label>
-                <select class="form-control" id="readability" size="1" onchange={handleChange} data-name="readability"
-                    value={readability}>
-                    <option value="1">Low</option>
-                    <option value="2">Average</option>
-                    <option value="3">Excellent</option>
-                </select>
+                <bib-select
+                    onchange={handleChange}
+                    data-name="review.readability_rating"
+                    value={review.readability_rating}
+                    options={ratingOptions}
+                >
+                    Readability
+                </bib-select>
 
-                <bib-switch label="I recommend this translation" value={recommended} onchange={handleChange}
-                    data-name="recommended"></bib-switch>
+                <bib-switch
+                    label="I recommend this translation"
+                    value={review.recommended}
+                    onchange={handleChange}
+                    data-name="review.recommended"
+                ></bib-switch>
 
                 <label for="review">Review</label>
-                <textarea id="review" class="form-control" data-name="content" type="text" value={content}
-                    onchange={handleChange} required>
+                <textarea
+                    id="review"
+                    class="form-control"
+                    data-name="review.content"
+                    type="text"
+                    value={review.content}
+                    onchange={handleChange}
+                    required
+                >
                 </textarea>
                 <div class="invalid-feedback">Review text is required.</div>
                 <div class="text-danger">{error}</div>
-                <button class="btn btn-primary mt-3" type="submit" onclick={save}>
+                <button
+                    class="btn btn-primary mt-3"
+                    type="submit"
+                    onclick={save}
+                >
                     Save
                 </button>
             </div>
         </form>
-    </template>
-    <template if:false={volume}>
-        No volume is present.
     </template>
 </template>

@@ -1,43 +1,57 @@
-import { LightningElement } from 'lwc';
-import { createRecord, getRecordUiUrl, getRecord } from 'bib/api';
+import { LightningElement, wire, track } from 'lwc';
+import {
+    createRecord,
+    updateRecord,
+    getRecordUiUrl,
+    getRecordApiUrl,
+    getRecord
+} from 'bib/api';
+import { setNestedProperty } from '../utils/utils';
 
 export default class AddUserReview extends LightningElement {
     error;
 
-    volume;
-    review;
+    volumeId;
+    reviewId;
+    @track review;
 
-    content;
-    readability_rating;
-    closeness_rating;
-    recommended;
-    title;
+    ratingOptions = [
+        { name: 'Low', value: 'Low' },
+        { name: 'Average', value: 'Average' },
+        { name: 'Excellent', value: 'Excellent' }
+    ];
 
-    async connectedCallback() {
+    @wire(getRecord, { entityName: 'reviews', entityId: '$reviewId' })
+    provisionReview({ data, error }) {
+        if (data) {
+            this.review = data;
+        }
+        if (error) {
+            this.error = error;
+        }
+    }
+
+    connectedCallback() {
         if (!this.volume) {
+            // Why is this if here?
             // Determine if we're creating or updating a review.
-            const createRegex = /volumes\/([0-9]+)\/review/;
-            const updateRegex = /reviews\/([0-9]+)\/update/;
+            const createRegex = /volumes\/([0-9]+)\/review\//;
+            const updateRegex = /reviews\/([0-9]+)\/update\//;
             const loc = document.location.pathname;
             const volumeIdMatch = loc.match(createRegex);
             const updateMatch = loc.match(updateRegex);
 
             if (volumeIdMatch) {
-                this.volume = Number(volumeIdMatch[1]);
+                this.volumeId = Number(volumeIdMatch[1]);
+                this.review = {
+                    title: '',
+                    closeness_rating: 'Average',
+                    readability_rating: 'Average',
+                    recommended: false,
+                    content: ''
+                };
             } else if (updateMatch) {
-                this.review = Number(updateMatch[1]);
-
-                try {
-                    let record = await getRecord("reviews", this.review);
-                    this.recommended = record.recommended;
-                    this.title = record.title;
-                    this.content = record.content;
-                    this.readability_rating = String(record.readability_rating);
-                    this.closeness_rating = String(record.closeness_rating);
-                    this.volume = record.volume;
-                } catch (e) {
-                    this.error = e;
-                }
+                this.reviewId = Number(updateMatch[1]);
             } else {
                 this.error = 'Invalid path';
             }
@@ -45,7 +59,11 @@ export default class AddUserReview extends LightningElement {
     }
 
     handleChange(event) {
-        this[event.currentTarget.dataset.name] = event.currentTarget.value;
+        setNestedProperty(
+            this,
+            event.currentTarget.dataset.name,
+            event.currentTarget.value
+        );
     }
 
     checkValidity() {
@@ -65,7 +83,6 @@ export default class AddUserReview extends LightningElement {
     }
 
     async save(event) {
-        // Validate data.
         event.preventDefault();
 
         if (!this.checkValidity()) {
@@ -74,32 +91,35 @@ export default class AddUserReview extends LightningElement {
 
         try {
             let record = {};
-            if (this.title) {
-                record.title = this.title;
+            record.volume = getRecordApiUrl('volumes', this.volumeId);
+            if (this.review.title) {
+                record.title = this.review.title;
             }
-            if (this.content) {
-                record.content = this.content;
+            if (this.review.content) {
+                record.content = this.review.content;
             }
-            if (this.readability_rating) {
-                record.readability_rating = Number(this.readability_rating);
+            if (this.review.readability_rating) {
+                record.readability_rating = this.review.readability_rating;
             }
-            if (this.closeness_rating) {
-                record.closeness_rating = Number(this.closeness_rating);
+            if (this.review.closeness_rating) {
+                record.closeness_rating = this.review.closeness_rating;
             }
-            if (this.recommended) {
-                record.recommended = this.recommended;
+            if (this.review.recommended) {
+                record.recommended = this.review.recommended;
             }
-            if (!this.review) {
+            if (!this.review.id) {
                 // Creating a new review.
                 await createRecord('reviews', record);
             } else {
                 // Updating an existing review.
-                await updateRecord("reviews", this.review, record);
+                await updateRecord(
+                    'reviews',
+                    this.review,
+                    this.review.id,
+                    record
+                );
             }
-            window.location.href = getRecordUiUrl(
-                'volumes',
-                this.volume
-            );
+            window.location.href = getRecordUiUrl('volumes', this.volume);
         } catch (error) {
             this.error = error;
         }

@@ -11,3 +11,5 @@ db.sqlite3
 **/node_modules
 translations/static
 static
+.direnv
+.envrc
