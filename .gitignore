@@ -2,7 +2,7 @@ venv
 db.sqlite3
 *.pyc
 **/__pycache__
-.env
+.env*
 *.db
 *.db-journal
 .vscode.cfg
