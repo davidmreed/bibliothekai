@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import { getRecord } from 'bib/drf';
+import { getRecord } from 'bib/api';
 
 export default class FeatureDisplay extends LightningElement {
     @api feature;

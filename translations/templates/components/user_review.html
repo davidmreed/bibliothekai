@@ -2,7 +2,7 @@
 
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title clearfix">
             {% if review.title %} {{ review.title }} {% else %} Review {% endif %} by
             <a href="{% url 'user_detail' review.user.id %}">{{ review.user.display_name }}</a>
             {% if review.user == request.user %}
@@ -15,7 +15,7 @@
         {% if include_volume %}
         <div class="card-text mb-3">
             Review of <a href="{% url 'volume_detail' review.volume.id %}">{{ review.volume.title }}</a>,
-            {{review.volume.publisher}} ({{review.volume.published_date.year}})
+            {{review.volume.publisher}} {% if vol.published_date %}({{review.volume.published_date.year}}){% endif%}
         </div>
         {% endif %}
         <div class="card-text mb-3">

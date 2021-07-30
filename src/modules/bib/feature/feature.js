@@ -1,4 +1,4 @@
-import { getRecordApiUrl } from 'bib/drf';
+import { getRecordApiUrl } from 'bib/api';
 
 export class Feature {
     persons = [];
@@ -14,6 +14,10 @@ export class Feature {
     }
 
     get isValid() {
+        if (this.feature === 'Edited') {
+            return !!this.persons.length;
+        }
+
         return (
             (!!this.persons.length && !!this.language) || this.sameAsTranslation
         );
@@ -62,6 +66,7 @@ export class TranslationFeature extends Feature {
     samplePassage = '';
     title = '';
     hasFacingText = false;
+    originalPublicationDate = null;
 
     constructor(uiExpanded) {
         super('Translation', uiExpanded);
@@ -83,6 +88,7 @@ export class TranslationFeature extends Feature {
         js.partial = this.partial;
         js.format = this.format;
         js.has_facing_text = this.hasFacingText;
+        js.original_publication_date = this.originalPublicationDate;
         if (this.samplePassage) {
             js.sample_passage = this.samplePassage;
         }

@@ -13,6 +13,10 @@ export default class SingleFeatureEditor extends LightningElement {
         return this._feature;
     }
 
+    get isEdited() {
+        return this._feature === 'Edited';
+    }
+
     get showDetails() {
         return !(this.hasTranslation && this._feature.sameAsTranslation);
     }
@@ -42,14 +46,6 @@ export default class SingleFeatureEditor extends LightningElement {
         );
     }
 
-    handleChangeCheckbox(event) {
-        event.stopPropagation();
-        this.postUpdate(
-            event.currentTarget.dataset.name,
-            event.currentTarget.checked
-        );
-    }
-
     handleChangeValueInvert(event) {
         event.stopPropagation();
 
@@ -60,6 +56,16 @@ export default class SingleFeatureEditor extends LightningElement {
     }
 
     handleAddPerson() {
-        // FIXME: implement
+        this.dispatchEvent(
+            new CustomEvent('addperson', {
+                detail: {
+                    callback: (p) =>
+                        this.postUpdate(
+                            'persons',
+                            this.feature.persons.concat([p])
+                        )
+                }
+            })
+        );
     }
 }

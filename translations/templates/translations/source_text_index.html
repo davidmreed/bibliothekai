@@ -18,8 +18,8 @@ Texts
         </h4>
     </div>
     <ul class="list-group list-group-flush">
-        {% for s in a.sourcetext_set.all %}
-        <li class="list-group-item">
+        {% for s in a.source_texts.all %}
+        <li class="list-group-item clearfix">
             {{ s.title }}
             <div class="float-right">
                 <a class="ml-3 btn btn-outline-secondary btn-sm" href="{% url 'source_text_detail' s.id %}">

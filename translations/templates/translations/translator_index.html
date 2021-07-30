@@ -12,14 +12,13 @@ Translators
 {% for a in page_obj %}
 <div class="card mb-3">
     <div class="card-body">
-        <h5 class="card-title">
+        <h5 class="card-title clearfix">
         {{ a.full_name }}
-                    <div class="float-right">
+            <div class="float-right">
                 <a class="ml-3 btn btn-primary btn-sm" href="{% url 'person_detail' a.id %}">
                     View works
                 </a>
             </div>
-
         </h5>
         <div class="card-text">
             Author of {{ a.translation_count }} translation{% if a.translation_count != 1 %}s{% endif %}.

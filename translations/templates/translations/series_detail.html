@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load comma_lists %}
+
+{% block title %}
+{{ series.name }}
+{% endblock %}
+
+{% block content %}
+{% if user.is_superuser %}
+<div class="float-right">
+    <small>
+        <a href="{% url 'admin:translations_series_change' series.id %}">View on Admin</a>
+    </small>
+</div>
+{% endif %}
+<h1 class="mt-4 mb-4">{{ series.name }}</h1>
+
+{% if series.volumes.count %}
+<h2 class="mt-4">Volumes</h2>
+{% for volume in series.volumes.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href="{% url 'volume_detail' volume.id %}">{{ volume.title }}</a>
+        </h5>
+        <div class="card-text">
+            <p>
+                {% pill "Publisher" volume.publisher "publisher_detail" volume.publisher.id %}
+                {% if volume.published_date %}
+                {% pill "Date" volume.published_date.year %}
+                {% endif %}
+                {% if volume.isbn %}
+                {% pill "ISBN" volume.isbn %}
+                {% endif %}
+            </p>
+            <p class="card-text">
+                Includes {% if volume.translations.count > 1 %} translations of
+                {% else %} translation of {% endif %}
+                {% commalist volume.translations.all %}
+                <cite>{{ item.source_text.title }}</cite>
+                {% endcommalist %}.
+            </p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% endblock %}
