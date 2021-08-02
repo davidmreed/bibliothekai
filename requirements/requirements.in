@@ -1,0 +1,15 @@
+asgiref
+Django
+django-allauth
+django-anymail
+django-manifest-loader
+djangorestframework
+gunicorn
+psycopg2-binary
+python-dotenv
+pytz
+requests
+rest-framework-generic-relations
+sqlparse
+whitenoise
+graphene-django

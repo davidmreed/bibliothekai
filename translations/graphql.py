@@ -1,11 +1,12 @@
+import logging
+
+import graphene
+from graphene_django import DjangoListField, DjangoObjectType
+
 from translations.permissions import (
     filter_queryset_approval,
     filter_queryset_parent_approval,
 )
-import graphene
-from graphene_django import DjangoObjectType, DjangoListField
-
-import logging
 
 from . import models
 

@@ -1,49 +1,50 @@
-from django.db.models import Prefetch, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.http import HttpResponseRedirect, Http404
-from django.views import generic
+from django.db.models import Prefetch, Q
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.views import generic
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-from .models import (
-    SourceText,
-    Feature,
-    Volume,
-    Person,
-    Review,
-    PublishedReview,
-    Publisher,
-    Series,
-    Language,
-    UserSubmission,
-    Link,
-    AlternateName,
-)
-from .serializers import (
-    PersonSerializer,
-    SourceTextSerializer,
-    LanguageSerializer,
-    PublisherSerializer,
-    SeriesSerializer,
-    VolumeSerializer,
-    FeatureSerializer,
-    ReviewSerializer,
-    PublishedReviewSerializer,
-    LinkSerializer,
-    AlternateNameSerializer,
-)
 
 from users.models import User
+
+from .models import (
+    AlternateName,
+    Feature,
+    Language,
+    Link,
+    Person,
+    PublishedReview,
+    Publisher,
+    Review,
+    Series,
+    SourceText,
+    UserSubmission,
+    Volume,
+)
 from .permissions import (
-    approval_filtered_queryset,
-    filter_queryset_approval,
-    filter_queryset_parent_approval,
+    ApprovalFilteredQuerysetMixin,
     CreateChildOfUnapprovedParent,
     IsAuthenticatedCreateOrReadOnly,
     IsOwnerEditOrReadOnly,
-    ApprovalFilteredQuerysetMixin,
+    approval_filtered_queryset,
+    filter_queryset_approval,
+    filter_queryset_parent_approval,
+)
+from .serializers import (
+    AlternateNameSerializer,
+    FeatureSerializer,
+    LanguageSerializer,
+    LinkSerializer,
+    PersonSerializer,
+    PublishedReviewSerializer,
+    PublisherSerializer,
+    ReviewSerializer,
+    SeriesSerializer,
+    SourceTextSerializer,
+    VolumeSerializer,
 )
 
 

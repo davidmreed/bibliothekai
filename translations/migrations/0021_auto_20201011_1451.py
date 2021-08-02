@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0020_auto_20201010_1215'),
+        ("translations", "0020_auto_20201010_1215"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='link',
-            options={'ordering': ['resource_type']},
+            name="link",
+            options={"ordering": ["resource_type"]},
         ),
         migrations.AlterModelOptions(
-            name='sourcetext',
-            options={'ordering': ['title']},
+            name="sourcetext",
+            options={"ordering": ["title"]},
         ),
         migrations.AddField(
-            model_name='volume',
-            name='oclc_number',
+            model_name="volume",
+            name="oclc_number",
             field=models.CharField(blank=True, max_length=32),
         ),
     ]

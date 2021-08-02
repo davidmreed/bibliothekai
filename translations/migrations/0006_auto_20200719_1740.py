@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0005_auto_20200718_2312'),
+        ("translations", "0005_auto_20200718_2312"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='translation',
-            name='description',
+            model_name="translation",
+            name="description",
             field=models.TextField(blank=True),
         ),
         migrations.AddField(
-            model_name='translation',
-            name='partial',
+            model_name="translation",
+            name="partial",
             field=models.BooleanField(default=False),
             preserve_default=False,
         ),

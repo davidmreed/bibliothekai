@@ -6,41 +6,51 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0021_auto_20201011_1451'),
+        ("translations", "0021_auto_20201011_1451"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='feature',
-            options={'ordering': ['volume', 'source_text', 'feature']},
+            name="feature",
+            options={"ordering": ["volume", "source_text", "feature"]},
         ),
         migrations.AlterModelOptions(
-            name='language',
-            options={'ordering': ['name']},
+            name="language",
+            options={"ordering": ["name"]},
         ),
         migrations.AlterModelOptions(
-            name='person',
-            options={'ordering': ['sole_name', 'last_name', 'first_name', 'middle_name']},
+            name="person",
+            options={
+                "ordering": ["sole_name", "last_name", "first_name", "middle_name"]
+            },
         ),
         migrations.AlterModelOptions(
-            name='publishedreview',
-            options={'ordering': ['title']},
+            name="publishedreview",
+            options={"ordering": ["title"]},
         ),
         migrations.AlterModelOptions(
-            name='publisher',
-            options={'ordering': ['name']},
+            name="publisher",
+            options={"ordering": ["name"]},
         ),
         migrations.AlterModelOptions(
-            name='series',
-            options={'ordering': ['name'], 'verbose_name_plural': 'series'},
+            name="series",
+            options={"ordering": ["name"], "verbose_name_plural": "series"},
         ),
         migrations.AlterModelOptions(
-            name='volume',
-            options={'ordering': ['title']},
+            name="volume",
+            options={"ordering": ["title"]},
         ),
         migrations.AlterField(
-            model_name='link',
-            name='resource_type',
-            field=models.TextField(choices=[('CO', 'Get a Copy'), ('FT', 'Full Text'), ('WS', 'Website'), ('BO', 'Bio'), ('RS', 'Resources')]),
+            model_name="link",
+            name="resource_type",
+            field=models.TextField(
+                choices=[
+                    ("CO", "Get a Copy"),
+                    ("FT", "Full Text"),
+                    ("WS", "Website"),
+                    ("BO", "Bio"),
+                    ("RS", "Resources"),
+                ]
+            ),
         ),
     ]

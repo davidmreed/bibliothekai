@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0024_auto_20201107_2252'),
+        ("translations", "0024_auto_20201107_2252"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='review',
-            name='closeness_rating',
-            field=models.IntegerField(blank=True, choices=[(1, 'Low'), (2, 'Average'), (3, 'Excellent')], null=True),
+            model_name="review",
+            name="closeness_rating",
+            field=models.IntegerField(
+                blank=True,
+                choices=[(1, "Low"), (2, "Average"), (3, "Excellent")],
+                null=True,
+            ),
         ),
         migrations.AddField(
-            model_name='review',
-            name='readability_rating',
-            field=models.IntegerField(blank=True, choices=[(1, 'Low'), (2, 'Average'), (3, 'Excellent')], null=True),
+            model_name="review",
+            name="readability_rating",
+            field=models.IntegerField(
+                blank=True,
+                choices=[(1, "Low"), (2, "Average"), (3, "Excellent")],
+                null=True,
+            ),
         ),
     ]

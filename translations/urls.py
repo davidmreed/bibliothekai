@@ -1,7 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from rest_framework.routers import DefaultRouter
+
 from . import views
 
 router = DefaultRouter()
