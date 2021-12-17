@@ -176,7 +176,7 @@ export default class CompareTranslations extends LightningElement {
         window.history.replaceState(
             null,
             null,
-            `/texts/${this.recordId}/translations${idString}`
+            `/texts/${this.parameters.textId}/translations${idString}`
         );
     }
 }
