@@ -13,7 +13,7 @@
         "webpack-manifest-plugin": "^3.0.0"
     },
     "engines": {
-        "node": ">=10.13.0",
+        "node": "==12.18.2",
         "npm": ">=6.4.1",
         "yarn": ">=1.9.4"
     },

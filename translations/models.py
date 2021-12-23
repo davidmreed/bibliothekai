@@ -309,10 +309,7 @@ class Volume(UserCreatedApprovalMixin):
             and requests.head(url).status_code < 300
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 
@@ -368,6 +365,7 @@ class Feature(models.Model, AuthorNameMixin):
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
+    # order_key = models.IntegerField()
 
     def save(self, *args, **kwargs):
         if (
