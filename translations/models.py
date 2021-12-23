@@ -368,7 +368,7 @@ class Feature(models.Model, AuthorNameMixin):
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
-    order_key = models.IntegerField()
+    # order_key = models.IntegerField()
 
     def save(self, *args, **kwargs):
         if (
