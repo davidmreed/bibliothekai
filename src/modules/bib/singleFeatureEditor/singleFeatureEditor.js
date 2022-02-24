@@ -13,6 +13,10 @@ export default class SingleFeatureEditor extends LightningElement {
         return this._feature;
     }
 
+    get isEdited() {
+        return this._feature === 'Edited';
+    }
+
     get showDetails() {
         return !(this.hasTranslation && this._feature.sameAsTranslation);
     }
@@ -39,14 +43,6 @@ export default class SingleFeatureEditor extends LightningElement {
         this.postUpdate(
             event.currentTarget.dataset.name,
             event.currentTarget.value
-        );
-    }
-
-    handleChangeCheckbox(event) {
-        event.stopPropagation();
-        this.postUpdate(
-            event.currentTarget.dataset.name,
-            event.currentTarget.checked
         );
     }
 

@@ -1,3 +1,5 @@
+import { getEndpoint, getApiEndpoint, getCookie } from './django';
+
 const getRecordsStore = new Map();
 const recordCache = new Map();
 const individualRecordCache = new Map();
@@ -12,28 +14,19 @@ const nameFields = {
     series: 'name'
 };
 
-function getEndpoint() {
-    // eslint-disable-next-line no-undef
-    return process.env.ENDPOINT;
-}
-
-function getApiEndpoint() {
-    return `${getEndpoint()}/api`;
-}
-
 function getCacheKey(entityName, recordId) {
     return `${entityName}/${recordId}`;
 }
 
-export function getRecordApiUrl(entityName, id) {
+function getRecordApiUrl(entityName, id) {
     return `${getApiEndpoint()}/${entityName}/${id}/`;
 }
 
-export function getRecordUiUrl(entityName, id) {
+function getRecordUiUrl(entityName, id) {
     return `${getEndpoint()}/${entityName}/${id}`;
 }
 
-export async function getRecord(entityName, recordId) {
+async function getRecord(entityName, recordId) {
     // TODO: Optimize further. Make it fetch exactly one record.
     let cacheKey = getCacheKey(entityName, recordId);
 
@@ -44,7 +37,7 @@ export async function getRecord(entityName, recordId) {
     return individualRecordCache.get(cacheKey);
 }
 
-export class getRecords {
+class getRecords {
     entityName;
 
     constructor(dataCallback) {
@@ -113,27 +106,7 @@ export class getRecords {
     }
 }
 
-function getCookie(name) {
-    // From Django documentation
-
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === name + '=') {
-                cookieValue = decodeURIComponent(
-                    cookie.substring(name.length + 1)
-                );
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-export async function getRecordsFromApi(entityName) {
+async function getRecordsFromApi(entityName) {
     let result = await fetch(new Request(`${getApiEndpoint()}/${entityName}/`));
     if (result.ok) {
         let data = await result.json();
@@ -154,25 +127,7 @@ export async function getRecordsFromApi(entityName) {
     }
 }
 
-export async function runGraphQLQuery(query) {
-    let endpoint = getApiEndpoint();
-
-    let result = await fetch(`${endpoint}/graphql`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json;charset=utf-8',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ query: query })
-    });
-
-    if (result.ok) {
-        return result.json();
-    }
-    throw new Error(`The API returned an error: ${result.status}.`);
-}
-
-export async function createRecord(entityName, record) {
+async function createRecord(entityName, record) {
     let endpoint = getApiEndpoint();
 
     let response = await fetch(`${endpoint}/${entityName}/`, {
@@ -207,40 +162,4 @@ export async function createRecord(entityName, record) {
     throw new Error(`The API returned an error: ${response.status}.`);
 }
 
-export function sortRecordsByName(a, b) {
-    return sortRecordsByProperty('name', true, a, b);
-}
-
-export function sortRecordsByProperty(property, ascending, a, b) {
-    return sortRecordsByGetter(
-        (r) => getNestedProp(r, property),
-        ascending,
-        a,
-        b
-    );
-}
-
-export function sortRecordsByGetter(getter, ascending, a, b) {
-    let nameA = getter(a).toUpperCase();
-    let nameB = getter(b).toUpperCase();
-    const factor = ascending ? 1 : -1;
-
-    if (nameA < nameB) {
-        return -1 * factor;
-    }
-    if (nameA > nameB) {
-        return 1 * factor;
-    }
-    return 0;
-}
-
-export function getNestedProp(record, prop) {
-    let elements = prop.split('.');
-    let cur = record;
-
-    for (let e of elements) {
-        cur = cur[e];
-    }
-
-    return cur;
-}
+export { createRecord, getRecord, getRecordsFromApi, getRecords, getRecordApiUrl, getRecordUiUrl };

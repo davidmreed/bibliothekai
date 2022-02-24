@@ -1,11 +1,12 @@
+import logging
+
+import graphene
+from graphene_django import DjangoListField, DjangoObjectType
+
 from translations.permissions import (
     filter_queryset_approval,
     filter_queryset_parent_approval,
 )
-import graphene
-from graphene_django import DjangoObjectType, DjangoListField
-
-import logging
 
 from . import models
 
@@ -21,8 +22,29 @@ class FilteredDefaultQueryset:
 class VolumeResource(FilteredDefaultQueryset, DjangoObjectType):
     class Meta:
         model = models.Feature
+        exclude_fields = ["has_facing_text"]
 
-    @classmethod
+    feature_accompanying_introduction = graphene.Boolean()
+    feature_accompanying_notes = graphene.Boolean()
+    feature_accompanying_commentary = graphene.Boolean()
+    feature_sample_passage = graphene.Boolean()
+    feature_facing_text = graphene.Boolean()
+
+    def resolve_feature_accompanying_introduction(root, info, **kwargs):
+        return root.has_accompanying_introduction()
+
+    def resolve_feature_accompanying_notes(root, info, **kwargs):
+        return root.has_accompanying_notes()
+
+    def resolve_feature_accompanying_commentary(root, info, **kwargs):
+        return root.has_accompanying_commentary()
+
+    def resolve_feature_sample_passage(root, info, **kwargs):
+        return root.sample_passage and root.sample_passage != ""
+
+    def resolve_feature_facing_text(root, info, **kwargs):
+        return root.has_facing_text
+
     def get_queryset(cls, queryset, info):
         return filter_queryset_parent_approval(
             models.Feature,
@@ -38,15 +60,14 @@ class Volume(FilteredDefaultQueryset, DjangoObjectType):
 
 
 class Person(FilteredDefaultQueryset, DjangoObjectType):
-
-    full_name = graphene.String()
-
-    def resolve_full_name(self, info):
-        return self.full_name()
-
     class Meta:
         model = models.Person
         exclude_fields = ["approved"]
+
+    full_name = graphene.String()
+
+    def resolve_full_name(root, info, **kwargs):
+        return root.full_name()
 
 
 class Publisher(FilteredDefaultQueryset, DjangoObjectType):

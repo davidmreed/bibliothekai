@@ -1,6 +1,6 @@
-from .models import Link
-
 import requests
+
+from .models import Link
 
 
 def remove_dead_links():

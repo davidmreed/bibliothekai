@@ -31,140 +31,60 @@
         <form novalidate>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-introduction"
-                            data-feature="introduction"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-introduction"
-                        >
-                            Introduction
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-notes"
-                            data-feature="notes"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-notes"
-                        >
-                            Notes
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-commentary"
-                            data-feature="commentary"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-commentary"
-                        >
-                            Commentary
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-glossary"
-                            data-feature="glossary"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-glossary"
-                        >
-                            Glossary
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-index"
-                            data-feature="index"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-index"
-                        >
-                            Index
-                        </label>
-                    </div>
+                    <bib-switch
+                        label="Introduction"
+                        data-feature="featureAccompanyingIntroduction"
+                        onchange={handleFilterChange}
+                    ></bib-switch>
+                    <bib-switch
+                        label="Notes"
+                        data-feature="featureAccompanyingNotes"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
+                    <bib-switch
+                        label="Commentary"
+                        data-feature="featureAccompanyingCommentary"
+                        onchange={handleFilterChange}
+                    ></bib-switch>
+                    <bib-switch
+                        label="Glossary"
+                        data-feature="volume.featureGlossary"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
+                    <bib-switch
+                        label="Index"
+                        data-feature="volume.featureIndex"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
                 </div>
                 <div class="form-group col-md-6">
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-bibliography"
-                            data-feature="bibliography"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-bibliography"
-                        >
-                            Bibliography
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-maps"
-                            data-feature="maps"
-                            onchange={handleFilterChange}
-                        />
-                        <label class="custom-control-label" for="checkbox-maps">
-                            Maps
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-sample-passage"
-                            data-feature="sample_passage"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-sample-passage"
-                        >
-                            Sample Passage
-                        </label>
-                    </div>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-facing-text"
-                            data-feature="facingtext"
-                            onchange={handleFilterChange}
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-facing-text"
-                        >
-                            Facing Text
-                        </label>
-                    </div>
+                    <bib-switch
+                        label="Bibliography"
+                        data-feature="volume.featureBibliography"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
+                    <bib-switch
+                        label="Maps"
+                        data-feature="volume.featureMaps"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
+                    <bib-switch
+                        label="Sample Passage"
+                        data-feature="featureSamplePassage"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
+                    <bib-switch
+                        label="Facing Text"
+                        data-feature="featureFacingText"
+                        onchange={handleFilterChange}
+                    >
+                    </bib-switch>
                 </div>
             </div>
             <div class="form-row">

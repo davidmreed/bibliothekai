@@ -20,58 +20,40 @@
                     </bib-pop-up-menu>
                     <div class="row">
                         <div class="col">
-                            <div class="custom-control custom-switch">
-                                <input
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                    id="checkbox-facing-text"
-                                    onchange={handleChangeCheckbox}
-                                    checked={features.translation.hasFacingText}
-                                    data-name="translation.hasFacingText"
-                                />
-                                <label
-                                    class="custom-control-label"
-                                    for="checkbox-facing-text"
-                                >
-                                    Has Facing Text
-                                </label>
-                            </div>
+                            <bib-switch
+                                label="Has Facing Text"
+                                onchange={handleChange}
+                                value={features.translation.hasFacingText}
+                                data-name="translation.hasFacingText"
+                            >
+                            </bib-switch>
                         </div>
                         <div class="col">
-                            <div class="custom-control custom-switch">
-                                <input
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                    id="checkbox-introduction"
-                                    onchange={handleFeatureSwitchChange}
-                                    checked={features.hasIntroduction}
-                                    name="Introduction"
-                                />
-                                <label
-                                    class="custom-control-label"
-                                    for="checkbox-introduction"
-                                >
-                                    Has Introduction
-                                </label>
-                            </div>
+                            <bib-switch
+                                label="Has Introduction"
+                                onchange={handleFeatureSwitchChange}
+                                value={features.hasIntroduction}
+                                data-feature="Introduction"
+                            >
+                            </bib-switch>
                         </div>
                         <div class="col">
-                            <div class="custom-control custom-switch">
-                                <input
-                                    type="checkbox"
-                                    class="custom-control-input"
-                                    id="checkbox-notes"
-                                    onchange={handleFeatureSwitchChange}
-                                    checked={features.hasNotes}
-                                    name="Notes"
-                                />
-                                <label
-                                    class="custom-control-label"
-                                    for="checkbox-notes"
-                                >
-                                    Has Notes
-                                </label>
-                            </div>
+                            <bib-switch
+                                label="Has Notes"
+                                onchange={handleFeatureSwitchChange}
+                                value={features.hasNotes}
+                                data-feature="Notes"
+                            >
+                            </bib-switch>
+                        </div>
+                        <div class="col">
+                            <bib-switch
+                                label="Has Commentary"
+                                onchange={handleFeatureSwitchChange}
+                                value={features.hasCommentary}
+                                data-feature="Commentary"
+                            >
+                            </bib-switch>
                         </div>
                     </div>
                 </div>

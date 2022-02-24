@@ -6,18 +6,26 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('translations', '0012_auto_20200929_2100'),
+        ("translations", "0012_auto_20200929_2100"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='description',
+            model_name="person",
+            name="description",
             field=models.TextField(blank=True),
         ),
         migrations.AlterField(
-            model_name='feature',
-            name='feature',
-            field=models.CharField(choices=[('ED', 'Edited by'), ('IN', 'Introduction by'), ('CM', 'Commentary by'), ('TR', 'Translation by')], max_length=2),
+            model_name="feature",
+            name="feature",
+            field=models.CharField(
+                choices=[
+                    ("ED", "Edited by"),
+                    ("IN", "Introduction by"),
+                    ("CM", "Commentary by"),
+                    ("TR", "Translation by"),
+                ],
+                max_length=2,
+            ),
         ),
     ]

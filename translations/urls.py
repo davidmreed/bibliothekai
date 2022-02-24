@@ -1,7 +1,8 @@
-from django.urls import path, include
+from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
 from graphene_django.views import GraphQLView
 from rest_framework.routers import DefaultRouter
+
 from . import views
 
 router = DefaultRouter()
@@ -88,12 +89,13 @@ urlpatterns = [
         views.ReviewDeleteView.as_view(),
         name="review_delete",
     ),
+    path(
+        "publishers/<int:pk>/",
+        views.PublisherDetailView.as_view(),
+        name="publisher_detail",
+    ),
+    path("series/<int:pk>/", views.SeriesDetailView.as_view(), name="series_detail"),
     path("search/", views.SearchView.as_view(), name="search"),
     path("submit/", views.UserSubmissionCreateView.as_view(), name="submit"),
     path("api/", include(router.urls)),
-    path(
-        "api/texts/<int:pk>/translations/",
-        views.TranslationList.as_view(),
-        name="text_translation_list",
-    ),
 ]

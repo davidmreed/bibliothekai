@@ -6,13 +6,27 @@ WORKDIR /app
 RUN npm run build
 
 
-FROM python:3.8-slim-buster
+FROM python:3.9-slim-buster
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
-COPY --from=node-build /app/dist ./translations/static
-COPY /requirements.txt .
+RUN addgroup --system app && adduser --system app --ingroup app
+
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+COPY --from=node-build /app/dist ${APP_HOME}/translations/static
+COPY requirements.txt ${APP_HOME}
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
-ENTRYPOINT ["/app/entrypoint.sh"]
+COPY . $APP_HOME
+
+RUN chown -R app:app $APP_HOME
+USER app
+EXPOSE 8000
+
+RUN python manage.py collectstatic
+
+ENTRYPOINT ["/home/app/web/entrypoint.sh"]

@@ -4,7 +4,7 @@ import {
     getRecordUiUrl,
     getRecordApiUrl,
     getRecordsFromApi
-} from 'bib/drf';
+} from 'bib/api';
 import { Features } from 'bib/feature';
 
 export default class AddVolume extends LightningElement {
@@ -109,18 +109,14 @@ export default class AddVolume extends LightningElement {
         this[event.currentTarget.dataset.name] = event.currentTarget.value;
     }
 
-    handleChangeCheckbox(event) {
-        this[event.currentTarget.dataset.name] = event.currentTarget.checked;
-    }
-
     handleFeatureSwitchChange(event) {
-        let desiredFeature = event.target.name;
+        let desiredFeature = event.currentTarget.dataset.feature;
         let newFeatures = this.generalFeatures.clone();
 
         if (this.generalFeatures.hasFeature(desiredFeature)) {
             newFeatures.removeFeature(desiredFeature);
         } else {
-            newFeatures.addFeature(event.target.name, true);
+            newFeatures.addFeature(desiredFeature, true);
         }
 
         this.generalFeatures = newFeatures;

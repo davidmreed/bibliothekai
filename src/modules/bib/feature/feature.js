@@ -1,4 +1,4 @@
-import { getRecordApiUrl } from 'bib/drf';
+import { getRecordApiUrl } from 'bib/api';
 
 export class Feature {
     persons = [];
@@ -14,6 +14,10 @@ export class Feature {
     }
 
     get isValid() {
+        if (this.feature === 'Edited') {
+            return !!this.persons.length;
+        }
+
         return (
             (!!this.persons.length && !!this.language) || this.sameAsTranslation
         );

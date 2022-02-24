@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load comma_lists %}
+
+{% block title %}
+{{ publisher.name }}
+{% endblock %}
+
+{% block content %}
+{% if user.is_superuser %}
+<div class="float-right">
+    <small>
+        <a href="{% url 'admin:translations_publisher_change' publisher.id %}">View on Admin</a>
+    </small>
+</div>
+{% endif %}
+<h1 class="mt-4 mb-4">{{ publisher.name }}</h1>
+
+{% if publisher.volumes.count %}
+<h2 class="mt-4">Volumes</h2>
+{% for volume in publisher.volumes.all %}
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href="{% url 'volume_detail' volume.id %}">{{ volume.title }}</a>
+        </h5>
+        <div class="card-text">
+            <p>
+                {% if volume.published_date %}
+                {% pill "Date" volume.published_date.year %}
+                {% endif %}
+                {% if volume.series %}
+                {% pill "Series" volume.series "series_detail" volume.series.id %}
+                {% endif %}
+                {% if volume.isbn %}
+                {% pill "ISBN" volume.isbn %}
+                {% endif %}
+            </p>
+            <p class="card-text">
+                Includes {% if volume.translations.count > 1 %} translations of
+                {% else %} translation of {% endif %}
+                {% commalist volume.translations.all %}
+                <cite>{{ item.source_text.title }}</cite>
+                {% endcommalist %}.
+            </p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+{% include "components/links_component.html" with links=publisher.links.all %}
+
+{% endblock %}

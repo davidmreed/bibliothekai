@@ -20,12 +20,12 @@
         <h5>Catalog Details</h5>
     </div>
     <div class="col">
-        {% pill "Publisher" volume.publisher %}
+        {% pill "Publisher" volume.publisher "publisher_detail" volume.publisher.id %}
         {% if volume.published_date %}
         {% pill "Date" volume.published_date.year %}
         {% endif %}
         {% if volume.series %}
-        {% pill "Series" volume.series %}
+        {% pill "Series" volume.series "series_detail" volume.series.id %}
         {% endif %}
         {% if volume.isbn %}
         {% pill "ISBN" volume.isbn %}

@@ -1,3 +1,4 @@
 <span style="white-space: nowrap;">
-    <span class="badge badge-secondary">{{ title }}</span> <span class="mr-4">{{ content }}</span>
+    <span class="badge badge-secondary">{{ title }}</span> {% if link %}<a href="{{ link }}">{% endif %}<span
+            class="mr-4">{{ content }}</span>{% if link %}</a>{% endif %}
 </span>

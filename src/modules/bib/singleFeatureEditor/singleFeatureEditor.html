@@ -18,38 +18,33 @@
         <template if:true={isVisible}>
             <div class="card-body">
                 <template if:true={hasTranslation}>
-                    <div class="custom-control custom-switch">
-                        <input
-                            type="checkbox"
-                            class="custom-control-input"
-                            id="checkbox-same-as-translation"
-                            onchange={handleChangeCheckbox}
-                            checked={feature.sameAsTranslation}
-                            data-name="sameAsTranslation"
-                        />
-                        <label
-                            class="custom-control-label"
-                            for="checkbox-same-as-translation"
-                        >
-                            Same language and authors as translation
-                        </label>
-                    </div>
+                    <bib-switch
+                        label="Same language and authors as translation"
+                        value={feature.sameAsTranslation}
+                        data-name="sameAsTranslation"
+                        onchange={handleChange}
+                    ></bib-switch>
                 </template>
                 <template if:true={showDetails}>
-                    <div>
-                        <small>A language and authors are required.</small>
-                    </div>
+                    <template if:false={isEdited}>
+                        <div>
+                            <small>A language and authors are required.</small>
+                        </div>
 
-                    <bib-pop-up-menu
-                        label-text="Language"
-                        entity-name="languages"
-                        allow-add="false"
-                        onchange={handleChange}
-                        value={feature.language}
-                        data-name="language"
-                    >
-                    </bib-pop-up-menu>
-                    <label for="authors">Authors</label>
+                        <bib-pop-up-menu
+                            label-text="Language"
+                            entity-name="languages"
+                            allow-add="false"
+                            onchange={handleChange}
+                            value={feature.language}
+                            data-name="language"
+                        >
+                        </bib-pop-up-menu>
+                        <label for="authors">Authors</label>
+                    </template>
+                    <template if:true={isEdited}>
+                        <label for="authors">Editors</label>
+                    </template>
                     <bib-dualing-listbox
                         entity-name="persons"
                         value={feature.persons}

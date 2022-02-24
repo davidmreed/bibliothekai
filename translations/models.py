@@ -1,12 +1,12 @@
 import urllib.parse
 
-from django.db import models
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
-from django.contrib.contenttypes.fields import GenericRelation, GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
-from django.urls import reverse
 import requests
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from biblia import settings
 
@@ -165,7 +165,7 @@ class SourceText(UserCreatedApprovalMixin):
     language = models.ForeignKey(
         Language, related_name="source_texts", on_delete=models.PROTECT
     )
-    format = models.TextField(choices=FORMAT_CHOICES, db_column="kind")
+    format = models.TextField(choices=FORMAT_CHOICES)
     date = models.CharField(max_length=255, blank=True)
     description = models.TextField(blank=True)
 
@@ -257,6 +257,9 @@ class Volume(UserCreatedApprovalMixin):
     def get_general_features(self):
         return Feature.objects.filter(volume=self, source_text=None)
 
+    def translations(self):
+        return self.features.filter(feature="TR")
+
     def get_absolute_url(self):
         return reverse("volume_detail", args=[str(self.id)])
 
@@ -287,7 +290,7 @@ class Volume(UserCreatedApprovalMixin):
                 this_link.link.startswith("https://www.worldcat.org")
                 for this_link in links
             )
-            and requests.head(url).status_code != 404
+            and requests.head(url).status_code < 300
         ):
             oclc = Link(
                 content_object=self,
@@ -303,13 +306,10 @@ class Volume(UserCreatedApprovalMixin):
             and not any(
                 this_link.link.startswith("https://bookshop.org") for this_link in links
             )
-            and requests.head(url).status_code != 404
+            and requests.head(url).status_code < 300
         ):
             bookshop = Link(
-                content_object=self,
-                link=url,
-                source="Bookshop",
-                resource_type="CO",
+                content_object=self, link=url, source="Bookshop", resource_type="CO",
             )
             bookshop.save()
 
@@ -359,12 +359,13 @@ class Feature(models.Model, AuthorNameMixin):
         Language, related_name="features", on_delete=models.PROTECT
     )
     title = models.CharField(max_length=255, blank=True)
-    format = models.TextField(choices=FORMAT_CHOICES, blank=True, db_column="kind")
+    format = models.TextField(choices=FORMAT_CHOICES, blank=True)
     partial = models.BooleanField()
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
+    # order_key = models.IntegerField()
 
     def save(self, *args, **kwargs):
         if (

@@ -1,6 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
-import { getRecord } from 'bib/drf';
-import setNestedProperty from 'bib/utils';
+import { getRecord } from 'bib/api';
+import { setNestedProperty } from 'bib/utils';
 
 export default class TranslationEditor extends LightningElement {
     @track _features;
@@ -76,18 +76,10 @@ export default class TranslationEditor extends LightningElement {
         );
     }
 
-    handleChangeCheckbox(event) {
-        event.stopPropagation();
-        this.dispatchUpdate(
-            event.currentTarget.dataset.name,
-            event.currentTarget.checked
-        );
-    }
-
     handleFeatureSwitchChange(event) {
         event.stopPropagation();
 
-        let desiredFeature = event.target.name;
+        let desiredFeature = event.target.dataset.feature;
         let newFeatures = this._features.clone();
 
         if (newFeatures.hasFeature(desiredFeature)) {

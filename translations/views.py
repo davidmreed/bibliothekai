@@ -1,51 +1,50 @@
-from django.db.models import Prefetch, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.http import HttpResponseRedirect, Http404
-from django.views import generic
+from django.db.models import Prefetch, Q
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.views import generic
 from rest_framework import viewsets
-import rest_framework
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-from .models import (
-    SourceText,
-    Feature,
-    Volume,
-    Person,
-    Review,
-    PublishedReview,
-    Publisher,
-    Series,
-    Language,
-    UserSubmission,
-    Link,
-    AlternateName,
-)
-from .serializers import (
-    PersonSerializer,
-    SourceTextSerializer,
-    LanguageSerializer,
-    PublisherSerializer,
-    SeriesSerializer,
-    TranslationSerializer,
-    VolumeSerializer,
-    FeatureSerializer,
-    ReviewSerializer,
-    PublishedReviewSerializer,
-    LinkSerializer,
-    AlternateNameSerializer,
-)
 
 from users.models import User
+
+from .models import (
+    AlternateName,
+    Feature,
+    Language,
+    Link,
+    Person,
+    PublishedReview,
+    Publisher,
+    Review,
+    Series,
+    SourceText,
+    UserSubmission,
+    Volume,
+)
 from .permissions import (
-    approval_filtered_queryset,
-    filter_queryset_approval,
-    filter_queryset_parent_approval,
+    ApprovalFilteredQuerysetMixin,
     CreateChildOfUnapprovedParent,
     IsAuthenticatedCreateOrReadOnly,
     IsOwnerEditOrReadOnly,
-    ApprovalFilteredQuerysetMixin,
+    approval_filtered_queryset,
+    filter_queryset_approval,
+    filter_queryset_parent_approval,
+)
+from .serializers import (
+    AlternateNameSerializer,
+    FeatureSerializer,
+    LanguageSerializer,
+    LinkSerializer,
+    PersonSerializer,
+    PublishedReviewSerializer,
+    PublisherSerializer,
+    ReviewSerializer,
+    SeriesSerializer,
+    SourceTextSerializer,
+    VolumeSerializer,
 )
 
 
@@ -395,6 +394,16 @@ class UserSubmissionCreateView(LoginRequiredMixin, generic.edit.CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+class PublisherDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
+    model = Publisher
+    template_name = "translations/publisher_detail.html"
+
+
+class SeriesDetailView(ApprovalFilteredQuerysetMixin, generic.DetailView):
+    model = Series
+    template_name = "translations/series_detail.html"
+
+
 # API views
 
 
@@ -525,25 +534,3 @@ class AlternateNameViewSet(viewsets.ModelViewSet):
         # because it's a generic relation.
 
         return AlternateName.objects.all()
-
-
-class TranslationList(rest_framework.views.APIView):
-    def get_object(self, pk, request):
-        try:
-            return filter_queryset_approval(
-                SourceText.objects.filter(id=pk), request.user
-            )[0]
-        except IndexError:
-            raise Http404
-
-    def get(self, request, pk, format=None):
-        qs = filter_queryset_parent_approval(
-            Feature,
-            Feature.objects.filter(source_text=self.get_object(pk, request))
-            .filter(feature="TR")
-            .order_by("-volume__published_date"),
-            self.request.user,
-        )
-
-        serializer = TranslationSerializer(qs, many=True, context={"request": request})
-        return rest_framework.response.Response(serializer.data)

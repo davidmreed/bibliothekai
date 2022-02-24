@@ -1,19 +1,20 @@
-from rest_framework import serializers
 from generic_relations.relations import GenericRelatedField
+from rest_framework import serializers
+
 from translations.models import (
-    Person,
-    Language,
-    SourceText,
-    Publisher,
-    Series,
-    Volume,
-    Feature,
-    Review,
-    Rating,
-    PublishedReview,
-    Link,
-    AlternateName,
     FORMAT_CHOICES,
+    AlternateName,
+    Feature,
+    Language,
+    Link,
+    Person,
+    PublishedReview,
+    Publisher,
+    Rating,
+    Review,
+    Series,
+    SourceText,
+    Volume,
 )
 
 
@@ -263,58 +264,6 @@ class VolumeSerializer(serializers.ModelSerializer):
             "feature_index",
             "feature_bibliography",
             "feature_glossary",
-        ]
-
-
-class TranslationSerializer(serializers.ModelSerializer):
-    """A special kind of read-only FeatureSerializer that includes data about the parent volume and other related objects.
-    This is to save server round trips traversing the data model."""
-
-    format = ChoiceField(choices=FORMAT_CHOICES, default="Prose", required=False)
-    feature = ChoiceField(choices=Feature.FEATURE_CHOICES)
-    persons = PersonSerializer(read_only=True, many=True)
-    volume = VolumeSerializer(read_only=True)
-    text = serializers.HyperlinkedRelatedField(
-        source="source_text",
-        queryset=SourceText.objects.all(),
-        view_name="text-detail",
-        required=False,
-    )
-
-    publisher = PublisherSerializer(read_only=True, source="volume.publisher")
-    language = LanguageSerializer(read_only=True)
-    partial = serializers.BooleanField(default=False)
-    description = serializers.CharField(required=False)
-    title = serializers.CharField(required=False, max_length=255)
-    has_facing_text = serializers.BooleanField(default=False)
-    feature_introduction = serializers.BooleanField(
-        source="has_accompanying_introduction"
-    )
-    feature_notes = serializers.BooleanField(source="has_accompanying_notes")
-    feature_commentary = serializers.BooleanField(source="has_accompanying_commentary")
-    feature_sample_passage = serializers.BooleanField()
-
-    class Meta:
-        model = Feature
-        fields = [
-            "id",
-            "volume",
-            "text",
-            "feature",
-            "persons",
-            "language",
-            "title",
-            "format",
-            "partial",
-            "description",
-            "has_facing_text",
-            "sample_passage",
-            "feature_introduction",
-            "feature_notes",
-            "feature_commentary",
-            "feature_sample_passage",
-            "publisher",
-            "original_publication_date",
         ]
 
 

@@ -1,11 +1,16 @@
 from django import template
+from django.urls.base import reverse
 
 register = template.Library()
 
 
 @register.inclusion_tag("components/pill.html")
-def pill(title, content):
-    return {"title": title, "content": content}
+def pill(title, content, template=None, id=None):
+    return {
+        "title": title,
+        "content": content,
+        "link": reverse(template, args=[id]) if template else None,
+    }
 
 
 @register.tag(name="commalist")
