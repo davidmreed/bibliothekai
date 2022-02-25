@@ -1,4 +1,4 @@
-FROM node:15.13.0-alpine3.12 AS node-build
+FROM node:17-alpine3.14 AS node-build
 COPY package.json /
 RUN npm install
 COPY . /app
@@ -18,13 +18,13 @@ ENV APP_HOME=/home/app/web
 RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
-COPY --from=node-build /app/dist ${APP_HOME}/translations/static
-COPY requirements.txt ${APP_HOME}
-RUN python -m pip install --upgrade pip && pip install -r requirements.txt
-COPY . $APP_HOME
-
 RUN chown -R app:app $APP_HOME
 USER app
+
+COPY --from=node-build /app/dist ${APP_HOME}/translations/static
+COPY . $APP_HOME
+RUN python -m pip install --upgrade pip && pip install -r requirements/requirements.txt
+
 EXPOSE 8000
 
 RUN python manage.py collectstatic

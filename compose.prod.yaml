@@ -14,7 +14,7 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         env_file:
-            - ./.env.db.prod
+            - ./.env.prod
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U bibliothekai"]
             interval: 10s
