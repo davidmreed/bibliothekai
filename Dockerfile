@@ -11,6 +11,9 @@ FROM python:3.9-slim-buster
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
+COPY requirements requirements
+RUN python -m pip install --upgrade pip && pip install -r requirements/requirements.txt
+
 RUN addgroup --system app && adduser --system app --ingroup app
 
 ENV HOME=/home/app
@@ -23,7 +26,6 @@ USER app
 
 COPY --from=node-build /app/dist ${APP_HOME}/translations/static
 COPY . $APP_HOME
-RUN python -m pip install --upgrade pip && pip install -r requirements/requirements.txt
 
 EXPOSE 8000
 

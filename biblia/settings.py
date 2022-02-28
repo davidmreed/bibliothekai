@@ -183,3 +183,4 @@ DEFAULT_FROM_EMAIL = "bibliothekai@ktema.org"
 SERVER_EMAIL = "bibliothekai@ktema.org"
 
 GRAPHENE = {"SCHEMA": "translations.graphql.schema"}
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
