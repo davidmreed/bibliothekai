@@ -1,6 +1,6 @@
+import '@lwc/synthetic-shadow';
 import { createElement } from 'lwc';
 import TranslationView from 'bib/translationView';
-import '@lwc/synthetic-shadow';
 
 const app = createElement('bib-translation-view', {
     is: TranslationView

@@ -267,9 +267,8 @@ export default class AddVolume extends LightningElement {
             }
 
             if (!this.publisher) {
-                let publisherPopup = this.template.querySelector(
-                    '.publisher-popup'
-                );
+                let publisherPopup =
+                    this.template.querySelector('.publisher-popup');
                 status = false;
                 publisherPopup.classList.add('is-invalid');
                 publisherPopup.addEventListener('change', () =>
