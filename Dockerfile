@@ -6,7 +6,7 @@ WORKDIR /app
 RUN npm run build
 
 
-FROM python:3.9-slim-buster AS python-base
+FROM python:3.9-slim-buster
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -25,15 +25,9 @@ RUN chown -R app:app $APP_HOME
 USER app
 
 COPY --from=node-build /app/dist ${APP_HOME}/translations/static
+
+COPY backend $APP_HOME
 RUN python manage.py collectstatic
-
-FROM python-base AS python-prod
-
-COPY . $APP_HOME
 EXPOSE 8000
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
 
-FROM python-base AS python-dev
-
-EXPOSE 8000
-ENTRYPOINT ["/home/app/web/entrypoint.sh"]

@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
     "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
+    "bibliothekai.fly.dev"
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -75,7 +76,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "biblia.urls"
+ROOT_URLCONF = "urls"
 
 TEMPLATES = [
     {
@@ -93,7 +94,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "biblia.wsgi.application"
+WSGI_APPLICATION = "wsgi.application"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

@@ -4,7 +4,6 @@ services:
         build:
           context: .
           dockerfile: Dockerfile
-          target: python-dev
         command: python manage.py runserver 0.0.0.0:8000
         volumes:
             - ./:/app/web
