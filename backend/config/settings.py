@@ -33,6 +33,11 @@ ALLOWED_HOSTS = [
     "bibliothekai.fly.dev"
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.bibliothekai.fly.dev",
+    "https://*.bibliothekai.ktema.org"
+]
+
 AUTH_USER_MODEL = "users.User"
 
 # Application definition
