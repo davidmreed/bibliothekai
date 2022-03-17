@@ -23,9 +23,6 @@ module.exports = {
     },
     plugins: [
         new WebpackManifestPlugin({ publicPath: '' }),
-        new webpack.EnvironmentPlugin({
-            ENDPOINT: 'http://127.0.0.1:8000'
-        }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(mode)
         }),

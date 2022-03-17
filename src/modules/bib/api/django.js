@@ -20,7 +20,7 @@ function getCookie(name) {
 
 function getEndpoint() {
     // eslint-disable-next-line no-undef
-    return process.env.ENDPOINT;
+    return '';
 }
 
 function getApiEndpoint() {
