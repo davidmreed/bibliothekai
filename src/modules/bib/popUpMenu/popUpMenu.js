@@ -34,7 +34,7 @@ export default class PopUpMenu extends LightningElement {
 
     get selectedId() {
         return Array.from(this.selectElement.selectedOptions).map((f) =>
-            f === '' ? '' : Number(f.value)
+            f.value === '' ? '' : Number(f.value)
         )[0];
     }
 
