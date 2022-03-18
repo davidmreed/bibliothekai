@@ -1,0 +1,15 @@
+asgiref
+django
+django-allauth
+django-anymail
+django-manifest-loader
+djangorestframework
+dj-database-url
+gunicorn
+psycopg2-binary
+pytz
+requests
+rest-framework-generic-relations
+sqlparse
+whitenoise
+graphene-django==3.0.0b7

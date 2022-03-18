@@ -42,7 +42,7 @@ function normalize(record, enumValues) {
 
 const TRANSLATION_GRAPHQL_QUERY = `
 query getTranslations($textId: Int) {
-        __type(name: "FeatureFormat") {
+        __type(name: "TranslationsFeatureFormatChoices") {
             enumValues {
                 name
                 description

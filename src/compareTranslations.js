@@ -1,6 +1,6 @@
+import '@lwc/synthetic-shadow';
 import { createElement } from 'lwc';
 import CompareTranslations from 'bib/compareTranslations';
-import '@lwc/synthetic-shadow';
 
 const app = createElement('bib-compare-translations', {
     is: CompareTranslations

@@ -5,20 +5,20 @@
     "author": "David Reed",
     "bugs": "https://github.com/davidmreed/bibliothekai/issues",
     "devDependencies": {
-        "eslint": "^7.11.0",
-        "husky": "^4.3.0",
-        "lint-staged": "^10.4.0",
-        "lwc-services": "^2.3.2",
-        "prettier": "^2.1.2",
-        "webpack-manifest-plugin": "^3.0.0"
-    },
-    "engines": {
-        "node": "==12.18.2",
-        "npm": ">=6.4.1",
-        "yarn": ">=1.9.4"
-    },
-    "resolutions": {
-        "braces": ">=2.3.1"
+        "@lwc/jest-preset": "^11.2.2",
+        "copy-webpack-plugin": "^10.2.4",
+        "error-overlay-webpack-plugin": "^1.1.0",
+        "eslint": "^8.9.0",
+        "html-webpack-plugin": "^5.5.0",
+        "husky": "^7.0.4",
+        "jest": "^26.6.3",
+        "lint-staged": "^12.3.4",
+        "lwc-webpack-plugin": "^2.1.0",
+        "prettier": "^2.5.1",
+        "webpack": "^5.69.1",
+        "webpack-cli": "^4.9.2",
+        "webpack-dev-server": "^4.7.4",
+        "webpack-manifest-plugin": "^4.1.1"
     },
     "homepage": "https://github.com/davidmreed/bibliothekai",
     "husky": {
@@ -26,33 +26,24 @@
             "pre-commit": "lint-staged"
         }
     },
-    "keywords": [
-        "lwc"
-    ],
+    "keywords": ["lwc"],
     "license": "MIT",
     "lint-staged": {
-        "**/*.{css,html,js,json,md,ts,yaml,yml}": [
-            "prettier --write"
-        ],
-        "./src/**/*.js": [
-            "eslint"
-        ],
-        "**/*.py": [
-            "black",
-            "flake8"
-        ]
+        "**/*.{css,html,js,json,md,ts,yaml,yml}": ["prettier --write"],
+        "./src/**/*.js": ["eslint"],
+        "**/*.py": ["black", "flake8"]
     },
     "repository": "https://github.com/davidmreed/bibliothekai",
     "scripts": {
-        "build": "lwc-services build -m production -w webpack.config.js",
-        "build:development": "lwc-services build -w webpack.config.js",
+        "build": "NODE_ENV=production webpack",
+        "build:development": "NODE_ENV=development webpack",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
-        "test:unit": "lwc-services test:unit",
-        "test:unit:coverage": "lwc-services test:unit --coverage",
-        "test:unit:debug": "lwc-services test:unit --debug",
-        "test:unit:watch": "lwc-services test:unit --watch",
-        "watch": "lwc-services watch"
+        "test:unit": "jest",
+        "test:unit:coverage": "jest --coverage",
+        "test:unit:debug": "jest --debug",
+        "test:unit:watch": "jest --watch",
+        "watch": "NODE_ENV=development webpack-dev-server"
     }
 }

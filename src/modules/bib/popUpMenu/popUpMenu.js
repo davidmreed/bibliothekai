@@ -33,9 +33,9 @@ export default class PopUpMenu extends LightningElement {
     }
 
     get selectedId() {
-        return Array
-            .from(this.selectElement.selectedOptions)
-            .map((f) => (f === '' ? '' : Number(f.value)))[0];
+        return Array.from(this.selectElement.selectedOptions).map((f) =>
+            f.value === '' ? '' : Number(f.value)
+        )[0];
     }
 
     renderedCallback() {
@@ -56,6 +56,7 @@ export default class PopUpMenu extends LightningElement {
 
     handleChange() {
         this._value = this.selectedId;
+        this.dispatchEvent(new CustomEvent('change'));
     }
 
     setErrorStatus(message) {

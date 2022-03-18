@@ -1,6 +1,6 @@
+import '@lwc/synthetic-shadow';
 import { createElement } from 'lwc';
 import AddVolume from 'bib/addVolume';
-import '@lwc/synthetic-shadow';
 
 const app = createElement('bib-add-volume', {
     is: AddVolume
