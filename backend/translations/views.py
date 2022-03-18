@@ -50,7 +50,14 @@ from .serializers import (
 
 class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
+        context['count_translations'] = Feature.objects.filter(feature='TR').count()
+        context['count_texts'] = SourceText.objects.count()
+
+        return context
 
 class AboutView(generic.TemplateView):
     template_name = "translations/about.html"
