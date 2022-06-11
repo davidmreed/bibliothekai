@@ -30,11 +30,11 @@ ALLOWED_HOSTS = [
     "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
-    "bibliothekai.fly.dev"
+    "bibliothekai-production.up.railway.app"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.bibliothekai.fly.dev",
+    "https://*.bibliothekai-production.up.railway.app",
     "https://*.bibliothekai.ktema.org"
 ]
 
