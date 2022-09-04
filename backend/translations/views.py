@@ -1,3 +1,5 @@
+import typing as T
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import Prefetch, Q
@@ -328,6 +330,13 @@ class SearchView(generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        def unique_by_id(queryset) -> T.Iterable:
+            seen = set()
+            for r in queryset:
+                if r.id not in seen:
+                    seen.add(r.id)
+                    yield r
+
         user_query = self.request.GET.get("query")
         query = SearchQuery(user_query, search_type="websearch")
 
@@ -337,14 +346,14 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        persons = filter_queryset_approval(
+        persons = unique_by_id(filter_queryset_approval(
             Person.objects.annotate(
                 rank=SearchRank(person_vector, query), search=person_vector
             )
             .filter(search=query)
             .order_by("-rank"),
             self.request.user,
-        )
+        ))
 
         volume_vector = (
             SearchVector("title", weight="A")
@@ -354,14 +363,14 @@ class SearchView(generic.TemplateView):
             + SearchVector("description", weight="B")
         )
 
-        volumes = filter_queryset_approval(
+        volumes = unique_by_id(filter_queryset_approval(
             Volume.objects.annotate(
                 rank=SearchRank(volume_vector, query), search=volume_vector
             )
             .filter(search=query)
             .order_by("-rank"),
             self.request.user,
-        )
+        ))
 
         source_text_vector = (
             SearchVector("title", weight="A")
@@ -371,14 +380,14 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        source_texts = filter_queryset_approval(
+        source_texts = unique_by_id(filter_queryset_approval(
             SourceText.objects.annotate(
                 rank=SearchRank(source_text_vector, query), search=source_text_vector
             )
             .filter(search=query)
             .order_by("-rank"),
             self.request.user,
-        )
+        ))
 
         context["persons"] = persons
         context["volumes"] = volumes
