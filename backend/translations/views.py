@@ -52,14 +52,15 @@ from .serializers import (
 
 class IndexView(generic.TemplateView):
     template_name = "translations/index.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['count_translations'] = Feature.objects.filter(feature='TR').count()
-        context['count_texts'] = SourceText.objects.count()
+        context["count_translations"] = Feature.objects.filter(feature="TR").count()
+        context["count_texts"] = SourceText.objects.count()
 
         return context
+
 
 class AboutView(generic.TemplateView):
     template_name = "translations/about.html"
@@ -346,14 +347,16 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        persons = unique_by_id(filter_queryset_approval(
-            Person.objects.annotate(
-                rank=SearchRank(person_vector, query), search=person_vector
+        persons = unique_by_id(
+            filter_queryset_approval(
+                Person.objects.annotate(
+                    rank=SearchRank(person_vector, query), search=person_vector
+                )
+                .filter(search=query)
+                .order_by("-rank"),
+                self.request.user,
             )
-            .filter(search=query)
-            .order_by("-rank"),
-            self.request.user,
-        ))
+        )
 
         volume_vector = (
             SearchVector("title", weight="A")
@@ -363,14 +366,16 @@ class SearchView(generic.TemplateView):
             + SearchVector("description", weight="B")
         )
 
-        volumes = unique_by_id(filter_queryset_approval(
-            Volume.objects.annotate(
-                rank=SearchRank(volume_vector, query), search=volume_vector
+        volumes = unique_by_id(
+            filter_queryset_approval(
+                Volume.objects.annotate(
+                    rank=SearchRank(volume_vector, query), search=volume_vector
+                )
+                .filter(search=query)
+                .order_by("-rank"),
+                self.request.user,
             )
-            .filter(search=query)
-            .order_by("-rank"),
-            self.request.user,
-        ))
+        )
 
         source_text_vector = (
             SearchVector("title", weight="A")
@@ -380,18 +385,21 @@ class SearchView(generic.TemplateView):
             + SearchVector("alternate_names__name", weight="A")
         )
 
-        source_texts = unique_by_id(filter_queryset_approval(
-            SourceText.objects.annotate(
-                rank=SearchRank(source_text_vector, query), search=source_text_vector
+        source_texts = unique_by_id(
+            filter_queryset_approval(
+                SourceText.objects.annotate(
+                    rank=SearchRank(source_text_vector, query),
+                    search=source_text_vector,
+                )
+                .filter(search=query)
+                .order_by("-rank"),
+                self.request.user,
             )
-            .filter(search=query)
-            .order_by("-rank"),
-            self.request.user,
-        ))
+        )
 
-        context["persons"] = persons
-        context["volumes"] = volumes
-        context["source_texts"] = source_texts
+        context["persons"] = list(persons)
+        context["volumes"] = list(volumes)
+        context["source_texts"] = list(source_texts)
 
         return context
 
