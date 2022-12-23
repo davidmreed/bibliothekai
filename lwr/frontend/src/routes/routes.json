@@ -1,0 +1,57 @@
+{
+    "routes": [
+        {
+            "id": "home",
+            "uri": "/",
+            "component": "bib/home",
+            "page": {
+                "type": "home"
+            },
+            "metadata": {
+                "title": "Bibliothekai: Home"
+            }
+        },
+        {
+            "id": "textPage",
+            "uri": "/texts/:textId",
+            "component": "bib/textPage",
+            "page": {
+                "type": "textPage",
+                "attributes": {
+                    "textId": ":textId"
+                }
+            }
+        },
+        {
+            "id": "volumePage",
+            "uri": "/volumes/:volumeId",
+            "component": "bib/volumePage",
+            "page": {
+                "type": "volumePage",
+                "attributes": {
+                    "volumeId": ":volumeId"
+                }
+            }
+        },
+        {
+            "id": "addVolumePage",
+            "uri": "/volumes/add",
+            "component": "bib/addVolume",
+            "page": {
+                "type": "addVolume",
+                "attributes": {}
+            }
+        },
+        {
+            "id": "volumeListPage",
+            "uri": "/persons/:authorId",
+            "component": "bib/volumeListPage",
+            "page": {
+                "type": "authorPage",
+                "attributes": {
+                    "authorId": ":authorId"
+                }
+            }
+        }
+    ]
+}

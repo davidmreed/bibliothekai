@@ -19,7 +19,7 @@ class FilteredDefaultQueryset:
         return filter_queryset_approval(queryset, info.context.user)
 
 
-class VolumeResource(FilteredDefaultQueryset, DjangoObjectType):
+class VolumeResource(DjangoObjectType):
     class Meta:
         model = models.Feature
         exclude_fields = ["has_facing_text"]
@@ -45,6 +45,7 @@ class VolumeResource(FilteredDefaultQueryset, DjangoObjectType):
     def resolve_feature_facing_text(root, info, **kwargs):
         return root.has_facing_text
 
+    @classmethod
     def get_queryset(cls, queryset, info):
         return filter_queryset_parent_approval(
             models.Feature,
@@ -160,10 +161,15 @@ class Query(graphene.ObjectType):
     published_reviews = DjangoListField(PublishedReview)
 
     text = graphene.Field(Text, id=graphene.Int())
+    volume = graphene.Field(Volume, id=graphene.Int())
 
     def resolve_text(root, info, **kwargs):
         id = kwargs.get("id")
         return models.SourceText.objects.get(pk=id)
+
+    def resolve_volume(root, info, **kwargs):
+        id = kwargs.get("id")
+        return models.Volume.objects.get(pk=id)
 
 
 schema = graphene.Schema(query=Query)

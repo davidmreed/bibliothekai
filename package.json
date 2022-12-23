@@ -5,6 +5,8 @@
     "author": "David Reed",
     "bugs": "https://github.com/davidmreed/bibliothekai/issues",
     "devDependencies": {
+        "@graphql-codegen/cli": "^2.16.1",
+        "@graphql-codegen/typescript": "^2.8.5",
         "@lwc/jest-preset": "^11.2.2",
         "copy-webpack-plugin": "^10.2.4",
         "error-overlay-webpack-plugin": "^1.1.0",
@@ -26,12 +28,21 @@
             "pre-commit": "lint-staged"
         }
     },
-    "keywords": ["lwc"],
+    "keywords": [
+        "lwc"
+    ],
     "license": "MIT",
     "lint-staged": {
-        "**/*.{css,html,js,json,md,ts,yaml,yml}": ["prettier --write"],
-        "./src/**/*.js": ["eslint"],
-        "**/*.py": ["black", "flake8"]
+        "**/*.{css,html,js,json,md,ts,yaml,yml}": [
+            "prettier --write"
+        ],
+        "./src/**/*.js": [
+            "eslint"
+        ],
+        "**/*.py": [
+            "black",
+            "flake8"
+        ]
     },
     "repository": "https://github.com/davidmreed/bibliothekai",
     "scripts": {
@@ -45,5 +56,8 @@
         "test:unit:debug": "jest --debug",
         "test:unit:watch": "jest --watch",
         "watch": "NODE_ENV=development webpack-dev-server"
+    },
+    "dependencies": {
+        "lwr": "^0.8.8"
     }
 }

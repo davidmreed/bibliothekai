@@ -1,0 +1,15 @@
+<template>
+    <main>
+        <h1>"What's the best translation of...?"</h1>
+        <input class="form-control mb-2" type="search" placeholder="Search" oninput={handleSearch}
+            onchange={handleSearch} value={searchTerm} />
+
+        <ul>
+            <template for:each={filteredRecordData} for:item="record">
+                <li key={record.id}>
+                    <a onclick={handleNavigation} href={record.url} data-id={record.id}>{record.title}</a>
+                </li>
+            </template>
+        </ul>
+    </main>
+</template>

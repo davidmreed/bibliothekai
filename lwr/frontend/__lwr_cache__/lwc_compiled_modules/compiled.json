@@ -1,0 +1,1010 @@
+[
+  [
+    "bib/home@0.0.1",
+    {
+      "ownHash": "5b815984878a1c6daab46204dcaa1b21",
+      "module": "./cache/bib_home_0_0_1.js",
+      "moduleMeta": "./cache/bib_home_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/esmLoader@0.8.8",
+    {
+      "ownHash": "8d48c48e24f70d60139875ee83571f02",
+      "module": "./cache/lwr_esmLoader_0_8_8.js",
+      "moduleMeta": "./cache/lwr_esmLoader_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/preInit@0.8.8",
+    {
+      "ownHash": "4abc90ae314e383e4c23f4dc607d9643",
+      "module": "./cache/lwr_preInit_0_8_8.js",
+      "moduleMeta": "./cache/lwr_preInit_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/hmr@0.8.8",
+    {
+      "ownHash": "b6c05a5d79ea66f651b367c2a6190189",
+      "module": "./cache/lwr_hmr_0_8_8.js",
+      "moduleMeta": "./cache/lwr_hmr_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/init@0.8.8",
+    {
+      "ownHash": "6258bcb20cc2d5d6a9f3c5a6f9d0acaf",
+      "module": "./cache/lwr_init_0_8_8.js",
+      "moduleMeta": "./cache/lwr_init_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/hmr#util/swap@0.8.8",
+    {
+      "ownHash": "b90e85947b9514fa4d53fbced946e451",
+      "module": "./cache/lwr_hmr_util_swap_0_8_8.js",
+      "moduleMeta": "./cache/lwr_hmr_util_swap_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/metrics@0.8.8",
+    {
+      "ownHash": "dfbc827104d50ff7d16b59c9d0e06aca",
+      "module": "./cache/lwr_metrics_0_8_8.js",
+      "moduleMeta": "./cache/lwr_metrics_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/profiler@0.8.8",
+    {
+      "ownHash": "5a10236d8c52bc9f6dee22875cd7016d",
+      "module": "./cache/lwr_profiler_0_8_8.js",
+      "moduleMeta": "./cache/lwr_profiler_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwc@2.17.0",
+    {
+      "ownHash": "60dae7a83431c35c02c87ca8aaaa6044",
+      "module": "./cache/lwc_2_17_0.js",
+      "moduleMeta": "./cache/lwc_2_17_0.meta.json"
+    }
+  ],
+  [
+    "bib/api@0.0.1",
+    {
+      "ownHash": "a66f8ab1577afbe7a222babe865ce34c",
+      "module": "./cache/bib_api_0_0_1.js",
+      "moduleMeta": "./cache/bib_api_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/navigation@0.8.8",
+    {
+      "ownHash": "27e5450050d0f52a375f848bb47c51d2",
+      "module": "./cache/lwr_navigation_0_8_8.js",
+      "moduleMeta": "./cache/lwr_navigation_0_8_8.meta.json"
+    }
+  ],
+  [
+    "bib/home#home.html@0.0.1",
+    {
+      "ownHash": "ee28fa8b075055d2c0abc8a61af52244",
+      "module": "./cache/bib_home_home_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_home_home_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/api#graphql.js@0.0.1",
+    {
+      "ownHash": "b3a07636122c31d9212ccb7d7c6f5a4a",
+      "module": "./cache/bib_api_graphql_js_0_0_1.js",
+      "moduleMeta": "./cache/bib_api_graphql_js_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/api#drf.js@0.0.1",
+    {
+      "ownHash": "660402eebe76ec5c00c9795cfea97de2",
+      "module": "./cache/bib_api_drf_js_0_0_1.js",
+      "moduleMeta": "./cache/bib_api_drf_js_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/router@0.8.8",
+    {
+      "ownHash": "7a55ee2148933e58fdb6678d1359d27f",
+      "module": "./cache/lwr_router_0_8_8.js",
+      "moduleMeta": "./cache/lwr_router_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/navigationContext@0.8.8",
+    {
+      "ownHash": "c2d2196774c2d04954bc693a5f11d3f6",
+      "module": "./cache/lwr_navigationContext_0_8_8.js",
+      "moduleMeta": "./cache/lwr_navigationContext_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/contextUtils@0.8.8",
+    {
+      "ownHash": "b0bbf76d114294eb412eba317649045f",
+      "module": "./cache/lwr_contextUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_contextUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/currentPageReference@0.8.8",
+    {
+      "ownHash": "fe430b1823894680f458165116568d34",
+      "module": "./cache/lwr_currentPageReference_0_8_8.js",
+      "moduleMeta": "./cache/lwr_currentPageReference_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/currentView@0.8.8",
+    {
+      "ownHash": "60a0b74b14ed62b17086c47a5a9d0a96",
+      "module": "./cache/lwr_currentView_0_8_8.js",
+      "moduleMeta": "./cache/lwr_currentView_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/navigation#navigationApi@0.8.8",
+    {
+      "ownHash": "bf09d64303fd3dbc87a80ae034d83ab8",
+      "module": "./cache/lwr_navigation_navigationApi_0_8_8.js",
+      "moduleMeta": "./cache/lwr_navigation_navigationApi_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/navigation#navigationMixin@0.8.8",
+    {
+      "ownHash": "b3fc8a710f69623627ea01b70fbbb55f",
+      "module": "./cache/lwr_navigation_navigationMixin_0_8_8.js",
+      "moduleMeta": "./cache/lwr_navigation_navigationMixin_0_8_8.meta.json"
+    }
+  ],
+  [
+    "bib/home#home.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_home_home_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_home_home_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/home#home.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_home_home_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_home_home_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/outlet@0.8.8",
+    {
+      "ownHash": "0fa8e8c65fcd4318cb38b8de302509f5",
+      "module": "./cache/lwr_outlet_0_8_8.js",
+      "moduleMeta": "./cache/lwr_outlet_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerContainer@0.8.8",
+    {
+      "ownHash": "981ed93ecb97290da5432875130563e6",
+      "module": "./cache/lwr_routerContainer_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerContainer_0_8_8.meta.json"
+    }
+  ],
+  [
+    "bib/api#django@0.0.1",
+    {
+      "ownHash": "3c84a0a835a71d6dd5cf8f303c20bcac",
+      "module": "./cache/bib_api_django_0_0_1.js",
+      "moduleMeta": "./cache/bib_api_django_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils@0.8.8",
+    {
+      "ownHash": "fc2b887082be9e4b508ff68bb0091411",
+      "module": "./cache/lwr_routerUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerErrors@0.8.8",
+    {
+      "ownHash": "67eebc9b9c7e25f7ce501f9e9fd23f40",
+      "module": "./cache/lwr_routerErrors_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerErrors_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/observable@0.8.8",
+    {
+      "ownHash": "9f21c166f081277ecfe0761d69489e8c",
+      "module": "./cache/lwr_observable_0_8_8.js",
+      "moduleMeta": "./cache/lwr_observable_0_8_8.meta.json"
+    }
+  ],
+  [
+    "bib/api#django.js@0.0.1",
+    {
+      "ownHash": "3c84a0a835a71d6dd5cf8f303c20bcac",
+      "module": "./cache/bib_api_django_js_0_0_1.js",
+      "moduleMeta": "./cache/bib_api_django_js_0_0_1.meta.json"
+    }
+  ],
+  [
+    "lwr/contextUtils#contextInfo@0.8.8",
+    {
+      "ownHash": "ca3a4b2ebe547f010d0ea3cf1dea5ece",
+      "module": "./cache/lwr_contextUtils_contextInfo_0_8_8.js",
+      "moduleMeta": "./cache/lwr_contextUtils_contextInfo_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/contextUtils#navigationApiStore@0.8.8",
+    {
+      "ownHash": "7fa481f99f1d363b3f2351fd74f670f3",
+      "module": "./cache/lwr_contextUtils_navigationApiStore_0_8_8.js",
+      "moduleMeta": "./cache/lwr_contextUtils_navigationApiStore_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/navigationMixinHacks@0.8.8",
+    {
+      "ownHash": "32b46904444e2461df125ebf6e4ffe7d",
+      "module": "./cache/lwr_navigationMixinHacks_0_8_8.js",
+      "moduleMeta": "./cache/lwr_navigationMixinHacks_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/outlet#outlet.html@0.8.8",
+    {
+      "ownHash": "adf92ea505377bc0340dbd1a5fe6bfec",
+      "module": "./cache/lwr_outlet_outlet_html_0_8_8.js",
+      "moduleMeta": "./cache/lwr_outlet_outlet_html_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerContainer#routerContainer.html@0.8.8",
+    {
+      "ownHash": "d08ddff0c944e5ccaab5719448cf4d6f",
+      "module": "./cache/lwr_routerContainer_routerContainer_html_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerContainer_routerContainer_html_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerContainer#utils@0.8.8",
+    {
+      "ownHash": "4ab4b891ce3df48d9c885ef3d81433dd",
+      "module": "./cache/lwr_routerContainer_utils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerContainer_utils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#filterUtils@0.8.8",
+    {
+      "ownHash": "438b52550e5293df0d341f36bf9698c1",
+      "module": "./cache/lwr_routerUtils_filterUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_filterUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#routeDefUtils@0.8.8",
+    {
+      "ownHash": "603611fe3cd9629c96b5f39214dab018",
+      "module": "./cache/lwr_routerUtils_routeDefUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_routeDefUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#routeUtils@0.8.8",
+    {
+      "ownHash": "b38234058656aaacd0c931eca51f8ec7",
+      "module": "./cache/lwr_routerUtils_routeUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_routeUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#typeUtils@0.8.8",
+    {
+      "ownHash": "b0abb9b0084b73b6decd493b1bc5f205",
+      "module": "./cache/lwr_routerUtils_typeUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_typeUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#parseUtils@0.8.8",
+    {
+      "ownHash": "3af466b21f299e759fffa6d3dc67095e",
+      "module": "./cache/lwr_routerUtils_parseUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_parseUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#pathToRegexp@0.8.8",
+    {
+      "ownHash": "1941d3cb6e668f4e8119ec545b366cdb",
+      "module": "./cache/lwr_routerUtils_pathToRegexp_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_pathToRegexp_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#uriUtils@0.8.8",
+    {
+      "ownHash": "b2b50d0f1f8a2568763885478a33ff9f",
+      "module": "./cache/lwr_routerUtils_uriUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_uriUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerUtils#domUtils@0.8.8",
+    {
+      "ownHash": "546c7fa1de797126df78ec31cc565586",
+      "module": "./cache/lwr_routerUtils_domUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerUtils_domUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/outlet#outlet.css@0.8.8",
+    {
+      "ownHash": "da5ac26dc74b354c2f942b382c982345",
+      "module": "./cache/lwr_outlet_outlet_css_0_8_8.js",
+      "moduleMeta": "./cache/lwr_outlet_outlet_css_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/outlet#outlet.scoped.css?scoped=true@0.8.8",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/lwr_outlet_outlet_scoped_css_scoped=true_0_8_8.js",
+      "moduleMeta": "./cache/lwr_outlet_outlet_scoped_css_scoped=true_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/historyRouter@0.8.8",
+    {
+      "ownHash": "eb4ced2ea6e58702455d6420069f7166",
+      "module": "./cache/lwr_historyRouter_0_8_8.js",
+      "moduleMeta": "./cache/lwr_historyRouter_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/domRouter@0.8.8",
+    {
+      "ownHash": "31e4a718ecba9e35c7b00da84f1042c6",
+      "module": "./cache/lwr_domRouter_0_8_8.js",
+      "moduleMeta": "./cache/lwr_domRouter_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerContainer#routerContainer.css@0.8.8",
+    {
+      "ownHash": "1598db31a980a844b1ba3352a0c6eb92",
+      "module": "./cache/lwr_routerContainer_routerContainer_css_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerContainer_routerContainer_css_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/routerContainer#routerContainer.scoped.css?scoped=true@0.8.8",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/lwr_routerContainer_routerContainer_scoped_css_scoped=true_0_8_8.js",
+      "moduleMeta": "./cache/lwr_routerContainer_routerContainer_scoped_css_scoped=true_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/domRouterUtils@0.8.8",
+    {
+      "ownHash": "01a75d38247c2a6acec38787a78fafb1",
+      "module": "./cache/lwr_domRouterUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_domRouterUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/contextProvider@0.8.8",
+    {
+      "ownHash": "f521462db8a5b05adef5a718baeecd6e",
+      "module": "./cache/lwr_contextProvider_0_8_8.js",
+      "moduleMeta": "./cache/lwr_contextProvider_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/domRouterUtils#uriUtils@0.8.8",
+    {
+      "ownHash": "c1d083ba3932a18f6c1e69e2a6865c6f",
+      "module": "./cache/lwr_domRouterUtils_uriUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_domRouterUtils_uriUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "lwr/domRouterUtils#historyUtils@0.8.8",
+    {
+      "ownHash": "3871a4b4bb5d9234ab5b6c3a3b15f8a9",
+      "module": "./cache/lwr_domRouterUtils_historyUtils_0_8_8.js",
+      "moduleMeta": "./cache/lwr_domRouterUtils_historyUtils_0_8_8.meta.json"
+    }
+  ],
+  [
+    "bib/app@0.0.1",
+    {
+      "ownHash": "1e3a84e35ec6e2a593e1d57988c464f0",
+      "module": "./cache/bib_app_0_0_1.js",
+      "moduleMeta": "./cache/bib_app_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/app#app.html@0.0.1",
+    {
+      "ownHash": "0d8e3c4ee558cf1d3aa4f92c344c8c16",
+      "module": "./cache/bib_app_app_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_app_app_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/app#app.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_app_app_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_app_app_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/app#app.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_app_app_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_app_app_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/textPage@0.0.1",
+    {
+      "ownHash": "20e65e6a515fdce45d539e214aa0e2d3",
+      "module": "./cache/bib_textPage_0_0_1.js",
+      "moduleMeta": "./cache/bib_textPage_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/textPage#textPage.html@0.0.1",
+    {
+      "ownHash": "26853c9be60cb33cbeb65883244a6b6f",
+      "module": "./cache/bib_textPage_textPage_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_textPage_textPage_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/textPage#textPage.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_textPage_textPage_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_textPage_textPage_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/textPage#textPage.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_textPage_textPage_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_textPage_textPage_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationView@0.0.1",
+    {
+      "ownHash": "a476a6c22b56a1d9a38c5712c39c1b4e",
+      "module": "./cache/bib_translationView_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationView_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationView#translationView.html@0.0.1",
+    {
+      "ownHash": "6e3a126c6feeea3d55e608e5e0eb6c66",
+      "module": "./cache/bib_translationView_translationView_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationView_translationView_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dataTable@0.0.1",
+    {
+      "ownHash": "2a39b98d2cbc9ddd98c18fc92bb3564a",
+      "module": "./cache/bib_dataTable_0_0_1.js",
+      "moduleMeta": "./cache/bib_dataTable_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dataTable#dataTable.html@0.0.1",
+    {
+      "ownHash": "f9e648f4438acb044c2179e633f2a6bc",
+      "module": "./cache/bib_dataTable_dataTable_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_dataTable_dataTable_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/utils@0.0.1",
+    {
+      "ownHash": "06afcf35041394ccbd5d939541403fb2",
+      "module": "./cache/bib_utils_0_0_1.js",
+      "moduleMeta": "./cache/bib_utils_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationView#translationView.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_translationView_translationView_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationView_translationView_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationView#translationView.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_translationView_translationView_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationView_translationView_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/switch@0.0.1",
+    {
+      "ownHash": "9f7897512b9b21c512635f85ad228b99",
+      "module": "./cache/bib_switch_0_0_1.js",
+      "moduleMeta": "./cache/bib_switch_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dataTable#dataTable.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_dataTable_dataTable_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_dataTable_dataTable_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dataTable#dataTable.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_dataTable_dataTable_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_dataTable_dataTable_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/commaLinkList@0.0.1",
+    {
+      "ownHash": "420e14fe6c826faf28891468acb526a1",
+      "module": "./cache/bib_commaLinkList_0_0_1.js",
+      "moduleMeta": "./cache/bib_commaLinkList_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/switch#switch.html@0.0.1",
+    {
+      "ownHash": "d742487555b2b41faae97907a2a5fc38",
+      "module": "./cache/bib_switch_switch_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_switch_switch_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/commaLinkList#commaLinkList.html@0.0.1",
+    {
+      "ownHash": "f859730324ecf8db83e0bf560918f78f",
+      "module": "./cache/bib_commaLinkList_commaLinkList_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_commaLinkList_commaLinkList_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/switch#switch.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_switch_switch_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_switch_switch_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/switch#switch.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_switch_switch_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_switch_switch_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/commaLinkList#commaLinkList.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_commaLinkList_commaLinkList_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_commaLinkList_commaLinkList_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/commaLinkList#commaLinkList.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_commaLinkList_commaLinkList_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_commaLinkList_commaLinkList_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "@lwc/synthetic-shadow@2.17.0",
+    {
+      "ownHash": "c4cac82d80eb0bcda742d77cd15ce7f1",
+      "module": "./cache/_lwc_synthetic-shadow_2_17_0.js",
+      "moduleMeta": "./cache/_lwc_synthetic-shadow_2_17_0.meta.json"
+    }
+  ],
+  [
+    "bib/addVolume@0.0.1",
+    {
+      "ownHash": "6584dbb5e0a6cb8b1b43f7b1b8886a4c",
+      "module": "./cache/bib_addVolume_0_0_1.js",
+      "moduleMeta": "./cache/bib_addVolume_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addVolume#addVolume.html@0.0.1",
+    {
+      "ownHash": "d4386fccc360367045e3b3a4dc4e26a3",
+      "module": "./cache/bib_addVolume_addVolume_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_addVolume_addVolume_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/feature@0.0.1",
+    {
+      "ownHash": "98bc643be9518a26343d9d54c249d7b8",
+      "module": "./cache/bib_feature_0_0_1.js",
+      "moduleMeta": "./cache/bib_feature_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addVolume#addVolume.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addVolume_addVolume_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_addVolume_addVolume_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addVolume#addVolume.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addVolume_addVolume_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_addVolume_addVolume_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/popUpMenu@0.0.1",
+    {
+      "ownHash": "1fa5cc12f902ef95bb3ecdba14507375",
+      "module": "./cache/bib_popUpMenu_0_0_1.js",
+      "moduleMeta": "./cache/bib_popUpMenu_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/featureDisplay@0.0.1",
+    {
+      "ownHash": "c6a3ac36b524fff5527ba334296d1748",
+      "module": "./cache/bib_featureDisplay_0_0_1.js",
+      "moduleMeta": "./cache/bib_featureDisplay_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/singleFeatureEditor@0.0.1",
+    {
+      "ownHash": "6b72532544dbc72a37633a59e131e669",
+      "module": "./cache/bib_singleFeatureEditor_0_0_1.js",
+      "moduleMeta": "./cache/bib_singleFeatureEditor_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationEditor@0.0.1",
+    {
+      "ownHash": "541915f86c38645e519ec72631a9bcde",
+      "module": "./cache/bib_translationEditor_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationEditor_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPublisher@0.0.1",
+    {
+      "ownHash": "b52152f2bad74349358eebd4f0b26c65",
+      "module": "./cache/bib_addPublisher_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPublisher_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addSeries@0.0.1",
+    {
+      "ownHash": "a05af09e966cc73ec69a95779459f477",
+      "module": "./cache/bib_addSeries_0_0_1.js",
+      "moduleMeta": "./cache/bib_addSeries_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPerson@0.0.1",
+    {
+      "ownHash": "8698fccfd9f1a6485718258523bd0c96",
+      "module": "./cache/bib_addPerson_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPerson_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/popUpMenu#popUpMenu.html@0.0.1",
+    {
+      "ownHash": "304e19fab29c433a217dcd2999dceb66",
+      "module": "./cache/bib_popUpMenu_popUpMenu_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_popUpMenu_popUpMenu_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/featureDisplay#featureDisplay.html@0.0.1",
+    {
+      "ownHash": "cb8291a049ce8f18e2cd976025c3342c",
+      "module": "./cache/bib_featureDisplay_featureDisplay_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_featureDisplay_featureDisplay_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/singleFeatureEditor#singleFeatureEditor.html@0.0.1",
+    {
+      "ownHash": "6eac51c4fcb031390a25c960b45f5a46",
+      "module": "./cache/bib_singleFeatureEditor_singleFeatureEditor_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_singleFeatureEditor_singleFeatureEditor_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationEditor#translationEditor.html@0.0.1",
+    {
+      "ownHash": "e8fb11056734a22e2141bd7b5859d708",
+      "module": "./cache/bib_translationEditor_translationEditor_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationEditor_translationEditor_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPublisher#addPublisher.html@0.0.1",
+    {
+      "ownHash": "277daf9960b4f6fc44a30b86104e1744",
+      "module": "./cache/bib_addPublisher_addPublisher_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPublisher_addPublisher_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addSeries#addSeries.html@0.0.1",
+    {
+      "ownHash": "76c88761fa95f5a1b90d6c01a014338b",
+      "module": "./cache/bib_addSeries_addSeries_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_addSeries_addSeries_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPerson#addPerson.html@0.0.1",
+    {
+      "ownHash": "279437ffd746951eb31c4e46869eb247",
+      "module": "./cache/bib_addPerson_addPerson_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPerson_addPerson_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/popUpMenu#popUpMenu.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_popUpMenu_popUpMenu_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_popUpMenu_popUpMenu_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/popUpMenu#popUpMenu.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_popUpMenu_popUpMenu_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_popUpMenu_popUpMenu_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/featureDisplay#featureDisplay.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_featureDisplay_featureDisplay_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_featureDisplay_featureDisplay_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/featureDisplay#featureDisplay.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_featureDisplay_featureDisplay_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_featureDisplay_featureDisplay_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/singleFeatureEditor#singleFeatureEditor.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_singleFeatureEditor_singleFeatureEditor_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_singleFeatureEditor_singleFeatureEditor_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/singleFeatureEditor#singleFeatureEditor.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_singleFeatureEditor_singleFeatureEditor_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_singleFeatureEditor_singleFeatureEditor_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dualingListbox@0.0.1",
+    {
+      "ownHash": "6a4d6c3a52b3a68739982433509efa22",
+      "module": "./cache/bib_dualingListbox_0_0_1.js",
+      "moduleMeta": "./cache/bib_dualingListbox_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationEditor#translationEditor.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_translationEditor_translationEditor_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationEditor_translationEditor_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/translationEditor#translationEditor.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_translationEditor_translationEditor_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_translationEditor_translationEditor_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPublisher#addPublisher.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addPublisher_addPublisher_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPublisher_addPublisher_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPublisher#addPublisher.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addPublisher_addPublisher_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPublisher_addPublisher_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addSeries#addSeries.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addSeries_addSeries_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_addSeries_addSeries_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addSeries#addSeries.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addSeries_addSeries_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_addSeries_addSeries_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPerson#addPerson.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addPerson_addPerson_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPerson_addPerson_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/addPerson#addPerson.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_addPerson_addPerson_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_addPerson_addPerson_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dualingListbox#dualingListbox.html@0.0.1",
+    {
+      "ownHash": "8e26846c7362a6f1197518e29c258d72",
+      "module": "./cache/bib_dualingListbox_dualingListbox_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_dualingListbox_dualingListbox_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dualingListbox#dualingListbox.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_dualingListbox_dualingListbox_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_dualingListbox_dualingListbox_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/dualingListbox#dualingListbox.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_dualingListbox_dualingListbox_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_dualingListbox_dualingListbox_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/volumePage@0.0.1",
+    {
+      "ownHash": "bc713dee7314c9b7ad6aae8a2689d393",
+      "module": "./cache/bib_volumePage_0_0_1.js",
+      "moduleMeta": "./cache/bib_volumePage_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/volumePage#volumePage.html@0.0.1",
+    {
+      "ownHash": "bb5237a72d95c721fd44436053d33d95",
+      "module": "./cache/bib_volumePage_volumePage_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_volumePage_volumePage_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/volumePage#volumePage.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_volumePage_volumePage_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_volumePage_volumePage_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/volumePage#volumePage.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_volumePage_volumePage_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_volumePage_volumePage_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/breadcrumbs@0.0.1",
+    {
+      "ownHash": "d9d1418e75086e25728c3f5b07d90b04",
+      "module": "./cache/bib_breadcrumbs_0_0_1.js",
+      "moduleMeta": "./cache/bib_breadcrumbs_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/breadcrumbs#breadcrumbs.html@0.0.1",
+    {
+      "ownHash": "742cfc28caf8ef5f38b686a3a67e2606",
+      "module": "./cache/bib_breadcrumbs_breadcrumbs_html_0_0_1.js",
+      "moduleMeta": "./cache/bib_breadcrumbs_breadcrumbs_html_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/breadcrumbs#breadcrumbs.css@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_breadcrumbs_breadcrumbs_css_0_0_1.js",
+      "moduleMeta": "./cache/bib_breadcrumbs_breadcrumbs_css_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/breadcrumbs#breadcrumbs.scoped.css?scoped=true@0.0.1",
+    {
+      "ownHash": "13fcec3d73f055fccd306149598cb9b5",
+      "module": "./cache/bib_breadcrumbs_breadcrumbs_scoped_css_scoped=true_0_0_1.js",
+      "moduleMeta": "./cache/bib_breadcrumbs_breadcrumbs_scoped_css_scoped=true_0_0_1.meta.json"
+    }
+  ],
+  [
+    "bib/volumeListPage@0.0.1",
+    {
+      "ownHash": "d41d8cd98f00b204e9800998ecf8427e",
+      "module": "./cache/bib_volumeListPage_0_0_1.js",
+      "moduleMeta": "./cache/bib_volumeListPage_0_0_1.meta.json"
+    }
+  ]
+]

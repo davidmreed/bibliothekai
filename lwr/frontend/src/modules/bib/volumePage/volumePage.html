@@ -1,0 +1,17 @@
+<template>
+    <bib-breadcrumbs crumbs={crumbs}></bib-breadcrumbs>
+    <h1>{volume.title}</h1>
+    <template for:each={volume.elements} for:item="element">
+        <div class="volumeElement" key={element.sourceText.id}>
+            <div class="card">
+                <h5 class="card-header">{element.sourceText.author.fullName}: {element.sourceText.title}</h5>
+                <div class="card-body">
+                    <p class="card-text">
+                        <strong>Translated</strong> by {element.persons} into {element.translation.language.name}
+                        {element.translation.format}.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

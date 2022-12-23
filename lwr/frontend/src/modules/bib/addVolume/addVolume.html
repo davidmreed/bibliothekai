@@ -1,0 +1,344 @@
+<template>
+    <template if:false={showingModal}>
+        <div>
+            <h2>
+                Publication Details
+                <template if:false={detailsExpanded}>
+                    <button
+                        class="float-right btn btn-outline-primary"
+                        onclick={toggleDetails}
+                    >
+                        Edit
+                    </button>
+                </template>
+            </h2>
+            <template if:true={detailsExpanded}>
+                <small class="form-text text-muted mb-2">
+                    Enter details about this volume. A title, published date,
+                    and publisher are required.
+                </small>
+
+                <div class="details">
+                    <form class="needs-validation" novalidate>
+                        <div class="form-group">
+                            <div class="form-row">
+                                <div class="col-6">
+                                    <label for="title">Title</label>
+                                    <input
+                                        id="title"
+                                        class="form-control"
+                                        data-name="title"
+                                        placeholder="Title"
+                                        type="text"
+                                        value={title}
+                                        onchange={handleChange}
+                                        required
+                                    />
+                                    <div class="invalid-feedback">
+                                        Please enter a title.
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <bib-pop-up-menu
+                                        label-text="Primary Language"
+                                        entity-name="languages"
+                                        allow-add="false"
+                                        onchange={handlePrimaryLanguageChange}
+                                        value={primaryLanguage}
+                                    >
+                                    </bib-pop-up-menu>
+                                    <small class="text-muted">
+                                        Language of the majority of this volume.
+                                        Translations default to this language.
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <bib-pop-up-menu
+                                        label-text="Publisher"
+                                        class="publisher-popup"
+                                        entity-name="publishers"
+                                        allow-add="true"
+                                        onchange={handleChange}
+                                        onadd={toggleAddingPublisher}
+                                        value={publisher}
+                                        data-name="publisher"
+                                    >
+                                    </bib-pop-up-menu>
+                                    <div class="invalid-feedback">
+                                        Please select or create a publisher.
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <bib-pop-up-menu
+                                        label-text="Series"
+                                        class="series-popup"
+                                        entity-name="series"
+                                        allow-add="true"
+                                        onchange={handleChange}
+                                        onadd={toggleAddingSeries}
+                                        value={series}
+                                        data-name="series"
+                                    >
+                                    </bib-pop-up-menu>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col">
+                                    <label for="date">Publication Date</label>
+                                    <input
+                                        id="date"
+                                        class="form-control"
+                                        data-name="published_date"
+                                        type="date"
+                                        value={published_date}
+                                        onchange={handleChange}
+                                        required
+                                    />
+                                    <small class="text-muted">
+                                        If only a year is present, use January
+                                        1.
+                                    </small>
+                                    <div class="invalid-feedback">
+                                        Please enter a publication date.
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <label for="isbn">ISBN</label>
+                                    <input
+                                        id="isbn"
+                                        class="form-control"
+                                        data-name="isbn"
+                                        placeholder="Optional: ISBN, if present"
+                                        type="text"
+                                        value={isbn}
+                                        onchange={handleChange}
+                                    />
+                                </div>
+                            </div>
+                            <label for="description">Description</label>
+                            <textarea
+                                id="description"
+                                class="form-control"
+                                data-name="description"
+                                placeholder="Optional: describe unique features of this volume, such as maps, indices, and other supporting material. Record translations, introductions, and notes below."
+                                type="text"
+                                value={description}
+                                onchange={handleChange}
+                            ></textarea>
+                            <label for="link">Website</label>
+                            <input
+                                id="link"
+                                class="form-control"
+                                data-name="link"
+                                placeholder="Optional: link to book on publisher's website"
+                                type="url"
+                                value={link}
+                                onchange={handleChange}
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            class="btn btn-outline-primary btn-block mb-3"
+                            onclick={toggleDetails}
+                        >
+                            Done with Details
+                        </button>
+                    </form>
+                </div>
+            </template>
+
+            <h2>Contents</h2>
+            <small class="text-muted">
+                Bibliothekai tracks each translated text in a volume separately,
+                including any introduction or notes to the text. You can also
+                record overall introductions and notes that apply to the whole
+                volume as general features below.
+            </small>
+            <h3 class="mt-3">
+                Translations
+                <div class="float-right">
+                    <button
+                        class="btn btn-outline-primary"
+                        onclick={addTranslation}
+                    >
+                        Add
+                    </button>
+                </div>
+            </h3>
+            <small class="form-text text-muted mb-1">
+                Add translations to this volume. At least one translation is
+                required.
+            </small>
+
+            <div class="translations">
+                <template for:each={features} for:item="item">
+                    <div class="mb-2" key={item.id}>
+                        <bib-feature-display
+                            class="feature-display"
+                            feature={item}
+                            data-item={item.id}
+                            onedit={handleFeatureEdit}
+                            onremove={handleFeatureRemove}
+                        >
+                        </bib-feature-display>
+                    </div>
+                </template>
+            </div>
+            <h3 class="mt-3">Resources</h3>
+            <small class="form-text text-muted mb-2">
+                Add features of the volume as a whole, like general
+                introductions and notes that aren't associated with a specific
+                translation. Introductions to specific texts should be part of
+                the translation.
+            </small>
+            <div class="volume-feature-switches">
+                <div class="card mb-2">
+                    <div class="card-header">
+                        <h5 class="card-title">Volume Resources</h5>
+                    </div>
+                    <div class="card-body">
+                        <form novalidate>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <small class="text-muted mb-2">
+                                        Select authored resources offered in
+                                        this volume.
+                                    </small>
+                                    <bib-switch
+                                        label="General Introduction"
+                                        value={generalFeatures.hasIntroduction}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Introduction"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="General Notes"
+                                        value={generalFeatures.hasNotes}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Notes"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Editors"
+                                        value={generalFeatures.hasEdited}
+                                        onchange={handleFeatureSwitchChange}
+                                        data-feature="Edited"
+                                    ></bib-switch>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <small class="text-muted mb-2">
+                                        Select additional resources offered in
+                                        this volume.
+                                    </small>
+                                    <bib-switch
+                                        label="Bibliography"
+                                        value={feature_bibliography}
+                                        onchange={handleChange}
+                                        data-name="feature_bibliography"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Maps"
+                                        value={feature_maps}
+                                        onchange={handleChange}
+                                        data-name="feature_maps"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Glossary"
+                                        value={feature_glossary}
+                                        onchange={handleChange}
+                                        data-name="feature_glossary"
+                                    ></bib-switch>
+                                    <bib-switch
+                                        label="Index"
+                                        value={feature_index}
+                                        onchange={handleChange}
+                                        data-name="feature_index"
+                                    ></bib-switch>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="volume-features">
+                <template for:each={generalFeatures.features} for:item="f">
+                    <bib-single-feature-editor
+                        key={f.feature}
+                        feature={f}
+                        onupdate={handleSingleFeatureChange}
+                        onaddperson={doAddPerson}
+                        has-translation={hasTranslation}
+                    >
+                    </bib-single-feature-editor>
+                </template>
+            </div>
+            <hr />
+            <small class="text-danger form-validity mb-2">{error}</small>
+            <div class="status text-center mb-2 d-none">
+                <div
+                    class="spinner-grow spinner-grow-sm mr-2"
+                    role="status"
+                ></div>
+                Creating records...
+            </div>
+            <button class="btn btn-primary btn-block mb-3" onclick={create}>
+                Create Volume
+            </button>
+        </div>
+    </template>
+    <template if:true={showingTranslationModal}>
+        <h4>
+            <button
+                class="btn btn-outline-secondary mr-3"
+                onclick={toggleEditingFeature}
+            >
+                &lt; Back
+            </button>
+            Editing Translation
+        </h4>
+        <bib-translation-editor
+            class="feature-editor"
+            features={featureToEdit}
+            onupdate={handleFeatureChange}
+            onsave={toggleEditingFeature}
+            onaddperson={doAddPerson}
+        >
+        </bib-translation-editor>
+    </template>
+    <template if:true={addingPublisher}>
+        <h4>
+            <button
+                class="btn btn-outline-secondary mr-3"
+                onclick={toggleAddingPublisher}
+            >
+                &lt; Back
+            </button>
+            Adding New Publisher
+        </h4>
+        <bib-add-publisher onsave={publisherAdded}></bib-add-publisher>
+    </template>
+    <template if:true={addingSeries}>
+        <h4>
+            <button
+                class="btn btn-outline-secondary mr-3"
+                onclick={toggleAddingSeries}
+            >
+                &lt; Back
+            </button>
+            Adding New Series
+        </h4>
+        <bib-add-series onsave={seriesAdded}> </bib-add-series>
+    </template>
+    <template if:true={addingPerson}>
+        <h4>
+            <button
+                class="btn btn-outline-secondary mr-3"
+                onclick={toggleAddingPerson}
+            >
+                &lt; Back
+            </button>
+            Adding New Person
+        </h4>
+        <bib-add-person onsave={savePerson}> </bib-add-person>
+    </template>
+</template>

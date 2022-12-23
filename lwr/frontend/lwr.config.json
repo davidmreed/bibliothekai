@@ -1,0 +1,26 @@
+{
+    "lwc": {
+        "modules": [
+            {
+                "dir": "$rootDir/src/modules"
+            }
+        ]
+    },
+    "moduleProviders": [
+        "@lwrjs/router/module-provider",
+        "@lwrjs/app-service/moduleProvider",
+        "@lwrjs/lwc-module-provider",
+        "@lwrjs/npm-module-provider"
+    ],
+    "routes": [
+        {
+            "id": "app",
+            "path": "/*",
+            "rootComponent": "bib/app",
+            "layoutTemplate": "$layoutsDir/base.html",
+            "bootstrap": {
+                "syntheticShadow": true
+            }
+        }
+    ]
+}

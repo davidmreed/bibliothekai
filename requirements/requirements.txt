@@ -30,6 +30,7 @@ django==4.0.2
     #   django-manifest-loader
     #   djangorestframework
     #   graphene-django
+django-cors-headers
 django-allauth==0.49.0
     # via -r requirements/requirements.in
 django-anymail==8.5

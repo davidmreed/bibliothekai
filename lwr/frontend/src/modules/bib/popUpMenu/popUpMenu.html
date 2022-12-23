@@ -1,0 +1,42 @@
+<template>
+    <template if:true={labelText}>
+        <label for="entities">{labelText}</label>
+    </template>
+    <div class="form-row">
+        <div class="col">
+            <select
+                class="entities form-control"
+                name="entities"
+                size="1"
+                onchange={handleChange}
+                value={value}
+            >
+                <template if:true={entities.length}>
+                    <option value="">-- No selection --</option>
+                    <template for:each={entities} for:item="entity">
+                        <option key={entity.id} value={entity.id}>
+                            {entity.name}
+                        </option>
+                    </template>
+                </template>
+                <template if:false={entities.length}>
+                    <option disabled>-- No items --</option>
+                </template>
+            </select>
+            <div class="invalid-feedback">{error}</div>
+        </div>
+        <div class="spinner-grow spinner-grow-sm mt-2" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <template if:true={shouldAllowAdd}>
+            <div class="col-2">
+                <button
+                    class="form-control btn btn-sm btn-outline-secondary"
+                    onclick={add}
+                >
+                    Add
+                </button>
+            </div>
+        </template>
+    </div>
+</template>

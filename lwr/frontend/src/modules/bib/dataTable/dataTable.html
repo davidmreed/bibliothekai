@@ -1,0 +1,72 @@
+<template>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <template if:true={allowsSelection}>
+                    <th scope="col"></th>
+                </template>
+                <template for:each={columns} for:item="col">
+                    <th
+                        scope="col"
+                        key={col.id}
+                        data-col={col.id}
+                        onclick={handleColumnClick}
+                    >
+                        {col.name}
+                        <template if:true={col.isSortedAscending}
+                            ><small class="ml-1">▲</small></template
+                        >
+                        <template if:true={col.isSortedDescending}>
+                            <small class="ml-1">▼</small>
+                        </template>
+                    </th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={_displayedRecords} for:item="rec">
+                <tr key={rec.record.id}>
+                    <template if:true={allowsSelection}>
+                        <td>
+                            <input
+                                type="checkbox"
+                                data-record={rec.id}
+                                onchange={handleSelectionChange}
+                                checked={rec.selected}
+                            />
+                        </td>
+                    </template>
+                    <template for:each={rec.values} for:item="entry">
+                        <td key={entry.key}>
+                            <template if:true={entry.isStringType}>
+                                {entry.value}
+                            </template>
+                            <template if:true={entry.isHyperlinkType}>
+                                <a href={entry.href}>{entry.value}</a>
+                            </template>
+                            <template if:true={entry.isHyperlinkListType}>
+                                <bib-comma-link-list values={entry.value}>
+                                </bib-comma-link-list>
+                            </template>
+                            <template if:true={entry.isYearType}>
+                                {entry.value}
+                            </template>
+                            <template if:true={entry.isPillListType}>
+                                <template
+                                    for:each={entry.value}
+                                    for:item="pill"
+                                >
+                                    <span key={pill.id} class={pill.pillClass}
+                                        >{pill.value}</span
+                                    >
+                                </template>
+                            </template>
+                        </td>
+                    </template>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+    <hr />
+    <small class="text-muted">Showing {recordsShown} of {recordCount}.</small>
+</template>

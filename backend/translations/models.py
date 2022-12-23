@@ -258,7 +258,7 @@ class Volume(UserCreatedApprovalMixin):
         return Feature.objects.filter(volume=self, source_text=None)
 
     def translations(self):
-        return self.features.filter(feature="TR")
+        return self.features.filter(feature="TR").order_by("order_key")
 
     def get_absolute_url(self):
         return reverse("volume_detail", args=[str(self.id)])
@@ -279,47 +279,12 @@ class Volume(UserCreatedApprovalMixin):
             escaped = urllib.parse.quote(self.isbn)
             return f"https://bookshop.org/a/15029/{escaped}"
 
-    def update_automatic_links(self):
-        links = self.links.all()[:]
-
-        # Do we need an OCLC link?
-        url = self.oclc_link()
-        if (
-            url
-            and not any(
-                this_link.link.startswith("https://www.worldcat.org")
-                for this_link in links
-            )
-            and requests.head(url).status_code < 300
-        ):
-            oclc = Link(
-                content_object=self,
-                link=self.oclc_link(),
-                source="Worldcat Libraries",
-                resource_type="CO",
-            )
-            oclc.save()
-
-        url = self.bookshop_link()
-        if (
-            url
-            and not any(
-                this_link.link.startswith("https://bookshop.org") for this_link in links
-            )
-            and requests.head(url).status_code < 300
-        ):
-            bookshop = Link(
-                content_object=self, link=url, source="Bookshop", resource_type="CO",
-            )
-            bookshop.save()
-
     def save(self, *args, **kwargs):
         if self.isbn:
             self.isbn = "".join(c for c in self.isbn if c.isdigit())
         if self.oclc_number:
             self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
         super().save(*args, **kwargs)
-        self.update_automatic_links()
 
 
 class Feature(models.Model, AuthorNameMixin):
@@ -365,7 +330,6 @@ class Feature(models.Model, AuthorNameMixin):
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
-    # order_key = models.IntegerField()
 
     def save(self, *args, **kwargs):
         if (

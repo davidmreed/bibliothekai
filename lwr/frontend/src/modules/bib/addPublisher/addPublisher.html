@@ -1,0 +1,30 @@
+<template>
+    <form novalidate>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input
+                class="form-control"
+                data-name="name"
+                placeholder="Name"
+                type="text"
+                value={name}
+                onchange={handleChange}
+                required
+            />
+            <div class="invalid-feedback">The publisher name is required.</div>
+            <label for="link">Website</label>
+            <input
+                class="form-control"
+                data-name="link"
+                placeholder="Optional: link to publisher's website"
+                type="url"
+                value={link}
+                onchange={handleChange}
+            />
+            <div class="text-danger">{error}</div>
+            <button class="btn btn-primary mt-3" type="submit" onclick={create}>
+                Create
+            </button>
+        </div>
+    </form>
+</template>

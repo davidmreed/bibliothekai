@@ -2,13 +2,13 @@ version: '3.9'
 services:
     web:
         build:
-          context: .
-          dockerfile: Dockerfile.dev
-        command: python manage.py runserver 0.0.0.0:8000
+            context: .
+            dockerfile: Dockerfile.dev
+        command: python manage.py runserver 0.0.0.0:9120
         volumes:
             - ./:/app/web
         ports:
-            - 8000:8000
+            - 9120:9120
         env_file:
             - ./.env
         depends_on:
@@ -21,7 +21,7 @@ services:
         env_file:
             - ./.env
         healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U bibliothekai"]
+            test: [ "CMD-SHELL", "pg_isready -U bibliothekai" ]
             interval: 10s
             timeout: 5s
             retries: 5

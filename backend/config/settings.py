@@ -30,12 +30,12 @@ ALLOWED_HOSTS = [
     "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
-    "bibliothekai-production.up.railway.app"
+    "bibliothekai-production.up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.bibliothekai-production.up.railway.app",
-    "https://*.bibliothekai.ktema.org"
+    "https://*.bibliothekai.ktema.org",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -60,10 +60,12 @@ INSTALLED_APPS = [
     "manifest_loader",
     "generic_relations",
     "graphene_django",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -71,6 +73,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "urls"
@@ -173,4 +180,4 @@ DEFAULT_FROM_EMAIL = "bibliothekai@ktema.org"
 SERVER_EMAIL = "bibliothekai@ktema.org"
 
 GRAPHENE = {"SCHEMA": "translations.graphql.schema"}
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

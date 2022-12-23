@@ -1,0 +1,26 @@
+{
+  "name": "frontend",
+  "version": "0.0.1",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf __lwr_cache__",
+    "dev": "lwr serve",
+    "start": "lwr serve --mode prod",
+    "start:compat": "lwr serve --mode compat",
+    "start:prod-compat": "lwr serve --mode prod-compat"
+  },
+  "dependencies": {
+    "lwc": "2.17.0",
+    "lwr": "0.8.8"
+  },
+  "engines": {
+    "node": ">=14.15.4 <19"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.16.1",
+    "@graphql-codegen/typescript-operations": "^2.5.10",
+    "graphql": "^14.1.1"
+  }
+}
