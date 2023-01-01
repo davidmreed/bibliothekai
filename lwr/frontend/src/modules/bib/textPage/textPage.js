@@ -1,5 +1,9 @@
 import { LightningElement, wire } from 'lwc';
-import { CurrentPageReference, NavigationContext, generateUrl } from 'lwr/navigation';
+import {
+    CurrentPageReference,
+    NavigationContext,
+    generateUrl
+} from 'lwr/navigation';
 import { graphQL } from 'bib/api';
 
 const TEXT_DETAILS_QUERY = `
@@ -19,12 +23,12 @@ query getTextDetails($textId: Int) {
         description
     }
 }
-`
+`;
 // TODO: alternate names + links
 
 export default class TextPage extends LightningElement {
     @wire(CurrentPageReference) pageReference;
-    @wire(NavigationContext) navContext
+    @wire(NavigationContext) navContext;
 
     text;
     queryParameters;
@@ -33,7 +37,7 @@ export default class TextPage extends LightningElement {
     @wire(graphQL, { query: TEXT_DETAILS_QUERY, variables: '$queryParameters' })
     provisionText({ data, error }) {
         if (data) {
-            this.text = data.data.text;
+            this.text = data.text;
             this.updateBreadcrumbs();
         } else {
             alert(`Got an error: ${JSON.stringify(error)}`);
@@ -42,14 +46,31 @@ export default class TextPage extends LightningElement {
 
     updateBreadcrumbs() {
         this.crumbs = [
-            { pageReference: { type: 'home' }, title: "Home" },
-            { pageReference: { type: 'authorPage', attributes: { authorId: this.text.author.id } }, title: this.text.author.fullName },
-            { pageReference: { type: 'textPage', attributes: { textId: String(this.text.id) } }, title: this.text.title, currentPage: true }
-        ].map((p) => ({ url: generateUrl(this.navContext, p.pageReference), ...p }));
-
+            { pageReference: { type: 'home' }, title: 'Home' },
+            {
+                pageReference: {
+                    type: 'authorPage',
+                    attributes: { authorId: this.text.author.id }
+                },
+                title: this.text.author.fullName
+            },
+            {
+                pageReference: {
+                    type: 'textPage',
+                    attributes: { textId: String(this.text.id) }
+                },
+                title: this.text.title,
+                currentPage: true
+            }
+        ].map((p) => ({
+            url: generateUrl(this.navContext, p.pageReference),
+            ...p
+        }));
     }
 
     connectedCallback() {
-        this.queryParameters = { 'textId': Number(this.pageReference.attributes.textId) };
+        this.queryParameters = {
+            textId: Number(this.pageReference.attributes.textId)
+        };
     }
 }

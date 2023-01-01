@@ -2,19 +2,19 @@
     <template if:true={crumbs}>
         <nav aria-label="breadcrumb">
             <ul class="breadcrumb">
-                <template for:each={crumbs} for:item="crumb" for:index="index">
+                <template for:each={crumbs} for:item="crumb">
                     <template if:true={crumb.currentPage}>
-                        <li class="breadcrumb-item active" aria-current="page" key={crumb.title}>
-                            <a href={crumb.url} onclick={handleNavigation} data-index={index}>
-                                {crumb.title}
-                            </a>
+                        <li
+                            class="breadcrumb-item active"
+                            aria-current="page"
+                            key={crumb.title}
+                        >
+                            <bib-link crumb={crumb}></bib-link>
                         </li>
                     </template>
                     <template if:false={crumb.currentPage}>
                         <li class="breadcrumb-item" key={crumb.title}>
-                            <a href={crumb.url} onclick={handleNavigation} data-index={index}>
-                                {crumb.title}
-                            </a>
+                            <bib-link crumb={crumb}></bib-link>
                         </li>
                     </template>
                 </template>

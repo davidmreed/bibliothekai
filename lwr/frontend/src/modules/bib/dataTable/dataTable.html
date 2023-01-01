@@ -37,12 +37,12 @@
                         </td>
                     </template>
                     <template for:each={rec.values} for:item="entry">
-                        <td key={entry.key}>
+                        <td key={entry.uniqueId}>
                             <template if:true={entry.isStringType}>
                                 {entry.value}
                             </template>
                             <template if:true={entry.isHyperlinkType}>
-                                <a href={entry.href}>{entry.value}</a>
+                                <bib-link crumb={entry.value}></bib-link>
                             </template>
                             <template if:true={entry.isHyperlinkListType}>
                                 <bib-comma-link-list values={entry.value}>

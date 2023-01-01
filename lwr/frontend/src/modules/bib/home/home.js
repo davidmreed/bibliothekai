@@ -16,7 +16,6 @@ query getTexts {
 }
 `;
 
-
 export default class Home extends LightningElement {
     searchTerm = '';
     recordData;
@@ -30,26 +29,37 @@ export default class Home extends LightningElement {
     @wire(graphQL, { query: GRAPHQL_QUERY_TEXTS })
     updateRecordData({ data, error }) {
         if (data) {
-            this.recordData = data.data.texts
+            this.recordData = data.texts;
             this.updateSearchResults();
         }
     }
 
     updateSearchResults() {
         if (this.searchTerm) {
-            this.filteredRecordData = this.recordData.filter((f) => f.title.includes(this.searchTerm));
+            this.filteredRecordData = this.recordData.filter((f) =>
+                f.title.includes(this.searchTerm)
+            );
         } else {
             this.filteredRecordData = this.recordData;
         }
 
         this.filteredRecordData = this.filteredRecordData.map((f) => {
-            return { ...f, url: generateUrl(this.navContext, { type: 'textPage', attributes: { textId: f.id } }) };
+            return {
+                ...f,
+                url: generateUrl(this.navContext, {
+                    type: 'textPage',
+                    attributes: { textId: f.id }
+                })
+            };
         });
     }
 
     handleNavigation(event) {
         event.preventDefault();
-        navigate(this.navContext, { type: 'textPage', attributes: { textId: event.currentTarget.dataset.id } });
+        navigate(this.navContext, {
+            type: 'textPage',
+            attributes: { textId: event.currentTarget.dataset.id }
+        });
     }
 
     handleSearch(event) {

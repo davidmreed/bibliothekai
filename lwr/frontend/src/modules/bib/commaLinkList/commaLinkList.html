@@ -1,11 +1,15 @@
 <template>
-    <template iterator:it={values}>
-        <span key={it.value.id}>
-            <span if:true={it.last}><span if:false={it.first}> and </span></span>
-            <a href={it.value.href}>{it.value.name}</a>
-            <span if:false={it.last}>
-                <span if:true={useComma}>, </span>
+    <template if:true={values}>
+        <template iterator:it={values}>
+            <span key={it.value.title}>
+                <span if:true={it.last}
+                    ><span if:false={it.first}> and </span></span
+                >
+                <bib-link crumb={it.value}></bib-link>
+                <span if:false={it.last}>
+                    <span if:true={useComma}>, </span>
+                </span>
             </span>
-        </span>
+        </template>
     </template>
 </template>
