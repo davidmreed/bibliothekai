@@ -1,8 +1,0 @@
-{
-    "modules": [
-        {
-            "dir": "src/modules"
-        }
-    ],
-    "buildDir": "./dist"
-}

@@ -11,3 +11,4 @@ db.sqlite3
 **/node_modules
 translations/static
 static
+**/__lwr_cache__

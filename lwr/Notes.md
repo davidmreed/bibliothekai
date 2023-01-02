@@ -24,3 +24,5 @@ Direct-linking to a page routed by client-side routing doesn't seem to work? To 
 We have two types of page that have special views: the Text, and the Volume. All other pages are essentially filter views. They filter content (the Author, Publisher, and Series pages) while providing context (the author details, for example).
 
 We need editability on the front end for everything!
+
+An NPE that goes off during rerender after a provisioning event results in inscrutable errors with no log of the exception

@@ -49,7 +49,7 @@ class VolumeResource(DjangoObjectType):
     def get_queryset(cls, queryset, info):
         return filter_queryset_parent_approval(
             models.Feature,
-            queryset.filter(feature="TR").order_by("-volume__published_date"),
+            queryset,
             info.context.user,
         )
 
@@ -160,8 +160,8 @@ class Query(graphene.ObjectType):
     reviews = DjangoListField(Review)
     published_reviews = DjangoListField(PublishedReview)
 
-    text = graphene.Field(Text, id=graphene.Int())
-    volume = graphene.Field(Volume, id=graphene.Int())
+    text = graphene.Field(Text, id=graphene.String())
+    volume = graphene.Field(Volume, id=graphene.String())
 
     def resolve_text(root, info, **kwargs):
         id = kwargs.get("id")
