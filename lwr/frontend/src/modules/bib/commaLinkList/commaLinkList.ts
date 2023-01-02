@@ -1,8 +1,8 @@
 import { LightningElement, api } from 'lwc';
-import { Crumb } from '../link/link.js';
+import { Crumb } from 'bib/link';
 
 export default class CommaLinkList extends LightningElement {
-    @api values: Crumb[] | null = null;
+    @api values: Crumb[] = [];
 
     get useComma() {
         return this.values.length > 2;

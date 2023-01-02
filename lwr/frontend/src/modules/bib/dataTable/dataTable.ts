@@ -1,5 +1,5 @@
 import { LightningElement, api } from 'lwc';
-import { Crumb } from '../link/link.js';
+import { Crumb } from 'bib/link';
 
 export interface FilterCriteria {
     filters: Array<{ column: string; value: string }>;
@@ -13,7 +13,7 @@ export const COLUMN_HYPERLINK_LIST_TYPE = 'link-list';
 export const COLUMN_PILL_LIST_TYPE = 'pill-list';
 export const COLUMN_YEAR_TYPE = 'year';
 
-export interface Record {
+export interface DataTableRecord {
     id: string;
 }
 
@@ -22,30 +22,34 @@ interface BaseColumn {
     name: string;
 }
 
-export interface StringColumn<K extends Record> extends BaseColumn {
+export interface Pill {
+    name: string;
+    className: string;
+}
+
+export interface StringColumn extends BaseColumn {
     valueType: typeof COLUMN_STRING_TYPE;
-    valueGetter: (r: K) => string;
+    valueGetter: (r: DataTableRecord) => string;
 }
 
 export interface HyperlinkColumn extends BaseColumn {
     valueType: typeof COLUMN_HYPERLINK_TYPE;
-    valueGetter: (r: Record) => Crumb;
+    valueGetter: (r: DataTableRecord) => Crumb;
 }
 
 export interface HyperlinkListColumn extends BaseColumn {
     valueType: typeof COLUMN_HYPERLINK_LIST_TYPE;
-    valueGetter: (r: Record) => Crumb[];
+    valueGetter: (r: DataTableRecord) => Crumb[];
 }
 
 export interface PillListColumn extends BaseColumn {
     valueType: typeof COLUMN_PILL_LIST_TYPE;
-    valueGetter: (r: Record) => string[];
-    pillClasses: { [key: string]: string };
+    valueGetter: (r: DataTableRecord) => Pill[];
 }
 
 export interface YearColumn extends BaseColumn {
     valueType: typeof COLUMN_YEAR_TYPE;
-    valueGetter: (r: Record) => string;
+    valueGetter: (r: DataTableRecord) => string;
 }
 
 export type Column =
@@ -67,7 +71,7 @@ class ValueEntry {
     column: Column;
     recordId: string;
 
-    constructor(column: Column, record: Record) {
+    constructor(column: Column, record: DataTableRecord) {
         this.value = column.valueGetter(record);
         this.column = column;
         this.recordId = record.id;
@@ -100,7 +104,7 @@ class ValueEntry {
 
 export default class DataTable extends LightningElement {
     _columns: Column[] = [];
-    _records: Record[] = [];
+    _records: DataTableRecord[] = [];
     _filterCriteria: FilterCriteria | null = null;
     _displayedRecords: DisplayedRecord[] = [];
 
@@ -110,8 +114,8 @@ export default class DataTable extends LightningElement {
     }
 
     set columns(value: Column[]) {
-        let sortColumn = this.filterCriteria.sortColumn;
-        let sortAscending = this.filterCriteria.sortAscending;
+        let sortColumn = this.filterCriteria?.sortColumn || '';
+        let sortAscending = this.filterCriteria?.sortAscending || true;
 
         this._columns = [...value].map((c) => ({
             ...c,
@@ -123,13 +127,12 @@ export default class DataTable extends LightningElement {
     }
 
     @api
-    get records(): Record[] {
+    get records(): DataTableRecord[] {
         return this._records || [];
     }
 
-    set records(value: Record[]) {
+    set records(value: DataTableRecord[]) {
         this._records = value;
-
         this.update();
     }
 
@@ -155,14 +158,14 @@ export default class DataTable extends LightningElement {
         let filters = this.filterCriteria?.filters || [];
 
         this._displayedRecords = this.records
-            .filter((r: Record) =>
-                filters.reduce(
-                    (prev, cur) => prev && r.value === cur.value, // TODO: this is not quite right.
-                    true
-                )
-            )
+            /* .filter((r: DataTableRecord) =>
+                 filters.reduce(
+                     (prev, cur) => prev && r.value === cur.value, // TODO: this is not quite right.
+                     true
+                 )
+             )*/
             .map(
-                (r: Record): DisplayedRecord => ({
+                (r: DataTableRecord): DisplayedRecord => ({
                     id: r.id,
                     entries: this.columns.map((c) => new ValueEntry(c, r))
                 })
@@ -177,27 +180,30 @@ export default class DataTable extends LightningElement {
     }
 
     handleColumnClick(event: MouseEvent) {
-        let clickedColId = event.target.dataset.col;
-        let clickedColumn = this.columns.filter(
-            (c) => c.columnId === clickedColId
-        )[0];
+        let eventTarget = event.currentTarget;
+        if (eventTarget && eventTarget instanceof HTMLElement) {
+            let clickedColId = eventTarget.dataset.col;
+            let clickedColumn = this.columns.filter(
+                (c) => c.columnId === clickedColId
+            )[0];
 
-        if (
-            clickedColumn.valueType === COLUMN_STRING_TYPE ||
-            clickedColumn.valueType === COLUMN_HYPERLINK_TYPE ||
-            clickedColumn.valueType === COLUMN_YEAR_TYPE
-        ) {
-            this.dispatchEvent(
-                new CustomEvent('sort', {
-                    detail: {
-                        sortColumn: clickedColId,
-                        sortAscending:
-                            this.filterCriteria.sortColumn === clickedColId
-                                ? !this.filterCriteria.sortAscending
-                                : true
-                    }
-                })
-            );
+            if (
+                clickedColumn.valueType === COLUMN_STRING_TYPE ||
+                clickedColumn.valueType === COLUMN_HYPERLINK_TYPE ||
+                clickedColumn.valueType === COLUMN_YEAR_TYPE
+            ) {
+                this.dispatchEvent(
+                    new CustomEvent('sort', {
+                        detail: {
+                            sortColumn: clickedColId,
+                            sortAscending:
+                                this.filterCriteria.sortColumn === clickedColId
+                                    ? !this.filterCriteria.sortAscending
+                                    : true
+                        }
+                    })
+                );
+            }
         }
     }
 }

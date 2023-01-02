@@ -6,16 +6,9 @@
                     <th scope="col"></th>
                 </template>
                 <template for:each={columns} for:item="col">
-                    <th
-                        scope="col"
-                        key={col.id}
-                        data-col={col.id}
-                        onclick={handleColumnClick}
-                    >
+                    <th scope="col" key={col.columnId} data-col={col.columnId} onclick={handleColumnClick}>
                         {col.name}
-                        <template if:true={col.isSortedAscending}
-                            ><small class="ml-1">▲</small></template
-                        >
+                        <template if:true={col.isSortedAscending}><small class="ml-1">▲</small></template>
                         <template if:true={col.isSortedDescending}>
                             <small class="ml-1">▼</small>
                         </template>
@@ -25,18 +18,8 @@
         </thead>
         <tbody>
             <template for:each={_displayedRecords} for:item="rec">
-                <tr key={rec.record.id}>
-                    <template if:true={allowsSelection}>
-                        <td>
-                            <input
-                                type="checkbox"
-                                data-record={rec.id}
-                                onchange={handleSelectionChange}
-                                checked={rec.selected}
-                            />
-                        </td>
-                    </template>
-                    <template for:each={rec.values} for:item="entry">
+                <tr key={rec.id}>
+                    <template for:each={rec.entries} for:item="entry">
                         <td key={entry.uniqueId}>
                             <template if:true={entry.isStringType}>
                                 {entry.value}
@@ -52,13 +35,8 @@
                                 {entry.value}
                             </template>
                             <template if:true={entry.isPillListType}>
-                                <template
-                                    for:each={entry.value}
-                                    for:item="pill"
-                                >
-                                    <span key={pill.id} class={pill.pillClass}
-                                        >{pill.value}</span
-                                    >
+                                <template for:each={entry.value} for:item="pill">
+                                    <span key={pill.name} class={pill.className}>{pill.name}</span>
                                 </template>
                             </template>
                         </td>

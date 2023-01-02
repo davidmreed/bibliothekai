@@ -1,7 +1,11 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "lib": ["dom", "dom.iterable", "esnext"],
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -15,7 +19,28 @@
         "resolveJsonModule": true,
         "isolatedModules": true,
         "noEmit": true,
-        "baseUrl": "./src/modules"
-    },
-    "include": ["src/modules"]
+        "baseUrl": ".",
+        "paths": {
+            // See https://github.com/microsoft/TypeScript/issues/29245
+            // and https://github.com/Microsoft/TypeScript/issues/27298
+            "lwr/navigation": [
+                "node_modules/@lwrjs/router/build/modules/lwr/navigation/navigation"
+            ],
+            "lwr/router": [
+                "node_modules/@lwrjs/router/build/modules/lwr/router/router"
+            ],
+            "bib/api": [
+                "src/modules/bib/api/api"
+            ],
+            "bib/link": [
+                "src/modules/bib/link/link"
+            ],
+            "bib/breadcrumbs": [
+                "src/modules/bib/breadcrumbs/breadcrumbs"
+            ],
+            "bib/dataTable": [
+                "src/modules/bib/dataTable/dataTable"
+            ]
+        }
+    }
 }

@@ -1,7 +1,7 @@
 import { LightningElement, wire, track, api } from 'lwc';
-import { NavigationContext, navigate } from 'lwr/navigation';
 
 import { graphQL } from 'bib/api';
+import { Crumb } from 'bib/link';
 import {
     FilterCriteria,
     Column,
@@ -9,13 +9,15 @@ import {
     COLUMN_HYPERLINK_TYPE,
     COLUMN_HYPERLINK_LIST_TYPE,
     COLUMN_PILL_LIST_TYPE,
-    COLUMN_YEAR_TYPE
+    COLUMN_YEAR_TYPE,
+    DataTableRecord,
+    Pill
 } from 'bib/dataTable';
 
 import {
     GetTranslationsQuery,
     GetTranslationsQueryVariables
-} from '../../gql/generated.js';
+} from 'src/gql';
 
 type TranslationRecord = Exclude<
     Exclude<
@@ -27,6 +29,7 @@ type TranslationRecord = Exclude<
 
 type EnrichedTranslation = TranslationRecord & {
     featureNames: string[];
+    humanFormat: string;
 };
 
 function normalize(
@@ -35,10 +38,7 @@ function normalize(
 ): EnrichedTranslation {
     // Some features are flags on the Feature, some on the Volume.
     // We also need a flat list for the pill view.
-    let record: EnrichedTranslation = { ...plainRecord, featureNames: [] };
-
-    record.featureNames = [];
-    record.format = enumValues.get(record.format) || 'Prose';
+    let record: EnrichedTranslation = { ...plainRecord, featureNames: [], humanFormat: enumValues.get(plainRecord.format) || 'Prose' };
 
     if (record.featureAccompanyingIntroduction) {
         record.featureNames.push('Introduction');
@@ -71,8 +71,20 @@ function normalize(
     return record;
 }
 
+const PILLS = {
+    Introduction: 'primary',
+    Notes: 'warning',
+    Commentary: 'danger',
+    Glossary: 'info',
+    Index: 'secondary',
+    Bibliography: 'dark',
+    Maps: 'success',
+    'Facing Text': 'danger',
+    'Sample Passage': 'info'
+};
+
 const TRANSLATION_GRAPHQL_QUERY = /* GraphQL */ `
-    query getTranslations($textId: Int) {
+    query getTranslations($textId: String) {
         __type(name: "TranslationsFeatureFormatChoices") {
             enumValues {
                 name
@@ -91,6 +103,7 @@ const TRANSLATION_GRAPHQL_QUERY = /* GraphQL */ `
                 featureAccompanyingIntroduction
                 featureFacingText
                 language {
+                    id
                     name
                 }
                 volume {
@@ -120,42 +133,42 @@ const columns: Column[] = [
         columnId: 'volumeTitle',
         name: 'Title',
         valueType: COLUMN_HYPERLINK_TYPE,
-        valueGetter: (p: TranslationRecord) => ({
+        valueGetter: (r: DataTableRecord): Crumb => ({
             pageReference: {
                 type: 'volumePage',
-                attributes: { volumeId: p.volume.id }
+                attributes: { volumeId: (r as EnrichedTranslation).volume.id }
             },
-            title: p.volume.title
+            title: (r as EnrichedTranslation).volume.title
         })
     },
     {
         columnId: 'persons',
         name: 'Translator',
         valueType: COLUMN_HYPERLINK_LIST_TYPE,
-        valueGetter: (r: TranslationRecord) =>
-            r.persons.map((p) => ({
+        valueGetter: (r: DataTableRecord): Crumb[] =>
+            (r as EnrichedTranslation).persons.map((p): Crumb => ({
                 pageReference: {
                     type: 'volumeListPage',
                     attributes: { authorId: p.id }
                 },
-                title: p.fullName
+                title: p.fullName || ''
             }))
     },
     {
         columnId: 'publisherName',
-        valueGetter: (r: TranslationRecord) => r.volume.publisher.name,
+        valueGetter: (r: DataTableRecord): string => (r as EnrichedTranslation).volume.publisher.name,
         name: 'Publisher',
         valueType: COLUMN_STRING_TYPE
     },
     {
         columnId: 'volumePublishedDate',
-        valueGetter: (r: TranslationRecord) => r.volume.publishedDate,
+        valueGetter: (r: DataTableRecord): string => (r as EnrichedTranslation).volume.publishedDate.substring(0, 4),
         name: 'Published',
         valueType: COLUMN_YEAR_TYPE
     },
     {
         columnId: 'volumeOriginalPublicationDate',
-        valueGetter: (r: TranslationRecord) => r.originalPublicationDate,
+        valueGetter: (r: DataTableRecord): string => (r as EnrichedTranslation).originalPublicationDate.substring(0, 4),
         name: 'First Published',
         valueType: COLUMN_YEAR_TYPE
     },
@@ -163,55 +176,41 @@ const columns: Column[] = [
         columnId: 'languageName',
         name: 'Language',
         valueType: COLUMN_STRING_TYPE,
-        valueGetter: (r: TranslationRecord) => r.language.name
+        valueGetter: (r: DataTableRecord): string => (r as EnrichedTranslation).language.name
     },
     {
         columnId: 'format',
         name: 'Format',
         valueType: COLUMN_STRING_TYPE,
-        valueGetter: (r: TranslationRecord) => r.format
+        valueGetter: (r: DataTableRecord) => String((r as EnrichedTranslation).format)
     },
     {
         columnId: 'resources',
         name: 'Resources',
         valueType: COLUMN_PILL_LIST_TYPE,
-        valueGetter: (r: EnrichedTranslation) =>
-            r.featureNames.map(
-                (f: string) =>
-                    ({
-                        Introduction: 'primary',
-                        Notes: 'warning',
-                        Commentary: 'danger',
-                        Glossary: 'info',
-                        Index: 'secondary',
-                        Bibliography: 'dark',
-                        Maps: 'success',
-                        'Facing Text': 'danger',
-                        'Sample Passage': 'info'
-                    }[f])
+        valueGetter: (r: DataTableRecord) =>
+            (r as EnrichedTranslation).featureNames.map(
+                (f: string): Pill => ({
+                    name: f, className: `badge badge-pill badge-${PILLS[f] || ''} mr-1 mb-1`
+                })
             )
     }
 ];
 
 export default class TranslationView extends LightningElement {
-    columns = columns;
-    selectedIds = [];
-    allowsSelection = false;
+    columns: Column[] = columns;
     showingFilters = false;
     selectedFilterFormat = '';
     selectedFilterLanguage = '';
     selectedFilterCoverage = '';
     records: EnrichedTranslation[] = [];
-    error;
+    error: any;
 
     parameters: GetTranslationsQueryVariables | null = null;
 
     translationPath: string | null = null;
 
     @api textId: string | null = null;
-
-    @wire(NavigationContext)
-    navContext;
 
     @wire(graphQL, {
         query: TRANSLATION_GRAPHQL_QUERY,
@@ -220,7 +219,7 @@ export default class TranslationView extends LightningElement {
     provision({ data, error }: { data: GetTranslationsQuery; error: any }) {
         if (data && data.text) {
             let enumValues = new Map(
-                data.__type.enumValues.map((o) => [o.name, o.description])
+                data.__type?.enumValues?.map((o) => [o.name, o.description])
             );
             if (data.text.translations) {
                 this.records = data.text.translations.map((r) =>
@@ -242,10 +241,6 @@ export default class TranslationView extends LightningElement {
         sortColumn: 'originalPublicationDate',
         sortAscending: false
     };
-
-    get hasSelection(): boolean {
-        return !!this.selectedIds.length;
-    }
 
     get filterTitle(): string {
         return this.showingFilters ? 'Clear Filters' : 'Show Filters';
@@ -277,25 +272,18 @@ export default class TranslationView extends LightningElement {
     }
 
     connectedCallback() {
-        this.parameters = { textId: Number(this.textId) };
+        this.parameters = { textId: this.textId };
     }
 
-    handleSort(event: MouseEvent) {
+    handleSort(event: CustomEvent<{ sortColumn: string, sortAscending: boolean }>) {
         this.filterCriteria = {
             filters: this.filterCriteria.filters,
-            sortColum: event.detail.sortColumn,
+            sortColumn: event.detail.sortColumn,
             sortAscending: event.detail.sortAscending
         };
     }
 
-    handleNavigation(event: MouseEvent) {
-        event.preventDefault();
-        navigate(this.navContext, {
-            type: event.currentTarget.dataset.pageType
-        });
-    }
-
-    handleFilterChange(event) {
+    handleFilterChange(event: MouseEvent) {
         let feature;
         let required;
 

@@ -1,25 +1,8 @@
 <template>
-    <template if:true={text}>
+    <template if:true={loaded}>
         <bib-breadcrumbs crumbs={crumbs}></bib-breadcrumbs>
         <h1>{text.title}</h1>
-        <dl>
-            <dt>Author</dt>
-            <dd>{text.author.fullName}</dd>
-            <dt>Date</dt>
-            <dd>
-                <template if:true={text.date}>
-                    {text.date}
-                </template>
-                <template if:false={text.date}>
-                    Unknown
-                </template>
-            </dd>
-            <dt>Description</dt>
-            <dd>{text.description}</dd>
-            <dt>Language</dt>
-            <dd>{text.language.name}, {text.format}</dd>
-        </dl>
-        <bib-translation-view text-id={pageReference.attributes.textId}>
+        <bib-translation-view text-id={text.id}>
         </bib-translation-view>
     </template>
 </template>

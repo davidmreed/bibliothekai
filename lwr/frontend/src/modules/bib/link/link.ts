@@ -3,7 +3,8 @@ import {
     NavigationContext,
     PageReference,
     generateUrl,
-    navigate
+    navigate,
+    ContextId
 } from 'lwr/navigation';
 
 export interface Crumb {
@@ -11,8 +12,8 @@ export interface Crumb {
     pageReference: PageReference;
 }
 
-export default class Breadcrumbs extends LightningElement {
-    @wire(NavigationContext) navContext;
+export default class Link extends LightningElement {
+    @wire(NavigationContext) navContext: ContextId;
     @api crumb: Crumb | null = null;
 
     get url(): string | null {

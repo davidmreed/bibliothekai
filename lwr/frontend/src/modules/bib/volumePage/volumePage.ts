@@ -1,15 +1,16 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import {
     CurrentPageReference,
-    generateUrl,
-    NavigationContext
+    PageReference,
 } from 'lwr/navigation';
-import { GetVolumeDetailsQuery, GetVolumeDetailsQueryVariables } from '../gql)';
+import { GetVolumeDetailsQuery, GetVolumeDetailsQueryVariables } from 'src/gql';
 import { graphQL } from 'bib/api';
+import { Breadcrumb } from 'bib/breadcrumbs';
 
 const VOLUME_DETAILS_QUERY = /* GraphQL */ `
-    query getVolumeDetails($volumeId: Int) {
+    query getVolumeDetails($volumeId: String) {
         volume(id: $volumeId) {
+            id
             title
             publisher {
                 id
@@ -82,20 +83,16 @@ class VolumeElementResource {
     language;
     id;
 
-    constructor(id, resourceType, persons, language, navContext) {
+    constructor(id, resourceType, persons, language) {
         this.id = id;
         this.resourceType = resourceType;
-        this.persons = data.persons
+        this.persons = persons
             .map((f) => ({
                 title: f.fullName,
                 pageReference: {
-                    pageType: 'volumeListPage',
+                    pageType: 'authorPage',
                     attributes: { authorId: f.id }
                 }
-            }))
-            .map((p) => ({
-                url: generateUrl(navContext, p.pageReference),
-                ...p
             }));
         this.language = language;
     }
@@ -108,20 +105,16 @@ class VolumeElementTranslation {
     title;
     partial;
 
-    constructor(data, navContext) {
+    constructor(data) {
         this.feature = data.feature;
         this.language = data.language;
         this.persons = data.persons
             .map((f) => ({
                 title: f.fullName,
                 pageReference: {
-                    pageType: 'volumeListPage',
+                    pageType: 'authorPage',
                     attributes: { authorId: f.id }
                 }
-            }))
-            .map((p) => ({
-                url: generateUrl(navContext, p.pageReference),
-                ...p
             }));
         this.title = data.title;
         this.partial = data.partial;
@@ -131,8 +124,8 @@ class VolumeElementTranslation {
 
 class VolumeElement {
     sourceText;
-    translation;
-    resources;
+    translation: VolumeElementTranslation;
+    resources: VolumeElementResource[];
 
     constructor(sourceText, translation) {
         this.sourceText = sourceText;
@@ -141,122 +134,86 @@ class VolumeElement {
     }
 }
 
-class Volume {
-    title;
-    description;
-    isbn;
-    publisher;
-    featureGlossary;
-    featureIndex;
-    featureBibliography;
-    featureMaps;
-    publishedDate;
+type Volume = GetVolumeDetailsQuery["volume"];
 
-    elements;
+export default class VolumePage extends LightningElement {
+    @wire(CurrentPageReference) pageReference: PageReference;
 
-    constructor(data, navContext) {
-        // process the inbound data from GraphQL into something easier to work with.
-        // First, find all of the volume data
-        for (let key of [
-            'title',
-            'description',
-            'isbn',
-            'publisher',
-            'featureGlossary',
-            'featureIndex',
-            'featureBibliography',
-            'featureMaps',
-            'publishedDate'
-        ]) {
-            this[key] = data[key];
+    volume: Volume | null = null;
+    volumeElements: VolumeElement[] = [];
+    queryParameters: GetVolumeDetailsQueryVariables | null = null;
+
+    @wire(graphQL, {
+        query: VOLUME_DETAILS_QUERY,
+        variables: '$queryParameters'
+    })
+    provisionVolume({ data, error }: { data: GetVolumeDetailsQuery, error: any }) {
+        if (data && data.volume) {
+            this.volume = data.volume;
+            this.updateVolumeElements();
+        } else {
+            alert(`Got an error: ${JSON.stringify(error)}`);
+        }
+    }
+
+    updateVolumeElements() {
+        // Now, group the features by source text and construct VolumeElements for them.
+        if (!this.volume) {
+            return;
         }
 
-        // Now, group the features by source text and construct VolumeElements for them.
-        let translationFeatures = data.features.filter(
-            (f) => f.feature === 'TR'
+        let translationFeatures = this.volume.features.filter(
+            (f) => f.feature === 'TR' && f.sourceText
         );
-        let otherFeatures = data.features.filter((f) => f.feature !== 'TR');
-        let elements = {};
+        let otherFeatures = this.volume.features.filter((f) => f.feature !== 'TR' && f.sourceText);
+        let elements: Record<string, VolumeElement> = {};
 
         for (let feature of translationFeatures) {
-            elements[feature.sourceText] = new VolumeElement(
+            elements[feature.sourceText.id] = new VolumeElement(
                 feature.sourceText,
-                new VolumeElementTranslation(feature, navContext)
+                new VolumeElementTranslation(feature)
             );
         }
         for (let feature of otherFeatures) {
-            let element = elements[feature.sourceText];
+            let element = elements[feature.sourceText.id];
             element.resources.push(
                 new VolumeElementResource(
                     feature.id,
                     feature.feature,
                     feature.persons,
                     feature.language,
-                    navContext
                 )
             );
         }
 
-        this.elements = Array.from(Object.values(elements));
-    }
-}
-
-interface Crumb {
-    title: string;
-    pageReference: PageReference;
-    currentPage: boolean;
-    url: string | null;
-}
-
-export default class VolumePage extends LightningElement {
-    @wire(CurrentPageReference) pageReference;
-    @wire(NavigationContext) navContext;
-
-    volume;
-    crumbs: Crumb[] = [];
-    queryParameters: GetVolumeDetailsQueryVariables;
-
-    @wire(graphQL, {
-        query: VOLUME_DETAILS_QUERY,
-        variables: '$queryParameters'
-    })
-    provisionVolume({ data: GetVolumeDetailsQuery, error }) {
-        console.log(JSON.stringify(data));
-        if (data) {
-            this.volume = new Volume(data.volume, this.navContext);
-            this.updateBreadcrumbs();
-        } else {
-            alert(`Got an error: ${JSON.stringify(error)}`);
-        }
+        this.volumeElements = Array.from(Object.values(elements));
     }
 
-    updateBreadcrumbs() {
-        this.crumbs = [
-            { pageReference: { type: 'home' }, title: 'Home' },
+    get crumbs(): Breadcrumb[] {
+        return [
+            { pageReference: { type: 'home' }, title: 'Home', currentPage: false },
             {
                 pageReference: {
-                    type: 'volumeListPage',
-                    attributes: { publisherId: this.volume.publisher.id }
+                    type: 'publisherPage',
+                    attributes: { publisherId: this.volume?.publisher.id }
                 },
-                title: this.volume.publisher.name
+                title: this.volume?.publisher.name || '',
+                currentPage: false
             },
             {
                 pageReference: {
                     type: 'volumePage',
-                    attributes: { volumeId: String(this.volume.id) }
+                    attributes: { volumeId: this.volume?.id }
                 },
-                title: this.volume.title,
+                title: this.volume?.title || '',
                 currentPage: true
             }
-        ].map((p) => ({
-            url: generateUrl(this.navContext, p.pageReference),
-            ...p
-        }));
+        ];
     }
 
     connectedCallback() {
         this.queryParameters = {
-            volumeId: Number(this.pageReference.attributes.volumeId)
+            volumeId: this.pageReference.attributes.volumeId
         };
     }
 }

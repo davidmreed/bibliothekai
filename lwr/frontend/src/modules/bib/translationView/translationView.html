@@ -83,9 +83,7 @@
             </div>
         </form>
     </template>
-    <bib-data-table columns={columns} records={records} filter-criteria={filterCriteria}
-        allows-selection={allowsSelection} selected-ids={selectedIds} onsort={handleSort}
-        onselectionchange={handleSelectionChange}>
+    <bib-data-table columns={columns} records={records} filter-criteria={filterCriteria} onsort={handleSort}>
     </bib-data-table>
     <div class="spinner-grow spinner-grow-sm mt-2" role="status">
         <span class="sr-only">Loading...</span>

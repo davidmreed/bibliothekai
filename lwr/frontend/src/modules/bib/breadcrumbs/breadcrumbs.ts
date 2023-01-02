@@ -1,7 +1,8 @@
 import { LightningElement, api } from 'lwc';
-import { Crumb } from '../link/link.js';
 
-interface Breadcrumb extends Crumb {
+import { Crumb } from 'bib/link';
+
+export interface Breadcrumb extends Crumb {
     currentPage: boolean;
 }
 
