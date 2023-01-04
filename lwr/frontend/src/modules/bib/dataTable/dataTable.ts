@@ -1,12 +1,6 @@
 import { LightningElement, api } from 'lwc';
 import { Crumb } from 'bib/link';
 
-export interface FilterCriteria {
-    filters: Array<{ column: string; value: string }>;
-    sortColumn: string;
-    sortAscending: boolean;
-}
-
 export const COLUMN_STRING_TYPE = 'string';
 export const COLUMN_HYPERLINK_TYPE = 'link';
 export const COLUMN_HYPERLINK_LIST_TYPE = 'link-list';
@@ -67,7 +61,7 @@ interface DisplayedRecord {
 // This is a full class so that we can provide getters
 // to support conditional rendering in the template.
 class ValueEntry {
-    value: string | string[] | Crumb | Crumb[];
+    value: string | Pill[] | Crumb | Crumb[];
     column: Column;
     recordId: string;
 
@@ -105,8 +99,11 @@ class ValueEntry {
 export default class DataTable extends LightningElement {
     _columns: Column[] = [];
     _records: DataTableRecord[] = [];
-    _filterCriteria: FilterCriteria | null = null;
-    _displayedRecords: DisplayedRecord[] = [];
+
+    @api records: DataTableRecord[] = [];
+    @api sortColumn: string | null = null;
+    @api sortAscending: boolean = false;
+    @api filters: ((r: DataTableRecord) => boolean)[] = [];
 
     @api
     get columns(): Column[] {
@@ -114,69 +111,62 @@ export default class DataTable extends LightningElement {
     }
 
     set columns(value: Column[]) {
-        let sortColumn = this.filterCriteria?.sortColumn || '';
-        let sortAscending = this.filterCriteria?.sortAscending || true;
-
+        // TODO: this should be typed.
         this._columns = [...value].map((c) => ({
             ...c,
-            isSortedAscending: sortColumn === c.columnId && sortAscending,
-            isSortedDescending: sortColumn === c.columnId && !sortAscending
+            isSortedAscending: this.sortColumn === c.columnId && this.sortAscending,
+            isSortedDescending: this.sortColumn === c.columnId && !this.sortAscending
         }));
-
-        this.update();
-    }
-
-    @api
-    get records(): DataTableRecord[] {
-        return this._records || [];
-    }
-
-    set records(value: DataTableRecord[]) {
-        this._records = value;
-        this.update();
-    }
-
-    @api
-    get filterCriteria(): FilterCriteria | null {
-        return this._filterCriteria;
-    }
-
-    set filterCriteria(value: FilterCriteria | null) {
-        this._filterCriteria = value;
-        this.update();
     }
 
     get recordsShown(): number {
-        return this._displayedRecords.length;
+        return this.displayedRecords.length;
     }
 
     get recordCount(): number {
         return this.records.length;
     }
 
-    update() {
-        let filters = this.filterCriteria?.filters || [];
-
-        this._displayedRecords = this.records
-            /* .filter((r: DataTableRecord) =>
-                 filters.reduce(
-                     (prev, cur) => prev && r.value === cur.value, // TODO: this is not quite right.
-                     true
-                 )
-             )*/
+    get displayedRecords(): DisplayedRecord[] {
+        return this.records
+            .filter((r: DataTableRecord) =>
+                this.filters.reduce(
+                    (prev, cur) => prev && cur(r),
+                    true
+                )
+            )
             .map(
                 (r: DataTableRecord): DisplayedRecord => ({
                     id: r.id,
                     entries: this.columns.map((c) => new ValueEntry(c, r))
                 })
+            ).sort(
+                (a, b) => {
+                    // Make sure that we have a sortColumn set and that it is a sortable column type.
+                    if (this.sortColumn) {
+                        let columnValueType = this.columns.filter((c) => c.columnId === this.sortColumn)[0].valueType;
+                        if (columnValueType === COLUMN_STRING_TYPE || columnValueType === COLUMN_YEAR_TYPE || columnValueType === COLUMN_HYPERLINK_TYPE) {
+                            let aValue = a.entries.filter((v) => v.column.columnId === this.sortColumn)[0].value;
+                            let bValue = b.entries.filter((v) => v.column.columnId === this.sortColumn)[0].value;
+                            let sortModifier = this.sortAscending ? 1 : -1;
+
+                            if (columnValueType === COLUMN_HYPERLINK_TYPE) {
+                                // TODO: allow consumers to provide sort keys.
+                                aValue = (aValue as Crumb).title;
+                                bValue = (bValue as Crumb).title;
+                            }
+
+                            if (aValue < bValue) {
+                                return -1 * sortModifier;
+                            } else if (bValue < aValue) {
+                                return 1 * sortModifier;
+                            }
+                        }
+                    }
+                    return 0;
+
+                }
             );
-        /*        this._displayedRecords.sort(
-            sortRecords.bind(
-                undefined,
-                this.filterCriteria?.sortColumn,
-                this.filterCriteria?.sortAscending
-            )
-        );*/ // FIXME
     }
 
     handleColumnClick(event: MouseEvent) {
@@ -197,8 +187,8 @@ export default class DataTable extends LightningElement {
                         detail: {
                             sortColumn: clickedColId,
                             sortAscending:
-                                this.filterCriteria.sortColumn === clickedColId
-                                    ? !this.filterCriteria.sortAscending
+                                this.sortColumn === clickedColId
+                                    ? !this.sortAscending
                                     : true
                         }
                     })

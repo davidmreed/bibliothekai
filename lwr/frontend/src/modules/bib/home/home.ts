@@ -1,6 +1,7 @@
 import { LightningElement, wire } from 'lwc';
 import { graphQL } from 'bib/api';
-import { GetTextsQuery, GetTextsQueryVariables } from 'gql';
+import { GetTextsQuery } from 'src/gql';
+import { Crumb } from 'bib/link';
 
 const QUERY_TEXTS = /* GraphQL */`
 query getTexts {
@@ -17,13 +18,12 @@ query getTexts {
 
 export default class Home extends LightningElement {
     searchTerm: string = '';
-    recordData;
-    filteredRecordData = [];
+    recordData: Crumb[] = [];
+    filteredRecordData: Crumb[] = [];
 
-    // TODO
     @wire(graphQL, { query: QUERY_TEXTS })
     updateRecordData({ data, error }: { data: GetTextsQuery, error: any }) {
-        if (data) {
+        if (data && data.texts) {
             this.recordData = data.texts.map(
                 (t) => ({
                     title: t.title, pageReference: {
@@ -47,7 +47,9 @@ export default class Home extends LightningElement {
     }
 
     handleSearch(event: KeyboardEvent) {
-        this.searchTerm = event.currentTarget.value;
-        this.updateSearchResults();
+        if (event.currentTarget && event.currentTarget instanceof HTMLInputElement) {
+            this.searchTerm = event.currentTarget.value;
+            this.updateSearchResults();
+        }
     }
 }

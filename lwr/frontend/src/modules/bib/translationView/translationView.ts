@@ -3,7 +3,6 @@ import { LightningElement, wire, track, api } from 'lwc';
 import { graphQL } from 'bib/api';
 import { Crumb } from 'bib/link';
 import {
-    FilterCriteria,
     Column,
     COLUMN_STRING_TYPE,
     COLUMN_HYPERLINK_TYPE,
@@ -13,6 +12,8 @@ import {
     DataTableRecord,
     Pill
 } from 'bib/dataTable';
+
+import { FilterState } from 'bib/textPage';
 
 import {
     GetTranslationsQuery,
@@ -29,16 +30,16 @@ type TranslationRecord = Exclude<
 
 type EnrichedTranslation = TranslationRecord & {
     featureNames: string[];
-    humanFormat: string;
 };
+
+type Language = TranslationRecord["language"];
 
 function normalize(
     plainRecord: TranslationRecord,
-    enumValues: Map<String, String>
 ): EnrichedTranslation {
     // Some features are flags on the Feature, some on the Volume.
     // We also need a flat list for the pill view.
-    let record: EnrichedTranslation = { ...plainRecord, featureNames: [], humanFormat: enumValues.get(plainRecord.format) || 'Prose' };
+    let record: EnrichedTranslation = { ...plainRecord, featureNames: [] };
 
     if (record.featureAccompanyingIntroduction) {
         record.featureNames.push('Introduction');
@@ -182,7 +183,7 @@ const columns: Column[] = [
         columnId: 'format',
         name: 'Format',
         valueType: COLUMN_STRING_TYPE,
-        valueGetter: (r: DataTableRecord) => String((r as EnrichedTranslation).format)
+        valueGetter: (r: DataTableRecord) => (r as EnrichedTranslation).format === 'VR' ? 'Verse' : 'Prose'
     },
     {
         columnId: 'resources',
@@ -197,20 +198,35 @@ const columns: Column[] = [
     }
 ];
 
+
 export default class TranslationView extends LightningElement {
     columns: Column[] = columns;
     showingFilters = false;
-    selectedFilterFormat = '';
-    selectedFilterLanguage = '';
-    selectedFilterCoverage = '';
     records: EnrichedTranslation[] = [];
     error: any;
-
     parameters: GetTranslationsQueryVariables | null = null;
-
     translationPath: string | null = null;
 
     @api textId: string | null = null;
+    @api sortColumn: string | null = null;
+    @api sortAscending: boolean = false;
+    @api filterState: FilterState = {};
+
+    get filters() {
+        return [(r: EnrichedTranslation): boolean => !!(
+            (this.filterState.filterIntroduction ? r.featureAccompanyingIntroduction : true)
+            && (this.filterState.filterNotes ? r.featureAccompanyingNotes : true)
+            && (this.filterState.filterCommentary ? r.featureAccompanyingCommentary : true)
+            && (this.filterState.filterGlossary ? r.volume.featureGlossary : true)
+            && (this.filterState.filterIndex ? r.volume.featureIndex : true)
+            && (this.filterState.filterBibliography ? r.volume.featureBibliography : true)
+            && (this.filterState.filterMaps ? r.volume.featureMaps : true)
+            && (this.filterState.filterSamplePassage ? r.featureSamplePassage : true)
+            && (this.filterState.filterFacingText ? r.featureFacingText : true)
+            && (this.filterState.filterFormat ? this.filterState.filterFormat === r.format : true)
+            && (this.filterState.filterLanguage ? this.filterState.filterLanguage === r.language.id : true)
+            && (this.filterState.filterComplete ? !r.partial : true))];
+    }
 
     @wire(graphQL, {
         query: TRANSLATION_GRAPHQL_QUERY,
@@ -218,12 +234,9 @@ export default class TranslationView extends LightningElement {
     })
     provision({ data, error }: { data: GetTranslationsQuery; error: any }) {
         if (data && data.text) {
-            let enumValues = new Map(
-                data.__type?.enumValues?.map((o) => [o.name, o.description])
-            );
             if (data.text.translations) {
                 this.records = data.text.translations.map((r) =>
-                    normalize(r, enumValues)
+                    normalize(r)
                 );
             } else {
                 this.records = [];
@@ -235,20 +248,13 @@ export default class TranslationView extends LightningElement {
         this.template.querySelector('.spinner-grow')?.classList.add('d-none');
     }
 
-    @track
-    filterCriteria: FilterCriteria = {
-        filters: [],
-        sortColumn: 'originalPublicationDate',
-        sortAscending: false
-    };
-
     get filterTitle(): string {
         return this.showingFilters ? 'Clear Filters' : 'Show Filters';
     }
 
-    get availableLanguages() {
-        let seen = new Set();
-        let languages: string[] = [];
+    get availableLanguages(): Language[] {
+        let seen: Set<string> = new Set();
+        let languages: Language[] = [];
 
         this.records.forEach((r) => {
             if (!seen.has(r.language.id)) {
@@ -275,58 +281,42 @@ export default class TranslationView extends LightningElement {
         this.parameters = { textId: this.textId };
     }
 
-    handleSort(event: CustomEvent<{ sortColumn: string, sortAscending: boolean }>) {
-        this.filterCriteria = {
-            filters: this.filterCriteria.filters,
-            sortColumn: event.detail.sortColumn,
-            sortAscending: event.detail.sortAscending
-        };
-    }
 
     handleFilterChange(event: MouseEvent) {
-        let feature;
-        let required;
+        if (event.currentTarget && event.currentTarget instanceof HTMLElement) {
+            let newState: FilterState = { ...this.filterState };
+            console.log("In TranslationView#handleFilterChange")
 
-        if (event.target.dataset.feature) {
-            // This is a feature checkbox
-            feature = event.target.dataset.feature;
-            required = event.target.value;
-        } else if (event.target.name === 'format') {
-            feature = 'format';
-            required = this.selectedFilterFormat = event.target.value;
-        } else if (event.target.name === 'language') {
-            feature = 'language.id';
-            this.selectedFilterLanguage = event.target.value;
-            required = Number(this.selectedFilterLanguage);
-        } else if (event.target.name === 'coverage') {
-            feature = 'partial';
-            this.selectedFilterCoverage = event.target.value;
-            if (this.selectedFilterCoverage) {
-                required = this.selectedFilterCoverage === 'Partial';
+            if (event.currentTarget.dataset.feature) {
+                // This is a feature checkbox. Its `data-feature` attribute stores the name
+                // of the FilterState property it controls.
+                newState[event.currentTarget.dataset.feature] = event.currentTarget.value ? true : undefined;
+            } else if (event.currentTarget.name === 'format') {
+                if (event.currentTarget.value !== "") {
+                    newState.filterFormat = event.currentTarget.value;
+                } else {
+                    delete newState.filterFormat;
+                }
+            } else if (event.currentTarget.name === 'language') {
+                if (event.currentTarget.value !== "") {
+                    newState.filterLanguage = event.currentTarget.value;
+                } else {
+                    delete newState.filterLanguage;
+                }
+            } else if (event.currentTarget.name === 'coverage') {
+                // TODO: UI allows filtering for partials.
+                newState.filterComplete = event.currentTarget.value === 'Complete' ? true : undefined;
             }
+            console.log(`Posting new state: ${JSON.stringify(newState)}`);
+            this.dispatchEvent(new CustomEvent('filterchange', { detail: newState }));
         }
-
-        this.filterCriteria = {
-            ...this.filterCriteria,
-            filters: this.filterCriteria.filters
-                .filter((f) => f.column !== feature)
-                .concat(
-                    required ||
-                        (feature === 'partial' && this.selectedFilterCoverage)
-                        ? [{ column: feature, value: required }]
-                        : []
-                )
-        };
     }
 
     handleToggleFilters() {
         this.showingFilters = !this.showingFilters;
 
         if (!this.showingFilters) {
-            this.filterCriteria = {
-                ...this.filterCriteria,
-                filters: []
-            };
+            this.dispatchEvent(new CustomEvent('filterchange', { detail: { state: {} } }));
         }
     }
 }

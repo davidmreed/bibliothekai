@@ -1,5 +1,5 @@
 import { LightningElement, wire } from 'lwc';
-import { PageReference, CurrentPageReference } from 'lwr/navigation';
+import { PageReference, CurrentPageReference, navigate, NavigationContext, ContextId } from 'lwr/navigation';
 import { graphQL } from 'bib/api';
 import { Breadcrumb } from 'bib/breadcrumbs';
 import { GetTextDetailsQuery, GetTextDetailsQueryVariables } from 'src/gql';
@@ -26,12 +26,108 @@ query getTextDetails($textId: String) {
 
 type Text = GetTextDetailsQuery["text"];
 
+interface Attributes {
+    textId: string;
+}
+
+export interface FilterState {
+    filterIntroduction?: boolean;
+    filterNotes?: boolean;
+    filterCommentary?: boolean;
+    filterGlossary?: boolean;
+    filterIndex?: boolean;
+    filterBibliography?: boolean;
+    filterMaps?: boolean;
+    filterSamplePassage?: boolean;
+    filterFacingText?: boolean;
+    filterFormat?: "PR" | "VR";
+    filterLanguage?: string;
+    filterComplete?: boolean;
+}
+
+interface PageReferenceState extends FilterState {
+    sortColumn?: string;
+    sortAscending?: boolean;
+}
+
+const FILTER_STATE_BOOLEAN_PROPS = ["filterIntroduction", "filterNotes", "filterCommentary",
+    "filterGlossary", "filterIndex", "filterBibliography", "filterMaps", "filterSamplePassage",
+    "filterFacingText"];
+
+function stateFromPageReference(pr: PageReference): FilterState {
+    let state: FilterState = {};
+
+    for (const prop of FILTER_STATE_BOOLEAN_PROPS) {
+        if (prop in pr.state) {
+            state[prop] = true; // TODO: why does this warn?
+        }
+    }
+
+    if (
+        "filterFormat" in pr.state &&
+        (pr.state.filterFormat === "Prose" || pr.state.filterFormat === "Verse")
+    ) {
+        state.filterFormat = pr.state.filterFormat === "Prose" ? "PR" : "VR";
+    }
+    if ("filterLanguage" in pr.state) {
+        state.filterLanguage = pr.state.filterLanguage;
+    }
+
+    return state;
+}
+
+function pageReferenceFromState(s: FilterState): Record<string, any> {
+    let stateMap: Record<string, any> = {};
+
+    for (const prop of FILTER_STATE_BOOLEAN_PROPS) {
+        // FIXME: if we don't do this, we get phantom props 
+        // because they are in s, but set to undefined.
+        if (prop in s && s[prop] !== undefined) {
+            stateMap[prop] = true;
+        }
+    }
+
+    if (
+        "filterFormat" in s &&
+        (s.filterFormat === "PR" || s.filterFormat === "VR")
+    ) {
+        stateMap.filterFormat = s.filterFormat === "PR" ? "Prose" : "Verse";
+    }
+    if ("filterLanguage" in s) {
+        stateMap.filterLanguage = s.filterLanguage;
+    }
+
+    return stateMap;
+}
+
+
 export default class TextPage extends LightningElement {
-    @wire(CurrentPageReference) pageReference: PageReference;
+    @wire(CurrentPageReference)
+    setPageReference(pageReference: PageReference | null) {
+        console.log('in setPageReference');
+        this.pageReference = pageReference;
+
+        if (this.pageReference) {
+            // Parse GraphQL parameters out of our pageReference attributes.
+            this.queryParameters = {
+                textId: this.pageReference.attributes.textId
+            };
+
+            // Parse sort and filter data out of our pageReference state.
+            this.filterState = stateFromPageReference(this.pageReference);
+            this.sortColumn = this.pageReference.state.sortColumn;
+            this.sortAscending = "sortAscending" in this.pageReference.state;
+        }
+    }
+    pageReference: PageReference;
+    @wire(NavigationContext) navContext: ContextId;
 
     text: Text | null = null;
     queryParameters: GetTextDetailsQueryVariables | null = null;
     loaded: boolean = false;
+    sortColumn: string | null = null;
+    sortAscending: boolean = true;
+    filterState: FilterState = {}
 
     @wire(graphQL, { query: TEXT_DETAILS_QUERY, variables: '$queryParameters' })
     provisionText({ data, error }: { data: GetTextDetailsQuery, error: any }) {
@@ -65,9 +161,33 @@ export default class TextPage extends LightningElement {
         ];
     }
 
-    connectedCallback() {
-        this.queryParameters = {
-            textId: this.pageReference.attributes.textId
+    handleFilterChange(event: CustomEvent<FilterState>) {
+        // Convert filter data back into URL parameters and fire a navigation event.
+        // Then, `connectedCallback()` will re-capture those parameters and cascade updates down
+        // through the component tree.
+
+        let state: PageReferenceState = {
+            sortColumn: this.sortColumn || undefined, // FIXME: gross
+            sortAscending: this.sortAscending,
+            ...pageReferenceFromState(event.detail)
         };
+
+        navigate(this.navContext, {
+            ...this.pageReference,
+            state: state
+        });
     }
+
+    handleSort(event: CustomEvent<{ sortColumn: string, sortAscending: boolean }>) {
+        let state: PageReferenceState = {
+            sortColumn: event.detail.sortColumn,
+            sortAscending: event.detail.sortAscending,
+            ...pageReferenceFromState(this.filterState)
+        };
+
+        navigate(this.navContext, {
+            ...this.pageReference,
+            state: state
+        });
+    };
 }

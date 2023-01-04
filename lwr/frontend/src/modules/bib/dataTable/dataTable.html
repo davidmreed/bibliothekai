@@ -17,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            <template for:each={_displayedRecords} for:item="rec">
+            <template for:each={displayedRecords} for:item="rec">
                 <tr key={rec.id}>
                     <template for:each={rec.entries} for:item="entry">
                         <td key={entry.uniqueId}>

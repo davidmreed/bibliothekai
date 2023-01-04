@@ -25,27 +25,25 @@
         <form novalidate>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <bib-switch label="Introduction" data-feature="featureAccompanyingIntroduction"
+                    <bib-switch label="Introduction" data-feature="filterIntroduction"
                         onchange={handleFilterChange}></bib-switch>
-                    <bib-switch label="Notes" data-feature="featureAccompanyingNotes" onchange={handleFilterChange}>
+                    <bib-switch label="Notes" data-feature="filterNotes" onchange={handleFilterChange}>
                     </bib-switch>
-                    <bib-switch label="Commentary" data-feature="featureAccompanyingCommentary"
+                    <bib-switch label="Commentary" data-feature="filterCommentary"
                         onchange={handleFilterChange}></bib-switch>
-                    <bib-switch label="Glossary" data-feature="volume.featureGlossary" onchange={handleFilterChange}>
+                    <bib-switch label="Glossary" data-feature="filterGlossary" onchange={handleFilterChange}>
                     </bib-switch>
-                    <bib-switch label="Index" data-feature="volume.featureIndex" onchange={handleFilterChange}>
+                    <bib-switch label="Index" data-feature="filterIndex" onchange={handleFilterChange}>
                     </bib-switch>
                 </div>
                 <div class="form-group col-md-6">
-                    <bib-switch label="Bibliography" data-feature="volume.featureBibliography"
-                        onchange={handleFilterChange}>
+                    <bib-switch label="Bibliography" data-feature="filterBibliography" onchange={handleFilterChange}>
                     </bib-switch>
-                    <bib-switch label="Maps" data-feature="volume.featureMaps" onchange={handleFilterChange}>
+                    <bib-switch label="Maps" data-feature="filterMaps" onchange={handleFilterChange}>
                     </bib-switch>
-                    <bib-switch label="Sample Passage" data-feature="featureSamplePassage"
-                        onchange={handleFilterChange}>
+                    <bib-switch label="Sample Passage" data-feature="filterSamplePassage" onchange={handleFilterChange}>
                     </bib-switch>
-                    <bib-switch label="Facing Text" data-feature="featureFacingText" onchange={handleFilterChange}>
+                    <bib-switch label="Facing Text" data-feature="filterFacingText" onchange={handleFilterChange}>
                     </bib-switch>
                 </div>
             </div>
@@ -55,8 +53,8 @@
                     <select class="form-control form-control-sm format-picklist" name="format" size="1"
                         onchange={handleFilterChange} value={selectedFilterFormat}>
                         <option value="">-- All formats --</option>
-                        <option value="Verse">Verse</option>
-                        <option value="Prose">Prose</option>
+                        <option value="VR">Verse</option>
+                        <option value="PR">Prose</option>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
@@ -83,7 +81,8 @@
             </div>
         </form>
     </template>
-    <bib-data-table columns={columns} records={records} filter-criteria={filterCriteria} onsort={handleSort}>
+    <bib-data-table columns={columns} records={records} filters={filters} sort-column={sortColumn}
+        sort-ascending={sortAscending} onsort={handleSort}>
     </bib-data-table>
     <div class="spinner-grow spinner-grow-sm mt-2" role="status">
         <span class="sr-only">Loading...</span>

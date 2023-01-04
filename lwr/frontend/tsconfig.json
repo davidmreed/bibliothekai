@@ -40,6 +40,9 @@
             ],
             "bib/dataTable": [
                 "src/modules/bib/dataTable/dataTable"
+            ],
+            "bib/textPage": [
+                "src/modules/bib/textPage/textPage"
             ]
         }
     }
