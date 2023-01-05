@@ -116,8 +116,12 @@ export default class TextPage extends LightningElement {
             // Parse sort and filter data out of our pageReference state.
             this.filterState = stateFromPageReference(this.pageReference);
             // These values just do nothing if they're invalid (as supplied by the user).
-            this.sortColumn = this.pageReference.state.sortColumn;
-            this.sortDirection = this.pageReference.state.sortDirection
+            if (this.pageReference.state.sortColumn) {
+                this.sortColumn = this.pageReference.state.sortColumn;
+            }
+            if (this.pageReference.state.sortDirection) {
+                this.sortDirection = this.pageReference.state.sortDirection
+            }
         }
     }
     pageReference: PageReference;
@@ -126,8 +130,8 @@ export default class TextPage extends LightningElement {
     text: Text | null = null;
     queryParameters: GetTextDetailsQueryVariables | null = null;
     loaded: boolean = false;
-    sortColumn: string | null = null;
-    sortDirection: SortDirection = SortDirection.Ascending;
+    sortColumn: string | null = 'volumeOriginalPublicationDate';
+    sortDirection: SortDirection = SortDirection.Descending;
     filterState: FilterState = {}
 
     @wire(graphQL, { query: TEXT_DETAILS_QUERY, variables: '$queryParameters' })
