@@ -3,6 +3,7 @@ import { PageReference, CurrentPageReference, navigate, NavigationContext, Conte
 import { graphQL } from 'bib/api';
 import { Breadcrumb } from 'bib/breadcrumbs';
 import { GetTextDetailsQuery, GetTextDetailsQueryVariables } from 'src/gql';
+import { SortDirection } from 'bib/dataTable';
 
 const TEXT_DETAILS_QUERY = /* GraphQL */`
 query getTextDetails($textId: String) {
@@ -47,7 +48,7 @@ export interface FilterState {
 
 interface PageReferenceState extends FilterState {
     sortColumn?: string;
-    sortAscending?: boolean;
+    sortDirection?: SortDirection;
 }
 
 const FILTER_STATE_BOOLEAN_PROPS = ["filterIntroduction", "filterNotes", "filterCommentary",
@@ -104,7 +105,6 @@ function pageReferenceFromState(s: FilterState): Record<string, any> {
 export default class TextPage extends LightningElement {
     @wire(CurrentPageReference)
     setPageReference(pageReference: PageReference | null) {
-        console.log('in setPageReference');
         this.pageReference = pageReference;
 
         if (this.pageReference) {
@@ -115,8 +115,9 @@ export default class TextPage extends LightningElement {
 
             // Parse sort and filter data out of our pageReference state.
             this.filterState = stateFromPageReference(this.pageReference);
+            // These values just do nothing if they're invalid (as supplied by the user).
             this.sortColumn = this.pageReference.state.sortColumn;
-            this.sortAscending = "sortAscending" in this.pageReference.state;
+            this.sortDirection = this.pageReference.state.sortDirection
         }
     }
     pageReference: PageReference;
@@ -126,7 +127,7 @@ export default class TextPage extends LightningElement {
     queryParameters: GetTextDetailsQueryVariables | null = null;
     loaded: boolean = false;
     sortColumn: string | null = null;
-    sortAscending: boolean = true;
+    sortDirection: SortDirection = SortDirection.Ascending;
     filterState: FilterState = {}
 
     @wire(graphQL, { query: TEXT_DETAILS_QUERY, variables: '$queryParameters' })
@@ -168,7 +169,7 @@ export default class TextPage extends LightningElement {
 
         let state: PageReferenceState = {
             sortColumn: this.sortColumn || undefined, // FIXME: gross
-            sortAscending: this.sortAscending,
+            sortDirection: this.sortDirection,
             ...pageReferenceFromState(event.detail)
         };
 
@@ -178,10 +179,10 @@ export default class TextPage extends LightningElement {
         });
     }
 
-    handleSort(event: CustomEvent<{ sortColumn: string, sortAscending: boolean }>) {
+    handleSort(event: CustomEvent<{ sortColumn: string, sortDirection: SortDirection }>) {
         let state: PageReferenceState = {
             sortColumn: event.detail.sortColumn,
-            sortAscending: event.detail.sortAscending,
+            sortDirection: event.detail.sortDirection,
             ...pageReferenceFromState(this.filterState)
         };
 

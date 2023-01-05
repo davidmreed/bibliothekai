@@ -5,7 +5,7 @@
                 <template if:true={allowsSelection}>
                     <th scope="col"></th>
                 </template>
-                <template for:each={columns} for:item="col">
+                <template for:each={enrichedColumns} for:item="col">
                     <th scope="col" key={col.columnId} data-col={col.columnId} onclick={handleColumnClick}>
                         {col.name}
                         <template if:true={col.isSortedAscending}><small class="ml-1">▲</small></template>

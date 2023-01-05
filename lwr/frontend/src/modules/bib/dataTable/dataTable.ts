@@ -96,27 +96,27 @@ class ValueEntry {
     }
 }
 
+export enum SortDirection {
+    Ascending = 'asc',
+    Descending = 'desc'
+};
+
 export default class DataTable extends LightningElement {
-    _columns: Column[] = [];
+    @api columns: Column[] = [];
     _records: DataTableRecord[] = [];
 
     @api records: DataTableRecord[] = [];
     @api sortColumn: string | null = null;
-    @api sortAscending: boolean = false;
+    @api sortDirection: SortDirection = SortDirection.Ascending;
     @api filters: ((r: DataTableRecord) => boolean)[] = [];
 
-    @api
-    get columns(): Column[] {
-        return this._columns || [];
-    }
-
-    set columns(value: Column[]) {
-        // TODO: this should be typed.
-        this._columns = [...value].map((c) => ({
+    get enrichedColumns() {
+        return [...this.columns].map((c) => ({
             ...c,
-            isSortedAscending: this.sortColumn === c.columnId && this.sortAscending,
-            isSortedDescending: this.sortColumn === c.columnId && !this.sortAscending
+            isSortedAscending: this.sortColumn === c.columnId && this.sortDirection === SortDirection.Ascending,
+            isSortedDescending: this.sortColumn === c.columnId && this.sortDirection !== SortDirection.Ascending
         }));
+
     }
 
     get recordsShown(): number {
@@ -138,7 +138,7 @@ export default class DataTable extends LightningElement {
             .map(
                 (r: DataTableRecord): DisplayedRecord => ({
                     id: r.id,
-                    entries: this.columns.map((c) => new ValueEntry(c, r))
+                    entries: this.enrichedColumns.map((c) => new ValueEntry(c, r))
                 })
             ).sort(
                 (a, b) => {
@@ -148,7 +148,7 @@ export default class DataTable extends LightningElement {
                         if (columnValueType === COLUMN_STRING_TYPE || columnValueType === COLUMN_YEAR_TYPE || columnValueType === COLUMN_HYPERLINK_TYPE) {
                             let aValue = a.entries.filter((v) => v.column.columnId === this.sortColumn)[0].value;
                             let bValue = b.entries.filter((v) => v.column.columnId === this.sortColumn)[0].value;
-                            let sortModifier = this.sortAscending ? 1 : -1;
+                            let sortModifier = this.sortDirection === SortDirection.Ascending ? 1 : -1;
 
                             if (columnValueType === COLUMN_HYPERLINK_TYPE) {
                                 // TODO: allow consumers to provide sort keys.
@@ -182,15 +182,17 @@ export default class DataTable extends LightningElement {
                 clickedColumn.valueType === COLUMN_HYPERLINK_TYPE ||
                 clickedColumn.valueType === COLUMN_YEAR_TYPE
             ) {
+                let sortState = {
+                    sortColumn: clickedColId,
+                    sortDirection:
+                        this.sortColumn === clickedColId
+                            ? (this.sortDirection === SortDirection.Ascending ? SortDirection.Descending : SortDirection.Ascending)
+                            : SortDirection.Ascending
+                };
+
                 this.dispatchEvent(
                     new CustomEvent('sort', {
-                        detail: {
-                            sortColumn: clickedColId,
-                            sortAscending:
-                                this.sortColumn === clickedColId
-                                    ? !this.sortAscending
-                                    : true
-                        }
+                        detail: sortState
                     })
                 );
             }

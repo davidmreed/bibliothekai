@@ -2,7 +2,7 @@
     <template if:true={loaded}>
         <bib-breadcrumbs crumbs={crumbs}></bib-breadcrumbs>
         <h1>{text.title}</h1>
-        <bib-translation-view text-id={text.id} sort-column={sortColumn} sort-ascending={sortAscending}
+        <bib-translation-view text-id={text.id} sort-column={sortColumn} sort-direction={sortDirection}
             filter-state={filterState} onsort={handleSort} onfilterchange={handleFilterChange}>
         </bib-translation-view>
     </template>

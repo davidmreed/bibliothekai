@@ -10,7 +10,8 @@ import {
     COLUMN_PILL_LIST_TYPE,
     COLUMN_YEAR_TYPE,
     DataTableRecord,
-    Pill
+    Pill,
+    SortDirection
 } from 'bib/dataTable';
 
 import { FilterState } from 'bib/textPage';
@@ -209,7 +210,7 @@ export default class TranslationView extends LightningElement {
 
     @api textId: string | null = null;
     @api sortColumn: string | null = null;
-    @api sortAscending: boolean = false;
+    @api sortDirection: SortDirection = SortDirection.Ascending;
     @api filterState: FilterState = {};
 
     get filters() {
@@ -281,11 +282,13 @@ export default class TranslationView extends LightningElement {
         this.parameters = { textId: this.textId };
     }
 
+    handleSort(event: CustomEvent<{ sortColumn: string, sortDirection: SortDirection }>) {
+        this.dispatchEvent(new CustomEvent('sort', { detail: { ...event.detail } }));
+    }
 
     handleFilterChange(event: MouseEvent) {
         if (event.currentTarget && event.currentTarget instanceof HTMLElement) {
             let newState: FilterState = { ...this.filterState };
-            console.log("In TranslationView#handleFilterChange")
 
             if (event.currentTarget.dataset.feature) {
                 // This is a feature checkbox. Its `data-feature` attribute stores the name
@@ -307,7 +310,6 @@ export default class TranslationView extends LightningElement {
                 // TODO: UI allows filtering for partials.
                 newState.filterComplete = event.currentTarget.value === 'Complete' ? true : undefined;
             }
-            console.log(`Posting new state: ${JSON.stringify(newState)}`);
             this.dispatchEvent(new CustomEvent('filterchange', { detail: newState }));
         }
     }
