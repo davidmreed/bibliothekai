@@ -2,8 +2,174 @@
     <template if:true={loaded}>
         <bib-breadcrumbs crumbs={crumbs}></bib-breadcrumbs>
         <h1>{text.title}</h1>
-        <bib-translation-view text-id={text.id} sort-column={sortColumn} sort-direction={sortDirection}
-            filter-state={filterState} onsort={handleSort} onfilterchange={handleFilterChange}>
-        </bib-translation-view>
+        <h2 class="mt-4">
+            Translations
+            <div
+                class="float-right btn-group btn-group-sm"
+                role="group"
+                aria-label="Translation actions"
+            >
+                <button
+                    class="btn btn-outline-secondary"
+                    onclick={handleToggleFilters}
+                >
+                    {filterTitle}
+                </button>
+                <a
+                    class="btn btn-outline-primary"
+                    onclick={handleNavigation}
+                    data-page-type="addVolume"
+                    href="/volumes/add"
+                >
+                    Add Translation
+                </a>
+                <template if:true={allowComparisons}>
+                    <a
+                        class="btn btn-outline-primary"
+                        href={translationCompareUrl}
+                    >
+                        Compare Translations
+                    </a>
+                </template>
+            </div>
+        </h2>
+
+        <template if:true={showingFilters}>
+            <small class="text-muted">
+                Select desired translation features to filter the list. Note
+                that not all translation features may be in the database.
+            </small>
+            <form novalidate>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <bib-switch
+                            label="Introduction"
+                            data-feature="filterIntroduction"
+                            onchange={handleFilterChange}
+                        ></bib-switch>
+                        <bib-switch
+                            label="Notes"
+                            data-feature="filterNotes"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                        <bib-switch
+                            label="Commentary"
+                            data-feature="filterCommentary"
+                            onchange={handleFilterChange}
+                        ></bib-switch>
+                        <bib-switch
+                            label="Glossary"
+                            data-feature="filterGlossary"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                        <bib-switch
+                            label="Index"
+                            data-feature="filterIndex"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <bib-switch
+                            label="Bibliography"
+                            data-feature="filterBibliography"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                        <bib-switch
+                            label="Maps"
+                            data-feature="filterMaps"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                        <bib-switch
+                            label="Sample Passage"
+                            data-feature="filterSamplePassage"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                        <bib-switch
+                            label="Facing Text"
+                            data-feature="filterFacingText"
+                            onchange={handleFilterChange}
+                        >
+                        </bib-switch>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="format">Format</label>
+                        <select
+                            class="form-control form-control-sm format-picklist"
+                            name="format"
+                            size="1"
+                            onchange={handleFilterChange}
+                            value={selectedFilterFormat}
+                        >
+                            <option value="">-- All formats --</option>
+                            <option value="VR">Verse</option>
+                            <option value="PR">Prose</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="language">Language</label>
+                        <select
+                            class="
+                                form-control form-control-sm
+                                language-picklist
+                            "
+                            name="language"
+                            size="1"
+                            onchange={handleFilterChange}
+                            value={selectedFilterLanguage}
+                        >
+                            <option value="">-- All languages --</option>
+                            <template
+                                for:each={availableLanguages}
+                                for:item="item"
+                            >
+                                <option key={item.id} value={item.id}>
+                                    {item.name}
+                                </option>
+                            </template>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="coverage">Coverage</label>
+                        <select
+                            class="
+                                form-control form-control-sm
+                                coverage-picklist
+                            "
+                            name="coverage"
+                            size="1"
+                            onchange={handleFilterChange}
+                            value={selectedFilterCoverage}
+                        >
+                            <option value="">-- All coverage --</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Partial">Partial</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </template>
+        <bib-data-table
+            columns={columns}
+            records={records}
+            filters={filters}
+            sort-column={sortColumn}
+            sort-direction={sortDirection}
+            onsort={handleSort}
+        >
+        </bib-data-table>
+        <small class="text-danger form-validity mb-2">{error}</small>
+    </template>
+    <template if:false={loaded}>
+        <div class="spinner-grow spinner-grow-sm mt-2" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
     </template>
 </template>

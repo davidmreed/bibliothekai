@@ -335,7 +335,7 @@ export type GetTextDetailsQueryVariables = Exact<{
 }>;
 
 
-export type GetTextDetailsQuery = { __typename?: 'Query', text: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, date: string, description: string, author: { __typename?: 'Person', id: string, fullName: string | null }, language: { __typename?: 'Language', name: string } } | null };
+export type GetTextDetailsQuery = { __typename?: 'Query', __type: { __typename?: '__Type', enumValues: Array<{ __typename?: '__EnumValue', name: string, description: string | null }> | null } | null, text: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, date: string, description: string, author: { __typename?: 'Person', id: string, fullName: string | null }, language: { __typename?: 'Language', name: string }, translations: Array<{ __typename?: 'VolumeResource', id: string, originalPublicationDate: any | null, format: TranslationsFeatureFormatChoices | null, partial: boolean, featureSamplePassage: boolean | null, featureAccompanyingNotes: boolean | null, featureAccompanyingCommentary: boolean | null, featureAccompanyingIntroduction: boolean | null, featureFacingText: boolean | null, language: { __typename?: 'Language', id: string, name: string }, volume: { __typename?: 'Volume', id: string, title: string, publishedDate: any, featureGlossary: boolean, featureBibliography: boolean, featureMaps: boolean, featureIndex: boolean, publisher: { __typename?: 'Publisher', name: string } }, persons: Array<{ __typename?: 'Person', id: string, fullName: string | null, sortName: string | null }> } | null> | null } | null };
 
 export type GetTranslationsQueryVariables = Exact<{
   textId: InputMaybe<Scalars['String']>;
