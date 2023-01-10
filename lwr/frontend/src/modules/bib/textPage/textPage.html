@@ -44,28 +44,33 @@
                     <div class="form-group col-md-6">
                         <bib-switch
                             label="Introduction"
+                            value={filterState.filterIntroduction}
                             data-feature="filterIntroduction"
                             onchange={handleFilterChange}
                         ></bib-switch>
                         <bib-switch
                             label="Notes"
+                            value={filterState.filterNotes}
                             data-feature="filterNotes"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
                         <bib-switch
                             label="Commentary"
+                            value={filterState.filterCommentary}
                             data-feature="filterCommentary"
                             onchange={handleFilterChange}
                         ></bib-switch>
                         <bib-switch
                             label="Glossary"
+                            value={filterState.filterGlossary}
                             data-feature="filterGlossary"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
                         <bib-switch
                             label="Index"
+                            value={filterState.filterIndex}
                             data-feature="filterIndex"
                             onchange={handleFilterChange}
                         >
@@ -74,46 +79,56 @@
                     <div class="form-group col-md-6">
                         <bib-switch
                             label="Bibliography"
+                            value={filterState.filterBibliography}
                             data-feature="filterBibliography"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
                         <bib-switch
                             label="Maps"
+                            value={filterState.filterMaps}
                             data-feature="filterMaps"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
                         <bib-switch
                             label="Sample Passage"
+                            value={filterState.filterSamplePassage}
                             data-feature="filterSamplePassage"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
                         <bib-switch
                             label="Facing Text"
+                            value={filterState.filterFacingText}
                             data-feature="filterFacingText"
                             onchange={handleFilterChange}
                         >
                         </bib-switch>
+                        <bib-switch
+                            label="Complete Translations Only"
+                            value={filterState.filterComplete}
+                            onchange={handleFilterChange}
+                            data-feature="filterComplete"
+                        ></bib-switch>
                     </div>
                 </div>
                 <div class="form-row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="format">Format</label>
                         <select
                             class="form-control form-control-sm format-picklist"
                             name="format"
                             size="1"
                             onchange={handleFilterChange}
-                            value={selectedFilterFormat}
+                            value={filterState.filterFormat}
                         >
                             <option value="">-- All formats --</option>
                             <option value="VR">Verse</option>
                             <option value="PR">Prose</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-6">
                         <label for="language">Language</label>
                         <select
                             class="
@@ -123,7 +138,7 @@
                             name="language"
                             size="1"
                             onchange={handleFilterChange}
-                            value={selectedFilterLanguage}
+                            value={filterState.filterLanguage}
                         >
                             <option value="">-- All languages --</option>
                             <template
@@ -134,23 +149,6 @@
                                     {item.name}
                                 </option>
                             </template>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="coverage">Coverage</label>
-                        <select
-                            class="
-                                form-control form-control-sm
-                                coverage-picklist
-                            "
-                            name="coverage"
-                            size="1"
-                            onchange={handleFilterChange}
-                            value={selectedFilterCoverage}
-                        >
-                            <option value="">-- All coverage --</option>
-                            <option value="Complete">Complete</option>
-                            <option value="Partial">Partial</option>
                         </select>
                     </div>
                 </div>

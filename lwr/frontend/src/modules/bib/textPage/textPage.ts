@@ -255,7 +255,8 @@ const FILTER_STATE_BOOLEAN_PROPS = [
     'filterBibliography',
     'filterMaps',
     'filterSamplePassage',
-    'filterFacingText'
+    'filterFacingText',
+    'filterComplete'
 ];
 
 function stateFromPageReference(pr: PageReference): FilterState {
@@ -443,7 +444,7 @@ export default class TextPage extends LightningElement {
     }
 
     get filterTitle(): string {
-        return this.showingFilters ? 'Clear Filters' : 'Show Filters';
+        return this.showingFilters ? 'Hide Filters' : 'Show Filters';
     }
 
     get availableLanguages(): Language[] {
@@ -494,10 +495,6 @@ export default class TextPage extends LightningElement {
                 } else {
                     delete newState.filterLanguage;
                 }
-            } else if (event.currentTarget.name === 'coverage') {
-                // TODO: UI allows filtering for partials.
-                newState.filterComplete =
-                    event.currentTarget.value === 'Complete' ? true : undefined;
             }
 
             let state: PageReferenceState = {
@@ -515,11 +512,5 @@ export default class TextPage extends LightningElement {
 
     handleToggleFilters() {
         this.showingFilters = !this.showingFilters;
-
-        if (!this.showingFilters) {
-            this.dispatchEvent(
-                new CustomEvent('filterchange', { detail: { state: {} } })
-            );
-        }
     }
 }
