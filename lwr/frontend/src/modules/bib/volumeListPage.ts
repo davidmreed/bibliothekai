@@ -1,13 +1,16 @@
-import { LightningElement, api, track, wire } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import {
     CurrentPageReference,
     generateUrl,
-    NavigationContext
+    NavigationContext,
+    ContextId,
+    PageReference
 } from 'lwr/navigation';
 import { graphQL } from 'bib/api';
+import { Breadcrumb } from 'bib/breadcrumbs';
 
-const VOLUME_LIST_QUERY = `
-volumes(personId: $personId) {
+const VOLUME_LIST_QUERY = /* GraphQL */ `
+volumes(filterType: $filterType, entityId: $entityId) {
     title
     publisher {
         id
@@ -32,39 +35,47 @@ volumes(personId: $personId) {
 `;
 
 export default class VolumeListPage extends LightningElement {
-    @wire(CurrentPageReference) pageReference;
-    @wire(NavigationContext) navContext;
-
     volumes;
-    crumbs;
     queryParameters;
 
-    // FIXME: the wire adapter doesn't catch returns that have the `errors` key w/a 200
+    @wire(CurrentPageReference)
+    setPageReference(pageReference: PageReference | null) {
+        this.pageReference = pageReference;
+
+        if (this.pageReference) {
+            // Parse GraphQL parameters out of our pageReference attributes.
+            this.queryParameters = {
+                textId: this.pageReference.attributes.textId
+            };
+        }
+    }
+    pageReference?: PageReference;
+    @wire(NavigationContext) navContext?: ContextId;
+
     @wire(graphQL, {
-        query: VOLUME_DETAILS_QUERY,
+        query: VOLUME_LIST_QUERY,
         variables: '$queryParameters'
     })
     provisionVolumes({ data, error }) {
         if (data && data.data) {
-            this.volumes = new Volume(data.data.volume, this.navContext);
-            this.updateBreadcrumbs();
         } else {
             alert(`Got an error: ${JSON.stringify(error)}`);
         }
     }
 
-    updateBreadcrumbs() {
-        this.crumbs = [
-            { pageReference: { type: 'home' }, title: 'Home' },
+    get crumbs(): Breadcrumb[] {
+        return [
+            {
+                pageReference: { type: 'home' },
+                title: 'Home',
+                currentPage: false
+            },
             {
                 pageReference: this.pageReference,
                 title: this.title,
                 currentPage: true
             }
-        ].map((p) => ({
-            url: generateUrl(this.navContext, p.pageReference),
-            ...p
-        }));
+        ];
     }
 
     connectedCallback() {
