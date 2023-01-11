@@ -23,7 +23,7 @@ import {
 } from 'bib/dataTable';
 
 const TEXT_DETAILS_QUERY = /* GraphQL */ `
-    query getTextDetails($textId: String) {
+    query getTextDetails($textId: String!) {
         __type(name: "TranslationsFeatureFormatChoices") {
             enumValues {
                 name

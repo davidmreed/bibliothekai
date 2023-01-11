@@ -1,43 +1,51 @@
 import { LightningElement, wire } from 'lwc';
 import {
     CurrentPageReference,
-    generateUrl,
     NavigationContext,
     ContextId,
     PageReference
 } from 'lwr/navigation';
 import { graphQL } from 'bib/api';
 import { Breadcrumb } from 'bib/breadcrumbs';
+import { GetVolumesByEntityQuery, GetVolumesByEntityQueryVariables } from 'src/gql';
 
 const VOLUME_LIST_QUERY = /* GraphQL */ `
-volumes(filterType: $filterType, entityId: $entityId) {
-    title
-    publisher {
-        id
-        name
-    }
-    series {
-        id
-        name
-    }
-    publishedDate
-    description
-    features {
-        feature
-        format
-        partial
-        persons {
+query getVolumesByEntity($entityType: String!, $entityId: String!) {
+    volumesBy(entityName: $entityType, entityId: $entityId) {
+        title
+        publisher {
             id
-            fullName
+            name
+        }
+        series {
+            id
+            name
+        }
+        publishedDate
+        description
+        features {
+            sourceText {
+                title
+            }
+            feature
+            format
+            partial
+            persons {
+                id
+                fullName
+            }
         }
     }
 }
 `;
+type Volume = GetVolumesByEntityQuery['volumesBy'][number];
 
 export default class VolumeListPage extends LightningElement {
-    volumes;
-    queryParameters;
+    volumes?: Volume[];
+    queryParameters?: GetVolumesByEntityQueryVariables; 
+    pageReference?: PageReference;
 
+    @wire(NavigationContext) navContext?: ContextId;
     @wire(CurrentPageReference)
     setPageReference(pageReference: PageReference | null) {
         this.pageReference = pageReference;
@@ -49,15 +57,20 @@ export default class VolumeListPage extends LightningElement {
             };
         }
     }
-    pageReference?: PageReference;
-    @wire(NavigationContext) navContext?: ContextId;
 
     @wire(graphQL, {
         query: VOLUME_LIST_QUERY,
         variables: '$queryParameters'
     })
-    provisionVolumes({ data, error }) {
-        if (data && data.data) {
+    provisionVolumes({
+        data,
+        error
+    }: {
+        data: GetVolumesByEntityQuery;
+        error: any;
+    }) {
+        if (data && data.volumesBy) {
+            this.volumes = data.volumesBy;
         } else {
             alert(`Got an error: ${JSON.stringify(error)}`);
         }
@@ -76,19 +89,5 @@ export default class VolumeListPage extends LightningElement {
                 currentPage: true
             }
         ];
-    }
-
-    connectedCallback() {
-        // Convert the parameters given in the pageReference
-        // into query options for the backend.
-        switch (this.pageReference.type) {
-            case 'authorPage':
-                this.queryParameters = this.pageReference.attributes;
-                break;
-            case 'seriesPage':
-                break;
-            case 'publisherPage':
-                break;
-        }
     }
 }

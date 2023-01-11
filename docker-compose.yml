@@ -6,7 +6,7 @@ services:
             dockerfile: Dockerfile.dev
         command: python manage.py runserver 0.0.0.0:9120
         volumes:
-            - ./:/app/web
+            - ./backend/:/home/app/web
         ports:
             - 9120:9120
         env_file:

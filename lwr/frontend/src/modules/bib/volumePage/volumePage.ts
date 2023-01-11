@@ -8,7 +8,7 @@ import { graphQL } from 'bib/api';
 import { Breadcrumb } from 'bib/breadcrumbs';
 
 const VOLUME_DETAILS_QUERY = /* GraphQL */ `
-    query getVolumeDetails($volumeId: String) {
+    query getVolumeDetails($volumeId: String!) {
         volume(id: $volumeId) {
             id
             title

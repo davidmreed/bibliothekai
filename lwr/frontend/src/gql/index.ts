@@ -16,27 +16,34 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  languages: Maybe<Array<Language>>;
-  persons: Maybe<Array<Person>>;
-  publishedReviews: Maybe<Array<PublishedReview>>;
-  publishers: Maybe<Array<Publisher>>;
-  reviews: Maybe<Array<Review>>;
-  series: Maybe<Array<Series>>;
+  languages: Array<Language>;
+  persons: Array<Person>;
+  publishedReviews: Array<PublishedReview>;
+  publishers: Array<Publisher>;
+  reviews: Array<Review>;
+  series: Array<Series>;
   text: Maybe<Text>;
-  texts: Maybe<Array<Text>>;
+  texts: Array<Text>;
   volume: Maybe<Volume>;
-  volumeResources: Maybe<Array<VolumeResource>>;
-  volumes: Maybe<Array<Volume>>;
+  volumeResources: Array<VolumeResource>;
+  volumes: Array<Volume>;
+  volumesBy: Array<Maybe<Volume>>;
 };
 
 
 export type QueryTextArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
 };
 
 
 export type QueryVolumeArgs = {
-  id?: InputMaybe<Scalars['String']>;
+  id: Scalars['String'];
+};
+
+
+export type QueryVolumesByArgs = {
+  entityId: Scalars['String'];
+  entityName: Scalars['String'];
 };
 
 export type Language = {
@@ -61,7 +68,7 @@ export type Text = {
   samplePassageSourceLink: Maybe<Scalars['String']>;
   samplePassageSpec: Scalars['String'];
   title: Scalars['String'];
-  translations: Maybe<Array<Maybe<VolumeResource>>>;
+  translations: Array<Maybe<VolumeResource>>;
 };
 
 export type Person = {
@@ -70,7 +77,7 @@ export type Person = {
   description: Scalars['String'];
   features: Array<VolumeResource>;
   firstName: Scalars['String'];
-  fullName: Maybe<Scalars['String']>;
+  fullName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
   middleName: Scalars['String'];
@@ -84,11 +91,11 @@ export type VolumeResource = {
   __typename?: 'VolumeResource';
   description: Scalars['String'];
   feature: TranslationsFeatureFeatureChoices;
-  featureAccompanyingCommentary: Maybe<Scalars['Boolean']>;
-  featureAccompanyingIntroduction: Maybe<Scalars['Boolean']>;
-  featureAccompanyingNotes: Maybe<Scalars['Boolean']>;
-  featureFacingText: Maybe<Scalars['Boolean']>;
-  featureSamplePassage: Maybe<Scalars['Boolean']>;
+  featureAccompanyingCommentary: Scalars['Boolean'];
+  featureAccompanyingIntroduction: Scalars['Boolean'];
+  featureAccompanyingNotes: Scalars['Boolean'];
+  featureFacingText: Scalars['Boolean'];
+  featureSamplePassage: Scalars['Boolean'];
   format: Maybe<TranslationsFeatureFormatChoices>;
   id: Scalars['ID'];
   language: Language;
@@ -328,25 +335,26 @@ export enum __TypeKind {
 export type GetTextsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTextsQuery = { __typename?: 'Query', texts: Array<{ __typename?: 'Text', id: string, title: string, author: { __typename?: 'Person', id: string, fullName: string | null } }> | null };
+export type GetTextsQuery = { __typename?: 'Query', texts: Array<{ __typename?: 'Text', id: string, title: string, author: { __typename?: 'Person', id: string, fullName: string } }> };
 
 export type GetTextDetailsQueryVariables = Exact<{
-  textId: InputMaybe<Scalars['String']>;
+  textId: Scalars['String'];
 }>;
 
 
-export type GetTextDetailsQuery = { __typename?: 'Query', __type: { __typename?: '__Type', enumValues: Array<{ __typename?: '__EnumValue', name: string, description: string | null }> | null } | null, text: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, date: string, description: string, author: { __typename?: 'Person', id: string, fullName: string | null }, language: { __typename?: 'Language', name: string }, translations: Array<{ __typename?: 'VolumeResource', id: string, originalPublicationDate: any | null, format: TranslationsFeatureFormatChoices | null, partial: boolean, featureSamplePassage: boolean | null, featureAccompanyingNotes: boolean | null, featureAccompanyingCommentary: boolean | null, featureAccompanyingIntroduction: boolean | null, featureFacingText: boolean | null, language: { __typename?: 'Language', id: string, name: string }, volume: { __typename?: 'Volume', id: string, title: string, publishedDate: any, featureGlossary: boolean, featureBibliography: boolean, featureMaps: boolean, featureIndex: boolean, publisher: { __typename?: 'Publisher', name: string } }, persons: Array<{ __typename?: 'Person', id: string, fullName: string | null, sortName: string | null }> } | null> | null } | null };
+export type GetTextDetailsQuery = { __typename?: 'Query', __type: { __typename?: '__Type', enumValues: Array<{ __typename?: '__EnumValue', name: string, description: string | null }> | null } | null, text: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, date: string, description: string, author: { __typename?: 'Person', id: string, fullName: string }, language: { __typename?: 'Language', name: string }, translations: Array<{ __typename?: 'VolumeResource', id: string, originalPublicationDate: any | null, format: TranslationsFeatureFormatChoices | null, partial: boolean, featureSamplePassage: boolean, featureAccompanyingNotes: boolean, featureAccompanyingCommentary: boolean, featureAccompanyingIntroduction: boolean, featureFacingText: boolean, language: { __typename?: 'Language', id: string, name: string }, volume: { __typename?: 'Volume', id: string, title: string, publishedDate: any, featureGlossary: boolean, featureBibliography: boolean, featureMaps: boolean, featureIndex: boolean, publisher: { __typename?: 'Publisher', name: string } }, persons: Array<{ __typename?: 'Person', id: string, fullName: string, sortName: string | null }> } | null> } | null };
 
-export type GetTranslationsQueryVariables = Exact<{
-  textId: InputMaybe<Scalars['String']>;
+export type GetVolumesByEntityQueryVariables = Exact<{
+  entityType: Scalars['String'];
+  entityId: Scalars['String'];
 }>;
 
 
-export type GetTranslationsQuery = { __typename?: 'Query', __type: { __typename?: '__Type', enumValues: Array<{ __typename?: '__EnumValue', name: string, description: string | null }> | null } | null, text: { __typename?: 'Text', translations: Array<{ __typename?: 'VolumeResource', id: string, originalPublicationDate: any | null, format: TranslationsFeatureFormatChoices | null, partial: boolean, featureSamplePassage: boolean | null, featureAccompanyingNotes: boolean | null, featureAccompanyingCommentary: boolean | null, featureAccompanyingIntroduction: boolean | null, featureFacingText: boolean | null, language: { __typename?: 'Language', id: string, name: string }, volume: { __typename?: 'Volume', id: string, title: string, publishedDate: any, featureGlossary: boolean, featureBibliography: boolean, featureMaps: boolean, featureIndex: boolean, publisher: { __typename?: 'Publisher', name: string } }, persons: Array<{ __typename?: 'Person', id: string, fullName: string | null, sortName: string | null }> } | null> | null } | null };
+export type GetVolumesByEntityQuery = { __typename?: 'Query', volumesBy: Array<{ __typename?: 'Volume', title: string, publishedDate: any, description: string, publisher: { __typename?: 'Publisher', id: string, name: string }, series: { __typename?: 'Series', id: string, name: string } | null, features: Array<{ __typename?: 'VolumeResource', feature: TranslationsFeatureFeatureChoices, format: TranslationsFeatureFormatChoices | null, partial: boolean, persons: Array<{ __typename?: 'Person', id: string, fullName: string }> }> } | null> };
 
 export type GetVolumeDetailsQueryVariables = Exact<{
-  volumeId: InputMaybe<Scalars['String']>;
+  volumeId: Scalars['String'];
 }>;
 
 
-export type GetVolumeDetailsQuery = { __typename?: 'Query', volume: { __typename?: 'Volume', id: string, title: string, description: string, isbn: string, featureGlossary: boolean, featureIndex: boolean, featureBibliography: boolean, featureMaps: boolean, publishedDate: any, publisher: { __typename?: 'Publisher', id: string, name: string }, series: { __typename?: 'Series', id: string, name: string } | null, features: Array<{ __typename?: 'VolumeResource', id: string, title: string, feature: TranslationsFeatureFeatureChoices, partial: boolean, format: TranslationsFeatureFormatChoices | null, featureFacingText: boolean | null, samplePassage: string, persons: Array<{ __typename?: 'Person', id: string, fullName: string | null }>, language: { __typename?: 'Language', id: string, name: string }, sourceText: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, author: { __typename?: 'Person', id: string, fullName: string | null }, language: { __typename?: 'Language', id: string, name: string } } | null }>, publishedReviews: Array<{ __typename?: 'PublishedReview', location: string, publishedDate: any | null, title: string, persons: Array<{ __typename?: 'Person', id: string, fullName: string | null }>, volumes: Array<{ __typename?: 'Volume', id: string, title: string, publishedDate: any }> }> } | null };
+export type GetVolumeDetailsQuery = { __typename?: 'Query', volume: { __typename?: 'Volume', id: string, title: string, description: string, isbn: string, featureGlossary: boolean, featureIndex: boolean, featureBibliography: boolean, featureMaps: boolean, publishedDate: any, publisher: { __typename?: 'Publisher', id: string, name: string }, series: { __typename?: 'Series', id: string, name: string } | null, features: Array<{ __typename?: 'VolumeResource', id: string, title: string, feature: TranslationsFeatureFeatureChoices, partial: boolean, format: TranslationsFeatureFormatChoices | null, featureFacingText: boolean, samplePassage: string, persons: Array<{ __typename?: 'Person', id: string, fullName: string }>, language: { __typename?: 'Language', id: string, name: string }, sourceText: { __typename?: 'Text', id: string, title: string, format: TranslationsSourceTextFormatChoices, author: { __typename?: 'Person', id: string, fullName: string }, language: { __typename?: 'Language', id: string, name: string } } | null }>, publishedReviews: Array<{ __typename?: 'PublishedReview', location: string, publishedDate: any | null, title: string, persons: Array<{ __typename?: 'Person', id: string, fullName: string }>, volumes: Array<{ __typename?: 'Volume', id: string, title: string, publishedDate: any }> }> } | null };

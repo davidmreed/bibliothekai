@@ -24,11 +24,11 @@ class VolumeResource(DjangoObjectType):
         model = models.Feature
         exclude_fields = ["has_facing_text"]
 
-    feature_accompanying_introduction = graphene.Boolean()
-    feature_accompanying_notes = graphene.Boolean()
-    feature_accompanying_commentary = graphene.Boolean()
-    feature_sample_passage = graphene.Boolean()
-    feature_facing_text = graphene.Boolean()
+    feature_accompanying_introduction = graphene.Boolean(required=True)
+    feature_accompanying_notes = graphene.Boolean(required=True)
+    feature_accompanying_commentary = graphene.Boolean(required=True)
+    feature_sample_passage = graphene.Boolean(required=True)
+    feature_facing_text = graphene.Boolean(required=True)
 
     def resolve_feature_accompanying_introduction(root, info, **kwargs):
         return root.has_accompanying_introduction()
@@ -65,7 +65,7 @@ class Person(FilteredDefaultQueryset, DjangoObjectType):
         model = models.Person
         exclude_fields = ["approved"]
 
-    full_name = graphene.String()
+    full_name = graphene.String(required=True)
 
     def resolve_full_name(root, info, **kwargs):
         return root.full_name()
@@ -108,7 +108,7 @@ class Text(FilteredDefaultQueryset, DjangoObjectType):
             "sample_passage_license_link",
         ]
 
-    translations = graphene.List(VolumeResource)
+    translations = graphene.List(VolumeResource, required=True)
 
     def resolve_translations(root, info, **kwargs):
         return filter_queryset_parent_approval(
@@ -150,18 +150,33 @@ class PublishedReview(FilteredDefaultQueryset, DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    volumes = DjangoListField(Volume)
-    volume_resources = DjangoListField(VolumeResource)
-    texts = DjangoListField(Text)
-    persons = DjangoListField(Person)
-    publishers = DjangoListField(Publisher)
-    series = DjangoListField(Series)
-    languages = DjangoListField(Language)
-    reviews = DjangoListField(Review)
-    published_reviews = DjangoListField(PublishedReview)
+    volumes = DjangoListField(Volume, required=True)
+    volume_resources = DjangoListField(VolumeResource, required=True)
+    texts = DjangoListField(Text, required=True)
+    persons = DjangoListField(Person, required=True)
+    publishers = DjangoListField(Publisher, required=True)
+    series = DjangoListField(Series, required=True)
+    languages = DjangoListField(Language, required=True)
+    reviews = DjangoListField(Review, required=True)
+    published_reviews = DjangoListField(PublishedReview, required=True)
 
-    text = graphene.Field(Text, id=graphene.String())
-    volume = graphene.Field(Volume, id=graphene.String())
+    text = graphene.Field(Text, id=graphene.String(required=True))
+    volume = graphene.Field(Volume, id=graphene.String(required=True))
+    volumes_by = graphene.List(Volume, required=True, entity_name=graphene.String(required=True), entity_id=graphene.String(required=True))
+
+    def resolve_volumes_by(root, info, entity_name: str, entity_id: str, **kwargs):
+        if entity_name == "Person":
+            return models.Volume.objects.filter(
+                features__persons__id=entity_id
+            )
+        elif entity_name == "Series":
+            return models.Volume.objects.filter(
+                series_id=entity_id
+            )
+        elif entity_name == "Publisher":
+            return models.Volume.objects.filter(publisher_id=entity_id)
+
+        return []
 
     def resolve_text(root, info, **kwargs):
         id = kwargs.get("id")

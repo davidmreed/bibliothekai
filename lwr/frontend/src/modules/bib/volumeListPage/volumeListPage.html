@@ -1,0 +1,20 @@
+<template>
+    <template for:each={volumes} for:item="volume">
+        <article>
+            <h2>{volume.title}<h2>
+            <p>
+                Published by {volume.publisher.name} in {volume.publishedDate}.
+            </p>
+            <p>
+                Includes translations of
+                <ol>
+                    <template for:each={volume.features} for:item="feature">
+                        <template if:true={feature.sourceText}>
+                            <li key={feature.id}></li>
+                        </template>
+                    </template>
+                </ol>
+            </p>
+        </article>
+    </template>
+</template>

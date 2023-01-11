@@ -11,14 +11,11 @@ RUN addgroup --system app && adduser --system app --ingroup app
 
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
-RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
-RUN chown -R app:app $APP_HOME
 USER app
 
-COPY backend $APP_HOME
-RUN python manage.py collectstatic
+#RUN python manage.py collectstatic
 EXPOSE 8000
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
 CMD gunicorn wsgi:application --bind 0.0.0.0:8000
