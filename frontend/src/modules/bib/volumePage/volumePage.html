@@ -4,7 +4,7 @@
         <h1>{volume.title}</h1>
         <template for:each={volumeElements} for:item="element">
             <div class="volumeElement" key={element.sourceText.id}>
-                <div class="card">
+                <article>
                     <h5 class="card-header">
                         {element.sourceText.author.fullName}:
                         {element.sourceText.title}
@@ -24,7 +24,7 @@
                             </template>
                         </p>
                     </div>
-                </div>
+                </article>
             </div>
         </template>
     </template>

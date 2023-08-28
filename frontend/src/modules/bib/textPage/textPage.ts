@@ -215,9 +215,8 @@ const columns: Column[] = [
             (r as EnrichedTranslation).featureNames.map(
                 (f: string): Pill => ({
                     name: f,
-                    className: `badge badge-pill badge-${
-                        PILLS[f] || ''
-                    } mr-1 mb-1`
+                    className: `badge badge-pill badge-${PILLS[f] || ''
+                        } mr-1 mb-1`
                 })
             )
     }
@@ -339,7 +338,7 @@ export default class TextPage extends LightningElement {
     text?: Text;
     queryParameters?: GetTextDetailsQueryVariables;
     loaded: boolean = false;
-    sortColumn?: string = 'volumeOriginalPublicationDate';
+    sortColumn: string = 'volumeOriginalPublicationDate';
     sortDirection: SortDirection = SortDirection.Descending;
     filterState: FilterState = {};
 
@@ -412,7 +411,7 @@ export default class TextPage extends LightningElement {
             {
                 pageReference: {
                     type: 'authorPage',
-                    attributes: { authorId: this.text?.author.id }
+                    attributes: { entityId: this.text?.author.id, entityType: 'person' }
                 },
                 title: this.text?.author.fullName || '',
                 currentPage: false

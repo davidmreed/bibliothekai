@@ -1,0 +1,22 @@
+<template>
+    <bib-breadcrumbs crumbs={crumbs}></bib-breadcrumbs>
+    <template lwc:if={isPerson}>
+        <bib-person-card id={queryParameters.entityId}></bib-person-card>
+    </template>
+    <template lwc:elseif={isSeries}>
+        <bib-series-card id={queryParameters.entityId}></bib-series-card>
+    </template>
+    <template lwc:elseif={isPublisher}>
+        <bib-publisher-card id={queryParameters.entityId}></bib-publisher-card>
+    </template>
+    <template if:true={loaded}>
+        <template for:each={volumes} for:item="volume">
+            <article key={volume.id}>
+                <h2>{volume.title}</h2>
+                <p>
+                    Published by {volume.publisher.name} in {volume.publishedDate}.
+                </p>
+            </article>
+        </template>
+    </template>
+</template>

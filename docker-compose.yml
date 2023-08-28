@@ -1,12 +1,18 @@
 version: '3.9'
 services:
-    web:
+    frontend:
         build:
-            context: .
-            dockerfile: Dockerfile.dev
+            context: frontend
+            dockerfile: Dockerfile
+            target: dev
+        volumes:
+            - ./frontend:/app
+    backend:
+        build:
+            context: backend
         command: python manage.py runserver 0.0.0.0:9120
         volumes:
-            - ./backend/:/home/app/web
+            - ./backend/:/app
         ports:
             - 9120:9120
         env_file:
@@ -25,6 +31,12 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
+    proxy:
+        build:
+            context: proxy
+        ports:
+            - 8080:80
+
 
 volumes:
     postgres_data:

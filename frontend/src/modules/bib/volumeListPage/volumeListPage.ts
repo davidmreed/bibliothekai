@@ -12,6 +12,7 @@ import { GetVolumesByEntityQuery, GetVolumesByEntityQueryVariables } from 'src/g
 const VOLUME_LIST_QUERY = /* GraphQL */ `
 query getVolumesByEntity($entityType: String!, $entityId: String!) {
     volumesBy(entityName: $entityType, entityId: $entityId) {
+        id
         title
         publisher {
             id
@@ -24,6 +25,7 @@ query getVolumesByEntity($entityType: String!, $entityId: String!) {
         publishedDate
         description
         features {
+            id
             sourceText {
                 title
             }
@@ -42,8 +44,9 @@ type Volume = GetVolumesByEntityQuery['volumesBy'][number];
 
 export default class VolumeListPage extends LightningElement {
     volumes?: Volume[];
-    queryParameters?: GetVolumesByEntityQueryVariables; 
+    queryParameters?: GetVolumesByEntityQueryVariables;
     pageReference?: PageReference;
+    loaded: boolean = false;
 
     @wire(NavigationContext) navContext?: ContextId;
     @wire(CurrentPageReference)
@@ -53,9 +56,22 @@ export default class VolumeListPage extends LightningElement {
         if (this.pageReference) {
             // Parse GraphQL parameters out of our pageReference attributes.
             this.queryParameters = {
-                textId: this.pageReference.attributes.textId
+                entityType: this.pageReference.attributes.entityType,
+                entityId: this.pageReference.attributes.entityId
             };
         }
+    }
+
+    get isPerson(): boolean {
+        return this.queryParameters?.entityType === 'person';
+    }
+
+    get isSeries(): boolean {
+        return this.queryParameters?.entityType === 'series';
+    }
+
+    get isPublisher(): boolean {
+        return this.queryParameters?.entityType === 'publisher';
     }
 
     @wire(graphQL, {
@@ -71,8 +87,10 @@ export default class VolumeListPage extends LightningElement {
     }) {
         if (data && data.volumesBy) {
             this.volumes = data.volumesBy;
+            this.loaded = true;
         } else {
             alert(`Got an error: ${JSON.stringify(error)}`);
+            this.loaded = false;
         }
     }
 

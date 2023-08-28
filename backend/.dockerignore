@@ -1,4 +1,4 @@
-node_modules
 venv
 translations/static
 .env
+__pycache__

@@ -1,5 +1,6 @@
 import logging
 
+from django.db.models import Q
 import graphene
 from graphene_django import DjangoListField, DjangoObjectType
 
@@ -40,7 +41,7 @@ class VolumeResource(DjangoObjectType):
         return root.has_accompanying_commentary()
 
     def resolve_feature_sample_passage(root, info, **kwargs):
-        return root.sample_passage and root.sample_passage != ""
+        return bool(root.sample_passage and root.sample_passage != "")
 
     def resolve_feature_facing_text(root, info, **kwargs):
         return root.has_facing_text
@@ -162,18 +163,22 @@ class Query(graphene.ObjectType):
 
     text = graphene.Field(Text, id=graphene.String(required=True))
     volume = graphene.Field(Volume, id=graphene.String(required=True))
-    volumes_by = graphene.List(Volume, required=True, entity_name=graphene.String(required=True), entity_id=graphene.String(required=True))
+    volumes_by = graphene.List(
+        Volume,
+        required=True,
+        entity_name=graphene.String(required=True),
+        entity_id=graphene.String(required=True),
+    )
 
     def resolve_volumes_by(root, info, entity_name: str, entity_id: str, **kwargs):
-        if entity_name == "Person":
+        if entity_name.lower() == "person":
             return models.Volume.objects.filter(
-                features__persons__id=entity_id
-            )
-        elif entity_name == "Series":
-            return models.Volume.objects.filter(
-                series_id=entity_id
-            )
-        elif entity_name == "Publisher":
+                Q(features__persons__id=entity_id)
+                | Q(features__source_text__author_id=entity_id)
+            ).distinct()
+        elif entity_name.lower() == "series":
+            return models.Volume.objects.filter(series_id=entity_id)
+        elif entity_name.lower() == "publisher":
             return models.Volume.objects.filter(publisher_id=entity_id)
 
         return []

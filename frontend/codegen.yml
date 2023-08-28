@@ -1,4 +1,4 @@
-schema: http://localhost:9120/api/graphql
+schema: http://backend:9120/api/graphql
 documents: ["src/**/*.ts", "!src/gql/**/*"]
 generates:
   ./src/gql/index.ts:
