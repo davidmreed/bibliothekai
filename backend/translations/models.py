@@ -236,8 +236,6 @@ class Volume(UserCreatedApprovalMixin):
     series = models.ForeignKey(
         Series, related_name="volumes", on_delete=models.PROTECT, null=True, blank=True
     )
-    isbn = models.CharField(max_length=32, blank=True)
-    oclc_number = models.CharField(max_length=32, blank=True)
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
 
@@ -320,6 +318,20 @@ class Volume(UserCreatedApprovalMixin):
             self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
         super().save(*args, **kwargs)
         self.update_automatic_links()
+
+
+class Edition(UserCreatedApprovalMixin):
+    EDITION_CHOICES = [("SC", "Softcover"), ("HC", "Hardcover"), ("EB", "Ebook"), ("ON", "Online Edition"), ("UK", "Unknown")]
+    
+    class Meta:
+        ordering = ["volume"]
+    
+    volume = models.ForeignKey(Volume, related_name="editions", on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, blank=True)
+    edition_type = models.CharField(max_length=2, choices=EDITION_CHOICES)
+    url = models.URLField(blank=True)
+    oclc_number = models.CharField(max_length=32, blank=True)
+    isbn = models.CharField(max_length=32, blank=True)
 
 
 class Feature(models.Model, AuthorNameMixin):

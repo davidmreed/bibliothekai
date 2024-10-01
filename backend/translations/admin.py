@@ -3,6 +3,7 @@ from django.contrib.contenttypes.admin import GenericTabularInline
 
 from .models import (
     AlternateName,
+    Edition,
     Feature,
     Language,
     Link,
@@ -29,6 +30,9 @@ class AlternateNameInline(GenericTabularInline):
     model = AlternateName
     extra = 1
 
+class EditionInline(admin.TabularInline):
+    model = Edition
+    extra = 0
 
 class FeatureInline(admin.TabularInline):
     model = Feature
@@ -72,7 +76,7 @@ class FeatureAdmin(admin.ModelAdmin):
 
 @admin.register(Volume)
 class VolumeAdmin(admin.ModelAdmin):
-    inlines = [FeatureInline, LinkInline]
+    inlines = [FeatureInline, EditionInline, LinkInline]
     list_filter = ["approved", "publisher", "series"]
 
 
