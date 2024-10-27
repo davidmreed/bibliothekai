@@ -7,17 +7,16 @@ import django.db.models.deletion
 
 def migrate_to_editions(apps, schema_editor):
     Volume = apps.get_model("translations", "Volume")
-    Edition = apps.get_model("translations", "Edition")
+    Book = apps.get_model("translations", "Book")
     for v in Volume.objects.all():
-        if v.isbn or v.oclc_number:
-            e = Edition.objects.create(
-                volume=v,
-                isbn=v.isbn,
-                oclc_number=v.oclc_number,
-                edition_type="UK" # TODO
+            b = Book.objects.create(
+                pk=v.pk,
             )
-            e.save()
+            b.save()
 
+            v.book = b
+            v.edition_type = "UK"
+            v.save()
 
 
 class Migration(migrations.Migration):
@@ -26,35 +25,30 @@ class Migration(migrations.Migration):
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('translations', '0050_auto_20210612_1853'),
     ]
-
     operations = [
+        migrations.AddField(
+            model_name='volume',
+            name='edition_type',
+            field=models.CharField(choices=[('SC', 'Softcover'), ('HC', 'Hardcover'), ('EB', 'Ebook'), ('ON', 'Online Edition'), ('UK', 'Unknown')], default='UK', max_length=2),
+        ),
         migrations.CreateModel(
-            name='Edition',
+            name='Book',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('date_created', models.DateTimeField(auto_now_add=True)),
                 ('approved', models.BooleanField(default=False)),
-                ('title', models.CharField(blank=True, max_length=255)),
-                ('edition_type', models.CharField(choices=[('SC', 'Softcover'), ('HC', 'Hardcover'), ('EB', 'Ebook'), ('ON', 'Online Edition'), ('SN', 'Scan'), ('UK', 'Unknown')], max_length=2)),
-                ('url', models.URLField(blank=True)),
-                ('oclc_number', models.CharField(blank=True, max_length=32)),
-                ('isbn', models.CharField(blank=True, max_length=32)),
                 ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, to=settings.AUTH_USER_MODEL)),
-                ('volume', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='editions', to='translations.volume')),
             ],
             options={
-                'ordering': ['volume'],
+                'abstract': False,
             },
         ),
+        migrations.AddField(
+            model_name='volume',
+            name='book',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='editions', to='translations.book'),
+        ),
         migrations.RunPython(migrate_to_editions, migrations.RunPython.noop),
-        migrations.RemoveField(
-            model_name='volume',
-            name='isbn',
-        ),
-        migrations.RemoveField(
-            model_name='volume',
-            name='oclc_number',
-        ),
         migrations.AlterField(
             model_name='alternatename',
             name='id',

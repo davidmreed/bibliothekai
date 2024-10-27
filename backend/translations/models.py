@@ -224,10 +224,16 @@ class Series(UserCreatedApprovalMixin):
         return self.name
 
 
+class Book(UserCreatedApprovalMixin):
+    pass
+
 class Volume(UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
 
+    EDITION_CHOICES = [("SC", "Softcover"), ("HC", "Hardcover"), ("EB", "Ebook"), ("ON", "Online Edition"), ("UK", "Unknown")]
+
+    #book = models.ForeignKey(Book, related_name="editions", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     published_date = models.DateField(blank=True)
     publisher = models.ForeignKey(
@@ -238,6 +244,10 @@ class Volume(UserCreatedApprovalMixin):
     )
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
+
+    #edition_type = models.CharField(max_length=2, choices=EDITION_CHOICES, default="UK")
+    oclc_number = models.CharField(max_length=32, blank=True)
+    isbn = models.CharField(max_length=32, blank=True)
 
     # Additional features
 
@@ -320,18 +330,7 @@ class Volume(UserCreatedApprovalMixin):
         self.update_automatic_links()
 
 
-class Edition(UserCreatedApprovalMixin):
-    EDITION_CHOICES = [("SC", "Softcover"), ("HC", "Hardcover"), ("EB", "Ebook"), ("ON", "Online Edition"), ("UK", "Unknown")]
-    
-    class Meta:
-        ordering = ["volume"]
-    
-    volume = models.ForeignKey(Volume, related_name="editions", on_delete=models.CASCADE)
-    title = models.CharField(max_length=255, blank=True)
-    edition_type = models.CharField(max_length=2, choices=EDITION_CHOICES)
-    url = models.URLField(blank=True)
-    oclc_number = models.CharField(max_length=32, blank=True)
-    isbn = models.CharField(max_length=32, blank=True)
+
 
 
 class Feature(models.Model, AuthorNameMixin):
