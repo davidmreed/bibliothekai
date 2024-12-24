@@ -250,7 +250,10 @@ class Volume(UserCreatedApprovalMixin):
 
     @property
     def published_date(self):
-        return self.releases.order_by("published_date").first().published_date
+        first_release = self.releases.order_by("published_date").first()
+
+        if first_release:
+            return first_release.published_date
 
     def __str__(self):
         if self.published_date:

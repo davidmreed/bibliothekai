@@ -26,13 +26,13 @@
         {% endif %}
         {% for release in volume.releases.all %}
         {% if release.release_type %}
-        {% pill "Type" release.release_type %}
+        {% pill "Type" release.get_release_type_display %}
         {% endif %}
         {% if release.published_date %}
         {% pill "Date" release.published_date.year %}
         {% endif %}
         {% if release.isbn %}
-        {% pill "ISBN" volume.isbn %}
+        {% pill "ISBN" release.isbn %}
         {% endif %}
         {% endfor %}
     </div>

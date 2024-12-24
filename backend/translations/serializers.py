@@ -231,6 +231,7 @@ class FeatureSerializer(serializers.ModelSerializer):
             "has_facing_text",
             "sample_passage",
             "original_publication_date",
+            "order_key"
         ]
 
 

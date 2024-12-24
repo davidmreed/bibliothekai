@@ -185,15 +185,15 @@ published_date: this.published_date,
                 await createRecord('links', link);
             }
 
-            // TODO: persist order key
             // TODO: complete with other volumes
-            await Promise.all(
-                this.features
+            let index = 0;
+            let featureJson = this.features
                     .concat([this.generalFeatures])
                     .map((f) => f.getFeatures(result.id))
                     .reduce((acc, val) => acc.concat(val), [])
-                    .map((f, i) => { return { 'order_key': i, ...f }; })
-                    .map((f) => createRecord('features', f))
+                    .map((f) => { if (f.feature === 'Translation') { f.order_key = index++; } return f; });
+            await Promise.all(
+                    featureJson.map((f) => createRecord('features', f))
             );
             window.location.href = getRecordUiUrl('volumes', result.id);
         } catch (error) {
