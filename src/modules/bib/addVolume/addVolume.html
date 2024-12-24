@@ -14,7 +14,7 @@
             </h2>
             <template if:true={detailsExpanded}>
                 <small class="form-text text-muted mb-2">
-                    Enter details about this volume. A title, published date,
+                    Enter details about this volume. A title, type, published date,
                     and publisher are required.
                 </small>
 
@@ -85,6 +85,22 @@
                                 </div>
                             </div>
                             <div class="form-row">
+                                <div class="col">
+                                    <label for="type">Type</label>
+                                <select
+                                    class="form-control format-picklist"
+                                    data-name="release_type"
+                                    size="1"
+                                    onchange={handleChange}
+                                    value={release_type}
+                                >
+                                    <option value="UK">Unknown</option>
+                                    <option value="SC">Softcover</option>
+                                    <option value="HC">Hardcover</option>
+                                    <option value="EB">Ebook</option>
+                                    <option value="ON">Online Edition</option>
+                                </select>
+                                </div>
                                 <div class="col">
                                     <label for="date">Publication Date</label>
                                     <input

@@ -223,31 +223,23 @@ class Series(UserCreatedApprovalMixin):
     def __str__(self):
         return self.name
 
-
-class Book(UserCreatedApprovalMixin):
+class MultiVolumeSet(UserCreatedApprovalMixin):
     pass
 
 class Volume(UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
-
-    EDITION_CHOICES = [("SC", "Softcover"), ("HC", "Hardcover"), ("EB", "Ebook"), ("ON", "Online Edition"), ("UK", "Unknown")]
-
-    #book = models.ForeignKey(Book, related_name="editions", on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    published_date = models.DateField(blank=True)
     publisher = models.ForeignKey(
         Publisher, related_name="volumes", on_delete=models.PROTECT
     )
     series = models.ForeignKey(
         Series, related_name="volumes", on_delete=models.PROTECT, null=True, blank=True
     )
+    volume_set = models.ForeignKey(MultiVolumeSet, related_name="included_volumes", on_delete=models.PROTECT, null=True, blank=True)
+    set_index = models.IntegerField(null=True, blank=True)
     links = GenericRelation(Link)
     description = models.TextField(blank=True)
-
-    #edition_type = models.CharField(max_length=2, choices=EDITION_CHOICES, default="UK")
-    oclc_number = models.CharField(max_length=32, blank=True)
-    isbn = models.CharField(max_length=32, blank=True)
 
     # Additional features
 
@@ -255,6 +247,10 @@ class Volume(UserCreatedApprovalMixin):
     feature_index = models.BooleanField(default=False)
     feature_bibliography = models.BooleanField(default=False)
     feature_glossary = models.BooleanField(default=False)
+
+    @property
+    def published_date(self):
+        return self.releases.order_by("published_date").first().published_date
 
     def __str__(self):
         if self.published_date:
@@ -270,6 +266,27 @@ class Volume(UserCreatedApprovalMixin):
 
     def get_absolute_url(self):
         return reverse("volume_detail", args=[str(self.id)])
+
+
+
+class VolumeRelease(UserCreatedApprovalMixin):
+    EDITION_CHOICES = [("SC", "Softcover"), ("HC", "Hardcover"), ("EB", "Ebook"), ("ON", "Online Edition"), ("UK", "Unknown")]
+    release_type = models.CharField(max_length=2, choices=EDITION_CHOICES, default="UK")
+    oclc_number = models.CharField(max_length=32, blank=True)
+    isbn = models.CharField(max_length=32, blank=True)
+    published_date = models.DateField(blank=True)
+
+    links = GenericRelation(Link)
+    volume = models.ForeignKey(
+        Volume, related_name="releases", on_delete=models.CASCADE
+    )
+    def save(self, *args, **kwargs):
+        if self.isbn:
+            self.isbn = "".join(c for c in self.isbn if c.isdigit())
+        if self.oclc_number:
+            self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
+        super().save(*args, **kwargs)
+        self.update_automatic_links()
 
     def oclc_link(self):
         if self.oclc_number:
@@ -321,17 +338,6 @@ class Volume(UserCreatedApprovalMixin):
             )
             bookshop.save()
 
-    def save(self, *args, **kwargs):
-        if self.isbn:
-            self.isbn = "".join(c for c in self.isbn if c.isdigit())
-        if self.oclc_number:
-            self.oclc_number = "".join(c for c in self.oclc_number if c.isdigit())
-        super().save(*args, **kwargs)
-        self.update_automatic_links()
-
-
-
-
 
 class Feature(models.Model, AuthorNameMixin):
     class Meta:
@@ -372,21 +378,12 @@ class Feature(models.Model, AuthorNameMixin):
     title = models.CharField(max_length=255, blank=True)
     format = models.TextField(choices=FORMAT_CHOICES, blank=True)
     partial = models.BooleanField()
+    complete_with_other_volumes = models.BooleanField(default=False)
     description = models.TextField(blank=True)
     has_facing_text = models.BooleanField()
     sample_passage = models.TextField(blank=True)
     original_publication_date = models.DateField(blank=True, null=True)
-    # order_key = models.IntegerField()
-
-    def save(self, *args, **kwargs):
-        if (
-            self.feature == "TR"
-            and not self.original_publication_date
-            and self.volume.published_date
-        ):
-            self.original_publication_date = self.volume.published_date
-
-        super().save(*args, **kwargs)
+    order_key = models.IntegerField(blank=True, null=True)
 
     def display_title(self):
         if self.title:

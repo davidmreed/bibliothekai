@@ -10,13 +10,17 @@ python-deps:
 deps: python-deps node-deps
 
 frontend: node-deps
-    npm run build && cp -R dist/* backend/translations/static
+    npm run build
+    cp -R dist/* backend/translations/static
 
 rundb:
-    docker-compose up -d
+    docker compose up -d
 
 migrate:
     cd backend && python manage.py migrate
+
+makemigrations:
+    cd backend && python manage.py makemigrations
 
 runserver:
     cd backend && python manage.py runserver 0.0.0.0:$PORT

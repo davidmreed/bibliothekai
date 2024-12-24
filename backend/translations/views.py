@@ -25,6 +25,7 @@ from .models import (
     SourceText,
     UserSubmission,
     Volume,
+    VolumeRelease,
 )
 from .permissions import (
     ApprovalFilteredQuerysetMixin,
@@ -47,6 +48,7 @@ from .serializers import (
     SeriesSerializer,
     SourceTextSerializer,
     VolumeSerializer,
+    VolumeReleaseSerializer,
 )
 
 
@@ -360,7 +362,7 @@ class SearchView(generic.TemplateView):
 
         volume_vector = (
             SearchVector("title", weight="A")
-            + SearchVector("isbn", weight="A")
+            + SearchVector("volume_releases__isbn", weight="A")
             + SearchVector("series__name", weight="B")
             + SearchVector("publisher__name", weight="B")
             + SearchVector("description", weight="B")
@@ -471,6 +473,14 @@ class VolumeViewSet(
     ]
     queryset = Volume.objects.none()  # Required for DjangoModelPermissions
 
+class VolumeReleaseViewSet(
+    ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet
+):
+    serializer_class = VolumeReleaseSerializer
+    permission_classes = [
+        IsAuthenticatedCreateOrReadOnly | DjangoModelPermissionsOrAnonReadOnly
+    ]
+    queryset = VolumeRelease.objects.none()  # Required for DjangoModelPermissions
 
 class PublisherViewSet(
     ApprovalFilteredQuerysetMixin, AutofillUserFieldMixin, viewsets.ModelViewSet

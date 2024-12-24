@@ -19,20 +19,23 @@
     <div class="col-sm-2">
         <h5>Catalog Details</h5>
     </div>
-    {% for edition in volume.editions.all %}
     <div class="col">
-        {% pill "Publisher" edition.publisher "publisher_detail" edition.publisher.id %}
-        {% if edition.published_date %}
-        {% pill "Date" edition.published_date.year %}
+        {% pill "Publisher" volume.publisher "publisher_detail" volume.publisher.id %}
+        {% if volume.series %}
+        {% pill "Series" volume.series "series_detail" volume.series.id %}
         {% endif %}
-        {% if edition.series %}
-        {% pill "Series" edition.series "series_detail" edition.series.id %}
+        {% for release in volume.releases.all %}
+        {% if release.release_type %}
+        {% pill "Type" release.release_type %}
         {% endif %}
-        {% if edition.isbn %}
+        {% if release.published_date %}
+        {% pill "Date" release.published_date.year %}
+        {% endif %}
+        {% if release.isbn %}
         {% pill "ISBN" volume.isbn %}
         {% endif %}
+        {% endfor %}
     </div>
-    {% endfor %}
 </div>
 <hr>
 

@@ -27,7 +27,7 @@ USER app
 COPY --from=node-build /app/dist ${APP_HOME}/translations/static
 
 COPY backend $APP_HOME
-RUN python manage.py collectstatic
+RUN python backend/manage.py collectstatic
 EXPOSE 8000
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
 CMD gunicorn wsgi:application --bind 0.0.0.0:$PORT
