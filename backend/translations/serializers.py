@@ -15,6 +15,7 @@ from translations.models import (
     Series,
     SourceText,
     Volume,
+    VolumeRelease
 )
 
 
@@ -230,6 +231,7 @@ class FeatureSerializer(serializers.ModelSerializer):
             "has_facing_text",
             "sample_passage",
             "original_publication_date",
+            "order_key"
         ]
 
 
@@ -252,11 +254,8 @@ class VolumeSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
-            "published_date",
             "publisher",
             "series",
-            "isbn",
-            "oclc_number",
             "description",
             "features",
             "links",
@@ -266,6 +265,20 @@ class VolumeSerializer(serializers.ModelSerializer):
             "feature_glossary",
         ]
 
+class VolumeReleaseSerializer(serializers.ModelSerializer):
+    volume = serializers.HyperlinkedRelatedField(
+        queryset=Volume.objects.all(), view_name="volume-detail"
+    )
+    class Meta:
+        model = VolumeRelease
+        fields = [
+                "id",
+                "volume",
+                "published_date",
+                "isbn",
+                "oclc_number",
+                "release_type"
+        ]
 
 class ReviewSerializer(serializers.ModelSerializer):
     closeness_rating = ChoiceField(choices=Rating.choices)

@@ -15,6 +15,7 @@ export default class AddVolume extends LightningElement {
     series = '';
     isbn = '';
     oclc_number = '';
+    release_type = 'UK';
     description = '';
     primaryLanguage = '';
     link = '';
@@ -68,6 +69,14 @@ export default class AddVolume extends LightningElement {
         await getRecordsFromApi('texts');
     }
 
+    async renderedCallback() {
+        if (this.detailsExpanded) {
+            // LWC does not correctly bind select elements
+            this.template.querySelector(
+                '.format-picklist'
+            ).value = this.release_type;
+        }
+    }
     // Change Handlers
     // ---------------
 
@@ -137,7 +146,6 @@ export default class AddVolume extends LightningElement {
 
         let record = {
             title: this.title,
-            published_date: this.published_date,
             publisher: getRecordApiUrl('publishers', this.publisher),
             feature_bibliography: this.feature_bibliography,
             feature_index: this.feature_index,
@@ -147,7 +155,7 @@ export default class AddVolume extends LightningElement {
         if (this.series) {
             record.series = getRecordApiUrl('series', this.series);
         }
-        for (let prop of ['isbn', 'oclc_number', 'description']) {
+        for (let prop of ['description']) {
             if (this[prop]) {
                 record[prop] = this[prop];
             }
@@ -155,7 +163,18 @@ export default class AddVolume extends LightningElement {
 
         try {
             let result = await createRecord('volumes', record);
+            let release = {
+published_date: this.published_date,
+  release_type: this.release_type,
+                volume: getRecordApiUrl('volumes', result['id'])
 
+            };
+        for (let prop of ['isbn', 'oclc_number']) {
+            if (this[prop]) {
+                release[prop] = this[prop];
+            }
+        }
+            let releaseResult = await createRecord('volume-releases', release);
             if (this.link) {
                 let link = {
                     content_object: getRecordApiUrl('volumes', result.id),
@@ -166,12 +185,15 @@ export default class AddVolume extends LightningElement {
                 await createRecord('links', link);
             }
 
-            await Promise.all(
-                this.features
+            // TODO: complete with other volumes
+            let index = 0;
+            let featureJson = this.features
                     .concat([this.generalFeatures])
                     .map((f) => f.getFeatures(result.id))
                     .reduce((acc, val) => acc.concat(val), [])
-                    .map((f) => createRecord('features', f))
+                    .map((f) => { if (f.feature === 'Translation') { f.order_key = index++; } return f; });
+            await Promise.all(
+                    featureJson.map((f) => createRecord('features', f))
             );
             window.location.href = getRecordUiUrl('volumes', result.id);
         } catch (error) {
@@ -179,6 +201,10 @@ export default class AddVolume extends LightningElement {
             this.template.querySelector('.status').classList.add('d-none');
         }
     }
+
+    // TODO:
+    // Adding multivolume sets
+    // Multiple releases
 
     // Section Visibility
     // ------------------

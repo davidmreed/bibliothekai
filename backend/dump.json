@@ -1,0 +1,484 @@
+[
+    {
+        "model": "translations.language",
+        "pk": 1,
+        "fields": {
+            "name": "Ancient Greek"
+        }
+    },
+    {
+        "model": "translations.language",
+        "pk": 10,
+        "fields": {
+            "name": "Latin"
+        }
+    },
+    {
+        "model": "translations.language",
+        "pk": 11,
+        "fields": {
+            "name": "English"
+        }
+    },
+    {
+        "model": "translations.language",
+        "pk": 12,
+        "fields": {
+            "name": "Spanish"
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 1,
+        "fields": {
+            "user": null,
+            "date_created": "2022-03-16T21:35:17.661Z",
+            "approved": true,
+            "first_name": "",
+            "middle_name": "",
+            "last_name": "",
+            "sole_name": "Plato",
+            "sort_name": "Plato",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 829,
+        "fields": {
+            "user": null,
+            "date_created": "2022-12-22T02:54:48.482Z",
+            "approved": true,
+            "first_name": "",
+            "middle_name": "",
+            "last_name": "",
+            "sole_name": "Homer",
+            "sort_name": "Homer",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 830,
+        "fields": {
+            "user": null,
+            "date_created": "2022-12-22T03:21:08.245Z",
+            "approved": true,
+            "first_name": "Jim",
+            "middle_name": "",
+            "last_name": "Translator",
+            "sole_name": "",
+            "sort_name": "Translator, Jim",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 831,
+        "fields": {
+            "user": null,
+            "date_created": "2022-12-22T03:21:13.833Z",
+            "approved": true,
+            "first_name": "Sally",
+            "middle_name": "",
+            "last_name": "Student",
+            "sole_name": "",
+            "sort_name": "Student, Sally",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 832,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:22:38.120Z",
+            "approved": true,
+            "first_name": "Joe",
+            "middle_name": "",
+            "last_name": "Reviewer",
+            "sole_name": "",
+            "sort_name": "Reviewer, Joe",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 833,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:23:45.554Z",
+            "approved": true,
+            "first_name": "Anna",
+            "middle_name": "",
+            "last_name": "Classicist",
+            "sole_name": "",
+            "sort_name": "Classicist, Anna",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.person",
+        "pk": 834,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:24:54.602Z",
+            "approved": true,
+            "first_name": "Carlotta",
+            "middle_name": "",
+            "last_name": "de los Libros",
+            "sole_name": "",
+            "sort_name": "de los Libros, Carlotta",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.sourcetext",
+        "pk": 1,
+        "fields": {
+            "user": null,
+            "date_created": "2022-03-16T21:35:33.399Z",
+            "approved": true,
+            "title": "Republic",
+            "author": 1,
+            "language": 1,
+            "format": "PR",
+            "date": "4th cent. BCE",
+            "description": "",
+            "sample_passage": "",
+            "sample_passage_spec": "",
+            "sample_passage_source": "",
+            "sample_passage_source_link": null,
+            "sample_passage_license": "",
+            "sample_passage_license_link": null,
+            "coverage": "",
+            "coverage_date": null
+        }
+    },
+    {
+        "model": "translations.sourcetext",
+        "pk": 326,
+        "fields": {
+            "user": null,
+            "date_created": "2022-12-22T07:39:26.239Z",
+            "approved": true,
+            "title": "Iliad",
+            "author": 829,
+            "language": 1,
+            "format": "VR",
+            "date": "",
+            "description": "",
+            "sample_passage": "",
+            "sample_passage_spec": "",
+            "sample_passage_source": "",
+            "sample_passage_source_link": null,
+            "sample_passage_license": "",
+            "sample_passage_license_link": null,
+            "coverage": "",
+            "coverage_date": null
+        }
+    },
+    {
+        "model": "translations.publisher",
+        "pk": 119,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:20:43.850Z",
+            "approved": true,
+            "name": "Big University Press",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.publisher",
+        "pk": 120,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:23:06.584Z",
+            "approved": true,
+            "name": "Pnyx Press",
+            "description": ""
+        }
+    },
+    {
+        "model": "translations.series",
+        "pk": 36,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:21:24.997Z",
+            "approved": true,
+            "name": "Archives in Classical Thought"
+        }
+    },
+    {
+        "model": "translations.volume",
+        "pk": 641,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:22:06.688Z",
+            "approved": true,
+            "title": "The Iliad of Homer",
+            "published_date": "1990-01-01",
+            "publisher": 119,
+            "series": 36,
+            "isbn": "",
+            "oclc_number": "",
+            "description": "This is a great translation",
+            "feature_maps": true,
+            "feature_index": true,
+            "feature_bibliography": false,
+            "feature_glossary": false
+        }
+    },
+    {
+        "model": "translations.volume",
+        "pk": 642,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:23:50.285Z",
+            "approved": true,
+            "title": "The Iliad",
+            "published_date": "2006-01-01",
+            "publisher": 120,
+            "series": null,
+            "isbn": "",
+            "oclc_number": "",
+            "description": "",
+            "feature_maps": false,
+            "feature_index": false,
+            "feature_bibliography": false,
+            "feature_glossary": false
+        }
+    },
+    {
+        "model": "translations.volume",
+        "pk": 643,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:25:16.550Z",
+            "approved": true,
+            "title": "The Republic of Plato",
+            "published_date": "2000-01-01",
+            "publisher": 119,
+            "series": 36,
+            "isbn": "",
+            "oclc_number": "",
+            "description": "",
+            "feature_maps": true,
+            "feature_index": true,
+            "feature_bibliography": true,
+            "feature_glossary": true
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2246,
+        "fields": {
+            "volume": 641,
+            "source_text": 326,
+            "feature": "TR",
+            "language": 11,
+            "title": "",
+            "format": "VR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": "1979-09-19",
+            "persons": [
+                830
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2247,
+        "fields": {
+            "volume": 641,
+            "source_text": 326,
+            "feature": "IN",
+            "language": 11,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": null,
+            "persons": [
+                830
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2248,
+        "fields": {
+            "volume": 641,
+            "source_text": 326,
+            "feature": "NT",
+            "language": 11,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": null,
+            "persons": [
+                830
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2249,
+        "fields": {
+            "volume": 641,
+            "source_text": 326,
+            "feature": "CM",
+            "language": 11,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": null,
+            "persons": [
+                831
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2250,
+        "fields": {
+            "volume": 642,
+            "source_text": 326,
+            "feature": "TR",
+            "language": 11,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": "2006-01-01",
+            "persons": [
+                833
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2251,
+        "fields": {
+            "volume": 642,
+            "source_text": 326,
+            "feature": "IN",
+            "language": 11,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": null,
+            "persons": [
+                833
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2252,
+        "fields": {
+            "volume": 643,
+            "source_text": null,
+            "feature": "ED",
+            "language": 12,
+            "title": "",
+            "format": "PR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": null,
+            "persons": [
+                830
+            ]
+        }
+    },
+    {
+        "model": "translations.feature",
+        "pk": 2253,
+        "fields": {
+            "volume": 643,
+            "source_text": 1,
+            "feature": "TR",
+            "language": 12,
+            "title": "",
+            "format": "VR",
+            "partial": false,
+            "description": "",
+            "has_facing_text": false,
+            "sample_passage": "",
+            "original_publication_date": "2000-01-01",
+            "persons": [
+                834
+            ]
+        }
+    },
+    {
+        "model": "translations.review",
+        "pk": 2,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:25:59.924Z",
+            "title": "I like this one!",
+            "closeness_rating": 3,
+            "readability_rating": 2,
+            "recommended": true,
+            "content": "This is a great work.",
+            "volume": 643
+        }
+    },
+    {
+        "model": "translations.publishedreview",
+        "pk": 103,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:22:41.839Z",
+            "approved": true,
+            "title": "Review: Reading Homer in 2022",
+            "location": "BMCR, BMCR",
+            "published_date": "2022-01-01",
+            "volumes": [
+                641
+            ],
+            "persons": [
+                832
+            ]
+        }
+    },
+    {
+        "model": "translations.publishedreview",
+        "pk": 104,
+        "fields": {
+            "user": 1,
+            "date_created": "2022-12-23T03:24:12.070Z",
+            "approved": true,
+            "title": "Comparing Recent Homers",
+            "location": "Review of Books, 1",
+            "published_date": "2009-01-01",
+            "volumes": [
+                642,
+                641
+            ],
+            "persons": [
+                832
+            ]
+        }
+    }
+]

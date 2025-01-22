@@ -1,3 +1,5 @@
+dist
+.direnv
 venv
 db.sqlite3
 *.pyc

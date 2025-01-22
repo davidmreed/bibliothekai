@@ -112,11 +112,6 @@ export default class TranslationView extends LightningElement {
             name: 'Published',
             valueType: 'year'
         },
-        {
-            id: 'originalPublicationDate',
-            name: 'First Published',
-            valueType: 'year'
-        },
         { id: 'language.name', name: 'Language', valueType: 'string' },
         { id: 'format', name: 'Format', valueType: 'string' },
         {
@@ -169,7 +164,7 @@ export default class TranslationView extends LightningElement {
     }
 
     @track
-    filterCriteria = new FilterCriteria([], 'originalPublicationDate', false);
+    filterCriteria = new FilterCriteria([], 'volume.publishedDate', false);
 
     get hasSelection() {
         return !!this.selectedIds.length;

@@ -58,6 +58,10 @@ class Volume(FilteredDefaultQueryset, DjangoObjectType):
         model = models.Volume
         exclude_fields = ["approved"]
 
+    published_date = graphene.Date()
+
+    def resolve_published_date(root, info, **kwargs):
+        return root.published_date
 
 class Person(FilteredDefaultQueryset, DjangoObjectType):
     class Meta:

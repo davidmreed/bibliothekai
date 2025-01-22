@@ -25,11 +25,10 @@ SECRET_KEY = os.getenv(
 DEBUG = os.getenv("DJANGO_DEBUG", default=False) == "True"
 
 ALLOWED_HOSTS = [
-    "bibliothekai.herokuapp.com",
-    "bibliothekai-staging.herokuapp.com",
     "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
+    "0.0.0.0",
     "bibliothekai-production.up.railway.app"
 ]
 
@@ -60,6 +59,7 @@ INSTALLED_APPS = [
     "manifest_loader",
     "generic_relations",
     "graphene_django",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [

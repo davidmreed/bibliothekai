@@ -21,15 +21,20 @@
     </div>
     <div class="col">
         {% pill "Publisher" volume.publisher "publisher_detail" volume.publisher.id %}
-        {% if volume.published_date %}
-        {% pill "Date" volume.published_date.year %}
-        {% endif %}
         {% if volume.series %}
         {% pill "Series" volume.series "series_detail" volume.series.id %}
         {% endif %}
-        {% if volume.isbn %}
-        {% pill "ISBN" volume.isbn %}
+        {% for release in volume.releases.all %}
+        {% if release.release_type %}
+        {% pill "Type" release.get_release_type_display %}
         {% endif %}
+        {% if release.published_date %}
+        {% pill "Date" release.published_date.year %}
+        {% endif %}
+        {% if release.isbn %}
+        {% pill "ISBN" release.isbn %}
+        {% endif %}
+        {% endfor %}
     </div>
 </div>
 <hr>
