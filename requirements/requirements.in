@@ -13,3 +13,4 @@ rest-framework-generic-relations
 sqlparse
 whitenoise
 graphene-django==3.0.0b7
+sentry-sdk[django]
