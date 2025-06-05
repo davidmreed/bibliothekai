@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 import dj_database_url
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN", default=""),
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
