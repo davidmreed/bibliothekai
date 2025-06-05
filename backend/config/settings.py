@@ -30,12 +30,12 @@ ALLOWED_HOSTS = [
     "bibliothekai.ktema.org",
     "127.0.0.1",
     "localhost",
-    "bibliothekai-production.up.railway.app"
+    "bibliothekai-production.up.railway.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.bibliothekai-production.up.railway.app",
-    "https://*.bibliothekai.ktema.org"
+    "https://*.bibliothekai.ktema.org",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -168,9 +168,9 @@ ANYMAIL = {
     "MAILJET_API_KEY": os.getenv("MAILJET_API_KEY"),
     "MAILJET_SECRET_KEY": os.getenv("MAILJET_SECRET_KEY"),
 }
-EMAIL_BACKEND = "anymail.backends.mailjet.EmailBackend"
+EMAIL_BACKEND = "anymail.backends.amazon_ses.EmailBackend"
 DEFAULT_FROM_EMAIL = "bibliothekai@ktema.org"
 SERVER_EMAIL = "bibliothekai@ktema.org"
 
 GRAPHENE = {"SCHEMA": "translations.graphql.schema"}
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

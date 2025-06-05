@@ -1,7 +1,7 @@
 asgiref
 django
 django-allauth
-django-anymail
+django-anymail[amazon-ses]
 django-manifest-loader
 djangorestframework
 dj-database-url
