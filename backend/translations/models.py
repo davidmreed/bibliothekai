@@ -103,16 +103,9 @@ class Language(models.Model):
         return self.name
 
 
-class PersonManager(models.Manager["Person"]):
-    def get_queryset(self) -> models.QuerySet["Person"]:
-        return super().get_queryset().prefetch_related("alternate_names", "links")
-
-
 class Person(UserCreatedApprovalMixin):
     class Meta:
         ordering = ["sort_name"]
-
-    objects = PersonManager()
 
     first_name = models.CharField(max_length=255, blank=True)
     middle_name = models.CharField(max_length=255, blank=True)

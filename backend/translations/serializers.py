@@ -95,18 +95,6 @@ class AlternateNameSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    links = serializers.HyperlinkedRelatedField(
-        many=True,
-        required=False,
-        read_only=True,
-        view_name="link-detail",
-    )
-    alternate_names = serializers.HyperlinkedRelatedField(
-        many=True,
-        required=False,
-        read_only=True,
-        view_name="alternate-name-detail",
-    )
     sort_name = serializers.ReadOnlyField()
     full_name = serializers.ReadOnlyField()
 
@@ -121,8 +109,6 @@ class PersonSerializer(serializers.ModelSerializer):
             "sort_name",
             "full_name",
             "description",
-            "links",
-            "alternate_names",
         ]
 
 
@@ -134,15 +120,6 @@ class LanguageSerializer(serializers.ModelSerializer):
 
 class SourceTextSerializer(serializers.ModelSerializer):
     format = ChoiceField(choices=FORMAT_CHOICES)
-    links = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, required=False, view_name="link-detail"
-    )
-    alternate_names = serializers.HyperlinkedRelatedField(
-        many=True,
-        read_only=True,
-        required=False,
-        view_name="alternate-name-detail",
-    )
     author = serializers.HyperlinkedRelatedField(
         queryset=Person.objects.all(),
         view_name="person-detail",
@@ -164,8 +141,6 @@ class SourceTextSerializer(serializers.ModelSerializer):
             "format",
             "date",
             "description",
-            "links",
-            "alternate_names",
             "sample_passage",
             "sample_passage_spec",
             "sample_passage_source",
@@ -174,13 +149,9 @@ class SourceTextSerializer(serializers.ModelSerializer):
 
 
 class PublisherSerializer(serializers.ModelSerializer):
-    links = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, required=False, view_name="link-detail"
-    )
-
     class Meta:
         model = Publisher
-        fields = ["id", "name", "links"]
+        fields = ["id", "name"]
 
 
 class SeriesSerializer(serializers.ModelSerializer):
@@ -234,9 +205,6 @@ class FeatureSerializer(serializers.ModelSerializer):
 
 
 class VolumeSerializer(serializers.ModelSerializer):
-    links = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, required=False, view_name="link-detail"
-    )
     features = serializers.HyperlinkedRelatedField(
         view_name="feature-detail", many=True, required=False, read_only=True
     )
@@ -259,7 +227,6 @@ class VolumeSerializer(serializers.ModelSerializer):
             "oclc_number",
             "description",
             "features",
-            "links",
             "feature_maps",
             "feature_index",
             "feature_bibliography",
@@ -291,9 +258,6 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class PublishedReviewSerializer(serializers.ModelSerializer):
-    links = serializers.HyperlinkedRelatedField(
-        many=True, read_only=True, required=False, view_name="link-detail"
-    )
     volumes = serializers.HyperlinkedRelatedField(
         view_name="volume-detail", many=True, queryset=Volume.objects.all()
     )
@@ -310,5 +274,4 @@ class PublishedReviewSerializer(serializers.ModelSerializer):
             "persons",
             "location",
             "published_date",
-            "links",
         ]
