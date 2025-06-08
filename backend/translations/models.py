@@ -154,9 +154,16 @@ class Person(UserCreatedApprovalMixin):
         return reverse("person_detail", args=[str(self.id)])
 
 
+class SourceTextManager(models.Manager["SourceText"]):
+    def get_queryset(self) -> models.QuerySet["SourceText"]:
+        return super().get_queryset().select_related("author")
+
+
 class SourceText(UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
+
+    objects = SourceTextManager()
 
     title = models.CharField(max_length=255)
     author = models.ForeignKey(
