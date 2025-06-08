@@ -231,9 +231,16 @@ class Series(UserCreatedApprovalMixin):
         return self.name
 
 
+class VolumeManager(models.Manager["Volume"]):
+    def get_queryset(self) -> models.QuerySet["Volume"]:
+        return super().get_queryset().prefetch_related("features", "series", "publisher", "features__source_text", "features__language", "features__persons")
+
+
 class Volume(UserCreatedApprovalMixin):
     class Meta:
         ordering = ["title"]
+
+    objects = VolumeManager()
 
     title = models.CharField(max_length=255)
     published_date = models.DateField(blank=True)
