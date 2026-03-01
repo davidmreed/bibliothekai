@@ -3,6 +3,7 @@
   import { createEventDispatcher } from 'svelte';
   import { getRecord } from '../lib/api/index.js';
   import { formatError } from '../lib/forms.js';
+  import { hasFeature, isFeaturesValid } from '../lib/feature.js';
 
   export let feature;
 
@@ -47,19 +48,21 @@
     if (!feature) {
       return '';
     }
-    const features = ['translation'];
-    if (feature.hasIntroduction) {
-      features.push('introduction');
+    const featuresList = ['translation'];
+    if (hasFeature(feature, 'Introduction')) {
+      featuresList.push('introduction');
     }
-    if (feature.hasNotes) {
-      features.push('notes');
+    if (hasFeature(feature, 'Notes')) {
+      featuresList.push('notes');
     }
-    if (feature.hasCommentary) {
-      features.push('commentary');
+    if (hasFeature(feature, 'Commentary')) {
+      featuresList.push('commentary');
     }
 
-    return `Includes ${features.join(', ')}.`;
+    return `Includes ${featuresList.join(', ')}.`;
   })();
+
+  $: featureIsValid = feature ? isFeaturesValid(feature) : true;
 
   function remove() {
     dispatch('remove', feature.id);
@@ -91,7 +94,7 @@
         </div>
       </h5>
       <div>{featureDescription}</div>
-      {#if feature && !feature.isValid}
+      {#if feature && !featureIsValid}
         <small class="text-danger">
           This translation isn't valid. Edit it before saving.
         </small>

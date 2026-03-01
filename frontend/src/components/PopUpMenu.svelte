@@ -9,7 +9,6 @@
   export let allowAdd = false;
   export let labelText = '';
   export let value = '';
-  export let dataName = null;
   export let invalid = false;
 
   const dispatch = createEventDispatcher();
@@ -17,22 +16,12 @@
   let entities = [];
   let error = '';
   let loading = true;
-  let selectedValue = '';
   let wire;
   let errorInvalid = false;
 
   $: shouldAllowAdd = typeof allowAdd === 'boolean' ? allowAdd : allowAdd === 'true';
-  $: selectedValue = value === null || value === undefined ? '' : value;
-
-  function handleChange(event) {
-    const option = event.target.selectedOptions?.[0];
-    const optionValue =
-      option && Object.prototype.hasOwnProperty.call(option, '__value')
-        ? option.__value
-        : event.target.value;
-    value = optionValue === '' ? '' : optionValue;
-    dispatch('change', { value, dataName });
-    dispatch('value', value);
+  $: if (value === null || value === undefined) {
+    value = '';
   }
 
   function add() {
@@ -78,9 +67,8 @@
       class="entities form-control"
       name="entities"
       size="1"
-      bind:value={selectedValue}
+      bind:value={value}
       class:is-invalid={isInvalid}
-      on:change={handleChange}
     >
       {#if entities.length}
         <option value="">-- No selection --</option>

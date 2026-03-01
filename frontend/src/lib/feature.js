@@ -1,220 +1,171 @@
 import { getRecordApiUrl } from './api/index.js';
 
-export class Feature {
-  persons = [];
-  language = '';
-  description = '';
-  feature = '';
-  sameAsTranslation = false;
-  uiExpanded;
+const FEATURE_TRANSLATION = 'Translation';
+const FEATURE_EDITED = 'Edited';
 
-  constructor(ft, uiExpanded) {
-    this.feature = ft;
-    this.uiExpanded = uiExpanded;
-  }
-
-  get isValid() {
-    if (this.feature === 'Edited') {
-      return !!this.persons.length;
-    }
-
-    return (
-      (!!this.persons.length && !!this.language) || this.sameAsTranslation
-    );
-  }
-
-  get isTranslation() {
-    return this.feature === 'Translation';
-  }
-
-  clone() {
-    const newFeature = Object.assign(new Feature(), this);
-    newFeature.persons = [...this.persons];
-
-    return newFeature;
-  }
-
-  json(translation) {
-    let persons;
-    let language;
-
-    if (translation && this.sameAsTranslation) {
-      persons = translation.persons;
-      language = translation.language;
-    } else {
-      persons = this.persons;
-      language = this.language;
-    }
-
-    const js = {
-      persons: persons.map((a) => getRecordApiUrl('persons', a)),
-      language: getRecordApiUrl('languages', language),
-      feature: this.feature
-    };
-
-    if (this.description) {
-      js.description = this.description;
-    }
-
-    return js;
-  }
+function createFeature(feature, uiExpanded) {
+  return {
+    persons: [],
+    language: '',
+    description: '',
+    feature,
+    sameAsTranslation: false,
+    uiExpanded: !!uiExpanded
+  };
 }
 
-export class TranslationFeature extends Feature {
-  partial = false;
-  format = 'Prose';
-  samplePassage = '';
-  title = '';
-  hasFacingText = false;
-  originalPublicationDate = null;
-
-  constructor(uiExpanded) {
-    super('Translation', uiExpanded);
-  }
-
-  clone() {
-    const newFeature = Object.assign(
-      new TranslationFeature(this.uiExpanded),
-      this
-    );
-    newFeature.persons = [...this.persons];
-
-    return newFeature;
-  }
-
-  json() {
-    const js = super.json();
-
-    js.partial = this.partial;
-    js.format = this.format;
-    js.has_facing_text = this.hasFacingText;
-    js.original_publication_date = this.originalPublicationDate;
-    if (this.samplePassage) {
-      js.sample_passage = this.samplePassage;
-    }
-    if (this.title) {
-      js.title = this.title;
-    }
-
-    return js;
-  }
+function createTranslationFeature(uiExpanded) {
+  return {
+    ...createFeature(FEATURE_TRANSLATION, uiExpanded),
+    partial: false,
+    format: 'Prose',
+    samplePassage: '',
+    title: '',
+    hasFacingText: false,
+    originalPublicationDate: null
+  };
 }
 
-export class Features {
-  id;
-  features = [];
-  defaultLanguage = '';
-  text = '';
-
-  constructor(id) {
-    this.id = id;
-  }
-
-  get hasIntroduction() {
-    return this.hasFeature('Introduction');
-  }
-
-  get introduction() {
-    return this.getFeature('Introduction');
-  }
-
-  get hasNotes() {
-    return this.hasFeature('Notes');
-  }
-
-  get notes() {
-    return this.getFeature('Notes');
-  }
-
-  get hasEdited() {
-    return this.hasFeature('Edited');
-  }
-
-  get edited() {
-    return this.getFeature('Edited');
-  }
-
-  get hasCommentary() {
-    return this.hasFeature('Commentary');
-  }
-
-  get commentary() {
-    return this.getFeature('Commentary');
-  }
-
-  get hasTranslation() {
-    return this.hasFeature('Translation');
-  }
-
-  get translation() {
-    return this.getFeature('Translation');
-  }
-
-  get isValid() {
-    return this.features.reduce((prev, cur) => prev && cur.isValid, true);
-  }
-
-  hasFeature(ft) {
-    return this.features.filter((f) => f.feature === ft).length > 0;
-  }
-
-  getFeature(ft) {
-    const candidates = this.features.filter((f) => f.feature === ft);
-    if (candidates.length) {
-      return candidates[0];
-    }
-
-    return undefined;
-  }
-
-  addFeature(ft, uiExpanded) {
-    const newFeature =
-      ft === 'Translation'
-        ? new TranslationFeature(uiExpanded)
-        : new Feature(ft, uiExpanded);
-
-    if (this.defaultLanguage) {
-      newFeature.language = this.defaultLanguage;
-    }
-
-    this.features.push(newFeature);
-  }
-
-  removeFeature(ft) {
-    this.features = this.features.filter((f) => f.feature !== ft);
-  }
-
-  replaceFeature(ft) {
-    this.features.splice(
-      this.features.findIndex((f) => f.feature === ft.feature),
-      1,
-      ft
-    );
-  }
-
-  clone() {
-    const newFeature = Object.assign(new Features(this.id), this);
-    newFeature.features = this.features.map((f) => f.clone());
-
-    return newFeature;
-  }
-
-  getFeatures(volumeId) {
-    const features = this.features.map((f) => f.json(this.translation));
-    const volumeUrl = getRecordApiUrl('volumes', volumeId);
-    let textUrl;
-
-    if (this.text) {
-      textUrl = getRecordApiUrl('texts', this.text);
-    }
-
-    features.forEach((f) => {
-      f.volume = volumeUrl;
-      if (this.text) {
-        f.text = textUrl;
-      }
-    });
-
-    return features;
-  }
+function createFeatures(id) {
+  return {
+    id,
+    features: [],
+    defaultLanguage: '',
+    text: ''
+  };
 }
+
+function isFeatureValid(feature) {
+  if (feature.feature === FEATURE_EDITED) {
+    return !!feature.persons?.length;
+  }
+
+  return (
+    (!!feature.persons?.length && !!feature.language) || feature.sameAsTranslation
+  );
+}
+
+function isFeaturesValid(features) {
+  return (features.features || []).reduce(
+    (prev, cur) => prev && isFeatureValid(cur),
+    true
+  );
+}
+
+function hasFeature(features, featureName) {
+  return (features.features || []).some((f) => f.feature === featureName);
+}
+
+function getFeature(features, featureName) {
+  return (features.features || []).find((f) => f.feature === featureName);
+}
+
+function addFeature(features, featureName, uiExpanded) {
+  const newFeature =
+    featureName === FEATURE_TRANSLATION
+      ? createTranslationFeature(uiExpanded)
+      : createFeature(featureName, uiExpanded);
+
+  if (features.defaultLanguage) {
+    newFeature.language = features.defaultLanguage;
+  }
+
+  return {
+    ...features,
+    features: [...features.features, newFeature]
+  };
+}
+
+function removeFeature(features, featureName) {
+  return {
+    ...features,
+    features: features.features.filter((f) => f.feature !== featureName)
+  };
+}
+
+function replaceFeature(features, updatedFeature) {
+  return {
+    ...features,
+    features: features.features.map((f) =>
+      f.feature === updatedFeature.feature ? updatedFeature : f
+    )
+  };
+}
+
+function featureToJson(feature, translation) {
+  let persons;
+  let language;
+
+  if (translation && feature.sameAsTranslation) {
+    persons = translation.persons;
+    language = translation.language;
+  } else {
+    persons = feature.persons;
+    language = feature.language;
+  }
+
+  const js = {
+    persons: (persons || []).map((a) => getRecordApiUrl('persons', a)),
+    language: getRecordApiUrl('languages', language),
+    feature: feature.feature
+  };
+
+  if (feature.description) {
+    js.description = feature.description;
+  }
+
+  return js;
+}
+
+function translationFeatureToJson(feature) {
+  const js = featureToJson(feature);
+
+  js.partial = feature.partial;
+  js.format = feature.format;
+  js.has_facing_text = feature.hasFacingText;
+  js.original_publication_date = feature.originalPublicationDate;
+  if (feature.samplePassage) {
+    js.sample_passage = feature.samplePassage;
+  }
+  if (feature.title) {
+    js.title = feature.title;
+  }
+
+  return js;
+}
+
+function getFeaturesPayload(features, volumeId) {
+  const translation = getFeature(features, FEATURE_TRANSLATION);
+  const items = (features.features || []).map((feature) =>
+    feature.feature === FEATURE_TRANSLATION
+      ? translationFeatureToJson(feature)
+      : featureToJson(feature, translation)
+  );
+  const volumeUrl = getRecordApiUrl('volumes', volumeId);
+  const textUrl = features.text ? getRecordApiUrl('texts', features.text) : null;
+
+  items.forEach((f) => {
+    f.volume = volumeUrl;
+    if (textUrl) {
+      f.text = textUrl;
+    }
+  });
+
+  return items;
+}
+
+export {
+  FEATURE_TRANSLATION,
+  FEATURE_EDITED,
+  createFeature,
+  createTranslationFeature,
+  createFeatures,
+  isFeatureValid,
+  isFeaturesValid,
+  hasFeature,
+  getFeature,
+  addFeature,
+  removeFeature,
+  replaceFeature,
+  getFeaturesPayload
+};

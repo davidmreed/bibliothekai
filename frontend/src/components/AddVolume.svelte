@@ -6,7 +6,15 @@
     getRecordApiUrl,
     getRecordsFromApi
   } from '../lib/api/index.js';
-  import { Features } from '../lib/feature.js';
+  import {
+    addFeature,
+    createFeatures,
+    getFeaturesPayload,
+    hasFeature,
+    isFeaturesValid,
+    removeFeature,
+    replaceFeature
+  } from '../lib/feature.js';
   import { markInvalid, formatError } from '../lib/forms.js';
   import AddPerson from './AddPerson.svelte';
   import AddPublisher from './AddPublisher.svelte';
@@ -40,8 +48,11 @@
   let detailsExpanded = true;
 
   let features = [];
-  let generalFeatures = new Features(-1);
+  let generalFeatures = createFeatures(-1);
   let featureToEdit;
+  let volumeHasIntroduction = false;
+  let volumeHasNotes = false;
+  let volumeHasEdited = false;
 
   let error = '';
   let creating = false;
@@ -59,9 +70,14 @@
     await getRecordsFromApi('texts');
   });
 
-  function handlePrimaryLanguageChange() {
-    generalFeatures.defaultLanguage = primaryLanguage;
-    generalFeatures = generalFeatures;
+  function toggleGeneralFeature(current, featureName, enabled) {
+    const exists = hasFeature(current, featureName);
+    if (enabled === exists) {
+      return current;
+    }
+    return enabled
+      ? addFeature(current, featureName, true)
+      : removeFeature(current, featureName);
   }
 
   function handleFeatureRemove(event) {
@@ -75,35 +91,29 @@
       return;
     }
 
-    const index = features.findIndex((f) => f.id === nextFeature.id);
-    if (index >= 0) {
-      features = [
-        ...features.slice(0, index),
-        nextFeature,
-        ...features.slice(index + 1)
-      ];
-    }
+    features = features.map((f) =>
+      f.id === nextFeature.id ? nextFeature : f
+    );
+    featureToEdit = nextFeature;
   }
 
   $: if (volumeDraft.publisher) {
     publisherInvalid = false;
   }
 
-  function handleFeatureSwitchChange(event) {
-    const desiredFeature =
-      event.detail?.dataFeature || event.currentTarget?.dataset?.feature;
-    if (!desiredFeature) {
-      return;
+  $: if (generalFeatures) {
+    let next = generalFeatures;
+    const desiredLanguage = primaryLanguage || '';
+    if ((generalFeatures.defaultLanguage ?? '') !== desiredLanguage) {
+      next = { ...next, defaultLanguage: desiredLanguage };
     }
-    const newFeatures = generalFeatures.clone();
+    next = toggleGeneralFeature(next, 'Introduction', volumeHasIntroduction);
+    next = toggleGeneralFeature(next, 'Notes', volumeHasNotes);
+    next = toggleGeneralFeature(next, 'Edited', volumeHasEdited);
 
-    if (generalFeatures.hasFeature(desiredFeature)) {
-      newFeatures.removeFeature(desiredFeature);
-    } else {
-      newFeatures.addFeature(desiredFeature, true);
+    if (next !== generalFeatures) {
+      generalFeatures = next;
     }
-
-    generalFeatures = newFeatures;
   }
 
   async function create(event) {
@@ -155,7 +165,7 @@
       await Promise.all(
         features
           .concat([generalFeatures])
-          .map((f) => f.getFeatures(result.id))
+          .map((f) => getFeaturesPayload(f, result.id))
           .reduce((acc, val) => acc.concat(val), [])
           .map((f) => createRecord('features', f))
       );
@@ -167,11 +177,11 @@
   }
 
   function addTranslation() {
-    const newFeature = new Features(features.length + 1);
+    let newFeature = createFeatures(features.length + 1);
     if (primaryLanguage) {
-      newFeature.defaultLanguage = primaryLanguage;
+      newFeature = { ...newFeature, defaultLanguage: primaryLanguage };
     }
-    newFeature.addFeature('Translation', true);
+    newFeature = addFeature(newFeature, 'Translation', true);
 
     features = [...features, newFeature];
     featureToEdit = newFeature;
@@ -251,9 +261,9 @@
   function checkValidity() {
     const totalValid =
       detailsValid() &&
-      generalFeatures.isValid &&
+      isFeaturesValid(generalFeatures) &&
       features
-        .map((f) => f.isValid && !!f.text)
+        .map((f) => isFeaturesValid(f) && !!f.text)
         .reduce((prev, cur) => prev && cur, true);
 
     if (!totalValid) {
@@ -318,7 +328,6 @@
                   entityName="languages"
                   allowAdd={false}
                   bind:value={primaryLanguage}
-                  on:change={handlePrimaryLanguageChange}
                 />
                 <small class="text-muted">
                   Language of the majority of this volume. Translations default
@@ -453,21 +462,15 @@
                 </small>
                 <Switch
                   label="General Introduction"
-                  value={generalFeatures.hasIntroduction}
-                  dataFeature="Introduction"
-                  on:change={handleFeatureSwitchChange}
+                  bind:value={volumeHasIntroduction}
                 />
                 <Switch
                   label="General Notes"
-                  value={generalFeatures.hasNotes}
-                  dataFeature="Notes"
-                  on:change={handleFeatureSwitchChange}
+                  bind:value={volumeHasNotes}
                 />
                 <Switch
                   label="Editors"
-                  value={generalFeatures.hasEdited}
-                  dataFeature="Edited"
-                  on:change={handleFeatureSwitchChange}
+                  bind:value={volumeHasEdited}
                 />
               </div>
               <div class="form-group col-md-6">
@@ -497,10 +500,12 @@
       </div>
     </div>
     <div class="volume-features">
-    {#each generalFeatures.features as f, index (f.feature)}
+    {#each generalFeatures.features as f (f.feature)}
         <SingleFeatureEditor
-          bind:feature={generalFeatures.features[index]}
+          feature={f}
           hasTranslation={hasTranslation}
+          on:feature={(event) =>
+            (generalFeatures = replaceFeature(generalFeatures, event.detail))}
           on:addperson={doAddPerson}
         />
       {/each}
@@ -534,7 +539,7 @@
   </h4>
   <TranslationEditor
     class="feature-editor"
-    bind:features={featureToEdit}
+    features={featureToEdit}
     on:features={handleTranslationChange}
     on:save={toggleEditingFeature}
     on:addperson={doAddPerson}

@@ -2,6 +2,13 @@
   import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { getRecord } from '../lib/api/index.js';
+  import {
+    addFeature,
+    getFeature,
+    hasFeature,
+    removeFeature,
+    replaceFeature
+  } from '../lib/feature.js';
   import { formatError } from '../lib/forms.js';
   import DualingListbox from './DualingListbox.svelte';
   import PopUpMenu from './PopUpMenu.svelte';
@@ -20,14 +27,22 @@
   let hasIntroduction = false;
   let hasNotes = false;
   let hasCommentary = false;
+  let translationFeature;
+  let lastFeaturesRef;
+  let selectedTextId = '';
+  let hasFacingText = false;
+  let translationLanguage = '';
+  let translationFormat = 'Prose';
+  let translationPartial = false;
+  let translationTitle = '';
+  let translationOriginalPublicationDate = '';
+  let translationDescription = '';
+  let translationSamplePassage = '';
+  let translationPersons = [];
 
-  $: textId = features?.text;
+  $: textId = selectedTextId;
   $: hasSamplePassage = selectedText && !!selectedText.sample_passage;
-  $: if (features) {
-    hasIntroduction = features.hasIntroduction;
-    hasNotes = features.hasNotes;
-    hasCommentary = features.hasCommentary;
-  }
+  $: translationFeature = features ? getFeature(features, 'Translation') : null;
 
   function updateWire() {
     if (wire && textId) {
@@ -57,49 +72,128 @@
 
   $: updateWire();
 
-  function notify() {
-    if (!features) {
+  const arraysEqual = (left, right) => {
+    if (left === right) {
+      return true;
+    }
+    if (!left || !right || left.length !== right.length) {
+      return false;
+    }
+    return left.every((val, idx) => val === right[idx]);
+  };
+
+  function updateFeatures(next) {
+    if (!next) {
       return;
     }
-    features = features;
+    features = next;
     dispatch('features', features);
   }
 
-  function syncFeatureToggle(featureName, enabled) {
-    if (!features) {
-      return;
+  function toggleFeatureInSet(current, featureName, enabled) {
+    const exists = hasFeature(current, featureName);
+    if (enabled === exists) {
+      return current;
     }
-    const hasFeature = features.hasFeature(featureName);
-    if (enabled === hasFeature) {
-      return;
+    return enabled
+      ? addFeature(current, featureName, true)
+      : removeFeature(current, featureName);
+  }
+
+  $: if (features && features !== lastFeaturesRef) {
+    lastFeaturesRef = features;
+    selectedTextId = features.text || '';
+    if (translationFeature) {
+      hasFacingText = !!translationFeature.hasFacingText;
+      translationLanguage = translationFeature.language ?? '';
+      translationFormat = translationFeature.format ?? 'Prose';
+      translationPartial = !!translationFeature.partial;
+      translationTitle = translationFeature.title ?? '';
+      translationOriginalPublicationDate =
+        translationFeature.originalPublicationDate ?? '';
+      translationDescription = translationFeature.description ?? '';
+      translationSamplePassage = translationFeature.samplePassage ?? '';
+      translationPersons = Array.isArray(translationFeature.persons)
+        ? translationFeature.persons
+        : [];
     }
-    if (enabled) {
-      features.addFeature(featureName, true);
-    } else {
-      features.removeFeature(featureName);
-    }
-    notify();
+    hasIntroduction = hasFeature(features, 'Introduction');
+    hasNotes = hasFeature(features, 'Notes');
+    hasCommentary = hasFeature(features, 'Commentary');
   }
 
   $: if (features) {
-    syncFeatureToggle('Introduction', hasIntroduction);
-    syncFeatureToggle('Notes', hasNotes);
-    syncFeatureToggle('Commentary', hasCommentary);
+    let next = features;
+
+    if (selectedTextId !== (features.text || '')) {
+      next = { ...next, text: selectedTextId || '' };
+    }
+    if (translationFeature) {
+      const patch = {};
+      if (hasFacingText !== !!translationFeature.hasFacingText) {
+        patch.hasFacingText = hasFacingText;
+      }
+      if (translationLanguage !== (translationFeature.language ?? '')) {
+        patch.language = translationLanguage;
+      }
+      if (translationFormat !== (translationFeature.format ?? 'Prose')) {
+        patch.format = translationFormat;
+      }
+      if (translationPartial !== !!translationFeature.partial) {
+        patch.partial = translationPartial;
+      }
+      if (translationTitle !== (translationFeature.title ?? '')) {
+        patch.title = translationTitle;
+      }
+      if (
+        translationOriginalPublicationDate !==
+        (translationFeature.originalPublicationDate ?? '')
+      ) {
+        patch.originalPublicationDate = translationOriginalPublicationDate || null;
+      }
+      if (translationDescription !== (translationFeature.description ?? '')) {
+        patch.description = translationDescription;
+      }
+      if (translationSamplePassage !== (translationFeature.samplePassage ?? '')) {
+        patch.samplePassage = translationSamplePassage;
+      }
+      if (!arraysEqual(translationPersons, translationFeature.persons || [])) {
+        patch.persons = translationPersons;
+      }
+      if (Object.keys(patch).length) {
+        next = replaceFeature(next, { ...translationFeature, ...patch });
+      }
+    }
+
+    next = toggleFeatureInSet(next, 'Introduction', hasIntroduction);
+    next = toggleFeatureInSet(next, 'Notes', hasNotes);
+    next = toggleFeatureInSet(next, 'Commentary', hasCommentary);
+
+    if (next !== features) {
+      updateFeatures(next);
+    }
   }
 
   function handleAddPerson() {
+    if (!translationFeature) {
+      return;
+    }
     dispatch('addperson', {
       callback: (p) => {
-        features.translation.persons = (features.translation.persons || []).concat([
-          p
-        ]);
-        notify();
+        translationPersons = [...translationPersons, p];
       }
     });
   }
 
   function handleSingleFeatureAddPerson(event) {
     dispatch('addperson', event.detail);
+  }
+
+  function handleSingleFeatureChange(event) {
+    if (!features) {
+      return;
+    }
+    updateFeatures(replaceFeature(features, event.detail));
   }
 
   function save() {
@@ -128,17 +222,17 @@
         <PopUpMenu
           entityName="texts"
           allowAdd={false}
-          bind:value={features.text}
-          on:value={notify}
+          bind:value={selectedTextId}
         />
         <div class="invalid-feedback">{error}</div>
         <div class="row">
           <div class="col">
-            <Switch
-              label="Has Facing Text"
-              bind:value={features.translation.hasFacingText}
-              on:value={notify}
-            />
+            {#if translationFeature}
+              <Switch
+                label="Has Facing Text"
+                bind:value={hasFacingText}
+              />
+            {/if}
           </div>
           <div class="col">
             <Switch
@@ -177,7 +271,7 @@
         {/if}
       </h5>
     </div>
-    {#if translationExpanded}
+    {#if translationExpanded && translationFeature}
       <div class="card-body">
         <div class="form-group">
           <div class="form-row">
@@ -186,8 +280,7 @@
                 labelText="Language"
                 entityName="languages"
                 allowAdd={false}
-                bind:value={features.translation.language}
-                on:value={notify}
+                bind:value={translationLanguage}
               />
             </div>
             <div class="col">
@@ -195,8 +288,7 @@
               <select
                 class="form-control format-picklist"
                 size="1"
-                bind:value={features.translation.format}
-                on:change={notify}
+                bind:value={translationFormat}
               >
                 <option value="Prose">Prose</option>
                 <option value="Verse">Verse</option>
@@ -207,8 +299,7 @@
               <select
                 class="form-control coverage-picklist"
                 size="1"
-                bind:value={features.translation.partial}
-                on:change={notify}
+                bind:value={translationPartial}
               >
                 <option value={false}>Complete translation</option>
                 <option value={true}>Partial translation</option>
@@ -220,16 +311,14 @@
             class="form-control"
             placeholder="Title, if different from text"
             type="text"
-            bind:value={features.translation.title}
-            on:input={notify}
+            bind:value={translationTitle}
           />
           <label for="original-publication-date">Original Publication Date</label>
           <input
             class="form-control"
             placeholder="If this is a republication"
             type="date"
-            bind:value={features.translation.originalPublicationDate}
-            on:change={notify}
+            bind:value={translationOriginalPublicationDate}
           />
           <hr />
           <label for="description">Description</label>
@@ -237,15 +326,13 @@
             class="form-control description-field"
             placeholder="Description"
             type="text"
-            bind:value={features.translation.description}
-            on:input={notify}
+            bind:value={translationDescription}
           ></textarea>
           {#if hasSamplePassage}
             <label for="sample">Sample Passage</label>
             <textarea
               class="form-control"
-              bind:value={features.translation.samplePassage}
-              on:input={notify}
+              bind:value={translationSamplePassage}
             ></textarea>
             <small class="text-muted">
               The sample passage for {selectedText.title} is
@@ -258,8 +345,7 @@
             class="persons-listbox"
             entityName="persons"
             allowAdd={true}
-            bind:value={features.translation.persons}
-            on:value={notify}
+            bind:value={translationPersons}
             on:add={handleAddPerson}
           />
 
@@ -274,12 +360,12 @@
       </div>
     {/if}
   </div>
-  {#each features.features as f, index (f.feature)}
-    {#if !f.isTranslation}
+  {#each features.features as f (f.feature)}
+    {#if f.feature !== 'Translation'}
       <SingleFeatureEditor
-        bind:feature={features.features[index]}
+        feature={f}
         hasTranslation={true}
-        on:feature={notify}
+        on:feature={handleSingleFeatureChange}
         on:addperson={handleSingleFeatureAddPerson}
       />
     {/if}

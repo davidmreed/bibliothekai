@@ -115,22 +115,6 @@
   $: recordsShown = displayedRecords.length;
   $: recordCount = normalizedRecords.length;
 
-  function handleSelectionChange(event, recordId) {
-    event.stopPropagation();
-    const checked = event.currentTarget.checked;
-    let ids = [...(selectedIds || [])];
-
-    if (checked) {
-      if (!ids.includes(recordId)) {
-        ids.push(recordId);
-      }
-    } else {
-      ids = ids.filter((id) => id !== recordId);
-    }
-
-    dispatch('selectionchange', ids);
-  }
-
   function handleColumnClick(event) {
     const clickedColId = event.currentTarget.dataset.col;
     const clickedColumn = normalizedColumns.find((c) => c.id === clickedColId);
@@ -177,11 +161,8 @@
           <td>
             <input
               type="checkbox"
-              data-record={rec.record.id}
-              checked={rec.selected}
-              on:change={(event) =>
-                handleSelectionChange(event, rec.record.id)
-              }
+              bind:group={selectedIds}
+              value={rec.record.id}
             />
           </td>
         {/if}

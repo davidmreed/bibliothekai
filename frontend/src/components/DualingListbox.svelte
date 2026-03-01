@@ -8,7 +8,6 @@
   export let entityName = '';
   export let allowAdd = false;
   export let value = [];
-  export let dataName = null;
 
   const dispatch = createEventDispatcher();
 
@@ -64,14 +63,6 @@
     }
   }
 
-  function handleSearch(event) {
-    searchKey = event.target.value;
-  }
-
-  function stopEvent(event) {
-    event.stopPropagation();
-  }
-
   function moveRight() {
     if (!availableSelect) {
       return;
@@ -80,8 +71,6 @@
       Number(f.value)
     );
     value = [...new Set([...normalizedValue, ...selected])];
-    dispatch('change', { value, dataName });
-    dispatch('value', value);
   }
 
   function moveLeft() {
@@ -92,8 +81,6 @@
       Number(f.value)
     );
     value = normalizedValue.filter((f) => !itemsUnselect.includes(f));
-    dispatch('change', { value, dataName });
-    dispatch('value', value);
   }
 
   function add() {
@@ -139,8 +126,7 @@
   type="search"
   placeholder="Filter"
   aria-label="Filter"
-  on:input={handleSearch}
-  on:change={stopEvent}
+  bind:value={searchKey}
 />
 <small
   class="form-text text-muted validity is-invalid form-control mb-2"
@@ -157,7 +143,6 @@
         size="4"
         multiple
         bind:this={availableSelect}
-        on:change={stopEvent}
         on:dblclick={moveRight}
       >
         {#if filteredEntities.length}
@@ -214,7 +199,6 @@
         size="4"
         multiple
         bind:this={selectedSelect}
-        on:change={stopEvent}
         on:dblclick={moveLeft}
       >
         {#if selectedEntities.length}

@@ -149,7 +149,18 @@ query getTranslations($textId: Int) {
   let translationPath = '';
   let loading = true;
 
-  let filterCriteria = new FilterCriteria([], 'originalPublicationDate', false);
+  let sortColumn = 'originalPublicationDate';
+  let sortAscending = false;
+  let filterCriteria = new FilterCriteria([], sortColumn, sortAscending);
+  let filterIntroduction = false;
+  let filterNotes = false;
+  let filterCommentary = false;
+  let filterGlossary = false;
+  let filterIndex = false;
+  let filterBibliography = false;
+  let filterMaps = false;
+  let filterSamplePassage = false;
+  let filterFacingText = false;
 
   $: filterTitle = showingFilters ? 'Clear Filters' : 'Show Filters';
   $: availableLanguages = (() => {
@@ -209,63 +220,63 @@ query getTranslations($textId: Int) {
   }
 
   function handleSort(event) {
-    filterCriteria = new FilterCriteria(
-      filterCriteria.filters,
-      event.detail.sortColumn,
-      event.detail.sortAscending
-    );
+    sortColumn = event.detail.sortColumn;
+    sortAscending = event.detail.sortAscending;
   }
 
-  function handleSelectionChange(event) {
-    selectedIds = event.detail;
-  }
-
-  function handleFilterChange(event) {
-    let feature;
-    let required;
-
-    if (event.detail?.dataFeature) {
-      feature = event.detail.dataFeature;
-      required = event.detail.value;
-    } else if (event.target.name === 'format') {
-      feature = 'format';
-      selectedFilterFormat = event.target.value;
-      required = selectedFilterFormat;
-    } else if (event.target.name === 'language') {
-      feature = 'language.id';
-      selectedFilterLanguage = event.target.value;
-      required = Number(selectedFilterLanguage);
-    } else if (event.target.name === 'coverage') {
-      feature = 'partial';
-      selectedFilterCoverage = event.target.value;
-      if (selectedFilterCoverage) {
-        required = selectedFilterCoverage === 'Partial';
-      }
-    }
-
-    filterCriteria = new FilterCriteria(
-      filterCriteria.filters
-        .filter((f) => f.column !== feature)
-        .concat(
-          required || (feature === 'partial' && selectedFilterCoverage)
-            ? [{ column: feature, value: required }]
-            : []
-        ),
-      filterCriteria.sortColumn,
-      filterCriteria.sortAscending
-    );
-  }
 
   function handleToggleFilters() {
     showingFilters = !showingFilters;
+  }
 
-    if (!showingFilters) {
-      filterCriteria = new FilterCriteria(
-        [],
-        filterCriteria.sortColumn,
-        filterCriteria.sortAscending
-      );
+  $: {
+    const filters = [];
+    if (showingFilters) {
+      if (filterIntroduction) {
+        filters.push({ column: 'featureAccompanyingIntroduction', value: true });
+      }
+      if (filterNotes) {
+        filters.push({ column: 'featureAccompanyingNotes', value: true });
+      }
+      if (filterCommentary) {
+        filters.push({ column: 'featureAccompanyingCommentary', value: true });
+      }
+      if (filterGlossary) {
+        filters.push({ column: 'volume.featureGlossary', value: true });
+      }
+      if (filterIndex) {
+        filters.push({ column: 'volume.featureIndex', value: true });
+      }
+      if (filterBibliography) {
+        filters.push({ column: 'volume.featureBibliography', value: true });
+      }
+      if (filterMaps) {
+        filters.push({ column: 'volume.featureMaps', value: true });
+      }
+      if (filterSamplePassage) {
+        filters.push({ column: 'featureSamplePassage', value: true });
+      }
+      if (filterFacingText) {
+        filters.push({ column: 'featureFacingText', value: true });
+      }
+      if (selectedFilterFormat) {
+        filters.push({ column: 'format', value: selectedFilterFormat });
+      }
+      if (selectedFilterLanguage) {
+        filters.push({
+          column: 'language.id',
+          value: Number(selectedFilterLanguage)
+        });
+      }
+      if (selectedFilterCoverage) {
+        filters.push({
+          column: 'partial',
+          value: selectedFilterCoverage === 'Partial'
+        });
+      }
     }
+
+    filterCriteria = new FilterCriteria(filters, sortColumn, sortAscending);
   }
 </script>
 
@@ -298,50 +309,41 @@ query getTranslations($textId: Int) {
       <div class="form-group col-md-6">
         <Switch
           label="Introduction"
-          dataFeature="featureAccompanyingIntroduction"
-          on:change={handleFilterChange}
+          bind:value={filterIntroduction}
         />
         <Switch
           label="Notes"
-          dataFeature="featureAccompanyingNotes"
-          on:change={handleFilterChange}
+          bind:value={filterNotes}
         />
         <Switch
           label="Commentary"
-          dataFeature="featureAccompanyingCommentary"
-          on:change={handleFilterChange}
+          bind:value={filterCommentary}
         />
         <Switch
           label="Glossary"
-          dataFeature="volume.featureGlossary"
-          on:change={handleFilterChange}
+          bind:value={filterGlossary}
         />
         <Switch
           label="Index"
-          dataFeature="volume.featureIndex"
-          on:change={handleFilterChange}
+          bind:value={filterIndex}
         />
       </div>
       <div class="form-group col-md-6">
         <Switch
           label="Bibliography"
-          dataFeature="volume.featureBibliography"
-          on:change={handleFilterChange}
+          bind:value={filterBibliography}
         />
         <Switch
           label="Maps"
-          dataFeature="volume.featureMaps"
-          on:change={handleFilterChange}
+          bind:value={filterMaps}
         />
         <Switch
           label="Sample Passage"
-          dataFeature="featureSamplePassage"
-          on:change={handleFilterChange}
+          bind:value={filterSamplePassage}
         />
         <Switch
           label="Facing Text"
-          dataFeature="featureFacingText"
-          on:change={handleFilterChange}
+          bind:value={filterFacingText}
         />
       </div>
     </div>
@@ -352,8 +354,7 @@ query getTranslations($textId: Int) {
           class="form-control form-control-sm format-picklist"
           name="format"
           size="1"
-          on:change={handleFilterChange}
-          value={selectedFilterFormat}
+          bind:value={selectedFilterFormat}
         >
           <option value="">-- All formats --</option>
           <option value="Verse">Verse</option>
@@ -366,8 +367,7 @@ query getTranslations($textId: Int) {
           class="form-control form-control-sm language-picklist"
           name="language"
           size="1"
-          on:change={handleFilterChange}
-          value={selectedFilterLanguage}
+          bind:value={selectedFilterLanguage}
         >
           <option value="">-- All languages --</option>
           {#each availableLanguages as item (item.id)}
@@ -381,8 +381,7 @@ query getTranslations($textId: Int) {
           class="form-control form-control-sm coverage-picklist"
           name="coverage"
           size="1"
-          on:change={handleFilterChange}
-          value={selectedFilterCoverage}
+          bind:value={selectedFilterCoverage}
         >
           <option value="">-- All coverage --</option>
           <option value="Complete">Complete</option>
@@ -397,9 +396,8 @@ query getTranslations($textId: Int) {
   {records}
   filterCriteria={filterCriteria}
   {allowsSelection}
-  {selectedIds}
+  bind:selectedIds={selectedIds}
   on:sort={handleSort}
-  on:selectionchange={handleSelectionChange}
 />
 <div class="spinner-grow spinner-grow-sm mt-2" role="status" class:d-none={!loading}>
   <span class="sr-only">Loading...</span>

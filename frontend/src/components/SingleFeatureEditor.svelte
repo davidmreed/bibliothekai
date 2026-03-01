@@ -9,32 +9,67 @@
 
   const dispatch = createEventDispatcher();
 
-  $: isEdited = feature?.feature === 'Edited';
-  $: showDetails = !(hasTranslation && feature?.sameAsTranslation);
-  $: isVisible = feature?.uiExpanded;
-  $: buttonTitle = feature?.uiExpanded ? 'Done' : 'Edit';
+  let lastFeatureRef;
+  let sameAsTranslation = false;
+  let language = '';
+  let persons = [];
+  let uiExpanded = false;
 
-  function notify() {
+  $: isEdited = feature?.feature === 'Edited';
+  $: showDetails = !(hasTranslation && sameAsTranslation);
+  $: isVisible = uiExpanded;
+  $: buttonTitle = uiExpanded ? 'Done' : 'Edit';
+
+  const arraysEqual = (left, right) => {
+    if (left === right) {
+      return true;
+    }
+    if (!left || !right || left.length !== right.length) {
+      return false;
+    }
+    return left.every((val, idx) => val === right[idx]);
+  };
+
+  function updateFeature(patch) {
     if (!feature) {
       return;
     }
-    feature = feature;
+    const next = { ...feature, ...patch };
+    feature = next;
     dispatch('feature', feature);
   }
 
-  function toggleExpanded() {
-    if (!feature) {
-      return;
+  $: if (feature && feature !== lastFeatureRef) {
+    lastFeatureRef = feature;
+    sameAsTranslation = !!feature.sameAsTranslation;
+    language = feature.language ?? '';
+    persons = Array.isArray(feature.persons) ? feature.persons : [];
+    uiExpanded = !!feature.uiExpanded;
+  }
+
+  $: if (feature) {
+    if (sameAsTranslation !== !!feature.sameAsTranslation) {
+      updateFeature({ sameAsTranslation });
     }
-    feature.uiExpanded = !feature.uiExpanded;
-    notify();
+    if (language !== (feature.language ?? '')) {
+      updateFeature({ language });
+    }
+    if (!arraysEqual(persons, feature.persons || [])) {
+      updateFeature({ persons });
+    }
+    if (uiExpanded !== !!feature.uiExpanded) {
+      updateFeature({ uiExpanded });
+    }
+  }
+
+  function toggleExpanded() {
+    uiExpanded = !uiExpanded;
   }
 
   function handleAddPerson() {
     dispatch('addperson', {
       callback: (p) => {
-        feature.persons = (feature.persons || []).concat([p]);
-        notify();
+        persons = [...persons, p];
       }
     });
   }
@@ -61,8 +96,7 @@
         {#if hasTranslation}
           <Switch
             label="Same language and authors as translation"
-            bind:value={feature.sameAsTranslation}
-            on:value={notify}
+            bind:value={sameAsTranslation}
           />
         {/if}
         {#if showDetails}
@@ -75,8 +109,7 @@
               labelText="Language"
               entityName="languages"
               allowAdd={false}
-              bind:value={feature.language}
-              on:value={notify}
+              bind:value={language}
             />
             <label for="authors">Authors</label>
           {:else}
@@ -84,8 +117,7 @@
           {/if}
           <DualingListbox
             entityName="persons"
-            bind:value={feature.persons}
-            on:value={notify}
+            bind:value={persons}
             allowAdd={true}
             on:add={handleAddPerson}
           />
