@@ -1,8 +1,9 @@
 venv
+.venv
 db.sqlite3
 *.pyc
 **/__pycache__
-.env*
+.env
 *.db
 *.db-journal
 .vscode.cfg
@@ -11,3 +12,4 @@ db.sqlite3
 **/node_modules
 translations/static
 static
+.direnv

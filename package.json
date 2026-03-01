@@ -35,8 +35,8 @@
     },
     "repository": "https://github.com/davidmreed/bibliothekai",
     "scripts": {
-        "build": "NODE_ENV=production webpack",
-        "build:development": "NODE_ENV=development webpack",
+        "build": "npm --prefix frontend run build",
+        "build:development": "npm --prefix frontend run build -- --mode development",
         "lint": "eslint ./src/**/*.js",
         "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
         "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
@@ -44,6 +44,6 @@
         "test:unit:coverage": "jest --coverage",
         "test:unit:debug": "jest --debug",
         "test:unit:watch": "jest --watch",
-        "watch": "NODE_ENV=development webpack-dev-server"
+        "watch": "npm --prefix frontend run dev"
     }
 }
