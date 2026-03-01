@@ -69,7 +69,42 @@ query getTranslations($textId: Int) {
   async function loadData() {
     try {
       const result = await graphQL(COMPARISON_GRAPHQL_QUERY, parameters);
-      data = result.data;
+      const text = result.data?.text;
+      if (!text) {
+        error = 'No text found';
+        return;
+      }
+
+      const normalizedTranslations = (text.translations || []).map((trans) => {
+        const normalizedId =
+          trans.id !== null && trans.id !== undefined ? Number(trans.id) : trans.id;
+        const normalizedVolumeId =
+          trans.volume?.id !== null && trans.volume?.id !== undefined
+            ? Number(trans.volume.id)
+            : trans.volume?.id;
+        const normalizedPersons = (trans.persons || []).map((p) => ({
+          ...p,
+          id: p.id !== null && p.id !== undefined ? Number(p.id) : p.id
+        }));
+
+        return {
+          ...trans,
+          id: normalizedId,
+          volume: trans.volume
+            ? { ...trans.volume, id: normalizedVolumeId }
+            : trans.volume,
+          persons: normalizedPersons
+        };
+      });
+
+      data = {
+        ...result.data,
+        text: {
+          ...text,
+          id: text.id !== null && text.id !== undefined ? Number(text.id) : text.id,
+          translations: normalizedTranslations
+        }
+      };
 
       data.text.url = getRecordUiUrl('texts', data.text.id);
 
@@ -91,10 +126,6 @@ query getTranslations($textId: Int) {
         );
 
         trans.displayName = `${trans.volume.title} (${trans.volume.publisher.name}${dateString}), trans. ${transString}`;
-      }
-
-      if (availableTranslations.length && !selectedTranslationIds.includes('')) {
-        selectedTranslationIds = [...selectedTranslationIds, ''];
       }
     } catch (err) {
       error = err?.message || String(err);

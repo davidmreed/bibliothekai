@@ -6,38 +6,55 @@
   import Switch from './Switch.svelte';
 
   function normalize(record, enumValues) {
-    record.featureNames = [];
-    record.format = enumValues.get(record.format);
+    const languageId =
+      record.language && record.language.id !== null && record.language.id !== undefined
+        ? Number(record.language.id)
+        : record.language?.id;
+    const volumeId =
+      record.volume && record.volume.id !== null && record.volume.id !== undefined
+        ? Number(record.volume.id)
+        : record.volume?.id;
+    const normalizedRecord = {
+      ...record,
+      id:
+        record.id !== null && record.id !== undefined
+          ? Number(record.id)
+          : record.id,
+      language: record.language ? { ...record.language, id: languageId } : record.language,
+      volume: record.volume ? { ...record.volume, id: volumeId } : record.volume,
+      featureNames: [],
+      format: enumValues.get(record.format)
+    };
 
-    if (record.featureAccompanyingIntroduction) {
-      record.featureNames.push('Introduction');
+    if (normalizedRecord.featureAccompanyingIntroduction) {
+      normalizedRecord.featureNames.push('Introduction');
     }
-    if (record.featureAccompanyingNotes) {
-      record.featureNames.push('Notes');
+    if (normalizedRecord.featureAccompanyingNotes) {
+      normalizedRecord.featureNames.push('Notes');
     }
-    if (record.featureAccompanyingCommentary) {
-      record.featureNames.push('Commentary');
+    if (normalizedRecord.featureAccompanyingCommentary) {
+      normalizedRecord.featureNames.push('Commentary');
     }
-    if (record.volume.featureGlossary) {
-      record.featureNames.push('Glossary');
+    if (normalizedRecord.volume?.featureGlossary) {
+      normalizedRecord.featureNames.push('Glossary');
     }
-    if (record.volume.featureIndex) {
-      record.featureNames.push('Index');
+    if (normalizedRecord.volume?.featureIndex) {
+      normalizedRecord.featureNames.push('Index');
     }
-    if (record.volume.featureBibliography) {
-      record.featureNames.push('Bibliography');
+    if (normalizedRecord.volume?.featureBibliography) {
+      normalizedRecord.featureNames.push('Bibliography');
     }
-    if (record.volume.featureMaps) {
-      record.featureNames.push('Maps');
+    if (normalizedRecord.volume?.featureMaps) {
+      normalizedRecord.featureNames.push('Maps');
     }
-    if (record.featureFacingText) {
-      record.featureNames.push('Facing Text');
+    if (normalizedRecord.featureFacingText) {
+      normalizedRecord.featureNames.push('Facing Text');
     }
-    if (record.featureSamplePassage) {
-      record.featureNames.push('Sample Passage');
+    if (normalizedRecord.featureSamplePassage) {
+      normalizedRecord.featureNames.push('Sample Passage');
     }
 
-    return record;
+    return normalizedRecord;
   }
 
   const TRANSLATION_GRAPHQL_QUERY = `
