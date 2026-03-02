@@ -2,7 +2,7 @@
 Production-specific settings.
 """
 
-from .base import *  # noqa
+from .settings import *  # noqa
 
 # Security settings
 DEBUG = False
