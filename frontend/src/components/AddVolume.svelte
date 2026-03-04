@@ -503,7 +503,7 @@
     {#each generalFeatures.features as f (f.feature)}
         <SingleFeatureEditor
           feature={f}
-          hasTranslation={hasTranslation}
+          hasTranslation={false}
           on:feature={(event) =>
             (generalFeatures = replaceFeature(generalFeatures, event.detail))}
           on:addperson={doAddPerson}
