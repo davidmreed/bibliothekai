@@ -13,7 +13,7 @@
             pkgs.glibc
           ];
           SSL_CERT_FILE="/etc/ssl/certs/ca-bundle.crt";
-          packages = with pkgs; [ git just uv railway sqlite ];
+          packages = with pkgs; [ just uv railway sqlite nodejs_22 ];
         };
       }
     );

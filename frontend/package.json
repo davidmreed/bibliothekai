@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build",
+    "build": "rm -rf ../backend/translations/static/assets/* ../backend/translations/static/manifest.json && npx vite build",
     "dev": "vite",
     "preview": "vite preview"
   },
