@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { getRecord } from '../lib/api/index.js';
   import {
@@ -23,7 +22,6 @@
   let selectedText;
   let translationExpanded = true;
   let error = '';
-  let wire;
   let hasIntroduction = false;
   let hasNotes = false;
   let hasCommentary = false;
@@ -44,33 +42,23 @@
   $: hasSamplePassage = selectedText && !!selectedText.sample_passage;
   $: translationFeature = features ? getFeature(features, 'Translation') : null;
 
-  function updateWire() {
-    if (wire && textId) {
-      wire.update({ entityName: 'texts', entityId: textId });
+  async function loadSelectedText(id) {
+    if (!id) {
+      return;
     }
-  }
-
-  onMount(() => {
-    wire = new getRecord(({ data, error: fetchError }) => {
+    try {
+      const data = await getRecord('texts', id);
       if (data) {
         selectedText = data;
       }
-      if (fetchError) {
-        error = formatError(fetchError);
-      }
-    });
+    } catch (fetchError) {
+      error = formatError(fetchError);
+    }
+  }
 
-    updateWire();
-    wire.connect();
-
-    return () => {
-      if (wire) {
-        wire.disconnect();
-      }
-    };
-  });
-
-  $: updateWire();
+  $: if (textId) {
+    loadSelectedText(textId);
+  }
 
   const arraysEqual = (left, right) => {
     if (left === right) {

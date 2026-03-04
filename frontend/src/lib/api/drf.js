@@ -45,125 +45,45 @@ function cacheRecord(entityName, id, data) {
   recordCache.get(entityName).push(data);
 }
 
-class getRecord {
-  entityName;
-  entityId;
-
-  constructor(dataCallback) {
-    this.dataCallback = dataCallback;
+async function getRecord(entityName, entityId) {
+  if (!entityName || !entityId) {
+    return null;
   }
 
-  connect() {
-    this.refresh();
+  const cacheKey = getCacheKey(entityName, entityId);
+  if (individualRecordCache.has(cacheKey)) {
+    return individualRecordCache.get(cacheKey);
   }
 
-  disconnect() {}
+  const result = await fetch(new Request(getRecordApiUrl(entityName, entityId)));
+  if (result.ok) {
+    const data = await result.json();
 
-  update(config) {
-    if (
-      this.entityName !== config.entityName ||
-      this.entityId !== config.entityId
-    ) {
-      this.entityName = config.entityName;
-      this.entityId = config.entityId;
-      this.refresh();
-    }
+    cacheRecord(entityName, entityId, data);
+    return data;
   }
 
-  async refresh() {
-    if (this.entityName && this.entityId) {
-      try {
-        const cacheKey = getCacheKey(this.entityName, this.entityId);
-        if (individualRecordCache.has(cacheKey)) {
-          this.dataCallback({
-            data: individualRecordCache.get(cacheKey)
-          });
-        } else {
-          const result = await fetch(
-            new Request(getRecordApiUrl(this.entityName, this.entityId))
-          );
-          if (result.ok) {
-            const data = await result.json();
-
-            cacheRecord(this.entityName, this.entityId, data);
-            this.dataCallback({ data });
-          } else {
-            throw new Error(`The API returned an error: ${result.status}.`);
-          }
-        }
-      } catch (error) {
-        this.dataCallback({ data: null, error });
-      }
-    }
-  }
+  throw new Error(`The API returned an error: ${result.status}.`);
 }
 
-class getRecords {
-  entityName;
-
-  constructor(dataCallback) {
-    this.dataCallback = dataCallback;
+async function getRecords(entityName) {
+  if (!entityName) {
+    return [];
   }
 
-  connect() {
-    this._register();
-    this.refresh();
-  }
+  if (!recordCache.has(entityName)) {
+    if (!refreshesInProgress.has(entityName)) {
+      refreshesInProgress.set(entityName, getRecordsFromApi(entityName));
+    }
 
-  _register() {
-    if (this.entityName) {
-      if (!getRecordsStore.has(this.entityName)) {
-        getRecordsStore.set(this.entityName, new Set());
-      }
-      getRecordsStore.get(this.entityName).add(this);
+    await refreshesInProgress.get(entityName);
+
+    if (refreshesInProgress.has(entityName)) {
+      refreshesInProgress.delete(entityName);
     }
   }
 
-  disconnect() {
-    this._unregister();
-  }
-
-  _unregister() {
-    if (this.entityName && getRecordsStore.has(this.entityName)) {
-      getRecordsStore.get(this.entityName).delete(this);
-    }
-  }
-
-  update(config) {
-    if (this.entityName !== config.entityName) {
-      this._unregister();
-      this.entityName = config.entityName;
-      this._register();
-      this.refresh();
-    }
-  }
-
-  async refresh() {
-    if (this.entityName) {
-      try {
-        if (!recordCache.has(this.entityName)) {
-          if (!refreshesInProgress.has(this.entityName)) {
-            refreshesInProgress.set(
-              this.entityName,
-              getRecordsFromApi(this.entityName)
-            );
-          }
-
-          await refreshesInProgress.get(this.entityName);
-
-          if (refreshesInProgress.has(this.entityName)) {
-            refreshesInProgress.delete(this.entityName);
-          }
-        }
-        this.dataCallback({
-          data: recordCache.get(this.entityName),
-          error: null
-        });
-      } catch (error) {
-        this.dataCallback({ data: null, error });
-      }
-    }
-  }
+  return recordCache.get(entityName);
 }
 
 async function getRecordsFromApi(entityName) {

@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { getRecords } from '../lib/api/index.js';
   import { sortRecordsByName } from '../lib/utils.js';
@@ -16,7 +15,6 @@
   let entities = [];
   let error = '';
   let loading = true;
-  let wire;
   let errorInvalid = false;
 
   $: shouldAllowAdd = typeof allowAdd === 'boolean' ? allowAdd : allowAdd === 'true';
@@ -28,31 +26,27 @@
     dispatch('add');
   }
 
-  onMount(() => {
-    wire = new getRecords(({ data, error: fetchError }) => {
+  async function loadEntities(name) {
+    if (!name) {
+      return;
+    }
+    loading = true;
+    try {
+      const data = await getRecords(name);
       if (data) {
         entities = [...data].sort(sortRecordsByName);
         error = '';
       }
-      if (fetchError) {
-        error = formatError(fetchError);
-        errorInvalid = true;
-      }
+    } catch (fetchError) {
+      error = formatError(fetchError);
+      errorInvalid = true;
+    } finally {
       loading = false;
-    });
+    }
+  }
 
-    wire.update({ entityName });
-    wire.connect();
-
-    return () => {
-      if (wire) {
-        wire.disconnect();
-      }
-    };
-  });
-
-  $: if (wire) {
-    wire.update({ entityName });
+  $: if (entityName) {
+    loadEntities(entityName);
   }
 
   $: isInvalid = invalid || errorInvalid;

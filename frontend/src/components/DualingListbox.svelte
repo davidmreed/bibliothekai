@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { getRecords } from '../lib/api/index.js';
   import { sortRecordsByName } from '../lib/utils.js';
@@ -18,7 +17,6 @@
   let searchKey = '';
   let error = '';
   let loading = true;
-  let wire;
   let availableSelect;
   let selectedSelect;
 
@@ -87,29 +85,26 @@
     dispatch('add');
   }
 
-  onMount(() => {
-    wire = new getRecords(({ data, error: fetchError }) => {
+  async function loadEntities(name) {
+    if (!name) {
+      return;
+    }
+    loading = true;
+    try {
+      const data = await getRecords(name);
       if (data) {
         entities = data.map(normalizeEntity);
         error = '';
-      } else if (fetchError) {
-        error = formatError(fetchError);
       }
+    } catch (fetchError) {
+      error = formatError(fetchError);
+    } finally {
       loading = false;
-    });
+    }
+  }
 
-    wire.update({ entityName });
-    wire.connect();
-
-    return () => {
-      if (wire) {
-        wire.disconnect();
-      }
-    };
-  });
-
-  $: if (wire) {
-    wire.update({ entityName });
+  $: if (entityName) {
+    loadEntities(entityName);
   }
 </script>
 

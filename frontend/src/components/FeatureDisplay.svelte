@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import { createEventDispatcher } from 'svelte';
   import { getRecord } from '../lib/api/index.js';
   import { formatError } from '../lib/forms.js';
@@ -12,37 +11,26 @@
   let textId;
   let textTitle = '(No text selected)';
   let error = '';
-  let wire;
 
   $: textId = feature?.text;
 
-  function updateWire() {
-    if (wire && textId) {
-      wire.update({ entityName: 'texts', entityId: textId });
+  async function loadTextTitle(id) {
+    if (!id) {
+      return;
     }
-  }
-
-  onMount(() => {
-    wire = new getRecord(({ data, error: fetchError }) => {
+    try {
+      const data = await getRecord('texts', id);
       if (data) {
         textTitle = data.title;
       }
-      if (fetchError) {
-        error = formatError(fetchError);
-      }
-    });
+    } catch (fetchError) {
+      error = formatError(fetchError);
+    }
+  }
 
-    updateWire();
-    wire.connect();
-
-    return () => {
-      if (wire) {
-        wire.disconnect();
-      }
-    };
-  });
-
-  $: updateWire();
+  $: if (textId) {
+    loadTextTitle(textId);
+  }
 
   $: featureDescription = (() => {
     if (!feature) {
