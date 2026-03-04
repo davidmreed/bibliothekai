@@ -227,12 +227,12 @@
   function publisherAdded(event) {
     volumeDraft = { ...volumeDraft, publisher: event.detail };
     publisherInvalid = false;
-    toggleAddingPublisher();
+    addingPublisher = false;
   }
 
   function seriesAdded(event) {
     volumeDraft = { ...volumeDraft, series: event.detail };
-    toggleAddingSeries();
+    addingSeries = false;
   }
 
   function toggleDetails(event) {
