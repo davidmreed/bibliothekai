@@ -100,7 +100,8 @@
 
 <div id="lwc"></div>
 
-{% manifest_match '*translationView*.js' '<script src="{match}"></script>' %}
+{% manifest_match '*translationView*.css' '<link rel="stylesheet" href="{match}">' %}
+{% manifest_match '*translationView*.js' '<script type="module" src="{match}"></script>' %}
 
 {% include "components/links_component.html" with links=sourcetext.links.all %}
 

@@ -10,6 +10,7 @@ Compare Translations
 
 <div id="lwc"></div>
 
-{% manifest_match '*compareTranslations*.js' '<script src="{match}"></script>' %}
+{% manifest_match '*compareTranslations*.css' '<link rel="stylesheet" href="{match}">' %}
+{% manifest_match '*compareTranslations*.js' '<script type="module" src="{match}"></script>' %}
 
 {% endblock %}

@@ -13,6 +13,7 @@ Add Volume
 </h1>
 <div id="lwc"></div>
 
-{% manifest_match '*addVolume*.js' '<script src="{match}"></script>' %}
+{% manifest_match '*addVolume*.css' '<link rel="stylesheet" href="{match}">' %}
+{% manifest_match '*addVolume*.js' '<script type="module" src="{match}"></script>' %}
 
 {% endblock %}

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-{% if user.is_superuser %}
+{% if request.user.is_superuser %}
 <div class="float-right">
     <small>
         <a href="{% url 'admin:users_user_change' user.id %}">View on Admin</a>
