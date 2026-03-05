@@ -17,7 +17,6 @@
   let formRef;
 
   onMount(() => {
-    if (!volumes) {
       const regex = /volumes\/([0-9]+)\//;
       const loc = document.location.pathname;
       const volumeIdMatch = loc.match(regex);
@@ -27,7 +26,6 @@
       } else {
         volumes = [];
       }
-    }
   });
 
   async function create() {
