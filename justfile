@@ -1,4 +1,8 @@
-set dotenv-load
+set dotenv-load := true
+
+[private]
+default:
+    @just --list
 
 up: frontend rundb resetdb runserver
 
@@ -29,3 +33,10 @@ resetdb:
     uv run backend/manage.py shell \
       --command "from allauth.account.models import EmailAddress; EmailAddress.objects.create(user=User.objects.get(pk=1), email='admin@example.com', verified=True, primary=True)"
     uv run backend/manage.py loaddata backend/dump.json
+
+# Export database to backup file
+backup:
+    pg_dump -U postgres -h $PGHOST_PROD -p $PGPORT_PROD -W -f backups/database-{{datetime("%F")}}.bak -F t railway
+
+psql:
+    psql -U postgres -h $PGHOST_PROD -p $PGPORT_PROD -t railway
