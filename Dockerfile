@@ -33,4 +33,3 @@ COPY --from=node-build /app/backend/translations/static ${APP_HOME}/translations
 RUN DJANGO_SETTINGS_MODULE=config.production python manage.py collectstatic
 EXPOSE 8000
 ENTRYPOINT ["/home/app/web/entrypoint.sh"]
-CMD ["sh", "-c", "gunicorn wsgi:application --bind 0.0.0.0:${PORT}"]
