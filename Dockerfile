@@ -13,6 +13,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV VIRTUAL_ENV=/.venv
 ENV PATH="/.venv/bin:$PATH"
+ENV DJANGO_SETTINGS_MODULE=config.production
 
 COPY pyproject.toml uv.lock .
 RUN uv sync --frozen --no-dev
