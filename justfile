@@ -13,13 +13,13 @@ rundb:
     docker compose up -d
 
 migrate:
-    cd backend && uv run manage.py migrate
+    uv run backend/manage.py migrate
 
 makemigrations:
-    cd backend && uv run manage.py makemigrations
+    uv run backend/manage.py makemigrations
 
 runserver:
-    cd backend && uv run manage.py runserver 0.0.0.0:$PORT
+    uv run backend/manage.py runserver 0.0.0.0:$PORT
 
 shell:
     uv run backend/manage.py shell

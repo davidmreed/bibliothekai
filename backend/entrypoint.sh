@@ -1,4 +1,4 @@
 #!/bin/sh
 
-python manage.py migrate
+uv run manage.py migrate
 exec "$@"
