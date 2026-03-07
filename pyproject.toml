@@ -28,3 +28,6 @@ dev = [
     "django-debug-toolbar>=6.2.0",
     "ruff>=0.15.4",
 ]
+
+[tool.uv]
+default-groups = []
