@@ -25,7 +25,7 @@ ENV APP_HOME=/home/app/web
 RUN mkdir -p $APP_HOME
 WORKDIR $APP_HOME
 
-RUN chown -R app:app $APP_HOME
+RUN chown -R app:app $HOME
 USER app
 
 COPY backend $APP_HOME
