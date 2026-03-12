@@ -1,22 +1,11 @@
 {% load comma_lists %}
 
-<div class="card mb-3">
-    <div class="card-body">
+<article>
+<header>
         <h5 class="card-title">
             {% if review.title %} {{ review.title }} {% else %} Review {% endif %}
         </h5>
-        {% if include_volume or review.volumes.count > 1 %}
-        <div class="card-text mb-3">
-            This review covers:
-            <ul>
-                {% for vol in review.volumes.all %}
-                <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
-                    {{vol.publisher}} {% if vol.published_date %}({{vol.published_date.year}}){% endif %}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        <div class="card-text">
+        </header>
             <p>
                 by
                 {% commalist review.persons.all %}
@@ -26,7 +15,15 @@
                 {% if review.published_date %} {{ review.published_date }}. {% endif %}
 
             </p>
-        </div>
+        {% if include_volume or review.volumes.count > 1 %}
+            This review covers:
+            <ul>
+                {% for vol in review.volumes.all %}
+                <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
+                    {{vol.publisher}} {% if vol.published_date %}({{vol.published_date.year}}){% endif %}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% include "components/links_list_component.html" with links=review.links.all %}
     </div>
-</div>
+</article>

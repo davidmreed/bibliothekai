@@ -297,24 +297,25 @@ query getTranslations($textId: Int) {
   }
 </script>
 
-<h2 class="mt-4">
+<header>
+<h2>
   Translations
+</h2>
   <div
-    class="float-right btn-group btn-group-sm"
     role="group"
     aria-label="Translation actions"
   >
-    <button class="btn btn-outline-secondary" on:click={handleToggleFilters}>
+    <button on:click={handleToggleFilters}>
       {filterTitle}
     </button>
-    <a class="btn btn-outline-primary" href="/volumes/add">Add Translation</a>
+    <a role="button" href="/volumes/add">Add Translation</a>
     {#if allowComparisons}
-      <a class="btn btn-outline-primary" href={translationCompareUrl}>
+      <a role="button" href={translationCompareUrl}>
         Compare Translations
       </a>
     {/if}
   </div>
-</h2>
+</header>
 
 {#if showingFilters}
   <small class="text-muted">
@@ -364,8 +365,7 @@ query getTranslations($textId: Int) {
         />
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-4">
+    <div role="group">
         <label for="format">Format</label>
         <select
           class="form-control form-control-sm format-picklist"
@@ -377,8 +377,6 @@ query getTranslations($textId: Int) {
           <option value="Verse">Verse</option>
           <option value="Prose">Prose</option>
         </select>
-      </div>
-      <div class="form-group col-md-4">
         <label for="language">Language</label>
         <select
           class="form-control form-control-sm language-picklist"
@@ -391,8 +389,6 @@ query getTranslations($textId: Int) {
             <option value={item.id}>{item.name}</option>
           {/each}
         </select>
-      </div>
-      <div class="form-group col-md-4">
         <label for="coverage">Coverage</label>
         <select
           class="form-control form-control-sm coverage-picklist"
@@ -404,7 +400,6 @@ query getTranslations($textId: Int) {
           <option value="Complete">Complete</option>
           <option value="Partial">Partial</option>
         </select>
-      </div>
     </div>
   </form>
 {/if}
@@ -416,7 +411,7 @@ query getTranslations($textId: Int) {
   bind:selectedIds={selectedIds}
   on:sort={handleSort}
 />
-<div class="spinner-grow spinner-grow-sm mt-2" role="status" class:d-none={!loading}>
+<div  role="status" class:d-none={!loading}>
   <span class="sr-only">Loading...</span>
 </div>
 <small class="text-danger form-validity mb-2">{error}</small>
