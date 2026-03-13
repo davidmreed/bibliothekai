@@ -33,16 +33,18 @@
   <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
 {% endif %}
 
-<form class="login" method="POST" action="{% url 'account_login' %}">
+<form method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
-  <table class="table">
+  <table>
     {{ form.as_table }}
   </table>
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
   {% endif %}
-  <a class="btn btn-secondary" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+  <div role="group">
+    <a role="button" class="secondary" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    <button type="submit">{% trans "Sign In" %}</button>
+  </div>
 </form>
 
 {% endblock %}

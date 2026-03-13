@@ -19,7 +19,7 @@ makemigrations:
     uv run backend/manage.py makemigrations
 
 runserver:
-    uv run backend/manage.py runserver 0.0.0.0:$PORT
+    cd backend && uv run manage.py runserver 0.0.0.0:$PORT
 
 shell:
     uv run backend/manage.py shell

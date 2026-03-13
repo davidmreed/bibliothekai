@@ -24,17 +24,17 @@
 </script>
 
 <form novalidate bind:this={formRef} on:submit|preventDefault={create}>
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input
-      class="form-control"
-      placeholder="Name"
-      type="text"
-      bind:value={name}
-      required
-    />
-    <div class="invalid-feedback">The series name is required.</div>
-    <div class="text-danger">{error}</div>
-    <button class="btn btn-primary mt-3" type="submit">Create</button>
-  </div>
+  <label for="name">Name</label>
+  <input
+    id="name"
+    placeholder="Name"
+    type="text"
+    bind:value={name}
+    required
+  />
+  <small class="validation-feedback">The series name is required.</small>
+  {#if error}
+    <small class="danger">{error}</small>
+  {/if}
+  <button type="submit">Create</button>
 </form>

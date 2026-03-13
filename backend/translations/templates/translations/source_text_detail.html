@@ -8,90 +8,68 @@
 
 {% block content %}
 {% if user.is_superuser %}
-<div class="float-right">
+<div style="float: right;">
     <small>
         <a href="{% url 'admin:translations_sourcetext_change' sourcetext.id %}">View on Admin</a>
     </small>
 </div>
 {% endif %}
 
-<h1 class="mt-4 mb-4">
+<header>
+<h1>
     {{ sourcetext.title }}
 </h1>
-<div class="card-deck">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Author</h5>
-            <div class="card-text clearfix">
-                {{ sourcetext.author.full_name }}
-                <div class="float-right">
-                    <a class="ml-3 btn btn-outline-secondary btn-sm"
-                        href="{% url 'person_detail' sourcetext.author.id %}">
-                        More
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% if sourcetext.alternate_names.count %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Other Titles</h5>
-            {% if sourcetext.alternate_names.count > 1 %}
-            <ul class="list-group list-group-flush">
-                {% for a in sourcetext.alternate_names.all %}
-                <li class="list-group-item">
-                    {{ a.name }}
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <div class="card-text">
-                {% for a in sourcetext.alternate_names.all %}
-                {{ a.name }}
-                {% endfor %}
-            </div>
-            {% endif %}
-        </div>
-    </div>
+</header>
+{% if sourcetext.alternate_names.count %}
+<h2>Other Titles</h2>
+    {% if sourcetext.alternate_names.count > 1 %}
+    <ul>
+        {% for a in sourcetext.alternate_names.all %}
+        <li>
+            {{ a.name }}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        {% for a in sourcetext.alternate_names.all %}
+        <p>{{ a.name }}</p>
+        {% endfor %}
     {% endif %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Original Language</h5>
-            <div class="card-text">
-                {{ sourcetext.language }}
-            </div>
-        </div>
+{% endif %}
+<dl>
+    <div>
+        <dt>Author</dt>
+        <dd>
+            <a href="{% url 'person_detail' sourcetext.author.id %}">
+                {{ sourcetext.author.full_name }}
+            </a>
+        </dd>
     </div>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Format</h5>
-            <div class="card-text">
-                {{ sourcetext.get_format_display }}
-            </div>
-        </div>
+    <div>
+        <dt>Original Language</dt>
+        <dd>{{ sourcetext.language }}</dd>
+    </div>
+    <div>
+        <dt>Format</dt>
+        <dd>{{ sourcetext.get_format_display }}</dd>
     </div>
     {% if sourcetext.date %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Date</h5>
-            <div class="card-text">
-                {{ sourcetext.date }}
-            </div>
-        </div>
+    <div>
+        <dt>Date</dt>
+        <dd>{{ sourcetext.date }}</dd>
     </div>
     {% endif %}
-</div>
+</dl>
 
 {% if sourcetext.description %}
-<h2 class="mt-4">Description</h2>
+<h2>Description</h2>
 <p>
     {{ sourcetext.description|linebreaks }}
 </p>
 {% endif %}
 
 {% if sourcetext.coverage %}
-<h2 class="mt-4">Coverage</h2>
+<h2>Coverage</h2>
 <p>
     {{ sourcetext.coverage|linebreaks }}
 </p>

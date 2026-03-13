@@ -3,72 +3,242 @@
 
     <head>
         <title>{% block title %}Bibliothekai{% endblock %}</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-            integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
-            crossorigin="anonymous" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.red.min.css"
+        >
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     </head>
 
+    <style type="text/css">
+        :root {
+            --pill-success: #0f8a5f;
+            --pill-danger: #c62828;
+            --pill-warning: #b26a00;
+            --pill-info: #1f6feb;
+            --pill-commentary: #2a6f97;
+
+            --pico-form-element-spacing-horizontal: 0.25rem;
+            --pico-form-element-spacing-vertical: 0.25rem;
+        }
+
+        .pill, dl dt {
+            padding: .125rem .25rem;
+            border-radius: .125rem;
+            font-weight: 600;
+            font-size: 70%;
+            text-transform: uppercase;
+            --pill-color: var(--pico-muted-color);
+            color: var(--pill-color);
+            background-color: color-mix(in srgb, var(--pill-color) 18%, var(--pico-background-color));
+            border: 1px solid color-mix(in srgb, var(--pill-color) 40%, var(--pico-background-color));
+        }
+
+        .pill-introduction { --pill-color: var(--pico-primary); }
+        .pill-edited { --pill-color: var(--pill-danger); }
+        .pill-notes { --pill-color: var(--pill-warning); }
+        .pill-commentary { --pill-color: var(--pill-commentary); }
+        .pill-translation { --pill-color: var(--pico-primary); }
+        .pill-glossary { --pill-color: var(--pill-info); }
+        .pill-index { --pill-color: var(--pico-secondary); }
+        .pill-bibliography { --pill-color: var(--pico-contrast); }
+        .pill-maps { --pill-color: var(--pill-success); }
+        .pill-facing-text { --pill-color: var(--pill-danger); }
+        .pill-sample-passage { --pill-color: var(--pill-info); }
+
+
+dl {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
+}
+
+dl dd, dl dt {
+    margin: 0;
+    display: inline;
+}
+
+header nav {
+    align-items: center;
+}
+
+.nav-search {
+    padding: 0;
+    margin: 0;
+    align-items: center;
+}
+
+.nav-search form {
+    margin: 0;
+}
+
+.nav-search [role=group] {
+    align-items: center;
+}
+
+.nav-search [role=group],
+[role=group]:not(.card-header-actions) {
+    gap: 0;
+}
+
+[role=group] > button,
+[role=group] > a[role=button],
+[role=group] > input[type=submit] {
+    margin: 0;
+}
+
+.nav-search input {
+    margin: 0;
+    padding: 0.125rem;
+}
+
+.nav-search input[type=search] {
+    min-width: 8rem;
+}
+
+@media (max-width: 768px) {
+    .nav-search {
+        display: none;
+    }
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.card-header > :first-child {
+    margin: 0;
+}
+
+.card-header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+.card-header-actions a[role=button],
+.card-header-actions button {
+    width: auto;
+}
+
+.card-header-actions[role=group] {
+    width: auto;
+}
+
+.card-header-actions[role=group] > * {
+    width: auto;
+}
+
+.muted {
+    color: var(--pico-muted-color);
+}
+
+.danger,
+.validation-feedback {
+    color: var(--pico-primary);
+}
+
+.validation-feedback {
+    display: none;
+    font-size: 0.875rem;
+}
+
+.validation-feedback.forced {
+    display: block;
+}
+
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: var(--pico-primary);
+}
+
+input.is-invalid ~ .validation-feedback,
+select.is-invalid ~ .validation-feedback,
+textarea.is-invalid ~ .validation-feedback {
+    display: block;
+}
+
+th, td {
+  padding: calc(var(--pico-spacing)/ 2) calc(var(--pico-spacing) / 2);
+}
+
+
+
+    </style>
+
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <span class="navbar-brand">Bibliothekai</span>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText"
-                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarText">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'source_text_index' %}">Texts</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'author_index' %}">Authors</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'translator_index' %}">Translators</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" style="color: red;" href="/">Beta version!</a>
+        <main class="container">
+        <header>
+        <nav>
+                <ul>
+                    <li >
+                        <a href="/"><strong>Bibliothekai</strong></a>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0" action="{% url 'search' %}" method="GET">
-                    <input name="query" class="form-control mr-sm-2" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                <ul>
+                    <li >
+                        <a href="{% url 'source_text_index' %}">Texts</a>
+                    </li>
+                    <li >
+                        <a href="{% url 'author_index' %}">Authors</a>
+                    </li>
+                    <li >
+                        <a href="{% url 'translator_index' %}">Translators</a>
+                    </li>
+                    <li >
+                        <a href="{% url 'about' %}">About</a>
+                    </li>
 
+                </ul>
+                <ul class="nav-search">
+                    <li>
+                        <form action="{% url 'search' %}" method="GET" role="search">
+                            <div class="search-group" role="group">
+                                <input name="query" type="search" placeholder="Search" aria-label="Search">
+                                <input type="submit" value="Search">
+                            </div>
+                        </form>
+                    </li>
+                </ul>
+                <ul>
                 {% if request.user.is_authenticated %}
-                <a class="nav-link" href="{% url 'user_detail' user.id %}">Profile</a>
-                <a class="nav-link" href="{% url 'account_logout'%}?next={{request.path}}">Logout</a>
+                <li>
+                <a href="{% url 'user_detail' user.id %}">Profile</a>
+                </li>
+                <li>
+                <a href="{% url 'account_logout'%}?next={{request.path}}">Logout</a>
+                </li>
                 {% else %}
-                <a class="nav-link" href="{% url 'account_login' %}?next={{request.path}}">Login</a>
-                <a class="nav-link" href="{% url 'account_signup' %}?next={{request.path}}">Sign Up</a>
+                <li>
+                <a href="{% url 'account_login' %}?next={{request.path}}">Login</a>
+                </li>
+                <li>
+                <a href="{% url 'account_signup' %}?next={{request.path}}">Sign&nbsp;Up</a>
+                </li>
                 {% endif %}
-            </div>
+                </ul>
         </nav>
+        </header>
         {% if messages %}
-        <div class="container-md mt-4">
+        <div>
             {% for message in messages %}
-            <div class="alert alert-secondary" role="alert">{{message}}</div>
+            <div role="alert">{{message}}</div>
             {% endfor %}
         </div>
         {% endif %}
 
-        <div class="container-md" id="content">
             {% block content %}{% endblock %}
-        </div>
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+        </main>
     </body>
 
     </html>

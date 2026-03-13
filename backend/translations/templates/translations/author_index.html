@@ -6,25 +6,23 @@ Authors
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">
-    Authors
-</h1>
+<h1>Authors</h1>
 {% for a in object_list %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title clearfix">
+    <article>
+        <header class="card-header">
+        <h2>
             {{ a.full_name }}
-            <div class="float-right">
-                <a class="ml-3 btn btn-primary btn-sm" href="{% url 'person_detail' a.id %}">
+        </h2>
+            <div class="card-header-actions">
+                <a role="button" href="{% url 'person_detail' a.id %}">
                     View works
                 </a>
             </div>
-        </h5>
-        <div class="card-text">
+        </header>
+        <p>
             Author of {{ a.source_texts.count }} text{% if a.source_texts.count != 1 %}s{% endif %}.
-        </div>
-    </div>
-</div>
+        </p>
+    </article>
 {% endfor %}
 {% include "components/pagination.html" %}
 {% endblock %}

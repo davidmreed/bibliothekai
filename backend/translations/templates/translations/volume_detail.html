@@ -6,99 +6,85 @@
 
 {% block content %}
 {% if user.is_superuser %}
-<div class="float-right">
+<div style="float: right;">
     <small>
         <a href="{% url 'admin:translations_volume_change' volume.id %}">View on Admin</a>
     </small>
 </div>
 {% endif %}
 
-<h1 class="mt-4 mb-4">{{ volume.title }}</h1>
+<h1>{{ volume.title }}</h1>
 
-<div class="row">
-    <div class="col-sm-2">
-        <h5>Catalog Details</h5>
+<section>
+{% if volume.description %}
+<p>{{ volume.description|linebreaks }}</p>
+{% endif %}
+<dl>
+    <div>
+        <dt>Publisher</dt>
+        <dd><a href="{% url 'publisher_detail' volume.publisher.id %}">{{ volume.publisher }}</a></dd>
     </div>
-    <div class="col">
-        {% pill "Publisher" volume.publisher "publisher_detail" volume.publisher.id %}
-        {% if volume.published_date %}
-        {% pill "Date" volume.published_date.year %}
-        {% endif %}
+    {% if volume.published_date %}
+    <div>
+        <dt>Date</dt>
+        <dd>{{ volume.published_date.year }}</dd>
+    </div>
+    {% endif %}
         {% if volume.series %}
-        {% pill "Series" volume.series "series_detail" volume.series.id %}
+    <div>
+        <dt>Series</dt>
+        <dd><a href="{% url 'series_detail' volume.series.id %}">{{ volume.series }}</a></dd>
+    </div>
         {% endif %}
         {% if volume.isbn %}
-        {% pill "ISBN" volume.isbn %}
+    <div>
+        <dt>ISBN</dt>
+        <dd>{{ volume.isbn }}</dd>
+    </div>
         {% endif %}
-    </div>
-</div>
-<hr>
-
-{% if volume.description %}
-<div class="row">
-    <div class="col-sm-2">
-        <h5>Description</h5>
-    </div>
-    <div class="col">
-        {{ volume.description|linebreaks }}
-    </div>
-</div>
-<hr>
-
-{% endif %}
+</dl>
 
 {% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps or volume.get_general_features.count %}
-<div class="row">
-    <div class="col-sm-2">
-        <h5>Resources</h5>
-    </div>
-    <div class="col">
-        {% if volume.get_general_features.count %}
-        {% for f in volume.get_general_features %}
+<h2>Resources</h2>
+    {% if volume.get_general_features.count %}
+    {% for f in volume.get_general_features %}
+    <p>
         {% if f.feature == "IN" %}
-        <span class="badge badge-pill badge-primary">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-introduction">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "ED" %}
-        <span class="badge badge-pill badge-danger">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-edited">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "NT" %}
-        <span class="badge badge-pill badge-warning">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-notes">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "CM" %}
-        <span class="badge badge-pill badge-success">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-commentary">{{ f.get_feature_display }}</span>
         {% endif %}
         by
         {% commalist f.persons.all %}
         <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
         {% endcommalist %}
-        <br>
-        {% endfor %}
-        {% endif %}
+    </p>
+    {% endfor %}
+    {% endif %}
+    <p>
         {% if volume.feature_glossary %}
-        <span class="badge badge-pill badge-info">Glossary</span>
+        <span class="pill pill-glossary">Glossary</span>
         {% endif %}
         {% if volume.feature_index %}
-        <span class="badge badge-pill badge-secondary">Index</span>
+        <span class="pill pill-index">Index</span>
         {% endif %}
         {% if volume.feature_bibliography %}
-        <span class="badge badge-pill badge-dark">Bibliography</span>
+        <span class="pill pill-bibliography">Bibliography</span>
         {% endif %}
         {% if volume.feature_maps %}
-        <span class="badge badge-pill badge-success">Maps</span>
+        <span class="pill pill-maps">Maps</span>
         {% endif %}
-    </div>
-</div>
-<hr>
+    </p>
 {% endif %}
-
+</section>
+<hr>
 
 {% regroup features by source_text as texts %}
 
@@ -106,122 +92,124 @@
 {% for t in texts %}
 {% if t.grouper.id %}
 {% regroup t.list by author_string as grouped_features %}
-<div class="card-deck">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title clearfix">
+        <section>
+            <header class="card-header">
+            <h3>
                 {{ t.grouper.title }} {% if t.grouper.get_original_language_title and t.grouper.get_original_language_title != t.grouper.title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
-                <a href="{% url 'source_text_detail' t.grouper.id %}"
-                    class="float-right btn btn-outline-secondary btn-sm">
+            </h3>
+            <div class="card-header-actions">
+                <a role="button" href="{% url 'source_text_detail' t.grouper.id %}">
                     More translations
                 </a>
-            </h5>
-            <p class="card-text mt-4 clearfix">
+                <a role="button" href="{% url 'person_detail' t.grouper.author.id %}">
+                    More {{ t.grouper.author.full_name }}
+                </a>
+            </div>
+            </header>
+            <p>
                 {{ t.grouper.author.full_name }},
                 {{ t.grouper.language }} {{ t.grouper.get_format_display | lower }}.
                 {% if t.grouper.date %}
                 {{ t.grouper.date }}
                 {% endif %}
-                <a href="{% url 'person_detail' t.grouper.author.id %}"
-                    class="float-right btn btn-outline-secondary btn-sm">
-                    More {{ t.grouper.author.full_name }}
-                </a>
-
             </p>
-        </div>
-    </div>
+    <div class="grid">
     {% for feature_set in grouped_features %}
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">
+    <article>
+    <header class="card-header">
+            <h4>
                 {% commalist feature_set.list %}
                 {{ item.get_feature_display }}
                 {% if item.title and item.title != item.source_text.title %}
                 (as <cite>{{ item.title }}</cite>)
                 {% endif %}
                 {% endcommalist %}
-            </h5>
+            </h4>
+        </header>
             {% with f=feature_set.list|first %}
-            <h6 class="card-subtitle mb-2 text-muted">
+            <p><small>
                 by
                 {% commalist f.persons.all %}
                 <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
                 {% endcommalist %}
-            </h6>
+            </small></p>
             {% endwith %}
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
-            <p class="card-text clearfix">
+            <p>
                 Translated into {{ f.language }} {{f.get_format_display | lower}}.
                 {% if f.partial %} This is a partial translation. {% endif %}
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
                 {% if f.sample_passage %}
-                <a class="float-right btn btn-sm btn-outline-secondary"
-                    href="{% url 'translation_compare' f.source_text.id %}?trans={{ f.id }}">
+                <a role="button" class="secondary"
+                   href="{% url 'translation_compare' f.source_text.id %}?trans={{ f.id }}">
                     View Sample
                 </a>
                 {% endif %}
             </p>
             {% endif %}
             {% if f.description %}
-            <p class="card-text">
+            <p>
                 {{ f.description|linebreaks }}
             </p>
             {% endif %}
             {% endfor %}
-        </div>
-    </div>
+    </article>
     {% endfor %}
 </div>
+</section>
 {% endif %}
 <hr>
 {% endfor %}
 
 {% include "components/links_component.html" with links=volume.links.all %}
 
-<h2 class="mt-4 clearfix">
+<section>
+<header class="card-header">
+<h2>
     Published Reviews
-    <div class="float-right">
-        <div class="btn-group btn-group-sm" role="group" aria-label="Published review actions">
-            <a class="btn btn-secondary" href="{% url 'publishedreview_list' volume.id %}">
+</h2>
+    <div class="card-header-actions" role="group">
+            <a role="button" href="{% url 'publishedreview_list' volume.id %}">
                 View all
             </a>
             {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'publishedreview_add' volume.id %}">
+            <a role="button" href="{% url 'publishedreview_add' volume.id %}">
                 Add
             </a>
             {% endif %}
         </div>
-    </div>
-</h2>
+</header>
 
 {% for r in publishedreviews %}
-{% include "components/published_review.html" with review=r %}
+{% include "components/published_review.html" with review=r header_level=3 %}
 {% empty %}
 <p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
+</section>
 
-<h2 class="mt-4 clearfix">
+<section>
+<header class="card-header">
+<h2>
     User Reviews
-    <div class="float-right">
-        <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">
-            <a class="btn btn-secondary" href="{% url 'review_list' volume.id %}">
-                View all</a>
-            {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'review_create' volume.id %}">
-                Add
-            </a>
-            {% endif %}
-        </div>
-    </div>
-
 </h2>
+<div class="card-header-actions" role="group" aria-label="User review actions">
+    <a role="button" href="{% url 'review_list' volume.id %}">
+        View all</a>
+    {% if user.is_authenticated %}
+    <a role="button" href="{% url 'review_create' volume.id %}">
+        Add
+    </a>
+    {% endif %}
+</div>
+</header>
 
 {% for r in reviews %}
-{% include "components/user_review.html" with review=r abbreviate=True %}
+{% include "components/user_review.html" with review=r abbreviate=True header_level=3 %}
 {% empty %}
 <p>We don't have any user reviews for this volume yet.</p>
 {% endfor %}
+</section>
 {% endblock %}

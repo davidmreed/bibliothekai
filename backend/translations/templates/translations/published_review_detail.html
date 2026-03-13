@@ -6,13 +6,13 @@
 
 {% block content %}
 {% if user.is_superuser %}
-<div class="float-right">
+<div style="float: right;">
     <small>
         <a href="{% url 'admin:translations_publishedreview_change' publishedreview.id %}">View on Admin</a>
     </small>
 </div>
 {% endif %}
 
-<h1 class="mt-4 mb-4">Published Review</h1>
-{% include "components/published_review.html" with review=publishedreview include_volume=True %}
+<h1>Published Review</h1>
+{% include "components/published_review.html" with review=publishedreview include_volume=True header_level=2 %}
 {% endblock %}

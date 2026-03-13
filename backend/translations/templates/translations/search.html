@@ -5,72 +5,64 @@ Search Results
 {% endblock %}
 
 {% block content %}
-<h1 class="mt-4 mb-4">
-    Search Results
-</h1>
+<h1>Search Results</h1>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <h2 class="card-title">
-            Texts
-        </h2>
-        <h4 class="card-subtitle mb-2 text-muted">
+<section>
+    <header>
+        <h2>Texts</h2>
+        <p><small>
             {{ source_texts|length }}
             {% if source_texts|length != 1 %} results {% else %} result {% endif %}
-        </h4>
-    </div>
-    <ul class="list-group list-group-flush">
+        </small></p>
+    </header>
+    <ul>
         {% for s in source_texts %}
-        <li class="list-group-item">
+        <li>
             <a href="{% url 'source_text_detail' s.id %}">{{ s.title }} ({{ s.author.full_name }})</a>
         </li>
         {% empty %}
-        <li class="list-group-item">No texts found.</li>
+        <li>No texts found.</li>
         {% endfor %}
     </ul>
-</div>
+</section>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <h2 class="card-title">
-            Volumes
-        </h2>
-        <h4 class="card-subtitle mb-2 text-muted">
+<section>
+    <header>
+        <h2>Volumes</h2>
+        <p><small>
             {{ volumes|length }}
             {% if volumes|length != 1 %} results {% else %} result {% endif %}
-        </h4>
-    </div>
-    <ul class="list-group list-group-flush">
+        </small></p>
+    </header>
+    <ul>
         {% for v in volumes %}
-        <li class="list-group-item">
+        <li>
             <a href="{% url 'volume_detail' v.id %}">{{ v.title }} ({{v.publisher.name}}{% if v.published_date %},
                 {{ v.published_date.year }}{% endif %})</a>
         </li>
         {% empty %}
-        <li class="list-group-item">No volumes found.</li>
+        <li>No volumes found.</li>
         {% endfor %}
     </ul>
-</div>
+</section>
 
-<div class="card mb-3">
-    <div class="card-body">
-        <h2 class="card-title">
-            People
-        </h2>
-        <h4 class="card-subtitle mb-2 text-muted">
+<section>
+    <header>
+        <h2>People</h2>
+        <p><small>
             {{ persons|length }}
             {% if persons|length != 1 %} results {% else %} result {% endif %}
-        </h4>
-    </div>
-    <ul class="list-group list-group-flush">
+        </small></p>
+    </header>
+    <ul>
         {% for p in persons %}
-        <li class="list-group-item">
+        <li>
             <a href="{% url 'person_detail' p.id %}">{{ p.full_name }}</a>
         </li>
         {% empty %}
-        <li class="list-group-item">No people found.</li>
+        <li>No people found.</li>
         {% endfor %}
     </ul>
-</div>
+</section>
 
 {% endblock %}

@@ -55,10 +55,10 @@
 {#if labelText}
   <label for="entities">{labelText}</label>
 {/if}
-<div class="form-row">
-  <div class="col">
+<div class="grid">
+  <div>
     <select
-      class="entities form-control"
+      class="entities"
       name="entities"
       size="1"
       bind:value={value}
@@ -73,20 +73,18 @@
         <option disabled>-- No items --</option>
       {/if}
     </select>
-    <div class="invalid-feedback">{error}</div>
-  </div>
-  <div class="spinner-grow spinner-grow-sm mt-2" role="status" class:d-none={!loading}>
-    <span class="sr-only">Loading...</span>
+    {#if error}
+      <small class="danger">{error}</small>
+    {/if}
   </div>
   {#if shouldAllowAdd}
-    <div class="col-2">
-      <button
-        class="form-control btn btn-sm btn-outline-secondary"
-        type="button"
-        on:click={add}
-      >
+    <div>
+      <button class="secondary" type="button" on:click={add}>
         Add
       </button>
     </div>
   {/if}
 </div>
+{#if loading}
+  <progress aria-label="Loading"></progress>
+{/if}

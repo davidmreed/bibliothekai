@@ -1,32 +1,33 @@
 {% load comma_lists %}
 
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title">
+<article>
+    <header class="card-header">
+        {% if header_level == 2 %}
+        <h2>
             {% if review.title %} {{ review.title }} {% else %} Review {% endif %}
-        </h5>
-        {% if include_volume or review.volumes.count > 1 %}
-        <div class="card-text mb-3">
-            This review covers:
-            <ul>
-                {% for vol in review.volumes.all %}
-                <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
-                    {{vol.publisher}} {% if vol.published_date %}({{vol.published_date.year}}){% endif %}</li>
-                {% endfor %}
-            </ul>
-        </div>
+        </h2>
+        {% else %}
+        <h3>
+            {% if review.title %} {{ review.title }} {% else %} Review {% endif %}
+        </h3>
         {% endif %}
-        <div class="card-text">
-            <p>
-                by
-                {% commalist review.persons.all %}
-                <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
-                {% endcommalist %}.
-                Published in {{ review.location }}.
-                {% if review.published_date %} {{ review.published_date }}. {% endif %}
-
-            </p>
-        </div>
-        {% include "components/links_list_component.html" with links=review.links.all %}
-    </div>
-</div>
+    </header>
+    <p>
+        by
+        {% commalist review.persons.all %}
+        <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
+        {% endcommalist %}.
+        Published in {{ review.location }}.
+        {% if review.published_date %} {{ review.published_date }}. {% endif %}
+    </p>
+    {% if include_volume or review.volumes.count > 1 %}
+        This review covers:
+        <ul>
+            {% for vol in review.volumes.all %}
+            <li><a href="{% url 'volume_detail' vol.id %}">{{ vol.title }}</a>,
+                {{vol.publisher}} {% if vol.published_date %}({{vol.published_date.year}}){% endif %}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% include "components/links_list_component.html" with links=review.links.all %}
+</article>

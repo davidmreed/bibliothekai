@@ -74,60 +74,58 @@
 
 {#if !addingPerson}
   <h2>Publication Details</h2>
-  <small class="form-text text-muted validity-review">
+  <small class="muted">
     Enter details about this review. A date, publication, and volume, issue, or
     pages are required.
   </small>
   <form novalidate bind:this={formRef} on:submit|preventDefault={create}>
-    <div class="form-group">
-      <label for="title">Title</label>
-      <input
-        class="form-control"
-        placeholder="Title of the review, if any"
-        type="text"
-        bind:value={title}
-      />
-      <label for="date">Date</label>
-      <input
-        class="form-control"
-        type="date"
-        bind:value={date}
-        required
-      />
-      <div class="invalid-feedback">Please enter a publication date.</div>
+    <label for="title">Title</label>
+    <input
+      id="title"
+      placeholder="Title of the review, if any"
+      type="text"
+      bind:value={title}
+    />
+    <label for="date">Date</label>
+    <input
+      id="date"
+      type="date"
+      bind:value={date}
+      required
+    />
+    <small class="validation-feedback">Please enter a publication date.</small>
 
-      <label for="location">Publication</label>
-      <input
-        class="form-control"
-        placeholder="Where was this review published?"
-        type="text"
-        bind:value={source}
-        required
-      />
-      <div class="invalid-feedback">Please enter the source of this review.</div>
+    <label for="source">Publication</label>
+    <input
+      id="source"
+      placeholder="Where was this review published?"
+      type="text"
+      bind:value={source}
+      required
+    />
+    <small class="validation-feedback">Please enter the source of this review.</small>
 
-      <label for="location">Volume, Issue or Pages</label>
-      <input
-        class="form-control"
-        placeholder="What volume or issue?"
-        type="text"
-        bind:value={location}
-        required
-      />
-      <div class="invalid-feedback">
-        Please enter the details of the publication.
-      </div>
-      <label for="link">Link</label>
-      <input
-        class="form-control"
-        type="url"
-        bind:value={link}
-        placeholder="Link, if the review is available online"
-      />
-    </div>
+    <label for="location">Volume, Issue or Pages</label>
+    <input
+      id="location"
+      placeholder="What volume or issue?"
+      type="text"
+      bind:value={location}
+      required
+    />
+    <small class="validation-feedback">
+      Please enter the details of the publication.
+    </small>
+    <label for="link">Link</label>
+    <input
+      id="link"
+      type="url"
+      bind:value={link}
+      placeholder="Link, if the review is available online"
+    />
   </form>
   <h2>Authors</h2>
-  <small class="text-muted">Select one or more authors of this review.</small>
+  <small class="muted">Select one or more authors of this review.</small>
   <DualingListbox
     class="persons-listbox"
     entityName="persons"
@@ -137,21 +135,24 @@
   />
 
   <h2>Volumes</h2>
-  <small class="text-muted">Select one or more volumes evaluated in this review.</small>
+  <small class="muted">Select one or more volumes evaluated in this review.</small>
   <DualingListbox
     class="volumes-listbox"
     entityName="volumes"
     bind:value={volumes}
   />
   <hr />
-  <small class="text-danger form-validity mb-2">{error}</small>
-  <button class="btn btn-primary btn-block mb-3" type="button" on:click={create}>
+  {#if error}
+    <small class="danger">{error}</small>
+  {/if}
+  <button style="width: 100%;" type="button" on:click={create}>
     Create
   </button>
 {:else}
   <h4>
     <button
-      class="btn btn-outline-secondary mr-3"
+      class="secondary"
+      style="margin-right: 1rem;"
       type="button"
       on:click={toggleAddingPerson}
     >

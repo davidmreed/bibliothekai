@@ -1,46 +1,51 @@
 {% load comma_lists %}
 
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title clearfix">
+<article>
+    <header class="card-header">
+        {% if header_level == 2 %}
+        <h2>
             {% if review.title %} {{ review.title }} {% else %} Review {% endif %} by
             <a href="{% url 'user_detail' review.user.id %}">{{ review.user.display_name }}</a>
-            {% if review.user == request.user %}
-            <div class="btn-group float-right ml-3" role="group" aria-label="Review options">
-                <a class="btn btn-secondary btn-sm" href="{% url 'review_update' review.id %}">Edit</a>
-                <a class="btn btn-danger btn-sm" href="{% url 'review_delete' review.id %}">Delete</a>
-            </div>
-            {% endif %}
-        </h5>
-        {% if include_volume %}
-        <div class="card-text mb-3">
-            Review of <a href="{% url 'volume_detail' review.volume.id %}">{{ review.volume.title }}</a>,
-            {{review.volume.publisher}} {% if vol.published_date %}({{review.volume.published_date.year}}){% endif%}
+        </h2>
+        {% else %}
+        <h3>
+            {% if review.title %} {{ review.title }} {% else %} Review {% endif %} by
+            <a href="{% url 'user_detail' review.user.id %}">{{ review.user.display_name }}</a>
+        </h3>
+        {% endif %}
+        {% if review.user == request.user %}
+        <div class="card-header-actions" role="group" aria-label="Review options">
+            <a role="button" href="{% url 'review_update' review.id %}">Edit</a>
+            <a role="button" href="{% url 'review_delete' review.id %}">Delete</a>
         </div>
         {% endif %}
-        <div class="card-text mb-3">
-            {% if review.recommended %}
-            {% pill "Recommended" "Yes" %}
-            {% else %}
-            {% pill "Recommended" "No" %}
-            {% endif %}
-            {% pill "Readability" review.readability_rating_string %}
-            {% pill "Closeness" review.closeness_rating_string %}
-        </div>
-        <div class="card-text">
-            {% if abbreviate %}
-            {{ review.content|linebreaks|truncatewords:80 }}
-            <p><a href="{% url 'user_review_detail' review.id %}">Read more</a></p>
-            {% else %}
-            {{ review.content|linebreaks }}
-            {% endif %}
-        </div>
-        {% if not abbreviate %}
-        <div class="card-text">
-            <p>
-                <a href="{% url 'user_review_detail' review.id %}">Permalink</a>
-            </p>
-        </div>
+    </header>
+    {% if include_volume %}
+    <p>
+        Review of <a href="{% url 'volume_detail' review.volume.id %}">{{ review.volume.title }}</a>,
+        {{review.volume.publisher}} {% if vol.published_date %}({{review.volume.published_date.year}}){% endif%}
+    </p>
+    {% endif %}
+    <p>
+        {% if review.recommended %}
+        {% pill "Recommended" "Yes" %}
+        {% else %}
+        {% pill "Recommended" "No" %}
+        {% endif %}
+        {% pill "Readability" review.readability_rating_string %}
+        {% pill "Closeness" review.closeness_rating_string %}
+    </p>
+    <div>
+        {% if abbreviate %}
+        {{ review.content|linebreaks|truncatewords:80 }}
+        <p><a href="{% url 'user_review_detail' review.id %}">Read more</a></p>
+        {% else %}
+        {{ review.content|linebreaks }}
         {% endif %}
     </div>
-</div>
+    {% if not abbreviate %}
+    <p>
+        <a href="{% url 'user_review_detail' review.id %}">Permalink</a>
+    </p>
+    {% endif %}
+</article>

@@ -61,33 +61,27 @@
   }
 </script>
 
-<div>
-  <div class="card">
-    <div class="card-header">
-      <h5 class="card-title">
-        {textTitle}
-        <div class="float-right">
-          <div
-            class="btn-group btn-group-sm"
-            role="group"
-            aria-label="Translation actions"
-          >
-            <button class="btn btn-outline-primary" type="button" on:click={edit}>
-              Edit
-            </button>
-            <button class="btn btn-outline-danger" type="button" on:click={remove}>
-              Remove
-            </button>
-          </div>
-        </div>
-      </h5>
-      <div>{featureDescription}</div>
-      {#if feature && !featureIsValid}
-        <small class="text-danger">
-          This translation isn't valid. Edit it before saving.
-        </small>
-      {/if}
-      <div class="invalid-feedback">{error}</div>
-    </div>
-  </div>
-</div>
+<article>
+  <header>
+    <h5>
+      {textTitle}
+      <div role="group" aria-label="Translation actions" style="float: right;">
+        <button class="secondary" type="button" on:click={edit}>
+          Edit
+        </button>
+        <button class="contrast" type="button" on:click={remove}>
+          Remove
+        </button>
+      </div>
+    </h5>
+  </header>
+  <div>{featureDescription}</div>
+  {#if feature && !featureIsValid}
+    <small class="danger">
+      This translation isn't valid. Edit it before saving.
+    </small>
+  {/if}
+  {#if error}
+    <small class="danger">{error}</small>
+  {/if}
+</article>

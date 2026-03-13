@@ -76,13 +76,14 @@
 </script>
 
 {#if feature}
-  <div class="card mb-2">
-    <div class="card-header">
-      <h5 class="card-title">
+  <article>
+    <header>
+      <h5>
         {feature.feature}
         {#if showDetails}
           <button
-            class="float-right btn btn-sm btn-outline-secondary"
+            class="secondary"
+            style="float: right;"
             type="button"
             on:click={toggleExpanded}
           >
@@ -90,9 +91,9 @@
           </button>
         {/if}
       </h5>
-    </div>
+    </header>
     {#if isVisible}
-      <div class="card-body">
+      <div>
         {#if hasTranslation}
           <Switch
             label="Same language and authors as translation"
@@ -122,7 +123,8 @@
             on:add={handleAddPerson}
           />
           <button
-            class="btn btn-sm btn-outline-primary btn-block mb-2 mt-3"
+            class="secondary"
+            style="width: 100%;"
             type="button"
             on:click={toggleExpanded}
           >
@@ -131,5 +133,5 @@
         {/if}
       </div>
     {/if}
-  </div>
+  </article>
 {/if}
