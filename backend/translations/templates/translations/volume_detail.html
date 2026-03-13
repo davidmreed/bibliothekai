@@ -17,7 +17,7 @@
 
 <section>
 {% if volume.description %}
-{{ volume.description|linebreaks }}
+<p>{{ volume.description|linebreaks }}</p>
 {% endif %}
 <dl>
     <div>
@@ -42,69 +42,70 @@
         <dd>{{ volume.isbn }}</dd>
     </div>
         {% endif %}
+</dl>
 
 {% if volume.feature_glossary or volume.feature_index or volume.feature_bibliography or volume.feature_maps or volume.get_general_features.count %}
-        {% if volume.get_general_features.count %}
-        {% for f in volume.get_general_features %}
+<h2>Resources</h2>
+    {% if volume.get_general_features.count %}
+    {% for f in volume.get_general_features %}
+    <p>
         {% if f.feature == "IN" %}
-        <span class="badge badge-pill badge-primary">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-introduction">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "ED" %}
-        <span class="badge badge-pill badge-danger">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-edited">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "NT" %}
-        <span class="badge badge-pill badge-warning">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-notes">{{ f.get_feature_display }}</span>
         {% endif %}
         {% if f.feature == "CM" %}
-        <span class="badge badge-pill badge-success">
-            {{ f.get_feature_display }}
-        </span>
+        <span class="pill pill-commentary">{{ f.get_feature_display }}</span>
         {% endif %}
         by
         {% commalist f.persons.all %}
         <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
         {% endcommalist %}
-        <br>
-        {% endfor %}
-        {% endif %}
+    </p>
+    {% endfor %}
+    {% endif %}
+    <p>
         {% if volume.feature_glossary %}
-        <span class="pill badge-info">Glossary</span>
+        <span class="pill pill-glossary">Glossary</span>
         {% endif %}
         {% if volume.feature_index %}
-        <span class="pill badge-secondary">Index</span>
+        <span class="pill pill-index">Index</span>
         {% endif %}
         {% if volume.feature_bibliography %}
-        <span class="pill badge-dark">Bibliography</span>
+        <span class="pill pill-bibliography">Bibliography</span>
         {% endif %}
         {% if volume.feature_maps %}
-        <span class="pill badge-success">Maps</span>
+        <span class="pill pill-maps">Maps</span>
         {% endif %}
+    </p>
 {% endif %}
 </section>
 <hr>
 
 {% regroup features by source_text as texts %}
 
+<h2>Translations</h2>
 {% for t in texts %}
 {% if t.grouper.id %}
 {% regroup t.list by author_string as grouped_features %}
         <section>
-            <header>
-            <h2>
+            <header class="card-header">
+            <h3>
                 {{ t.grouper.title }} {% if t.grouper.get_original_language_title and t.grouper.get_original_language_title != t.grouper.title %}
                 ({{ t.grouper.get_original_language_title }}){% endif %}
-                <div role="group">
+            </h3>
+            <div class="card-header-actions">
                 <a role="button" href="{% url 'source_text_detail' t.grouper.id %}">
                     More translations
                 </a>
-                </div>
-            </h2>
+                <a role="button" href="{% url 'person_detail' t.grouper.author.id %}">
+                    More {{ t.grouper.author.full_name }}
+                </a>
+            </div>
             </header>
             <p>
                 {{ t.grouper.author.full_name }},
@@ -112,34 +113,27 @@
                 {% if t.grouper.date %}
                 {{ t.grouper.date }}
                 {% endif %}
-                <a href="{% url 'person_detail' t.grouper.author.id %}"
-                    class="float-right btn btn-outline-secondary btn-sm">
-                    More {{ t.grouper.author.full_name }}
-                </a>
-
             </p>
-        </div>
-    </div>
     <div class="grid">
     {% for feature_set in grouped_features %}
     <article>
-    <header>
-            <h3>
+    <header class="card-header">
+            <h4>
                 {% commalist feature_set.list %}
                 {{ item.get_feature_display }}
                 {% if item.title and item.title != item.source_text.title %}
                 (as <cite>{{ item.title }}</cite>)
                 {% endif %}
                 {% endcommalist %}
-            </h3>
+            </h4>
         </header>
             {% with f=feature_set.list|first %}
-            <h6 class="card-subtitle mb-2 text-muted">
+            <p><small>
                 by
                 {% commalist f.persons.all %}
                 <a href="{% url 'person_detail' item.id %}">{{ item.full_name }}</a>
                 {% endcommalist %}
-            </h6>
+            </small></p>
             {% endwith %}
             {% for f in feature_set.list %}
             {% if f.feature == 'TR' %}
@@ -149,8 +143,8 @@
                 {% if f.has_facing_text %} This translation includes a facing {{ f.source_text.language }} text.
                 {% endif %}
                 {% if f.sample_passage %}
-                <a class="float-right btn btn-sm btn-outline-secondary"
-                    href="{% url 'translation_compare' f.source_text.id %}?trans={{ f.id }}">
+                <a role="button" class="secondary"
+                   href="{% url 'translation_compare' f.source_text.id %}?trans={{ f.id }}">
                     View Sample
                 </a>
                 {% endif %}
@@ -165,6 +159,7 @@
     </article>
     {% endfor %}
 </div>
+</section>
 {% endif %}
 <hr>
 {% endfor %}
@@ -172,11 +167,11 @@
 {% include "components/links_component.html" with links=volume.links.all %}
 
 <section>
-<header>
+<header class="card-header">
 <h2>
     Published Reviews
 </h2>
-    <div role="group">
+    <div class="card-header-actions" role="group">
             <a role="button" href="{% url 'publishedreview_list' volume.id %}">
                 View all
             </a>
@@ -189,34 +184,32 @@
 </header>
 
 {% for r in publishedreviews %}
-{% include "components/published_review.html" with review=r %}
+{% include "components/published_review.html" with review=r header_level=3 %}
 {% empty %}
 <p>We don't have any published reviews for this volume yet.</p>
 {% endfor %}
 </section>
 
 <section>
-<header>
+<header class="card-header">
 <h2>
     User Reviews
-    <div class="float-right">
-        <div class="btn-group btn-group-sm" role="group" aria-label="User review actions">
-            <a class="btn btn-secondary" href="{% url 'review_list' volume.id %}">
-                View all</a>
-            {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'review_create' volume.id %}">
-                Add
-            </a>
-            {% endif %}
-        </div>
-    </div>
 </h2>
+<div class="card-header-actions" role="group" aria-label="User review actions">
+    <a role="button" href="{% url 'review_list' volume.id %}">
+        View all</a>
+    {% if user.is_authenticated %}
+    <a role="button" href="{% url 'review_create' volume.id %}">
+        Add
+    </a>
+    {% endif %}
+</div>
 </header>
 
 {% for r in reviews %}
-{% include "components/user_review.html" with review=r abbreviate=True %}
+{% include "components/user_review.html" with review=r abbreviate=True header_level=3 %}
 {% empty %}
 <p>We don't have any user reviews for this volume yet.</p>
 {% endfor %}
-{% endblock %}
 </section>
+{% endblock %}

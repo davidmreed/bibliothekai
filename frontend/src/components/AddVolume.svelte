@@ -287,7 +287,8 @@
       Publication Details
       {#if !detailsExpanded}
         <button
-          class="float-right btn btn-outline-primary"
+          class="secondary"
+          style="float: right;"
           type="button"
           on:click={toggleDetails}
         >
@@ -296,113 +297,108 @@
       {/if}
     </h2>
     {#if detailsExpanded}
-      <small class="form-text text-muted mb-2">
+      <small class="muted">
         Enter details about this volume. A title, published date, and publisher
         are required.
       </small>
 
       <div class="details">
         <form
-          class="needs-validation"
           novalidate
           bind:this={detailsForm}
           on:submit|preventDefault={toggleDetails}
         >
-          <div class="form-group">
-            <div class="form-row">
-              <div class="col-6">
-                <label for="title">Title</label>
-                <input
-                  id="title"
-                  class="form-control"
-                  placeholder="Title"
-                  type="text"
-                  bind:value={volumeDraft.title}
-                  required
-                />
-                <div class="invalid-feedback">Please enter a title.</div>
-              </div>
-              <div class="col">
-                <PopUpMenu
-                  labelText="Primary Language"
-                  entityName="languages"
-                  allowAdd={false}
-                  bind:value={primaryLanguage}
-                />
-                <small class="text-muted">
-                  Language of the majority of this volume. Translations default
-                  to this language.
-                </small>
-              </div>
+          <div class="grid">
+            <div>
+              <label for="title">Title</label>
+              <input
+                id="title"
+                placeholder="Title"
+                type="text"
+                bind:value={volumeDraft.title}
+                required
+              />
+              <small class="validation-feedback">Please enter a title.</small>
             </div>
-            <div class="form-row">
-              <div class="col">
-                <PopUpMenu
-                  labelText="Publisher"
-                  entityName="publishers"
-                  allowAdd={true}
-                  bind:value={volumeDraft.publisher}
-                  invalid={publisherInvalid}
-                  on:add={toggleAddingPublisher}
-                />
-                <div class="invalid-feedback">
-                  Please select or create a publisher.
-                </div>
-              </div>
-              <div class="col">
-                <PopUpMenu
-                  labelText="Series"
-                  entityName="series"
-                  allowAdd={true}
-                  bind:value={volumeDraft.series}
-                  on:add={toggleAddingSeries}
-                />
-              </div>
+            <div>
+              <PopUpMenu
+                labelText="Primary Language"
+                entityName="languages"
+                allowAdd={false}
+                bind:value={primaryLanguage}
+              />
+              <small class="muted">
+                Language of the majority of this volume. Translations default
+                to this language.
+              </small>
             </div>
-            <div class="form-row">
-              <div class="col">
-                <label for="date">Publication Date</label>
-                <input
-                  id="date"
-                  class="form-control"
-                  type="date"
-                  bind:value={volumeDraft.published_date}
-                  required
-                />
-                <small class="text-muted">If only a year is present, use January 1.</small>
-                <div class="invalid-feedback">Please enter a publication date.</div>
-              </div>
-              <div class="col">
-                <label for="isbn">ISBN</label>
-                <input
-                  id="isbn"
-                  class="form-control"
-                  placeholder="Optional: ISBN, if present"
-                  type="text"
-                  bind:value={volumeDraft.isbn}
-                />
-              </div>
-            </div>
-            <label for="description">Description</label>
-            <textarea
-              id="description"
-              class="form-control"
-              placeholder="Optional: describe unique features of this volume, such as maps, indices, and other supporting material. Record translations, introductions, and notes below."
-              type="text"
-              bind:value={volumeDraft.description}
-            ></textarea>
-            <label for="link">Website</label>
-            <input
-              id="link"
-              class="form-control"
-              placeholder="Optional: link to book on publisher's website"
-              type="url"
-              bind:value={volumeDraft.link}
-            />
           </div>
+          <div class="grid">
+            <div>
+              <PopUpMenu
+                labelText="Publisher"
+                entityName="publishers"
+                allowAdd={true}
+                bind:value={volumeDraft.publisher}
+                invalid={publisherInvalid}
+                on:add={toggleAddingPublisher}
+              />
+              {#if publisherInvalid}
+                <small class="validation-feedback forced">
+                  Please select or create a publisher.
+                </small>
+              {/if}
+            </div>
+            <div>
+              <PopUpMenu
+                labelText="Series"
+                entityName="series"
+                allowAdd={true}
+                bind:value={volumeDraft.series}
+                on:add={toggleAddingSeries}
+              />
+            </div>
+          </div>
+          <div class="grid">
+            <div>
+              <label for="date">Publication Date</label>
+              <input
+                id="date"
+                type="date"
+                bind:value={volumeDraft.published_date}
+                required
+              />
+              <small class="muted">If only a year is present, use January 1.</small>
+              <small class="validation-feedback">Please enter a publication date.</small>
+            </div>
+            <div>
+              <label for="isbn">ISBN</label>
+              <input
+                id="isbn"
+                placeholder="Optional: ISBN, if present"
+                type="text"
+                bind:value={volumeDraft.isbn}
+              />
+            </div>
+          </div>
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            placeholder="Optional: describe unique features of this volume, such as maps, indices, and other supporting material. Record translations, introductions, and notes below."
+            type="text"
+            bind:value={volumeDraft.description}
+          ></textarea>
+          <label for="link">Website</label>
+          <input
+            id="link"
+            placeholder="Optional: link to book on publisher's website"
+            type="url"
+            bind:value={volumeDraft.link}
+          />
           <button
             type="submit"
-            class="btn btn-outline-primary btn-block mb-3"
+            class="secondary"
+            style="width: 100%;"
             on:click={toggleDetails}
           >
             Done with Details
@@ -412,27 +408,30 @@
     {/if}
 
     <h2>Contents</h2>
-    <small class="text-muted">
+    <small class="muted">
       Bibliothekai tracks each translated text in a volume separately, including
       any introduction or notes to the text. You can also record overall
       introductions and notes that apply to the whole volume as general features
       below.
     </small>
-    <h3 class="mt-3">
+    <h3>
       Translations
-      <div class="float-right">
-        <button class="btn btn-outline-primary" type="button" on:click={addTranslation}>
-          Add
-        </button>
-      </div>
+      <button
+        class="secondary"
+        style="float: right;"
+        type="button"
+        on:click={addTranslation}
+      >
+        Add
+      </button>
     </h3>
-    <small class="form-text text-muted mb-1">
+    <small class="muted">
       Add translations to this volume. At least one translation is required.
     </small>
 
     <div class="translations">
       {#each features as item (item.id)}
-        <div class="mb-2">
+        <div style="margin-bottom: 0.5rem;">
           <FeatureDisplay
             class="feature-display"
             feature={item}
@@ -442,62 +441,60 @@
         </div>
       {/each}
     </div>
-    <h3 class="mt-3">Resources</h3>
-    <small class="form-text text-muted mb-2">
+    <h3>Resources</h3>
+    <small class="muted">
       Add features of the volume as a whole, like general introductions and
       notes that aren't associated with a specific translation. Introductions to
       specific texts should be part of the translation.
     </small>
     <div class="volume-feature-switches">
-      <div class="card mb-2">
-        <div class="card-header">
-          <h5 class="card-title">Volume Resources</h5>
-        </div>
-        <div class="card-body">
-          <form novalidate>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <small class="text-muted mb-2">
-                  Select authored resources offered in this volume.
-                </small>
-                <Switch
-                  label="General Introduction"
-                  bind:value={volumeHasIntroduction}
-                />
-                <Switch
-                  label="General Notes"
-                  bind:value={volumeHasNotes}
-                />
-                <Switch
-                  label="Editors"
-                  bind:value={volumeHasEdited}
-                />
-              </div>
-              <div class="form-group col-md-6">
-                <small class="text-muted mb-2">
-                  Select additional resources offered in this volume.
-                </small>
-                <Switch
-                  label="Bibliography"
-                  bind:value={volumeDraft.feature_bibliography}
-                />
-                <Switch
-                  label="Maps"
-                  bind:value={volumeDraft.feature_maps}
-                />
-                <Switch
-                  label="Glossary"
-                  bind:value={volumeDraft.feature_glossary}
-                />
-                <Switch
-                  label="Index"
-                  bind:value={volumeDraft.feature_index}
-                />
-              </div>
+      <article>
+        <header>
+          <h5>Volume Resources</h5>
+        </header>
+        <form novalidate>
+          <div class="grid">
+            <div>
+              <small class="muted">
+                Select authored resources offered in this volume.
+              </small>
+              <Switch
+                label="General Introduction"
+                bind:value={volumeHasIntroduction}
+              />
+              <Switch
+                label="General Notes"
+                bind:value={volumeHasNotes}
+              />
+              <Switch
+                label="Editors"
+                bind:value={volumeHasEdited}
+              />
             </div>
-          </form>
-        </div>
-      </div>
+            <div>
+              <small class="muted">
+                Select additional resources offered in this volume.
+              </small>
+              <Switch
+                label="Bibliography"
+                bind:value={volumeDraft.feature_bibliography}
+              />
+              <Switch
+                label="Maps"
+                bind:value={volumeDraft.feature_maps}
+              />
+              <Switch
+                label="Glossary"
+                bind:value={volumeDraft.feature_glossary}
+              />
+              <Switch
+                label="Index"
+                bind:value={volumeDraft.feature_index}
+              />
+            </div>
+          </div>
+        </form>
+      </article>
     </div>
     <div class="volume-features">
     {#each generalFeatures.features as f (f.feature)}
@@ -511,13 +508,17 @@
       {/each}
     </div>
     <hr />
-    <small class="text-danger form-validity mb-2">{error}</small>
-    <div class="status text-center mb-2" class:d-none={!creating}>
-      <div class="spinner-grow spinner-grow-sm mr-2" role="status"></div>
-      Creating records...
-    </div>
+    {#if error}
+      <small class="danger">{error}</small>
+    {/if}
+    {#if creating}
+      <div class="status">
+        <progress aria-label="Creating records"></progress>
+        Creating records...
+      </div>
+    {/if}
     <button
-      class="btn btn-primary btn-block mb-3"
+      style="width: 100%;"
       type="button"
       on:click={create}
       disabled={creating}
@@ -529,7 +530,8 @@
 {#if showingTranslationModal}
   <h4>
     <button
-      class="btn btn-outline-secondary mr-3"
+      class="secondary"
+      style="margin-right: 1rem;"
       type="button"
       on:click={toggleEditingFeature}
     >
@@ -548,7 +550,8 @@
 {#if addingPublisher}
   <h4>
     <button
-      class="btn btn-outline-secondary mr-3"
+      class="secondary"
+      style="margin-right: 1rem;"
       type="button"
       on:click={toggleAddingPublisher}
     >
@@ -561,7 +564,8 @@
 {#if addingSeries}
   <h4>
     <button
-      class="btn btn-outline-secondary mr-3"
+      class="secondary"
+      style="margin-right: 1rem;"
       type="button"
       on:click={toggleAddingSeries}
     >
@@ -574,7 +578,8 @@
 {#if addingPerson}
   <h4>
     <button
-      class="btn btn-outline-secondary mr-3"
+      class="secondary"
+      style="margin-right: 1rem;"
       type="button"
       on:click={toggleAddingPerson}
     >

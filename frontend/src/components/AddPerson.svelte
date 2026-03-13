@@ -34,43 +34,43 @@
 </script>
 
 <form novalidate bind:this={formRef} on:submit|preventDefault={create}>
-  <small class="form-text text-muted">
+  <small class="muted">
     Enter information about this person. The first and last name are required.
   </small>
-  <div class="form-group">
-    <label for="first_name">First Name</label>
-    <input
-      class="form-control"
-      placeholder="First name"
-      type="text"
-      bind:value={firstName}
-      required
-    />
-    <div class="invalid-feedback">Please enter a first name.</div>
-    <label for="middle_name">Middle Name</label>
-    <input
-      class="form-control"
-      placeholder="Middle name"
-      type="text"
-      bind:value={middleName}
-    />
-    <label for="last_name">Last Name</label>
-    <input
-      class="form-control"
-      placeholder="Last name"
-      type="text"
-      bind:value={lastName}
-      required
-    />
-    <div class="invalid-feedback">Please enter a last name.</div>
-    <label for="description">Description</label>
-    <input
-      class="form-control"
-      placeholder="Optional: enter a brief description or bio for this person."
-      type="text"
-      bind:value={description}
-    />
-    <div class="text-danger">{error}</div>
-    <button class="btn btn-primary mt-3" type="submit">Create</button>
-  </div>
+  <label for="first_name">First Name</label>
+  <input
+    id="first_name"
+    placeholder="First name"
+    type="text"
+    bind:value={firstName}
+    required
+  />
+  <small class="validation-feedback">Please enter a first name.</small>
+  <label for="middle_name">Middle Name</label>
+  <input
+    id="middle_name"
+    placeholder="Middle name"
+    type="text"
+    bind:value={middleName}
+  />
+  <label for="last_name">Last Name</label>
+  <input
+    id="last_name"
+    placeholder="Last name"
+    type="text"
+    bind:value={lastName}
+    required
+  />
+  <small class="validation-feedback">Please enter a last name.</small>
+  <label for="description">Description</label>
+  <input
+    id="description"
+    placeholder="Optional: enter a brief description or bio for this person."
+    type="text"
+    bind:value={description}
+  />
+  {#if error}
+    <small class="danger">{error}</small>
+  {/if}
+  <button type="submit">Create</button>
 </form>

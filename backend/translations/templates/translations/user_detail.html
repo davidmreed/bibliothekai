@@ -6,35 +6,33 @@
 
 {% block content %}
 {% if request.user.is_superuser %}
-<div class="float-right">
+<div style="float: right;">
     <small>
         <a href="{% url 'admin:users_user_change' user.id %}">View on Admin</a>
     </small>
 </div>
 {% endif %}
 
-<h1 class="mt-4 mb-4">{% if user.display_name %} {{ user.display_name }} {% else %} Anonymous User {% endif %}</h1>
+<h1>{% if user.display_name %} {{ user.display_name }} {% else %} Anonymous User {% endif %}</h1>
 {% if user == request.user %}
-<h2 class="mt-4">Manage My Account</h2>
+<h2>Manage My Account</h2>
 <ul>
     <li><a href="{% url 'account_change_password' %}">Change Password</a></li>
     <li><a href="{% url 'account_email' %}">Manage Email Addresses</a></li>
     <li><a href="{% url 'user_update' %}">Edit My Profile and Display Name</a></li>
 </ul>
 {% endif %}
-<h2 class="mt-4">Profile</h2>
+<h2>Profile</h2>
 {% if user.profile %}
 <p>{{ user.profile|linebreaks }}</p>
 {% else %}
 <p>This user doesn't have a profile.</p>
 {% endif %}
 
-<h2 class="mt-4">
-    Reviews
-</h2>
+<h2>Reviews</h2>
 
 {% for r in reviews %}
-{% include "components/user_review.html" with review=r abbreviate=True include_volume=True %}
+{% include "components/user_review.html" with review=r abbreviate=True include_volume=True header_level=3 %}
 {% empty %}
 <p>This user hasn't written any reviews yet.</p>
 {% endfor %}

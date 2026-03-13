@@ -141,15 +141,15 @@ query getTranslations($textId: Int) {
       name: 'Resources',
       valueType: 'pill-list',
       pills: {
-        Introduction: 'primary',
-        Notes: 'warning',
-        Commentary: 'danger',
-        Glossary: 'info',
-        Index: 'secondary',
-        Bibliography: 'dark',
-        Maps: 'success',
-        'Facing Text': 'danger',
-        'Sample Passage': 'info'
+        Introduction: 'introduction',
+        Notes: 'notes',
+        Commentary: 'commentary',
+        Glossary: 'glossary',
+        Index: 'index',
+        Bibliography: 'bibliography',
+        Maps: 'maps',
+        'Facing Text': 'facing-text',
+        'Sample Passage': 'sample-passage'
       }
     }
   ];
@@ -297,13 +297,12 @@ query getTranslations($textId: Int) {
   }
 </script>
 
-<header>
-<h2>
-  Translations
-</h2>
+<header class="card-header">
+  <h2>
+    Translations
+  </h2>
   <div
-    role="group"
-    aria-label="Translation actions"
+    class="card-header-actions"
   >
     <button on:click={handleToggleFilters}>
       {filterTitle}
@@ -318,57 +317,72 @@ query getTranslations($textId: Int) {
 </header>
 
 {#if showingFilters}
-  <small class="text-muted">
+  <small class="muted">
     Select desired translation features to filter the list. Note that not all
     translation features may be in the database.
   </small>
   <form novalidate>
-    <div class="form-row">
-      <div class="form-group col-md-6">
+    <div class="filter-switches">
+      <div class="filter-switch">
         <Switch
           label="Introduction"
           bind:value={filterIntroduction}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Notes"
           bind:value={filterNotes}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Commentary"
           bind:value={filterCommentary}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Glossary"
           bind:value={filterGlossary}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Index"
           bind:value={filterIndex}
         />
       </div>
-      <div class="form-group col-md-6">
+      <div class="filter-switch">
         <Switch
           label="Bibliography"
           bind:value={filterBibliography}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Maps"
           bind:value={filterMaps}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Sample Passage"
           bind:value={filterSamplePassage}
         />
+      </div>
+      <div class="filter-switch">
         <Switch
           label="Facing Text"
           bind:value={filterFacingText}
         />
       </div>
     </div>
-    <div role="group">
+    <div class="grid">
+      <div>
         <label for="format">Format</label>
         <select
-          class="form-control form-control-sm format-picklist"
+          class="format-picklist"
           name="format"
           size="1"
           bind:value={selectedFilterFormat}
@@ -377,9 +391,11 @@ query getTranslations($textId: Int) {
           <option value="Verse">Verse</option>
           <option value="Prose">Prose</option>
         </select>
+      </div>
+      <div>
         <label for="language">Language</label>
         <select
-          class="form-control form-control-sm language-picklist"
+          class="language-picklist"
           name="language"
           size="1"
           bind:value={selectedFilterLanguage}
@@ -389,9 +405,11 @@ query getTranslations($textId: Int) {
             <option value={item.id}>{item.name}</option>
           {/each}
         </select>
+      </div>
+      <div>
         <label for="coverage">Coverage</label>
         <select
-          class="form-control form-control-sm coverage-picklist"
+          class="coverage-picklist"
           name="coverage"
           size="1"
           bind:value={selectedFilterCoverage}
@@ -400,6 +418,7 @@ query getTranslations($textId: Int) {
           <option value="Complete">Complete</option>
           <option value="Partial">Partial</option>
         </select>
+      </div>
     </div>
   </form>
 {/if}
@@ -411,7 +430,25 @@ query getTranslations($textId: Int) {
   bind:selectedIds={selectedIds}
   on:sort={handleSort}
 />
-<div  role="status" class:d-none={!loading}>
-  <span class="sr-only">Loading...</span>
-</div>
-<small class="text-danger form-validity mb-2">{error}</small>
+{#if loading}
+  <progress aria-label="Loading"></progress>
+{/if}
+{#if error}
+  <small class="danger">{error}</small>
+{/if}
+
+<style>
+  .filter-switches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    margin: 0.75rem 0 1rem;
+  }
+
+  .filter-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+  }
+</style>

@@ -6,28 +6,26 @@ Texts
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">
-    Texts
-</h1>
+<h1>Texts</h1>
 
 {% for a in page_obj %}
-        <article>
-        <header>
-        <h2>
-        <a  href="{% url 'person_detail' a.id %}">
-            {{ a.full_name }}</a>
-        </h2>
+    <article>
+        <header class="card-header">
+            <h2>
+                <a href="{% url 'person_detail' a.id %}">
+                    {{ a.full_name }}</a>
+            </h2>
         </header>
-    <nav>
-        {% for s in a.source_texts.all %}
-        <li>
+        <ul>
+            {% for s in a.source_texts.all %}
+            <li>
                 <a href="{% url 'source_text_detail' s.id %}">
-            {{ s.title }}
+                    {{ s.title }}
                 </a>
-        </li>
-        {% endfor %}
-    </ul>
-        </article>
+            </li>
+            {% endfor %}
+        </ul>
+    </article>
 {% endfor %}
 {% include "components/pagination.html" %}
 {% endblock %}

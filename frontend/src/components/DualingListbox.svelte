@@ -108,109 +108,84 @@
   }
 </script>
 
-<small class="text-muted">
-  <br />
+<small class="muted">
   Browse and filter to find records, then click Select to choose them.&nbsp;
   {#if shouldAllowAdd}
     Click New to add a new record.
   {/if}
 </small>
 <input
-  class="form-control mb-2"
   name="search"
   type="search"
   placeholder="Filter"
   aria-label="Filter"
   bind:value={searchKey}
 />
-<small
-  class="form-text text-muted validity is-invalid form-control mb-2"
-  class:d-none={!error}
->
-  {error}
-</small>
-<div class="card-group">
-  <div class="card">
-    <div class="card-body form-group">
-      <select
-        class="entities form-control"
-        name="entities"
-        size="4"
-        multiple
-        bind:this={availableSelect}
-        on:dblclick={moveRight}
-      >
-        {#if filteredEntities.length}
-          {#each filteredEntities as entity (entity.id)}
-            <option value={entity.id}>{getEntityLabel(entity)}</option>
-          {/each}
-        {:else}
-          <option disabled>-- No items --</option>
-        {/if}
-      </select>
-      <br />
+{#if error}
+  <small class="danger">{error}</small>
+{/if}
+<div class="grid">
+  <article>
+    <select
+      class="entities"
+      name="entities"
+      size="4"
+      multiple
+      bind:this={availableSelect}
+      on:dblclick={moveRight}
+    >
+      {#if filteredEntities.length}
+        {#each filteredEntities as entity (entity.id)}
+          <option value={entity.id}>{getEntityLabel(entity)}</option>
+        {/each}
+      {:else}
+        <option disabled>-- No items --</option>
+      {/if}
+    </select>
 
-      <small class="text-muted float-left">
-        Showing {filteredEntities.length} of {availableEntities.length} available
-      </small>
-      <div
-        class="spinner-grow spinner-grow-sm ml-1"
-        role="status"
-        class:d-none={!loading}
-      >
-        <span class="sr-only">Loading...</span>
-      </div>
-      <div class="float-right">
-        {#if !shouldAllowAdd}
-          <button class="btn btn-primary btn-sm" type="button" on:click={moveRight}>
-            Select &raquo;
-          </button>
-        {:else}
-          <div class="btn-group">
-            <button
-              class="btn btn-secondary btn-sm"
-              type="button"
-              on:click={add}
-            >
-              New +
-            </button>
-            <button
-              class="btn btn-primary btn-sm"
-              type="button"
-              on:click={moveRight}
-            >
-              Select &raquo;
-            </button>
-          </div>
-        {/if}
-      </div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-body form-group">
-      <select
-        class="selectedEntities form-control"
-        name="selectedEntities"
-        size="4"
-        multiple
-        bind:this={selectedSelect}
-        on:dblclick={moveLeft}
-      >
-        {#if selectedEntities.length}
-          {#each selectedEntities as entity (entity.id)}
-            <option value={entity.id}>{getEntityLabel(entity)}</option>
-          {/each}
-        {:else}
-          <option disabled>-- No items --</option>
-        {/if}
-      </select>
-      <br />
-      <button class="btn btn-primary btn-sm" type="button" on:click={moveLeft}>
-        &laquo; Unselect
+    <small class="muted">
+      Showing {filteredEntities.length} of {availableEntities.length} available
+    </small>
+    {#if loading}
+      <progress aria-label="Loading"></progress>
+    {/if}
+    {#if !shouldAllowAdd}
+      <button type="button" on:click={moveRight}>
+        Select &raquo;
       </button>
-      <small class="text-muted float-right">
-        Showing {selectedEntities.length} selected
-      </small>
-    </div>
-  </div>
+    {:else}
+      <div role="group">
+        <button class="secondary" type="button" on:click={add}>
+          New +
+        </button>
+        <button type="button" on:click={moveRight}>
+          Select &raquo;
+        </button>
+      </div>
+    {/if}
+  </article>
+  <article>
+    <select
+      class="selectedEntities"
+      name="selectedEntities"
+      size="4"
+      multiple
+      bind:this={selectedSelect}
+      on:dblclick={moveLeft}
+    >
+      {#if selectedEntities.length}
+        {#each selectedEntities as entity (entity.id)}
+          <option value={entity.id}>{getEntityLabel(entity)}</option>
+        {/each}
+      {:else}
+        <option disabled>-- No items --</option>
+      {/if}
+    </select>
+    <button type="button" on:click={moveLeft}>
+      &laquo; Unselect
+    </button>
+    <small class="muted">
+      Showing {selectedEntities.length} selected
+    </small>
+  </article>
 </div>

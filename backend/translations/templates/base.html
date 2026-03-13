@@ -11,14 +11,40 @@
     </head>
 
     <style type="text/css">
+        :root {
+            --pill-success: #0f8a5f;
+            --pill-danger: #c62828;
+            --pill-warning: #b26a00;
+            --pill-info: #1f6feb;
+            --pill-commentary: #2a6f97;
+
+            --pico-form-element-spacing-horizontal: 0.25rem;
+            --pico-form-element-spacing-vertical: 0.25rem;
+        }
+
         .pill, dl dt {
             padding: .125rem .25rem;
             border-radius: .125rem;
             font-weight: 600;
             font-size: 70%;
             text-transform: uppercase;
-            background-color: var(--pico-background-color);
+            --pill-color: var(--pico-muted-color);
+            color: var(--pill-color);
+            background-color: color-mix(in srgb, var(--pill-color) 18%, var(--pico-background-color));
+            border: 1px solid color-mix(in srgb, var(--pill-color) 40%, var(--pico-background-color));
         }
+
+        .pill-introduction { --pill-color: var(--pico-primary); }
+        .pill-edited { --pill-color: var(--pill-danger); }
+        .pill-notes { --pill-color: var(--pill-warning); }
+        .pill-commentary { --pill-color: var(--pill-commentary); }
+        .pill-translation { --pill-color: var(--pico-primary); }
+        .pill-glossary { --pill-color: var(--pill-info); }
+        .pill-index { --pill-color: var(--pico-secondary); }
+        .pill-bibliography { --pill-color: var(--pico-contrast); }
+        .pill-maps { --pill-color: var(--pill-success); }
+        .pill-facing-text { --pill-color: var(--pill-danger); }
+        .pill-sample-passage { --pill-color: var(--pill-info); }
 
 
 dl {
@@ -35,20 +61,118 @@ dl dd, dl dt {
     display: inline;
 }
 
-.inline input, .inline a[role=button], header input, header a[role=button] {
-    width: auto !important;
-    margin: 0.25rem;
-    padding: 0.125rem;
-    vertical-align: middle;
-    font-weight: bold;
-    display: inline !important;
-    text-decoration: none;
-    height: 80%;
+header nav {
+    align-items: center;
 }
 
-header div {
-    float: right;
+.nav-search {
+    padding: 0;
+    margin: 0;
+    align-items: center;
 }
+
+.nav-search form {
+    margin: 0;
+}
+
+.nav-search [role=group] {
+    align-items: center;
+}
+
+.nav-search [role=group],
+[role=group]:not(.card-header-actions) {
+    gap: 0;
+}
+
+[role=group] > button,
+[role=group] > a[role=button],
+[role=group] > input[type=submit] {
+    margin: 0;
+}
+
+.nav-search input {
+    margin: 0;
+    padding: 0.125rem;
+}
+
+.nav-search input[type=search] {
+    min-width: 8rem;
+}
+
+@media (max-width: 768px) {
+    .nav-search {
+        display: none;
+    }
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.card-header > :first-child {
+    margin: 0;
+}
+
+.card-header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    justify-content: flex-end;
+}
+
+.card-header-actions a[role=button],
+.card-header-actions button {
+    width: auto;
+}
+
+.card-header-actions[role=group] {
+    width: auto;
+}
+
+.card-header-actions[role=group] > * {
+    width: auto;
+}
+
+.muted {
+    color: var(--pico-muted-color);
+}
+
+.danger,
+.validation-feedback {
+    color: var(--pico-primary);
+}
+
+.validation-feedback {
+    display: none;
+    font-size: 0.875rem;
+}
+
+.validation-feedback.forced {
+    display: block;
+}
+
+input.is-invalid,
+select.is-invalid,
+textarea.is-invalid {
+    border-color: var(--pico-primary);
+}
+
+input.is-invalid ~ .validation-feedback,
+select.is-invalid ~ .validation-feedback,
+textarea.is-invalid ~ .validation-feedback {
+    display: block;
+}
+
+th, td {
+  padding: calc(var(--pico-spacing)/ 2) calc(var(--pico-spacing) / 2);
+}
+
+
 
     </style>
 
@@ -76,6 +200,16 @@ header div {
                     </li>
 
                 </ul>
+                <ul class="nav-search">
+                    <li>
+                        <form action="{% url 'search' %}" method="GET" role="search">
+                            <div class="search-group" role="group">
+                                <input name="query" type="search" placeholder="Search" aria-label="Search">
+                                <input type="submit" value="Search">
+                            </div>
+                        </form>
+                    </li>
+                </ul>
                 <ul>
                 {% if request.user.is_authenticated %}
                 <li>
@@ -89,7 +223,7 @@ header div {
                 <a href="{% url 'account_login' %}?next={{request.path}}">Login</a>
                 </li>
                 <li>
-                <a href="{% url 'account_signup' %}?next={{request.path}}">Sign Up</a>
+                <a href="{% url 'account_signup' %}?next={{request.path}}">Sign&nbsp;Up</a>
                 </li>
                 {% endif %}
                 </ul>

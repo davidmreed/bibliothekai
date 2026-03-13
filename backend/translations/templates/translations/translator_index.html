@@ -6,17 +6,15 @@ Translators
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">
-    Translators
-</h1>
+<h1>Translators</h1>
 {% for a in page_obj %}
     <article>
-    <header>
-        <h5 >
+    <header class="card-header">
+        <h2>
         {{ a.full_name }}
-        </h5>
-            <div>
-                <a href="{% url 'person_detail' a.id %}">
+        </h2>
+            <div class="card-header-actions">
+                <a role="button" href="{% url 'person_detail' a.id %}">
                     View works
                 </a>
             </div>

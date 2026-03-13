@@ -20,22 +20,23 @@ Bibliothekai
     evaluating, and selecting translations of classical works.
 </p>
     <article>
-        <header>
-            <h3>
+        <header class="card-header">
+            <h2>
                 Explore
-            </h3>
+            </h2>
         </header>
             <p>Start by exploring texts, ancient authors, or modern translators.</p>
+            <div role="group">
                 <a href="{% url 'source_text_index' %}" role="button">Texts</a>
                 <a href="{% url 'author_index' %}" role="button">Ancient authors</a>
                 <a href="{% url 'translator_index' %}" role="button">Modern translators</a>
-            </p>
+            </div>
     </article>
     <article>
-        <header>
-            <h3>
+        <header class="card-header">
+            <h2>
                 Search
-            </h3>
+            </h2>
         </header>
             <p>Enter a search term, like a title or author.</p>
             <form action="{% url 'search' %}" method="GET">
@@ -46,14 +47,16 @@ Bibliothekai
             </form>
     </article>
     <article>
-        <header>
-            <h3>
+        <header class="card-header">
+            <h2>
                 Contribute
-            </h3>
+            </h2>
         </header>
             <p>Add new translations, suggest new texts or authors, or share reviews to help find the best translations.</p>
             <p>Contribute reviews on each volume's page.</p>
-            <a role="button" href="{% url 'volume_add' %}">Add a translation</a>
-            <a role="button" href="{% url 'submit' %}">Add suggestion</a>
+            <div role="group">
+                <a role="button" href="{% url 'volume_add' %}">Add a translation</a>
+                <a role="button" href="{% url 'submit' %}">Add suggestion</a>
+            </div>
     </article>
 {% endblock %}

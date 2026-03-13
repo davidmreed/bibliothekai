@@ -1,7 +1,7 @@
 <div class="pagination">
-    <p class="text-center w-100">
+    <p style="text-align: center;">
         {% if page_obj.has_previous %}
-        <span class="mr-4">
+        <span style="margin-right: 1rem;">
             <a href="?page=1">First</a> &laquo;
             <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
         </span>
@@ -12,7 +12,7 @@
         </span>
 
         {% if page_obj.has_next %}
-        <span class="ml-4">
+        <span style="margin-left: 1rem;">
             <a href="?page={{ page_obj.next_page_number }}">Next</a> &raquo;
             <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
         </span>

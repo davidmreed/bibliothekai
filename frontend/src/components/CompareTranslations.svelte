@@ -210,145 +210,133 @@ query getTranslations($textId: Int) {
 </script>
 
 {#if error}
-  <h1 class="mb-4">Comparing Translations</h1>
-  <div>An error occurred while loading data: {error}</div>
+  <h1>Comparing Translations</h1>
+  <p>An error occurred while loading data: {error}</p>
 {:else if data}
-  <h1 class="mt-4 mb-4">Comparing Translations of {data.text.title}</h1>
-  <div class="row row-cols-1 row-cols-lg-2">
+  <h1>Comparing Translations of {data.text.title}</h1>
+  <div class="grid">
     {#if showOriginal}
-      <div class="col mb-4">
-        <div class="card h-100">
-          <div class="card-header">
-            <h5 class="card-title clearfix">
-              Original Text
-              <div class="float-right">
-                <button
-                  class="btn btn-sm btn-outline-secondary"
-                  type="button"
-                  on:click={handleShowHideOriginal}
-                >
-                  Hide
-                </button>
-              </div>
-            </h5>
+      <article>
+        <header>
+          <h5>Original Text</h5>
+          <div role="group">
+            <button
+              class="secondary"
+              type="button"
+              on:click={handleShowHideOriginal}
+            >
+              Hide
+            </button>
           </div>
-          <div class="card-body">
-            <h5 class="card-title clearfix">
-              <cite>{data.text.title}</cite>
-              {data.text.samplePassageSpec}
-              <div class="float-right">
-                <a class="btn btn-sm btn-outline-secondary" href={data.text.url}>
-                  Details
+        </header>
+        <h5>
+          <cite>{data.text.title}</cite>
+          {data.text.samplePassageSpec}
+        </h5>
+        <div role="group">
+          <a role="button" class="secondary" href={data.text.url}>
+            Details
+          </a>
+        </div>
+        <p style="white-space: pre-wrap">
+          {#if data.text.samplePassage}
+            {data.text.samplePassage}
+          {:else}
+            This text does not have a sample passage.
+          {/if}
+        </p>
+        <footer>
+          <small class="muted">
+            {#if data.text.samplePassageSourceLink}
+              <a href={data.text.samplePassageSourceLink}>
+                {data.text.samplePassageSource}
+              </a>
+            {:else}
+              {data.text.samplePassageSource}
+            {/if}
+            {#if data.text.samplePassageLicense}
+              {#if data.text.samplePassageLicenseLink}
+                <a href={data.text.samplePassageLicenseLink}>
+                  ({data.text.samplePassageLicense})
                 </a>
-              </div>
-            </h5>
-            <p class="card-text" style="white-space: pre-wrap">
-              {#if data.text.samplePassage}
-                {data.text.samplePassage}
               {:else}
-                This text does not have a sample passage.
+                &nbsp;({data.text.samplePassageLicense})
+              {/if}
+            {/if}
+          </small>
+        </footer>
+      </article>
+    {/if}
+    {#each selectedTranslations as translation, index (translation.id || index)}
+      <article>
+        <header>
+          {#if !translation.id}
+            <select
+              size="1"
+              name={index}
+              bind:value={selectedTranslationIds[index]}
+            >
+              {#if availableTranslations.length}
+                <option value="">-- Select a translation --</option>
+                {#each availableTranslations as trans (trans.id)}
+                  <option value={trans.id}>{trans.displayName}</option>
+                {/each}
+              {:else}
+                <option>-- No items --</option>
+              {/if}
+            </select>
+          {:else}
+            <h5>Translation</h5>
+            <div role="group">
+              <button
+                class="secondary"
+                type="button"
+                data-id={translation.id}
+                on:click={handleRemoveTranslation}
+              >
+                Hide
+              </button>
+            </div>
+          {/if}
+        </header>
+        {#if translation.id}
+          <div>
+            <h5>{translation.title}</h5>
+            <div role="group">
+              <a
+                role="button"
+                class="secondary"
+                href={translation.volume.url}
+              >
+                Details
+              </a>
+            </div>
+            <p>
+              <small class="muted">
+                trans.&nbsp;
+                <CommaLinkList values={translation.personsLinks} />
+              </small>
+            </p>
+            <p style="white-space: pre-wrap">
+              {#if translation.samplePassage}
+                {translation.samplePassage}
+              {:else}
+                This translation does not have a sample passage.
               {/if}
             </p>
           </div>
-          <div class="card-footer">
-            <small class="text-muted">
-              {#if data.text.samplePassageSourceLink}
-                <a href={data.text.samplePassageSourceLink}>
-                  {data.text.samplePassageSource}
-                </a>
-              {:else}
-                {data.text.samplePassageSource}
-              {/if}
-              {#if data.text.samplePassageLicense}
-                {#if data.text.samplePassageLicenseLink}
-                  <a href={data.text.samplePassageLicenseLink}>
-                    ({data.text.samplePassageLicense})
-                  </a>
-                {:else}
-                  &nbsp;({data.text.samplePassageLicense})
-                {/if}
+          <footer>
+            <small class="muted">
+              {translation.volume.publisher.name}
+              {#if translation.volume.publishedYear}
+                , {translation.volume.publishedYear}.
               {/if}
             </small>
-          </div>
-        </div>
-      </div>
-    {/if}
-    {#each selectedTranslations as translation, index (translation.id || index)}
-      <div class="col mb-4">
-        <div class="card h-100">
-          <div class="card-header">
-            {#if !translation.id}
-              <select
-                class="form-control"
-                size="1"
-                name={index}
-                bind:value={selectedTranslationIds[index]}
-              >
-                {#if availableTranslations.length}
-                  <option value="">-- Select a translation --</option>
-                  {#each availableTranslations as trans (trans.id)}
-                    <option value={trans.id}>{trans.displayName}</option>
-                  {/each}
-                {:else}
-                  <option>-- No items --</option>
-                {/if}
-              </select>
-            {:else}
-              <h5 class="card-title clearfix">
-                Translation
-                <div class="float-right">
-                  <button
-                    class="btn btn-sm btn-outline-secondary"
-                    type="button"
-                    data-id={translation.id}
-                    on:click={handleRemoveTranslation}
-                  >
-                    Hide
-                  </button>
-                </div>
-              </h5>
-            {/if}
-          </div>
-          {#if translation.id}
-            <div class="card-body">
-              <h5 class="card-title clearfix">
-                {translation.title}
-                <div class="float-right">
-                  <a
-                    class="btn btn-sm btn-outline-secondary"
-                    href={translation.volume.url}
-                  >
-                    Details
-                  </a>
-                </div>
-              </h5>
-              <h6 class="card-subtitle mb-2 text-muted">
-                trans.&nbsp;
-                <CommaLinkList values={translation.personsLinks} />
-              </h6>
-              <p class="card-text" style="white-space: pre-wrap">
-                {#if translation.samplePassage}
-                  {translation.samplePassage}
-                {:else}
-                  This translation does not have a sample passage.
-                {/if}
-              </p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">
-                {translation.volume.publisher.name}
-                {#if translation.volume.publishedYear}
-                  , {translation.volume.publishedYear}.
-                {/if}
-              </small>
-            </div>
-          {:else}
-            <div class="card-body">
-              Add a translation to the comparison by selecting it above.
-            </div>
-          {/if}
-        </div>
-      </div>
+          </footer>
+        {:else}
+          <p>Add a translation to the comparison by selecting it above.</p>
+        {/if}
+      </article>
     {/each}
   </div>
 {/if}

@@ -35,24 +35,24 @@
 </script>
 
 <form novalidate bind:this={formRef} on:submit|preventDefault={create}>
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input
-      class="form-control"
-      placeholder="Name"
-      type="text"
-      bind:value={name}
-      required
-    />
-    <div class="invalid-feedback">The publisher name is required.</div>
-    <label for="link">Website</label>
-    <input
-      class="form-control"
-      placeholder="Optional: link to publisher's website"
-      type="url"
-      bind:value={link}
-    />
-    <div class="text-danger">{error}</div>
-    <button class="btn btn-primary mt-3" type="submit">Create</button>
-  </div>
+  <label for="name">Name</label>
+  <input
+    id="name"
+    placeholder="Name"
+    type="text"
+    bind:value={name}
+    required
+  />
+  <small class="validation-feedback">The publisher name is required.</small>
+  <label for="link">Website</label>
+  <input
+    id="link"
+    placeholder="Optional: link to publisher's website"
+    type="url"
+    bind:value={link}
+  />
+  {#if error}
+    <small class="danger">{error}</small>
+  {/if}
+  <button type="submit">Create</button>
 </form>

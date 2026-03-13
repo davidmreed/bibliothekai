@@ -196,61 +196,56 @@
 
 {#if features}
   <div>
-    <small
-      class="form-text text-muted validity is-invalid form-control mb-2"
-      class:d-none={!error}
-    >
-      {error}
-    </small>
-    <div class="card mb-2">
-      <div class="card-header">
-        <h5 class="card-title">Text Selection</h5>
-      </div>
-      <div class="card-body">
-        <PopUpMenu
-          entityName="texts"
-          allowAdd={false}
-          bind:value={selectedTextId}
-        />
-        <div class="invalid-feedback">{error}</div>
-        <div class="row">
-          <div class="col">
-            {#if translationFeature}
-              <Switch
-                label="Has Facing Text"
-                bind:value={hasFacingText}
-              />
-            {/if}
-          </div>
-          <div class="col">
+    {#if error}
+      <small class="danger">{error}</small>
+    {/if}
+    <article>
+      <header>
+        <h5>Text Selection</h5>
+      </header>
+      <PopUpMenu
+        entityName="texts"
+        allowAdd={false}
+        bind:value={selectedTextId}
+      />
+      <div class="grid">
+        <div>
+          {#if translationFeature}
             <Switch
-              label="Has Introduction"
-              bind:value={hasIntroduction}
+              label="Has Facing Text"
+              bind:value={hasFacingText}
             />
-          </div>
-          <div class="col">
-            <Switch
-              label="Has Notes"
-              bind:value={hasNotes}
-            />
-          </div>
-          <div class="col">
-            <Switch
-              label="Has Commentary"
-              bind:value={hasCommentary}
-            />
-          </div>
+          {/if}
+        </div>
+        <div>
+          <Switch
+            label="Has Introduction"
+            bind:value={hasIntroduction}
+          />
+        </div>
+        <div>
+          <Switch
+            label="Has Notes"
+            bind:value={hasNotes}
+          />
+        </div>
+        <div>
+          <Switch
+            label="Has Commentary"
+            bind:value={hasCommentary}
+          />
         </div>
       </div>
-    </div>
+    </article>
   </div>
-  <div class="card mb-2">
-    <div class="card-header">
-      <h5 class="card-title">
+  <article>
+    <header>
+      <h5>
         Translation
         {#if !translationExpanded}
           <button
-            class="float-right btn btn-sm btn-outline-primary"
+            class="secondary"
+            style="float: right;"
             type="button"
             on:click={toggleTranslationExpanded}
           >
@@ -258,96 +253,92 @@
           </button>
         {/if}
       </h5>
-    </div>
+    </header>
     {#if translationExpanded && translationFeature}
-      <div class="card-body">
-        <div class="form-group">
-          <div class="form-row">
-            <div class="col">
-              <PopUpMenu
-                labelText="Language"
-                entityName="languages"
-                allowAdd={false}
-                bind:value={translationLanguage}
-              />
-            </div>
-            <div class="col">
-              <label for="format">Format</label>
-              <select
-                class="form-control format-picklist"
-                size="1"
-                bind:value={translationFormat}
-              >
-                <option value="Prose">Prose</option>
-                <option value="Verse">Verse</option>
-              </select>
-            </div>
-            <div class="col">
-              <label for="partial">Coverage</label>
-              <select
-                class="form-control coverage-picklist"
-                size="1"
-                bind:value={translationPartial}
-              >
-                <option value={false}>Complete translation</option>
-                <option value={true}>Partial translation</option>
-              </select>
-            </div>
+      <div>
+        <div class="grid">
+          <div>
+            <PopUpMenu
+              labelText="Language"
+              entityName="languages"
+              allowAdd={false}
+              bind:value={translationLanguage}
+            />
           </div>
-          <label for="title">Title</label>
-          <input
-            class="form-control"
-            placeholder="Title, if different from text"
-            type="text"
-            bind:value={translationTitle}
-          />
-          <label for="original-publication-date">Original Publication Date</label>
-          <input
-            class="form-control"
-            placeholder="If this is a republication"
-            type="date"
-            bind:value={translationOriginalPublicationDate}
-          />
-          <hr />
-          <label for="description">Description</label>
-          <textarea
-            class="form-control description-field"
-            placeholder="Description"
-            type="text"
-            bind:value={translationDescription}
-          ></textarea>
-          {#if hasSamplePassage}
-            <label for="sample">Sample Passage</label>
-            <textarea
-              class="form-control"
-              bind:value={translationSamplePassage}
-            ></textarea>
-            <small class="text-muted">
-              The sample passage for {selectedText.title} is
-              {selectedText.sample_passage_spec}.
-            </small>
-          {/if}
-          <hr />
-          <label for="authors">Translators</label>
-          <DualingListbox
-            class="persons-listbox"
-            entityName="persons"
-            allowAdd={true}
-            bind:value={translationPersons}
-            on:add={handleAddPerson}
-          />
-
-          <button
-            class="btn btn-sm btn-outline-primary btn-block mt-3"
-            type="button"
-            on:click={toggleTranslationExpanded}
-          >
-            Done
-          </button>
+          <div>
+            <label for="format">Format</label>
+            <select
+              class="format-picklist"
+              size="1"
+              bind:value={translationFormat}
+            >
+              <option value="Prose">Prose</option>
+              <option value="Verse">Verse</option>
+            </select>
+          </div>
+          <div>
+            <label for="partial">Coverage</label>
+            <select
+              class="coverage-picklist"
+              size="1"
+              bind:value={translationPartial}
+            >
+              <option value={false}>Complete translation</option>
+              <option value={true}>Partial translation</option>
+            </select>
+          </div>
         </div>
+        <label for="title">Title</label>
+        <input
+          placeholder="Title, if different from text"
+          type="text"
+          bind:value={translationTitle}
+        />
+        <label for="original-publication-date">Original Publication Date</label>
+        <input
+          placeholder="If this is a republication"
+          type="date"
+          bind:value={translationOriginalPublicationDate}
+        />
+        <hr />
+        <label for="description">Description</label>
+        <textarea
+          class="description-field"
+          placeholder="Description"
+          type="text"
+          bind:value={translationDescription}
+        ></textarea>
+        {#if hasSamplePassage}
+          <label for="sample">Sample Passage</label>
+          <textarea
+            bind:value={translationSamplePassage}
+          ></textarea>
+          <small class="muted">
+            The sample passage for {selectedText.title} is
+            {selectedText.sample_passage_spec}.
+          </small>
+        {/if}
+        <hr />
+        <label for="authors">Translators</label>
+        <DualingListbox
+          class="persons-listbox"
+          entityName="persons"
+          allowAdd={true}
+          bind:value={translationPersons}
+          on:add={handleAddPerson}
+        />
+
+        <button
+          class="secondary"
+          style="width: 100%;"
+          type="button"
+          on:click={toggleTranslationExpanded}
+        >
+          Done
+        </button>
       </div>
     {/if}
-  </div>
+  </article>
   {#each features.features as f (f.feature)}
     {#if f.feature !== 'Translation'}
       <SingleFeatureEditor
@@ -359,7 +350,7 @@
     {/if}
   {/each}
   <hr />
-  <button class="btn btn-primary btn-block mb-3" type="button" on:click={save}>
+  <button style="width: 100%;" type="button" on:click={save}>
     Done with Translation
   </button>
 {/if}

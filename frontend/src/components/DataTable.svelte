@@ -38,7 +38,7 @@
         value = (getNestedProperty(record, c.id) || []).map((i) => ({
           id: i,
           value: i,
-          pillClass: `badge badge-pill badge-${c.pills[i]} mr-1 mb-1`
+          pillClass: c.pills?.[i] ? `pill pill-${c.pills[i]}` : 'pill'
         }));
         break;
       case COLUMN_YEAR_TYPE:
@@ -135,7 +135,7 @@
   }
 </script>
 
-<table class="table table-striped">
+<table>
   <thead>
     <tr>
       {#if allowsSelection}
@@ -143,13 +143,7 @@
       {/if}
       {#each normalizedColumns as col (col.id)}
         <th scope="col" data-col={col.id} on:click={handleColumnClick}>
-          {col.name}
-          {#if col.isSortedAscending}
-            <small class="ml-1">&#9650;</small>
-          {/if}
-          {#if col.isSortedDescending}
-            <small class="ml-1">&#9660;</small>
-          {/if}
+          {col.name}&nbsp;{#if col.isSortedAscending}<small style="margin-left: 0.25rem;">&#9650;</small>{/if}{#if col.isSortedDescending}<small style="margin-left: 0.25rem;">&#9660;</small>{/if}
         </th>
       {/each}
     </tr>
@@ -181,9 +175,11 @@
               {entry.value}
             {/if}
             {#if entry.isPillListType}
-              {#each entry.value as pill (pill.id)}
-                <span class={pill.pillClass}>{pill.value}</span>
-              {/each}
+              <div class="pill-list">
+                {#each entry.value as pill (pill.id)}
+                  <span class={pill.pillClass}>{pill.value}</span>
+                {/each}
+              </div>
             {/if}
           </td>
         {/each}
@@ -192,4 +188,16 @@
   </tbody>
 </table>
 <hr />
-<small class="text-muted">Showing {recordsShown} of {recordCount}.</small>
+<small class="muted">Showing {recordsShown} of {recordCount}.</small>
+
+<style>
+  .pill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .pill-list .pill {
+    margin: 0;
+  }
+</style>

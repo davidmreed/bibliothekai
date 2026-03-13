@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<h1 class="mt-4 mb-4">Delete Review</h1>
+<h1>Delete Review</h1>
 
 <p>Are you sure you want to delete this review?</p>
 
 <form action="" method="POST">
     {% csrf_token %}
-    <input class="btn btn-primary" type="submit" value="Yes, delete.">
+    <input type="submit" value="Yes, delete.">
 </form>
 
 {% endblock %}

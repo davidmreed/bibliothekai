@@ -6,13 +6,13 @@
 
 {% block content %}
 {% if user.is_superuser %}
-<div class="float-right">
+<div style="float: right;">
     <small>
         <a href="{% url 'admin:translations_person_change' person.id %}">View on Admin</a>
     </small>
 </div>
 {% endif %}
-<h1 class="mt-4 mb-4">{{ person.full_name }}</h1>
+<h1>{{ person.full_name }}</h1>
 <p>
     {{ person.description|linebreaks }}
 </p>
@@ -36,53 +36,51 @@
 {% endif %}
 {% if sourcetexts.count %}
 
-<h2 class="mt-4">Texts</h2>
+<h2>Texts</h2>
 {% for s in sourcetexts %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title clearfix">
+<article>
+    <header class="card-header">
+        <h3>
             {{ s.title }}
             {% if s.get_original_language_title and s.title != s.get_original_language_title %}
             ({{ s.get_original_language_title }})
             {% endif %}
-            <a class="float-right btn btn-sm btn-outline-primary" href="{% url 'source_text_detail' s.id %}">
+        </h3>
+        <div class="card-header-actions">
+            <a role="button" href="{% url 'source_text_detail' s.id %}">
                 View translations
             </a>
-        </h5>
-        <div class="card-text">
-            <p>{{ s.language }} {{ s.get_format_display|lower }}. {{ s.date }}</p>
         </div>
-    </div>
-</div>
+    </header>
+    <p>{{ s.language }} {{ s.get_format_display|lower }}. {{ s.date }}</p>
+</article>
 {% endfor %}
 {% endif %}
 
 {% if translations %}
-<h2 class="mt-4">Translations</h2>
+<h2>Translations</h2>
 {% for f in translations %}
-<div class="card mb-3">
-    <div class="card-body">
-        <h5 class="card-title">
+<article>
+    <header class="card-header">
+        <h3>
             <a href="{% url 'person_detail' f.source_text.author.id %}">{{ f.source_text.author.full_name }}</a>,
             <cite><a href="{% url 'source_text_detail' f.source_text.id %}">{{ f.source_text.title }}</a></cite>
-        </h5>
-        <div class="card-text">
-            <p>
-                Translation into {{ f.language }} {{ f.get_format_display|lower }}.
-            </p>
-            <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
-                ({{f.volume.publisher }}{% if vol.published_date %}, {{ f.volume.published_date.year }}{% endif%})
-            </p>
-        </div>
-    </div>
-</div>
+        </h3>
+    </header>
+    <p>
+        Translation into {{ f.language }} {{ f.get_format_display|lower }}.
+    </p>
+    <p>Published in <a href="{% url 'volume_detail' f.volume.id %}">{{ f.volume.title }}</a>
+        ({{f.volume.publisher }}{% if vol.published_date %}, {{ f.volume.published_date.year }}{% endif%})
+    </p>
+</article>
 {% endfor %}
 {% endif %}
 
 {% if publishedreviews %}
-<h2 class="mt-4">Published Reviews</h2>
+<h2>Published Reviews</h2>
 {% for r in publishedreviews %}
-{% include "components/published_review.html" with review=r include_volume=True %}
+{% include "components/published_review.html" with review=r include_volume=True header_level=3 %}
 {% endfor %}
 {% endif %}
 
