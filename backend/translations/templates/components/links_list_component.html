@@ -1,10 +1,8 @@
-<ul>
+<dl>
     {% for l in links %}
-    <li>
-        <span class="pill">
-            {{ l.get_resource_type_display }}
-        </span>
-        <a href="{{ l.link }}">{{ l.source }}</a>
-    </li>
+    <div>
+        <dd>{{ l.get_resource_type_display }}</dd>
+        <dt><a href="{{ l.link }}">{{ l.source }}</a></dt>
+    </div>
     {% endfor %}
-</ul>
+</dl>
