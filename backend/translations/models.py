@@ -90,7 +90,7 @@ class AlternateName(models.Model):
     )
 
     def __str__(self):
-        return f"Alternate Name {self.name}"
+        return self.name
 
 
 class Language(models.Model):

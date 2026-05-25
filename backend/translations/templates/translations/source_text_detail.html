@@ -20,22 +20,6 @@
     {{ sourcetext.title }}
 </h1>
 </header>
-{% if sourcetext.alternate_names.count %}
-<h2>Other Titles</h2>
-    {% if sourcetext.alternate_names.count > 1 %}
-    <ul>
-        {% for a in sourcetext.alternate_names.all %}
-        <li>
-            {{ a.name }}
-        </li>
-        {% endfor %}
-    </ul>
-    {% else %}
-        {% for a in sourcetext.alternate_names.all %}
-        <p>{{ a.name }}</p>
-        {% endfor %}
-    {% endif %}
-{% endif %}
 <dl>
     <div>
         <dt>Author</dt>
@@ -57,6 +41,12 @@
     <div>
         <dt>Date</dt>
         <dd>{{ sourcetext.date }}</dd>
+    </div>
+    {% endif %}
+    {% if sourcetext.alternate_names.count %}
+    <div>
+        <dt>Also Known As</dt>
+        <dd>{% commalist sourcetext.alternate_names.all %}</dd>
     </div>
     {% endif %}
 </dl>
