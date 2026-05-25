@@ -1,8 +1,8 @@
 <dl>
     {% for l in links %}
     <div>
-        <dd><a href="{{ l.link }}">{{ l.source }}</a></dd>
         <dt>{{ l.get_resource_type_display }}</dt>
+        <dd><a href="{{ l.link }}">{{ l.source }}</a></dd>
     </div>
     <br>
     {% endfor %}
