@@ -46,7 +46,7 @@
     {% if sourcetext.alternate_names.count %}
     <div>
         <dt>Also Known As</dt>
-        <dd>{% commalist sourcetext.alternate_names.all %}</dd>
+        <dd>{% commalist sourcetext.alternate_names.all %}{{ item.name }}{% endcommalist %}</dd>
     </div>
     {% endif %}
 </dl>
